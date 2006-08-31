@@ -1,0 +1,67 @@
+<project name="JavaOSC" default="dist" basedir=".">
+	<description>
+		Build file for JavaOSC
+	</description>
+	
+	<property name="build" location="build" />
+	<property name="dest" location="lib" />
+	<property name="lib" location="lib" />
+
+	<target name="compile" description = "Compile the source">
+		<javac srcdir="src/" destdir="build/">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement path="${lib}/junit.jar" />
+			</classpath>
+		</javac>
+	</target>
+	<target name="dist" depends="compile" description="Jar it all up">
+		<!-- Only put the important stuff in javaosc.jar -->
+		<jar 
+			destfile="${dest}/javaosc.jar"
+			basedir="build"
+			includes="com/illposed/osc/*.class com/illposed/osc/utility/*.class"
+		/>
+		<!-- Put examples and tests in javaoscfull.jar -->		
+		<jar 
+			destfile="${dest}/javaoscfull.jar"
+			manifest="build-support/MainClass.mf"	
+			basedir="build"	
+		/>
+	</target>
+	<target name="doc" description="Create the documentation">
+		<javadoc destdir="doc/">
+			<fileset dir="src/">
+				<include name="com/illposed/osc/*.java"/>
+				<include name="com/illposed/osc/utility/*.java"/>				
+			</fileset>
+		</javadoc>
+	</target>	
+	<target name="test" depends="compile" description="Run the JUnit tests">
+		<junit printsummary="on">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement path="${lib}/junit.jar" />
+				<pathelement path="${lib}/javaoscfull.jar" />
+			</classpath>
+			<batchtest>
+				<fileset dir="src/">
+					<include name="**/*Test*.java"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	<target name="run" depends="compile" description="Run the JavaOSC Example">
+		<java jar="${lib}/javaosc.jar" fork="true" />
+	</target>
+	
+	<target name="runtests" depends="compile" description="Run the tests in a seperate jvm">
+		<java classname="com.illposed.osc.test.JavaOSCRunnerUtility">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement path="${lib}/junit.jar" />
+				<pathelement path="${lib}/javaoscfull.jar" />
+			</classpath>		
+		</java>
+	</target>	
+</project>
