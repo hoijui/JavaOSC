@@ -1,0 +1,22 @@
+var o, p;
+o = [
+	Archive.prNew,  IdentityDictionary.prNew,  Array.prNew(32)
+];
+p = [
+	// Archive
+	0, [ dictionary: o[1] ],  
+	// IdentityDictionary
+	1, [ array: o[2],  size: 0,  
+		proto: nil,  parent: nil,  
+		know: false ],  
+	// Array
+	2, [ nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil,  
+		nil,  nil,  nil,  nil ]
+];
+prUnarchive(o,p);
