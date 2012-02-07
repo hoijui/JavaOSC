@@ -35,7 +35,7 @@ public class OscUI extends JPanel {
 	protected JButton firstSynthButtonOn, secondSynthButtonOn, thirdSynthButtonOn;
 	protected JButton firstSynthButtonOff, secondSynthButtonOff, thirdSynthButtonOff;
 	protected JSlider slider, slider2, slider3;
-	
+
 	protected OSCPortOut oscPort;
 
 	// create a constructor
@@ -52,7 +52,7 @@ public class OscUI extends JPanel {
 		}
 	}
 
-	// create a method for widget building  
+	// create a method for widget building
 	public void makeDisplay() {
 
 		// setLayout to be a BoxLayout
@@ -76,7 +76,7 @@ public class OscUI extends JPanel {
 		addressPanel.setBackground(new Color(123, 150, 123));
 		// variable addressWidget holds an instance of JTextField
 		addressWidget = new JTextField("localhost");
-		// variable setAddressButton holds an insatnce of JButton with 
+		// variable setAddressButton holds an insatnce of JButton with
 		// a "Set Address" argument for its screen name
 		JButton setAddressButton = new JButton("Set Address");
 		setAddressButton.addActionListener(new ActionListener() {
@@ -187,7 +187,7 @@ public class OscUI extends JPanel {
 		// the variable firstSynthButtonOff holds an instance of JButton labeled "off"
 		firstSynthButtonOff = new JButton("Off");
 		firstSynthButtonOff.setEnabled(false);
-		// the variable slider holds an instance of JSlider which is 
+		// the variable slider holds an instance of JSlider which is
 		// set to be a Horizontal slider
 		slider = new JSlider(JSlider.HORIZONTAL);
 		// set the minimum value of the slider to 20
@@ -196,10 +196,10 @@ public class OscUI extends JPanel {
 		// set the inital value of the slider to 400
 		//slider.setValue(1 / 5);
 		slider.setEnabled(false);
-		
+
 		textBox = new JTextField(String.valueOf((1 / 5) * 10000), 8);
 		textBox.setEnabled(false);
-		
+
 		firstSynthButtonOn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// when the on button is pushed, doSendOn method is invoked
@@ -210,11 +210,11 @@ public class OscUI extends JPanel {
 				textBox.setText("440.0");
 				textBox.setEnabled(true);
 				slider.setValue(2050);
-				slider.setEnabled(true);	
+				slider.setEnabled(true);
 			}
 		});
 		// when the on button is pushed, doSendOff method is invoked
-		// send the argument for node        
+		// send the argument for node
 		firstSynthButtonOff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// when the action occurs the doSend1 method is invoked
@@ -244,7 +244,7 @@ public class OscUI extends JPanel {
 				}
 			}
 		});
-		
+
 		// when the value in the textbox is changed, doSendSlider method is invoked
 		// send the argument for freq and node
 		textBox.addActionListener(new ActionListener() {
@@ -268,7 +268,7 @@ public class OscUI extends JPanel {
 		firstSynthPanel.add(slider);
 		firstSynthPanel.add(textBox);
 
-		// add the firstSynthpanel to the OscUI Panel        
+		// add the firstSynthpanel to the OscUI Panel
 		add(firstSynthPanel);
 	}
 
@@ -289,10 +289,10 @@ public class OscUI extends JPanel {
 		slider2.setMinimum(0);
 		slider2.setMaximum(10000);
 		slider2.setEnabled(false);
-		
+
 		textBox2 = new JTextField(String.valueOf((2 / 5) * 10000), 8);
 		textBox2.setEnabled(false);
-		
+
 		secondSynthButtonOn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// when the action occurs the doSendOn method is invoked
@@ -306,7 +306,7 @@ public class OscUI extends JPanel {
 				textBox2.setText("440.0");
 			}
 		});
-		// add the action for the Off button       
+		// add the action for the Off button
 		secondSynthButtonOff.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// when the action occurs the doSendOff method is invoked
@@ -320,7 +320,7 @@ public class OscUI extends JPanel {
 				textBox2.setText("0");
 			}
 		});
-		// add the action for the slider      
+		// add the action for the slider
 		slider2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				JSlider slider2 = (JSlider) e.getSource();
@@ -356,7 +356,7 @@ public class OscUI extends JPanel {
 		secondSynthPanel.add(secondSynthButtonOff);
 		secondSynthPanel.add(slider2);
 		secondSynthPanel.add(textBox2);
-		// add the secondSynthPanel2 to the OscUI Panel        
+		// add the secondSynthPanel2 to the OscUI Panel
 		add(secondSynthPanel);
 
 	}
@@ -371,10 +371,10 @@ public class OscUI extends JPanel {
 		slider3.setMinimum(0);
 		slider3.setMaximum(10000);
 		slider3.setEnabled(false);
-		
+
 		textBox3 = new JTextField(String.valueOf((1 / 25) * 10000), 8);
 		textBox3.setEnabled(false);
-		
+
 		thirdSynthButtonOn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// when the action occurs the doSendOn method is invoked
@@ -437,19 +437,19 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		
+
 		// ******************
 		// add thirdSynthButtons and slider to the thirdSynthPanel
 		thirdSynthPanel.add(thirdSynthButtonOn);
 		thirdSynthPanel.add(thirdSynthButtonOff);
 		thirdSynthPanel.add(slider3);
 		thirdSynthPanel.add(textBox3);
-		// add the sendButtonPanel2 to the OscUI Panel        
+		// add the sendButtonPanel2 to the OscUI Panel
 		add(thirdSynthPanel);
 
 	}
 
-	// here is the make new JPanel method    
+	// here is the make new JPanel method
 	protected JPanel makeNewJPanel() {
 		// a variable tempPanel holds an instance of JPanel
 		JPanel tempPanel = new JPanel();
@@ -459,7 +459,7 @@ public class OscUI extends JPanel {
 		return tempPanel;
 	}
 
-	// here is the make new JPanel method    
+	// here is the make new JPanel method
 	protected JPanel makeNewJPanel1() {
 		// a variable tempPanel holds an instance of JPanel
 		JPanel tempPanel1 = new JPanel();
@@ -490,7 +490,7 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		// send an OSC message to start the synth "pink" on node 1000.        
+		// send an OSC message to start the synth "pink" on node 1000.
 		Object[] args =
 			{
 				"javaosc-example",
@@ -522,7 +522,7 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		// send an OSC message to free the node 1000        
+		// send an OSC message to free the node 1000
 		Object[] args = { new Integer(node)};
 		OSCMessage msg = new OSCMessage("/n_free", args);
 
@@ -560,7 +560,7 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		// send an OSC message to set the node 1000      
+		// send an OSC message to set the node 1000
 		Object[] args = { new Integer(node), "freq", new Float(freq)};
 		OSCMessage msg = new OSCMessage("/n_set", args);
 
@@ -602,7 +602,7 @@ public class OscUI extends JPanel {
 		} catch (Exception e) {
 			showError("Couldn't send");
 		}
-	
+
 	}
 
 	public void doSendGlobalOn(int node1, int node2, int node3) {

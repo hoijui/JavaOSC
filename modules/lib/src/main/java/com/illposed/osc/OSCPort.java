@@ -4,7 +4,7 @@ import java.net.*;
 import java.io.IOException;
 
 /**
- * OSCPort is an abstract superclass. To send OSC messages, use @see OSCPortOut. 
+ * OSCPort is an abstract superclass. To send OSC messages, use @see OSCPortOut.
  * To listen for OSC messages, use @see OSCPortIn.
  * <p>
  * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
@@ -19,7 +19,7 @@ public abstract class OSCPort {
 
 	protected DatagramSocket socket;
 	protected int port;
-	
+
 	public static final int defaultSCOSCPort = 57110;
 	public static final int defaultSCLangOSCPort = 57120;
 
@@ -29,14 +29,14 @@ public abstract class OSCPort {
 	public static int defaultSCOSCPort() {
 		return defaultSCOSCPort;
 	}
-	
+
 	/**
 	 * The port that the SuperCollider <b>language</b> engine ususally listens to &mdash; 57120.
 	 */
 	public static int defaultSCLangOSCPort() {
 		return defaultSCLangOSCPort;
 	}
-	
+
 	/**
 	 * Close the socket if this hasn't already happened.
 	 * @see java.lang.Object#finalize()
@@ -45,7 +45,7 @@ public abstract class OSCPort {
 		super.finalize();
 		socket.close();
 	}
-	
+
 	/**
 	 * Close the socket and free-up resources. It's recommended that clients call
 	 * this when they are done with the port.

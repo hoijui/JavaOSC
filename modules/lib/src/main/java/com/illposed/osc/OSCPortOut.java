@@ -65,7 +65,7 @@ public class OSCPortOut extends OSCPort {
 	public OSCPortOut() throws UnknownHostException, SocketException {
 		this(InetAddress.getLocalHost(), defaultSCOSCPort);
 	}
-	
+
 	/**
 	 * Send an osc packet (message or bundle) to the receiver I am bound to.
 	 * @param aPacket OSCPacket

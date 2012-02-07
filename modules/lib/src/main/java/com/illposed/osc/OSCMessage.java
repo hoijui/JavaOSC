@@ -6,8 +6,8 @@ import java.util.Vector;
 import com.illposed.osc.utility.*;
 
 /**
- * An simple (non-bundle) OSC message. An OSC message is made up of 
- * an address (the receiver of the message) and arguments 
+ * An simple (non-bundle) OSC message. An OSC message is made up of
+ * an address (the receiver of the message) and arguments
  * (the content of the message).
  * <p>
  * Internally, I use Vector to maintain jdk1.1 compatability
@@ -60,7 +60,7 @@ public class OSCMessage extends OSCPacket {
 			arguments = new Vector();
 		init();
 	}
-	
+
 	/**
 	 * The receiver of this message.
 	 * @return the receiver of this OSC Message
@@ -68,7 +68,7 @@ public class OSCMessage extends OSCPacket {
 	public String getAddress() {
 		return address;
 	}
-	
+
 	/**
 	 * Set the address of this messsage.
 	 * @param anAddress the receiver of the message
@@ -76,19 +76,19 @@ public class OSCMessage extends OSCPacket {
 	public void setAddress(String anAddress) {
 		address = anAddress;
 	}
-	
+
 	/**
 	 * Add an argument to the list of arguments.
 	 * @param argument a Float, String, Integer, BigInteger, Boolean or array of these
-	 */	
+	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
 	}
-	
+
 	/**
 	 * The arguments of this message.
 	 * @return the arguments to this message
-	 */		
+	 */
 	public Object[] getArguments() {
 		return arguments.toArray();
 	}

@@ -129,12 +129,12 @@ public class OSCByteArrayToJavaConverter {
 		if (0 == typesLen) {
 			return null;
 		}
-		
+
 		// read in the types
 		char[] typesChars = new char[typesLen];
 		for (int i = 0; i < typesLen; i++) {
 			typesChars[i] = (char) bytes[streamPosition++];
-		}				
+		}
 		return typesChars;
 	}
 
@@ -231,7 +231,7 @@ public class OSCByteArrayToJavaConverter {
 		BigInteger intBits = new BigInteger(intBytes);
 		return new Integer(intBits.intValue());
 	}
-	
+
 	/**
 	 * Read the time tag and convert it to a Java Date object. A timestamp is a 64 bit number
 	 * representing the time in NTP format. The first 32 bits are seconds since 1900, the
@@ -247,7 +247,7 @@ public class OSCByteArrayToJavaConverter {
 		}
 			// while reading in the seconds & fraction, check if
 			// this timetag has immediate semantics
-		boolean isImmediate = true;		
+		boolean isImmediate = true;
 		for (int i = 4; i < 8; i++) {
 			secondBytes[i] = bytes[streamPosition++];
 			if (secondBytes[i] > 0)
@@ -263,13 +263,13 @@ public class OSCByteArrayToJavaConverter {
 					isImmediate = false;
 			}
 		}
-		
+
 		if (isImmediate) return OSCBundle.TIMESTAMP_IMMEDIATE;
 
-		BigInteger secsSince1900 = new BigInteger(secondBytes);		
+		BigInteger secsSince1900 = new BigInteger(secondBytes);
 		long secsSince1970 =  secsSince1900.longValue() - OSCBundle.SECONDS_FROM_1900_to_1970.longValue();
 		if (secsSince1970 < 0) secsSince1970 = 0; // no point maintaining times in the distant past
-		long fraction = (new BigInteger(fractionBytes).longValue());	
+		long fraction = (new BigInteger(fractionBytes).longValue());
 			// the next line was cribbed from jakarta commons-net's NTP TimeStamp code
 		fraction = (fraction * 1000) / 0x100000000L;
 			// I don't where, but I'm losing 1ms somewhere...
@@ -307,7 +307,7 @@ public class OSCByteArrayToJavaConverter {
 
 	/**
 	 * Move to the next byte with an index in the byte array divisable by four.
-	 */	
+	 */
 	private void moveToFourByteBoundry() {
 		// If i'm already at a 4 byte boundry, I need to move to the next one
 		int mod = streamPosition % 4;

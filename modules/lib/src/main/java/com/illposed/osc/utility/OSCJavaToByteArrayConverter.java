@@ -14,7 +14,7 @@ import java.util.Vector;
  * The implementation is based on <a href=" http://www.emergent.de/">Markus Gaelli</a> and
  * Iannis Zannos' OSC implementation in Squeak.
  * <p>
- * This version includes bug fixes and improvements from 
+ * This version includes bug fixes and improvements from
  * Martin Kaltenbrunner and Alex Potsides.
  * <p>
  * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
@@ -109,20 +109,20 @@ public class OSCJavaToByteArrayConverter {
 	public void write(Integer i) {
 		writeInteger32ToByteArray(i.intValue());
 	}
-	
+
 	/**
 	 * @param i java.lang.Integer
 	 */
 	public void write(BigInteger i) {
 		writeInteger64ToByteArray(i.longValue());
-	}	
+	}
 
 	/**
 	 * Write a string into the byte stream.
 	 * @param aString java.lang.String
 	 */
 	public void write(String aString) {
-/*	
+/*
 		int stringLength = aString.length();
 			// this is a deprecated method -- should use get char and convert
 			// the chars to bytes
@@ -137,10 +137,10 @@ public class OSCJavaToByteArrayConverter {
 		for (int i = 0; i < stringLength; i++) {
 			stringBytes[i] = (byte) (stringChars[i] & 0x00FF);
 		}
-		stream.write(stringBytes, 0, stringLength);	
+		stream.write(stringBytes, 0, stringLength);
 */
 		byte[] stringBytes = aString.getBytes();
-		
+
 		// pad out to align on 4 byte boundry
 		int mod = aString.length() % 4;
 		int pad = 4 - mod;
@@ -193,7 +193,7 @@ public class OSCJavaToByteArrayConverter {
 		if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
 			return;
-		}		
+		}
 	}
 
 	/**
@@ -204,7 +204,7 @@ public class OSCJavaToByteArrayConverter {
 		// A big ol' case statement -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!
 
-		// use the appropriate flags to tell SuperCollider what kind of 
+		// use the appropriate flags to tell SuperCollider what kind of
 		// thing it is looking at
 
 		if (Integer.class.equals(c)) {
@@ -257,7 +257,7 @@ public class OSCJavaToByteArrayConverter {
 			writeType(array[i].getClass());
 		}
 	}
-	
+
 	/**
 	 * Write types for the arguments (use a vector for jdk1.1 compatibility, rather than an ArrayList).
 	 * @param vector  the arguments to an OSCMessage
@@ -292,7 +292,7 @@ public class OSCJavaToByteArrayConverter {
 				stream.write('F');
 				continue;
 			}
-			// go through the array and write the superCollider types as shown in the 
+			// go through the array and write the superCollider types as shown in the
 			// above method. the Classes derived here are used as the arg to the above method
 			writeType(nextObject.getClass());
 		}

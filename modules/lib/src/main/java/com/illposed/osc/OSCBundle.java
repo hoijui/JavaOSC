@@ -32,10 +32,10 @@ public class OSCBundle extends OSCPacket {
 	 */
 	public static final BigInteger SECONDS_FROM_1900_to_1970 =
 		new BigInteger("2208988800");
-		
+
 	/**
 	 * The Java representation of an OSC timestamp with the semantics of "immediately"
-	 */		
+	 */
 	public static final Date TIMESTAMP_IMMEDIATE = new Date(0);
 
 	protected Date timestamp;
@@ -48,7 +48,7 @@ public class OSCBundle extends OSCPacket {
 	public OSCBundle() {
 		this(null, TIMESTAMP_IMMEDIATE);
 	}
-	
+
 	/**
 	 * Create an OSCBundle with the specified timestamp.
 	 * @param timestamp the time to execute the bundle
@@ -82,7 +82,7 @@ public class OSCBundle extends OSCPacket {
 		this.timestamp = timestamp;
 		init();
 	}
-	
+
 	/**
 	 * Return the time the bundle will execute.
 	 * @return a Date
@@ -90,7 +90,7 @@ public class OSCBundle extends OSCPacket {
 	public Date getTimestamp() {
 		return timestamp;
 	}
-	
+
 	/**
 	 * Set the time the bundle will execute.
 	 * @param timestamp Date
@@ -98,7 +98,7 @@ public class OSCBundle extends OSCPacket {
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
-	
+
 	/**
 	 * Add a packet to the list of packets in this bundle.
 	 * @param packet OSCMessage or OSCBundle
@@ -106,7 +106,7 @@ public class OSCBundle extends OSCPacket {
 	public void addPacket(OSCPacket packet) {
 		packets.add(packet);
 	}
-	
+
 	/**
 	 * Get the packets contained in this bundle.
 	 * @return an array of packets
@@ -126,13 +126,13 @@ public class OSCBundle extends OSCPacket {
 			stream.write((int) 1);
 			return;
 		}
-		
+
 		long millisecs = timestamp.getTime();
 		long secsSince1970 = (long) (millisecs / 1000);
 		long secs = secsSince1970 + SECONDS_FROM_1900_to_1970.longValue();
 			// the next line was cribbed from jakarta commons-net's NTP TimeStamp code
 		long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
-		
+
 		stream.write((int) secs);
 		stream.write((int) fraction);
 	}

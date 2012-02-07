@@ -7,7 +7,7 @@
  *
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
- * 
+ *
  * See license.txt (or license.rtf) for license information.
  */
 package com.illposed.osc.ui;
@@ -20,7 +20,7 @@ public class Main extends JFrame {
 
 	private Font font = new Font("serif", Font.ITALIC + Font.BOLD, 36);
 	private OscUI myUi;
-	
+
 	public void addOscUI() {
 		myUi = new OscUI(this);
 		setBounds(10, 10, 500, 350);

@@ -46,15 +46,15 @@ public abstract class OSCPacket {
 	 * @return byte[]
 	 */
 	public byte[] getByteArray() {
-		if (!isByteArrayComputed) 
+		if (!isByteArrayComputed)
 			computeByteArray();
 		return byteArray;
 	}
 
 	/**
-	 * Run any post construction initialization. (By default, do nothing.) 
-	 */ 
+	 * Run any post construction initialization. (By default, do nothing.)
+	 */
 	protected void init() {
-		
+
 	}
 }

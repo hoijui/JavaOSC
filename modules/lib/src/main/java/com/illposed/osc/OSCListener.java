@@ -14,7 +14,7 @@ import java.util.Date;
  * @version 1.0
  */
 public interface OSCListener {
-	
+
 	/**
 	 * Accept an incoming OSCMessage
 	 * @param time     The time this message is to be executed. null means execute now

@@ -14,19 +14,19 @@ import java.util.Hashtable;
  *
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
- * 
+ *
  * See license.txt (or license.rtf) for license information.
- * 
+ *
  * Dispatches OSCMessages to registered listeners.
- * 
+ *
  */
 
 public class OSCPacketDispatcher {
 	// use Hashtable for JDK1.1 compatability
 	private Hashtable addressToClassTable = new Hashtable();
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public OSCPacketDispatcher() {
 		super();
@@ -35,21 +35,21 @@ public class OSCPacketDispatcher {
 	public void addListener(String address, OSCListener listener) {
 		addressToClassTable.put(address, listener);
 	}
-	
+
 	public void dispatchPacket(OSCPacket packet) {
 		if (packet instanceof OSCBundle)
 			dispatchBundle((OSCBundle) packet);
 		else
 			dispatchMessage((OSCMessage) packet);
 	}
-	
+
 	public void dispatchPacket(OSCPacket packet, Date timestamp) {
 		if (packet instanceof OSCBundle)
 			dispatchBundle((OSCBundle) packet);
 		else
 			dispatchMessage((OSCMessage) packet, timestamp);
 	}
-	
+
 	private void dispatchBundle(OSCBundle bundle) {
 		Date timestamp = bundle.getTimestamp();
 		OSCPacket[] packets = bundle.getPackets();
@@ -57,11 +57,11 @@ public class OSCPacketDispatcher {
 			dispatchPacket(packets[i], timestamp);
 		}
 	}
-	
+
 	private void dispatchMessage(OSCMessage message) {
 		dispatchMessage(message, null);
 	}
-	
+
 	private void dispatchMessage(OSCMessage message, Date time) {
 		Enumeration keys = addressToClassTable.keys();
 		while (keys.hasMoreElements()) {

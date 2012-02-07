@@ -10,7 +10,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  * <p>
  * An example based on com.illposed.osc.test.OSCPortTest::testReceiving() :
  * <pre>
- 
+
 	receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
 	OSCListener listener = new OSCListener() {
 		public void acceptMessage(java.util.Date time, OSCMessage message) {
@@ -21,7 +21,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 	receiver.startListening();
 
  * </pre>
- * <p>		
+ * <p>
  * Then, using a program such as SuperCollider or sendOSC, send a message
  * to this computer, port 57110 (defaultSCOSCPort), with the address /message/receiving
  * <p>
@@ -39,7 +39,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	protected boolean isListening;
 	protected OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 	protected OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
-	
+
 	/**
 	 * Create an OSCPort that listens on the specified port.
 	 * @param port UDP port to listen on.
@@ -69,7 +69,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Start listening for incoming OSCPackets
 	 */
@@ -78,21 +78,21 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		Thread thread = new Thread(this);
 		thread.start();
 	}
-	
+
 	/**
 	 * Stop listening for incoming OSCPackets
 	 */
 	public void stopListening() {
 		isListening = false;
 	}
-	
+
 	/**
 	 * Am I listening for packets?
 	 */
 	public boolean isListening() {
 		return isListening;
 	}
-	
+
 	/**
 	 * Register the listener for incoming OSCPackets addressed to an Address
 	 * @param anAddress  the address to listen for
@@ -101,7 +101,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void addListener(String anAddress, OSCListener listener) {
 		dispatcher.addListener(anAddress, listener);
 	}
-	
+
 	/**
 	 * Close the socket and free-up resources. It's recommended that clients call
 	 * this when they are done with the port.
