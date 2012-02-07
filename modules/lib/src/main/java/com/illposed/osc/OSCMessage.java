@@ -102,7 +102,7 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
- 	 * Convert the arguments into a byte array. Used internally.
+	 * Convert the arguments into a byte array. Used internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
