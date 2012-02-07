@@ -105,7 +105,6 @@
 
 	<build>
 		<defaultGoal>package</defaultGoal>
-		<sourceDirectory>src</sourceDirectory>
 
 		<plugins>
 			<plugin>
