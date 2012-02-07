@@ -11,14 +11,13 @@
 		<project.build.resourceEncoding>${project.build.encoding}</project.build.resourceEncoding>
 
 		<project.packageName>com.illposed.osc</project.packageName>
-		<project.mainClass>javaosc</project.mainClass>
 	</properties>
 
 	<groupId>com.illposed.osc</groupId>
-	<artifactId>javaosc</artifactId>
+	<artifactId>javaosc-parent</artifactId>
 	<version>0.1-SNAPSHOT</version>
 
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<organization>
 		<name>Illposed</name>
@@ -31,6 +30,11 @@
 		<maven>2.1</maven>
 	</prerequisites>
 	<inceptionYear>2005</inceptionYear>
+
+	<modules>
+		<module>modules/lib</module>
+		<module>modules/ui</module>
+	</modules>
 
 	<licenses>
 		<license>
@@ -104,8 +108,6 @@
 	</reporting>
 
 	<build>
-		<defaultGoal>package</defaultGoal>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -127,56 +129,8 @@
 					<encoding>${project.build.resourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
-			<!--
-				Modifies the jars manifest file.
-				Here we add the Main-Class attribute, for example.
-			-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>dependency</classpathPrefix>
-							<packageName>${project.packageName}</packageName>
-							<mainClass>${project.mainClass}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<!--
-				Here we include the dependencies in the generated jar
-				during the package phase.
-			-->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>1.5</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 
 
 	<profiles>
@@ -226,7 +180,6 @@
 						<artifactId>apache-rat-plugin</artifactId>
 						<version>0.8</version>
 					</plugin>-->
-
 				</plugins>
 			</reporting>
 		</profile>

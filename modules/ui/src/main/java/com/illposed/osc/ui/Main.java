@@ -10,13 +10,13 @@
  * 
  * See license.txt (or license.rtf) for license information.
  */
+package com.illposed.osc.ui;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import com.illposed.osc.ui.OscUI;
-
-public class javaosc extends JFrame {
+public class Main extends JFrame {
 
 	private Font font = new Font("serif", Font.ITALIC + Font.BOLD, 36);
 	private OscUI myUi;
@@ -27,7 +27,7 @@ public class javaosc extends JFrame {
 		setContentPane(myUi);
 	}
 
-	public javaosc() {
+	public Main() {
 		super("OSC");
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -42,7 +42,7 @@ public class javaosc extends JFrame {
 
 
 	public static void main(String args[]) {
-		new javaosc();
+		new Main();
 	}
 
 }
