@@ -1,7 +1,7 @@
 /* $Id$
  * Created on 28.10.2003
  */
-package com.illposed.osc.test;
+package com.illposed.osc;
 
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.illposed.osc.test;
+package com.illposed.osc;
 
 /**
  * JavaOSCRunnerUtility is a simpler utility class to run just a specific

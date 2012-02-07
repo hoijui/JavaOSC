@@ -8,7 +8,7 @@
  * http://www.emergent.de/Goodies/
  */
 
-package com.illposed.osc.test;
+package com.illposed.osc;
 
 import com.illposed.osc.utility.*;
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2001 Illposed Software. All rights reserved.
 //
 
-package com.illposed.osc.test;
+package com.illposed.osc;
 
 import java.util.Date;
 

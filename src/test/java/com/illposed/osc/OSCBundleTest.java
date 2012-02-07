@@ -1,4 +1,4 @@
-package com.illposed.osc.test;
+package com.illposed.osc;
 
 import java.math.BigInteger;
 import java.util.Date;
