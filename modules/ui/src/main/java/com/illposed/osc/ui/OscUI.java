@@ -40,7 +40,7 @@ public class OscUI extends JPanel {
 	// declare some variables
 	protected JFrame parent;
 	protected JTextField addressWidget;
-	protected JTextField portWidget;
+	protected JLabel portWidget;
 	protected JTextField textBox;
 	protected JTextField textBox2;
 	protected JTextField textBox3;
@@ -104,8 +104,7 @@ public class OscUI extends JPanel {
 		// variable portWidget holds an instance of JLabel with the OSCPortOut
 		// as the text it looks like OSCPortOut has a method to get the default
 		// SuperCollider port
-		JLabel portWidget =
-			new JLabel(Integer.toString(OSCPort.defaultSCOSCPort()));
+		portWidget = new JLabel(Integer.toString(OSCPort.defaultSCOSCPort()));
 
 		portWidget.setForeground(new Color(255, 255, 255));
 		JLabel portLabel = new JLabel("Port");
@@ -251,9 +250,9 @@ public class OscUI extends JPanel {
 		slider.addChangeListener(new ChangeListener() {
 
 			public void stateChanged(ChangeEvent e) {
-				JSlider slider = (JSlider) e.getSource();
-				if (slider.getValueIsAdjusting()) {
-					float freq = (float) slider.getValue();
+				JSlider mySlider = (JSlider) e.getSource();
+				if (mySlider.getValueIsAdjusting()) {
+					float freq = (float) mySlider.getValue();
 					freq = (freq / 10000) * (freq / 10000);
 					freq = freq * 10000;
 					freq = freq + 20;
@@ -341,9 +340,9 @@ public class OscUI extends JPanel {
 		// add the action for the slider
 		slider2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				JSlider slider2 = (JSlider) e.getSource();
-				if (slider2.getValueIsAdjusting()) {
-					float freq = (float) slider2.getValue();
+				JSlider mySlider2 = (JSlider) e.getSource();
+				if (mySlider2.getValueIsAdjusting()) {
+					float freq = (float) mySlider2.getValue();
 					freq = (freq / 10000) * (freq / 10000);
 					freq = freq * 10000;
 					freq = freq + 20;
@@ -425,11 +424,11 @@ public class OscUI extends JPanel {
 
 			public void stateChanged(ChangeEvent e) {
 				//  JSlider source = (JSlider) e.getSource();
-				JSlider slider3 = (JSlider) e.getSource();
+				JSlider mySlider3 = (JSlider) e.getSource();
 				//if (source.getValueIsAdjusting()) {
-				if (slider3.getValueIsAdjusting()) {
+				if (mySlider3.getValueIsAdjusting()) {
 					// int freq = (int)source.getValue();
-					float freq = (float) slider3.getValue();
+					float freq = (float) mySlider3.getValue();
 					freq = (freq / 10000) * (freq / 10000);
 					freq = freq * 10000;
 					freq = freq + 20;
