@@ -3,11 +3,13 @@ package com.illposed.osc.utility;
 import java.math.BigInteger;
 import java.util.Date;
 
-import com.illposed.osc.*;
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 
 /**
- * Utility class to convert a byte array conforming to the OSC byte stream format
- * into Java objects.
+ * Utility class to convert a byte array conforming to the OSC byte stream
+ * format into Java objects.
  * <p>
  * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
  * All rights reserved.
@@ -24,24 +26,27 @@ public class OSCByteArrayToJavaConverter {
 	int streamPosition;
 
 	/**
-	 * Create a helper object for converting from a byte array to an OSCPacket object.
+	 * Creates a helper object for converting from a byte array to an OSCPacket
+	 * object.
 	 */
 	public OSCByteArrayToJavaConverter() {
 		super();
 	}
 
 	/**
-	 * Convert a byte array into an OSCPacket (either an OSCMessage or OSCBundle).
+	 * Converts a byte array into an OSCPacket (either an OSCMessage or
+	 * OSCBundle).
 	 * @return an OSCPacket
 	 */
 	public OSCPacket convert(byte[] byteArray, int bytesLength) {
-		bytes = byteArray;
+		this.bytes = byteArray;
 		this.bytesLength = bytesLength;
-		streamPosition = 0;
-		if (isBundle())
+		this.streamPosition = 0;
+		if (isBundle()) {
 			return convertBundle();
-		else
+		} else {
 			return convertMessage();
+		}
 	}
 
 	/**
@@ -49,13 +54,14 @@ public class OSCByteArrayToJavaConverter {
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle() {
-			// only need the first 7 to check if it is a bundle
+		// only need the first 7 to check if it is a bundle
 		String bytesAsString = new String(bytes, 0, 7);
 		return bytesAsString.startsWith("#bundle");
 	}
 
 	/**
-	 * Convert the byte array a bundle. Assumes that the byte array is a bundle.
+	 * Convert the byte array a bundle.
+	 * Assumes that the byte array is a bundle.
 	 * @return a bundle containing the data specified in the byte stream
 	 */
 	private OSCBundle convertBundle() {
@@ -63,13 +69,15 @@ public class OSCByteArrayToJavaConverter {
 		streamPosition = 8;
 		Date timestamp = readTimeTag();
 		OSCBundle bundle = new OSCBundle(timestamp);
-		OSCByteArrayToJavaConverter myConverter = new OSCByteArrayToJavaConverter();
+		OSCByteArrayToJavaConverter myConverter
+				= new OSCByteArrayToJavaConverter();
 		while (streamPosition < bytesLength) {
 			// recursively read through the stream and convert packets you find
 			int packetLength = ((Integer) readInteger()).intValue();
 			byte[] packetBytes = new byte[packetLength];
-			for (int i = 0; i < packetLength; i++)
+			for (int i = 0; i < packetLength; i++) {
 				packetBytes[i] = bytes[streamPosition++];
+			}
 			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
 			bundle.addPacket(packet);
 		}
@@ -77,7 +85,8 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Convert the byte array a simple message. Assumes that the byte array is a message.
+	 * Convert the byte array a simple message.
+	 * Assumes that the byte array is a message.
 	 * @return a message containing the data specified in the byte stream
 	 */
 	private OSCMessage convertMessage() {
@@ -94,10 +103,12 @@ public class OSCByteArrayToJavaConverter {
 				// we're looking at an array -- read it in
 				message.addArgument(readArray(types, ++i));
 				// then increment i to the end of the array
-				while (']' != types[i])
+				while (']' != types[i]) {
 					i++;
-			} else
+				}
+			} else {
 				message.addArgument(readArgument(types[i]));
+			}
 		}
 		return message;
 	}
@@ -109,8 +120,9 @@ public class OSCByteArrayToJavaConverter {
 	private String readString() {
 		int strLen = lengthOfCurrentString();
 		char[] stringChars = new char[strLen];
-		for (int i = 0; i < strLen; i++)
+		for (int i = 0; i < strLen; i++) {
 			stringChars[i] = (char) bytes[streamPosition++];
+		}
 		moveToFourByteBoundry();
 		return new String(stringChars);
 	}
@@ -120,9 +132,10 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a char array with the types of the arguments
 	 */
 	private char[] readTypes() {
-		// the next byte should be a ","
-		if (bytes[streamPosition] != 0x2C)
+		// the next byte should be a ','
+		if (bytes[streamPosition] != 0x2C) {
 			return null;
+		}
 		streamPosition++;
 		// find out how long the list of types is
 		int typesLen = lengthOfCurrentString();
@@ -140,11 +153,11 @@ public class OSCByteArrayToJavaConverter {
 
 	/**
 	 * Read an object of the type specified by the type char.
-	 * @param c type of argument to read
+	 * @param type type of argument to read
 	 * @return a Java representation of the argument
 	 */
-	private Object readArgument(char c) {
-		switch (c) {
+	private Object readArgument(char type) {
+		switch (type) {
 			case 'i' :
 				return readInteger();
 			case 'h' :
@@ -161,14 +174,14 @@ public class OSCByteArrayToJavaConverter {
 				return Boolean.TRUE;
 			case 'F' :
 				return Boolean.FALSE;
+			default:
+				return null;
 		}
-
-		return null;
 	}
 
 	/**
 	 * Read a char from the byte stream.
-	 * @return a Character
+	 * @return a character
 	 */
 	private Object readChar() {
 		return new Character((char) bytes[streamPosition++]);
@@ -202,7 +215,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read a Big Integer (64 bit int) from the byte stream.
+	 * Read a Big Integer (64 bit integer) from the byte stream.
 	 * @return a BigInteger
 	 */
 	private Object readBigInteger() {
@@ -219,7 +232,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read an Integer (32 bit int) from the byte stream.
+	 * Read an Integer (32 bit integer) from the byte stream.
 	 * @return an Integer
 	 */
 	private Object readInteger() {
@@ -233,9 +246,10 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read the time tag and convert it to a Java Date object. A timestamp is a 64 bit number
-	 * representing the time in NTP format. The first 32 bits are seconds since 1900, the
-	 * second 32 bits are fractions of a second.
+	 * Read the time tag and convert it to a Java Date object.
+	 * A timestamp is a 64 bit number representing the time in NTP format.
+	 * The first 32 bits are seconds since 1900, the second 32 bits are
+	 * fractions of a second.
 	 * @return a Date
 	 */
 	private Date readTimeTag() {
@@ -250,29 +264,41 @@ public class OSCByteArrayToJavaConverter {
 		boolean isImmediate = true;
 		for (int i = 4; i < 8; i++) {
 			secondBytes[i] = bytes[streamPosition++];
-			if (secondBytes[i] > 0)
+			if (secondBytes[i] > 0) {
 				isImmediate = false;
+			}
 		}
 		for (int i = 4; i < 8; i++) {
 			fractionBytes[i] = bytes[streamPosition++];
 			if (i < 7) {
-				if (fractionBytes[i] > 0)
+				if (fractionBytes[i] > 0) {
 					isImmediate = false;
+				}
 			} else {
-				if (fractionBytes[i] > 1)
+				if (fractionBytes[i] > 1) {
 					isImmediate = false;
+				}
 			}
 		}
 
-		if (isImmediate) return OSCBundle.TIMESTAMP_IMMEDIATE;
+		if (isImmediate) {
+			return OSCBundle.TIMESTAMP_IMMEDIATE;
+		}
 
 		BigInteger secsSince1900 = new BigInteger(secondBytes);
-		long secsSince1970 =  secsSince1900.longValue() - OSCBundle.SECONDS_FROM_1900_to_1970.longValue();
-		if (secsSince1970 < 0) secsSince1970 = 0; // no point maintaining times in the distant past
+		long secsSince1970 =  secsSince1900.longValue()
+				- OSCBundle.SECONDS_FROM_1900_TO_1970.longValue();
+
+		// no point maintaining times in the distant past
+		if (secsSince1970 < 0) {
+			secsSince1970 = 0;
+		}
 		long fraction = (new BigInteger(fractionBytes).longValue());
-			// the next line was cribbed from jakarta commons-net's NTP TimeStamp code
+
+		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
 		fraction = (fraction * 1000) / 0x100000000L;
-			// I don't where, but I'm losing 1ms somewhere...
+
+		// I do not know where, but I'm losing 1ms somewhere...
 		fraction = (fraction > 0) ? fraction + 1 : 0;
 		long millisecs = (secsSince1970 * 1000) + fraction;
 		return new Date(millisecs);
@@ -286,8 +312,9 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object[] readArray(char[] types, int i) {
 		int arrayLen = 0;
-		while (types[i + arrayLen] != ']')
+		while (types[i + arrayLen] != ']') {
 			arrayLen++;
+		}
 		Object[] array = new Object[arrayLen];
 		for (int j = 0; j < arrayLen; j++) {
 			array[j] = readArgument(types[i + j]);
@@ -300,13 +327,14 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private int lengthOfCurrentString() {
 		int i = 0;
-		while (bytes[streamPosition + i] != 0)
+		while (bytes[streamPosition + i] != 0) {
 			i++;
+		}
 		return i;
 	}
 
 	/**
-	 * Move to the next byte with an index in the byte array divisable by four.
+	 * Move to the next byte with an index in the byte array dividable by four.
 	 */
 	private void moveToFourByteBoundry() {
 		// If i'm already at a 4 byte boundry, I need to move to the next one

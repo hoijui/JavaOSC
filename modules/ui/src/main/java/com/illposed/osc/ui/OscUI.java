@@ -7,17 +7,32 @@
 //
 //  Modified by JT March 2003
 
-// include this
+// this is the package we are in
 package com.illposed.osc.ui;
 
 // import these packages as well
-import com.illposed.osc.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
 import java.net.InetAddress;
 import java.util.Date;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCPort;
+import com.illposed.osc.OSCPortOut;
 
 // OscUI is a subClass of JPanel
 public class OscUI extends JPanel {
@@ -86,8 +101,9 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		// variable portWidget holds an instance of JLabel with the OSCPortOut as the text
-		// it looks like OSCPortOut has a method to get the default SuperCollider port
+		// variable portWidget holds an instance of JLabel with the OSCPortOut
+		// as the text it looks like OSCPortOut has a method to get the default
+		// SuperCollider port
 		JLabel portWidget =
 			new JLabel(Integer.toString(OSCPort.defaultSCOSCPort()));
 
@@ -179,12 +195,14 @@ public class OscUI extends JPanel {
 		// the variable firstSynthPanel holds an instance of Jpanel
 		// created by the makeNewJPanel method
 		JPanel firstSynthPanel = makeNewJPanel();
-		// the variable firstSynthButytonOn holds an instance of JButton labeled "On"
+		// the variable firstSynthButytonOn holds an instance of JButton labeled
+		// "On"
 
 		firstSynthPanel.setBackground(new Color(13, 23, 0));
 		firstSynthButtonOn = new JButton("On");
 		//firstSynthButtonOn.setBackground(new Color(123, 150, 123));
-		// the variable firstSynthButtonOff holds an instance of JButton labeled "off"
+		// the variable firstSynthButtonOff holds an instance of JButton labeled
+		// "Off"
 		firstSynthButtonOff = new JButton("Off");
 		firstSynthButtonOff.setEnabled(false);
 		// the variable slider holds an instance of JSlider which is
@@ -245,16 +263,16 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		// when the value in the textbox is changed, doSendSlider method is invoked
-		// send the argument for freq and node
+		// when the value in the textbox is changed, doSendSlider method is
+		// invoked; send the argument for freq and node
 		textBox.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				JTextField field = (JTextField) e.getSource();
 				float freq = (Float.valueOf(field.getText())).floatValue();
-				if (freq>10020) { freq=10020; doPrintValue(freq); }
-				if (freq<20) { freq=20; doPrintValue(freq); }
-				slider.setValue((int)(10000*Math.sqrt(((freq-20)/10000))));
+				if (freq > 10020) { freq = 10020; doPrintValue(freq); }
+				if (freq < 20) { freq = 20; doPrintValue(freq); }
+				slider.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
 				doSendSlider(freq, 1000);
 			}
 		});
@@ -336,16 +354,16 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		// when the value in the textbox is changed, doSendSlider method is invoked
-		// send the argument for freq and node
+		// when the value in the textbox is changed, doSendSlider method is
+		// invoked; send the argument for freq and node
 		textBox2.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				JTextField field = (JTextField) e.getSource();
 				float freq = (Float.valueOf(field.getText())).floatValue();
-				if (freq>10020) { freq=10020; doPrintValue2(freq); }
-				if (freq<20) { freq=20; doPrintValue2(freq); }
-				slider2.setValue((int)(10000*Math.sqrt(((freq-20)/10000))));
+				if (freq > 10020) { freq = 10020; doPrintValue2(freq); }
+				if (freq < 20) { freq = 20; doPrintValue2(freq); }
+				slider2.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
 				doSendSlider(freq, 1001);
 			}
 		});
@@ -423,16 +441,16 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		// when the value in the textbox is changed, doSendSlider method is invoked
-		// send the argument for freq and node
+		// when the value in the textbox is changed, doSendSlider method is
+		// invoked; send the argument for freq and node
 		textBox3.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				JTextField field = (JTextField) e.getSource();
 				float freq = (Float.valueOf(field.getText())).floatValue();
-				if (freq>10020) { freq=10020; doPrintValue3(freq); }
-				if (freq<20) { freq=20; doPrintValue3(freq); }
-				slider3.setValue((int)(10000*Math.sqrt(((freq-20)/10000))));
+				if (freq > 10020) { freq = 10020; doPrintValue3(freq); }
+				if (freq < 20) { freq = 20; doPrintValue3(freq); }
+				slider3.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
 				doSendSlider(freq, 1002);
 			}
 		});
@@ -472,12 +490,13 @@ public class OscUI extends JPanel {
 	// actions
 	// create a method for the addressChanged action (Set Address)
 	public void addressChanged() {
-		// the variable OSCPortOut tries to get an instance of OSCPortOut at the address
-		// indicated by the addressWidget
+		// the variable OSCPortOut tries to get an instance of OSCPortOut
+		// at the address indicated by the addressWidget
 		try {
 			oscPort =
 				new OSCPortOut(InetAddress.getByName(addressWidget.getText()));
-			// if the oscPort variable fails to be instantiated then sent the error message
+			// if the oscPort variable fails to be instantiated then sent
+			// the error message
 		} catch (Exception e) {
 			showError("Couldn't set address");
 		}
@@ -485,7 +504,8 @@ public class OscUI extends JPanel {
 
 	// create a method for the doSend action (Send)
 	public void doSendOn(float freq, int node) {
-		// if "Set Address" has not been performed then give the message to set it first
+		// if "Set Address" has not been performed then give the message to set
+		// it first
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
@@ -517,13 +537,14 @@ public class OscUI extends JPanel {
 
 	// create a method for the doSend1 action (Send)
 	public void doSendOff(int node) {
-		// if "Set Address" has not been performed then give the message to set it first
+		// if "Set Address" has not been performed then give the message to set
+		// it first
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
 
 		// send an OSC message to free the node 1000
-		Object[] args = { new Integer(node)};
+		Object[] args = {new Integer(node)};
 		OSCMessage msg = new OSCMessage("/n_free", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
@@ -555,13 +576,14 @@ public class OscUI extends JPanel {
 
 	// create a method for the doSend3 action (Send)
 	public void doSendSlider(float freq, int node) {
-		// if "Set Address" has not been performed then give the message to set it first
+		// if "Set Address" has not been performed then give the message to set
+		// it first
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
 
 		// send an OSC message to set the node 1000
-		Object[] args = { new Integer(node), "freq", new Float(freq)};
+		Object[] args = {new Integer(node), "freq", new Float(freq)};
 		OSCMessage msg = new OSCMessage("/n_set", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
@@ -578,21 +600,21 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		Object[] args1 = { new Integer(node1)};
+		Object[] args1 = {new Integer(node1)};
 		OSCMessage msg1 = new OSCMessage("/n_free", args1);
 
-		Object[] args2 = { new Integer(node2)};
+		Object[] args2 = {new Integer(node2)};
 		OSCMessage msg2 = new OSCMessage("/n_free", args2);
 
-		Object[] args3 = { new Integer(node3)};
+		Object[] args3 = {new Integer(node3)};
 		OSCMessage msg3 = new OSCMessage("/n_free", args3);
 
 		// create a timeStamped bundle of the messages
-		OSCPacket[] packets = { msg1, msg2, msg3 };
+		OSCPacket[] packets = {msg1, msg2, msg3 };
 		Date newDate = new Date();
 		long time = newDate.getTime();
 		Integer delayTime = Integer.valueOf(textBox4.getText());
-		time = time + (delayTime.longValue());
+		time = time + delayTime.longValue();
 		newDate.setTime(time);
 
 		OSCBundle bundle = new OSCBundle(packets, newDate);
@@ -610,13 +632,16 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		Object[] args1 = { "javaosc-example", new Integer(node1), new Integer(1), new Integer(0)};
+		Object[] args1 = {"javaosc-example", new Integer(node1),
+				new Integer(1), new Integer(0)};
 		OSCMessage msg1 = new OSCMessage("/s_new", args1);
 
-		Object[] args2 = { "javaosc-example", new Integer(node2), new Integer(1), new Integer(0)};
+		Object[] args2 = {"javaosc-example", new Integer(node2),
+				new Integer(1), new Integer(0)};
 		OSCMessage msg2 = new OSCMessage("/s_new", args2);
 
-		Object[] args3 = { "javaosc-example", new Integer(node3), new Integer(1), new Integer(0)};
+		Object[] args3 = {"javaosc-example", new Integer(node3),
+				new Integer(1), new Integer(0)};
 		OSCMessage msg3 = new OSCMessage("/s_new", args3);
 
 		try {

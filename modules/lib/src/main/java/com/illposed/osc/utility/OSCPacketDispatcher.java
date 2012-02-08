@@ -3,11 +3,14 @@
  */
 package com.illposed.osc.utility;
 
-import com.illposed.osc.*;
-
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCListener;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 
 /**
  * @author cramakrishnan
@@ -37,17 +40,19 @@ public class OSCPacketDispatcher {
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
-		if (packet instanceof OSCBundle)
+		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
-		else
+		} else {
 			dispatchMessage((OSCMessage) packet);
+		}
 	}
 
 	public void dispatchPacket(OSCPacket packet, Date timestamp) {
-		if (packet instanceof OSCBundle)
+		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
-		else
+		} else {
 			dispatchMessage((OSCMessage) packet, timestamp);
+		}
 	}
 
 	private void dispatchBundle(OSCBundle bundle) {
@@ -70,7 +75,8 @@ public class OSCPacketDispatcher {
 			// only works in JDK 1.4, so don't support it right now
 			// if (key.matches(message.getAddress())) {
 			if (key.equals(message.getAddress())) {
-				OSCListener listener = (OSCListener) addressToClassTable.get(key);
+				OSCListener listener
+						= (OSCListener) addressToClassTable.get(key);
 				listener.acceptMessage(time, message);
 			}
 		}

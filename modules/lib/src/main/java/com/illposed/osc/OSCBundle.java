@@ -3,17 +3,19 @@ package com.illposed.osc;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Vector;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
- * A bundle represents a collection of osc packets (either messages or other bundles) and
- * has a timetag which can be used by a scheduler to execute a bundle in the future instead
- * of immediately (OSCMessages are executed immediately). Bundles should be used if you want
- * to send multiple messages to be executed atomically together, or you want to schedule one
- * or more messages to be executed in the future.
+ * A bundle represents a collection of OSC packets (either messages or other
+ * bundles) and has a time-tag which can be used by a scheduler to execute
+ * a bundle in the future instead of immediately (OSCMessages are executed
+ * immediately).
+ *
+ * Bundles should be used if you want to send multiple messages to be executed
+ * atomically together, or you want to schedule one or more messages to be
+ * executed in the future.
  * <p>
  * Internally, I use Vector to maintain jdk1.1 compatability
  * <p>
@@ -30,11 +32,12 @@ public class OSCBundle extends OSCPacket {
 	/**
 	 * 2208988800 seconds -- includes 17 leap years
 	 */
-	public static final BigInteger SECONDS_FROM_1900_to_1970 =
+	public static final BigInteger SECONDS_FROM_1900_TO_1970 =
 		new BigInteger("2208988800");
 
 	/**
-	 * The Java representation of an OSC timestamp with the semantics of "immediately"
+	 * The Java representation of an OSC timestamp with the semantics of
+	 * "immediately".
 	 */
 	public static final Date TIMESTAMP_IMMEDIATE = new Date(0);
 
@@ -77,8 +80,9 @@ public class OSCBundle extends OSCPacket {
 			for (int i = 0; i < packets.length; i++) {
 				this.packets.add(packets[i]);
 			}
-		} else
+		} else {
 			this.packets = new Vector();
+		}
 		this.timestamp = timestamp;
 		init();
 	}
@@ -118,7 +122,8 @@ public class OSCBundle extends OSCPacket {
 	}
 
 	/**
-	 * Convert the timetag (a Java Date) into the OSC byte stream. Used Internally.
+	 * Convert the time-tag (a Java Date) into the OSC byte stream.
+	 * Used Internally.
 	 */
 	protected void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
 		if ((null == timestamp) || (timestamp == TIMESTAMP_IMMEDIATE)) {
@@ -129,8 +134,9 @@ public class OSCBundle extends OSCPacket {
 
 		long millisecs = timestamp.getTime();
 		long secsSince1970 = (long) (millisecs / 1000);
-		long secs = secsSince1970 + SECONDS_FROM_1900_to_1970.longValue();
-			// the next line was cribbed from jakarta commons-net's NTP TimeStamp code
+		long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970.longValue();
+
+		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
 		long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
 
 		stream.write((int) secs);
@@ -138,7 +144,8 @@ public class OSCBundle extends OSCPacket {
 	}
 
 	/**
-	 * Compute the OSC byte stream representation of the bundle. Used Internally.
+	 * Compute the OSC byte stream representation of the bundle.
+	 * Used Internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
 	protected void computeByteArray(OSCJavaToByteArrayConverter stream) {

@@ -1,16 +1,20 @@
 package com.illposed.osc;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
  * OSCPacket is the abstract superclass for the various
- * kinds of OSC Messages. The actual packets are:
+ * kinds of OSC Messages.
+ *
+ * The actual packets are:
  * <ul>
  * <li>OSCMessage &mdash; simple OSC messages
- * <li>OSCBundle &mdash; OSC messages with timestamps and/or made up of multiple messages
+ * <li>OSCBundle &mdash; OSC messages with timestamps and/or made up of multiple
+ *   messages
  * </ul>
- *<p>
- * This implementation is based on <a href="http://www.emergent.de/Goodies/">Markus Gaelli</a> and
+ * <p>
+ * This implementation is based on
+ * <a href="http://www.emergent.de/Goodies/">Markus Gaelli</a> and
  * Iannis Zannos' OSC implementation in Squeak Smalltalk.
  */
 public abstract class OSCPacket {
@@ -46,8 +50,9 @@ public abstract class OSCPacket {
 	 * @return byte[]
 	 */
 	public byte[] getByteArray() {
-		if (!isByteArrayComputed)
+		if (!isByteArrayComputed) {
 			computeByteArray();
+		}
 		return byteArray;
 	}
 

@@ -17,7 +17,8 @@ public interface OSCListener {
 
 	/**
 	 * Accept an incoming OSCMessage
-	 * @param time     The time this message is to be executed. null means execute now
+	 * @param time     The time this message is to be executed.
+	 *          <code>null</code> means execute now
 	 * @param message  The message to execute.
 	 */
 	public void acceptMessage(Date time, OSCMessage message);

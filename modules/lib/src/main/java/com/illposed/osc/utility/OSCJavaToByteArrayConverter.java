@@ -11,7 +11,8 @@ import java.util.Vector;
  * from Java types to their byte stream representations according to
  * the OSC spec.
  * <p>
- * The implementation is based on <a href=" http://www.emergent.de/">Markus Gaelli</a> and
+ * The implementation is based on
+ * <a href=" http://www.emergent.de/">Markus Gaelli</a> and
  * Iannis Zannos' OSC implementation in Squeak.
  * <p>
  * This version includes bug fixes and improvements from
@@ -32,7 +33,7 @@ public class OSCJavaToByteArrayConverter {
 	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	private byte[] intBytes = new byte[4];
 	private byte[] longintBytes = new byte[8];
-		// this should be long enough to accomodate any string
+	// this should be long enough to accomodate any string
 //	private char[] stringChars = new char[2048];
 //	private byte[] stringBytes = new byte[2048];
 
@@ -41,16 +42,17 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Line up the Big end of the bytes to a 4 byte boundry
+	 * Line up the Big end of the bytes to a 4 byte boundary.
 	 * @return byte[]
 	 * @param bytes byte[]
 	 */
 	private byte[] alignBigEndToFourByteBoundry(byte[] bytes) {
 		int mod = bytes.length % 4;
-		// if the remainder == 0 then return the bytes otherwise pad the bytes to
-		// lineup correctly
-		if (mod == 0)
+		// if the remainder == 0 then return the bytes otherwise pad the bytes
+		// to lineup correctly
+		if (mod == 0) {
 			return bytes;
+		}
 		int pad = 4 - mod;
 		byte[] newBytes = new byte[pad + bytes.length];
 //		for (int i = 0; i < pad; i++)
@@ -67,8 +69,9 @@ public class OSCJavaToByteArrayConverter {
 	public void appendNullCharToAlignStream() {
 		int mod = stream.size() % 4;
 		int pad = 4 - mod;
-		for (int i = 0; i < pad; i++)
+		for (int i = 0; i < pad; i++) {
 			stream.write(0);
+		}
 	}
 
 	/**
@@ -88,8 +91,8 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Write an int into the byte stream.
-	 * @param i int
+	 * Write an integer into the byte stream.
+	 * @param i integer
 	 */
 	public void write(int i) {
 		writeInteger32ToByteArray(i);
@@ -97,21 +100,21 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a float into the byte stream.
-	 * @param f java.lang.Float
+	 * @param f floating point number
 	 */
 	public void write(Float f) {
 		writeInteger32ToByteArray(Float.floatToIntBits(f.floatValue()));
 	}
 
 	/**
-	 * @param i java.lang.Integer
+	 * @param i integer
 	 */
 	public void write(Integer i) {
 		writeInteger32ToByteArray(i.intValue());
 	}
 
 	/**
-	 * @param i java.lang.Integer
+	 * @param i integer
 	 */
 	public void write(BigInteger i) {
 		writeInteger64ToByteArray(i.longValue());
@@ -119,7 +122,7 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a string into the byte stream.
-	 * @param aString java.lang.String
+	 * @param aString string
 	 */
 	public void write(String aString) {
 /*
@@ -146,12 +149,13 @@ public class OSCJavaToByteArrayConverter {
 		int pad = 4 - mod;
 
 		byte[] newBytes = new byte[pad + stringBytes.length];
-		System.arraycopy(stringBytes,0,newBytes,0,stringBytes.length);
+		System.arraycopy(stringBytes, 0, newBytes, 0, stringBytes.length);
 
 		try {
 			stream.write(newBytes);
 		} catch (IOException e) {
-			throw new RuntimeException("You're screwed: IOException writing to a ByteArrayOutputStream");
+			throw new RuntimeException("You're screwed:"
+					+ " IOException writing to a ByteArrayOutputStream", e);
 		}
 	}
 
@@ -165,12 +169,14 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write an object into the byte stream.
-	 * @param anObject one of Float, String, Integer, BigInteger, or array of these.
+	 * @param anObject one of Float, String, Integer, BigInteger, or array of
+	 *   these.
 	 */
 	public void write(Object anObject) {
 		// Can't do switch on class
-		if (null == anObject)
+		if (null == anObject) {
 			return;
+		}
 		if (anObject instanceof Object[]) {
 			Object[] theArray = (Object[]) anObject;
 			for(int i = 0; i < theArray.length; ++i) {
@@ -235,15 +241,17 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write the types for an array element in the arguments.
-	 * @param array java.lang.Object[]
+	 * @param array object[]
 	 */
 	public void writeTypesArray(Object[] array) {
-		// A big ol' case statement in a for loop -- what's polymorphism mean, again?
+		// A big ol' case statement in a for loop -- what's polymorphism mean,
+		// again?
 		// I really wish I could extend the base classes!
 
 		for (int i = 0; i < array.length; i++) {
-			if (null == array[i])
+			if (null == array[i]) {
 				continue;
+			}
 			// Create a way to deal with Boolean type objects
 			if (Boolean.TRUE.equals(array[i])) {
 				stream.write('T');
@@ -259,25 +267,28 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Write types for the arguments (use a vector for jdk1.1 compatibility, rather than an ArrayList).
+	 * Write types for the arguments (use a vector for jdk1.1 compatibility,
+	 * rather than an ArrayList).
 	 * @param vector  the arguments to an OSCMessage
 	 */
 	public void writeTypes(Vector vector) {
-		// A big ol' case statement in a for loop -- what's polymorphism mean, again?
+		// A big ol' case statement in a for loop -- what's polymorphism mean,
+		// again?
 		// I really wish I could extend the base classes!
 
 		Enumeration enm = vector.elements();
 		Object nextObject;
 		while (enm.hasMoreElements()) {
 			nextObject = enm.nextElement();
-			if (null == nextObject)
+			if (null == nextObject) {
 				continue;
+			}
 			// if the array at i is a type of array write a [
 			// This is used for nested arguments
 			if (nextObject.getClass().isArray()) {
 				stream.write('[');
-				// fill the [] with the SuperCollider types corresponding to the object
-				// (e.g., Object of type String needs -s).
+				// fill the [] with the SuperCollider types corresponding to
+				// the object (e.g., Object of type String needs -s).
 				writeTypesArray((Object[]) nextObject);
 				// close the array
 				stream.write(']');
@@ -292,8 +303,9 @@ public class OSCJavaToByteArrayConverter {
 				stream.write('F');
 				continue;
 			}
-			// go through the array and write the superCollider types as shown in the
-			// above method. the Classes derived here are used as the arg to the above method
+			// go through the array and write the superCollider types as shown
+			// in the above method.
+			// The classes derived here are used as the arg to the above method.
 			writeType(nextObject.getClass());
 		}
 		// align the stream with padded bytes
@@ -301,7 +313,8 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Write bytes to the stream, catching IOExceptions and converting them to RuntimeExceptions.
+	 * Write bytes to the stream, catching IOExceptions and converting them to
+	 * RuntimeExceptions.
 	 * @param bytes byte[]
 	 */
 	private void writeUnderHandler(byte[] bytes) {
@@ -309,49 +322,51 @@ public class OSCJavaToByteArrayConverter {
 		try {
 			stream.write(alignBigEndToFourByteBoundry(bytes));
 		} catch (IOException e) {
-			throw new RuntimeException("You're screwed: IOException writing to a ByteArrayOutputStream");
+			throw new RuntimeException("You're screwed:"
+					+ " IOException writing to a ByteArrayOutputStream");
 		}
 	}
 
 	/**
 	 * Write a 32 bit integer to the byte array without allocating memory.
-	 * @param value a 32 bit int.
+	 * @param value a 32 bit integer.
 	 */
 	private void writeInteger32ToByteArray(int value) {
 		//byte[] intBytes = new byte[4];
 		//I allocated the this buffer globally so the GC has less work
 
-		intBytes[3] = (byte)value; value>>>=8;
-		intBytes[2] = (byte)value; value>>>=8;
-		intBytes[1] = (byte)value; value>>>=8;
+		intBytes[3] = (byte)value; value >>>= 8;
+		intBytes[2] = (byte)value; value >>>= 8;
+		intBytes[1] = (byte)value; value >>>= 8;
 		intBytes[0] = (byte)value;
 
 		try {
 			stream.write(intBytes);
 		} catch (IOException e) {
-			throw new RuntimeException("You're screwed: IOException writing to a ByteArrayOutputStream");
+			throw new RuntimeException("You're screwed:"
+					+ " IOException writing to a ByteArrayOutputStream");
 		}
 	}
 
 	/**
 	 * Write a 64 bit integer to the byte array without allocating memory.
-	 * @param value a 64 bit int.
+	 * @param value a 64 bit integer.
 	 */
 	private void writeInteger64ToByteArray(long value) {
-		longintBytes[7] = (byte)value; value>>>=8;
-		longintBytes[6] = (byte)value; value>>>=8;
-		longintBytes[5] = (byte)value; value>>>=8;
-		longintBytes[4] = (byte)value; value>>>=8;
-		longintBytes[3] = (byte)value; value>>>=8;
-		longintBytes[2] = (byte)value; value>>>=8;
-		longintBytes[1] = (byte)value; value>>>=8;
+		longintBytes[7] = (byte)value; value >>>= 8;
+		longintBytes[6] = (byte)value; value >>>= 8;
+		longintBytes[5] = (byte)value; value >>>= 8;
+		longintBytes[4] = (byte)value; value >>>= 8;
+		longintBytes[3] = (byte)value; value >>>= 8;
+		longintBytes[2] = (byte)value; value >>>= 8;
+		longintBytes[1] = (byte)value; value >>>= 8;
 		longintBytes[0] = (byte)value;
 
 		try {
 			stream.write(longintBytes);
 		} catch (IOException e) {
-			throw new RuntimeException("You're screwed: IOException writing to a ByteArrayOutputStream");
+			throw new RuntimeException("You're screwed:"
+					+ " IOException writing to a ByteArrayOutputStream");
 		}
 	}
 }
-

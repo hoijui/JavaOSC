@@ -3,12 +3,13 @@ package com.illposed.osc;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
- * An simple (non-bundle) OSC message. An OSC message is made up of
- * an address (the receiver of the message) and arguments
- * (the content of the message).
+ * An simple (non-bundle) OSC message.
+ *
+ * An OSC message is made up of an address (the receiver of the message)
+ * and arguments (the content of the message).
  * <p>
  * Internally, I use Vector to maintain jdk1.1 compatability
  * <p>
@@ -27,7 +28,7 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Create an empty OSC Message.
-	 * In order to send this osc message, you need to set the address
+	 * In order to send this OSC message, you need to set the address
 	 * and, perhaps, some arguments.
 	 */
 	public OSCMessage() {
@@ -37,7 +38,7 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Create an OSCMessage with an address already initialized.
-	 * @param newAddress the recepient of this OSC message
+	 * @param newAddress the recipient of this OSC message
 	 */
 	public OSCMessage(String newAddress) {
 		this(newAddress, null);
@@ -45,7 +46,7 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param newAddress    the recepient of this OSC message
+	 * @param newAddress    the recipient of this OSC message
 	 * @param newArguments  the data sent to the receiver
 	 */
 	public OSCMessage(String newAddress, Object[] newArguments) {
@@ -56,8 +57,9 @@ public class OSCMessage extends OSCPacket {
 			for (int i = 0; i < newArguments.length; i++) {
 				arguments.add(newArguments[i]);
 			}
-		} else
+		} else {
 			arguments = new Vector();
+		}
 		init();
 	}
 
@@ -70,7 +72,7 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Set the address of this messsage.
+	 * Set the address of this message.
 	 * @param anAddress the receiver of the message
 	 */
 	public void setAddress(String anAddress) {
@@ -79,7 +81,8 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Add an argument to the list of arguments.
-	 * @param argument a Float, String, Integer, BigInteger, Boolean or array of these
+	 * @param argument a Float, String, Integer, BigInteger, Boolean or
+	 *          an array of these
 	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
@@ -105,10 +108,12 @@ public class OSCMessage extends OSCPacket {
 	 * Convert the arguments into a byte array. Used internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
+	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream)
+	{
 		stream.write(',');
-		if (null == arguments)
+		if (null == arguments) {
 			return;
+		}
 		stream.writeTypes(arguments);
 		Enumeration e = arguments.elements();
 		while (e.hasMoreElements()) {
@@ -125,5 +130,4 @@ public class OSCMessage extends OSCPacket {
 		computeArgumentsByteArray(stream);
 		byteArray = stream.toByteArray();
 	}
-
 }

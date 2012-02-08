@@ -12,13 +12,12 @@
  */
 package com.illposed.osc.ui;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 
 public class Main extends JFrame {
 
-	private Font font = new Font("serif", Font.ITALIC + Font.BOLD, 36);
 	private OscUI myUi;
 
 	public void addOscUI() {
@@ -41,8 +40,7 @@ public class Main extends JFrame {
 	}
 
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		new Main();
 	}
-
 }

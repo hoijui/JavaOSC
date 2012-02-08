@@ -1,11 +1,15 @@
 package com.illposed.osc;
 
-import java.net.*;
 import java.io.IOException;
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 /**
- * OSCPortOut is the class that sends OSC messages to a specific address and port.
+ * OSCPortOut is the class that sends OSC messages to a specific address and
+ * port.
  *
  * To send an OSC message, call send().
  * <p>
@@ -36,44 +40,43 @@ public class OSCPortOut extends OSCPort {
 	protected InetAddress address;
 
 	/**
-	 * Create an OSCPort that sends to newAddress, newPort
-	 * @param newAddress InetAddress
-	 * @param newPort int
+	 * Create an OSCPort that sends to address:port.
+	 * @param address the UDP address to send to
+	 * @param port the UDP port to send to
 	 */
-	public OSCPortOut(InetAddress newAddress, int newPort)
-		throws SocketException {
-		socket = new DatagramSocket();
-		address = newAddress;
-		port = newPort;
+	public OSCPortOut(InetAddress address, int port)
+		throws SocketException
+	{
+		this.socket = new DatagramSocket();
+		this.address = address;
+		this.port = port;
 	}
 
 	/**
-	 * Create an OSCPort that sends to newAddress, on the standard SuperCollider port
-	 * @param newAddress InetAddress
-	 *
-	 * Default the port to the standard one for SuperCollider
+	 * Create an OSCPort that sends to address, using the standard SuperCollider
+	 * port.
+	 * @param address the UDP address to send to
 	 */
 	public OSCPortOut(InetAddress newAddress) throws SocketException {
-		this(newAddress, defaultSCOSCPort);
+		this(newAddress, DEFAULT_SC_OSC_PORT);
 	}
 
 	/**
-	 * Create an OSCPort that sends to localhost, on the standard SuperCollider port
-	 * Default the address to localhost
-	 * Default the port to the standard one for SuperCollider
+	 * Create an OSCPort that sends to localhost, on the standard SuperCollider
+	 * port.
 	 */
 	public OSCPortOut() throws UnknownHostException, SocketException {
-		this(InetAddress.getLocalHost(), defaultSCOSCPort);
+		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
 	}
 
 	/**
-	 * Send an osc packet (message or bundle) to the receiver I am bound to.
-	 * @param aPacket OSCPacket
+	 * Send an OSC packet (message or bundle) to the receiver we are bound to.
+	 * @param aPacket the bundle or message to send
 	 */
 	public void send(OSCPacket aPacket) throws IOException {
 		byte[] byteArray = aPacket.getByteArray();
 		DatagramPacket packet =
-			new DatagramPacket(byteArray, byteArray.length, address, port);
+				new DatagramPacket(byteArray, byteArray.length, address, port);
 		socket.send(packet);
 	}
 }

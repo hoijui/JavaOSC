@@ -1,7 +1,10 @@
 package com.illposed.osc;
 
-import java.net.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.io.IOException;
+import java.net.SocketException;
+
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
 
@@ -11,7 +14,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  * An example based on com.illposed.osc.test.OSCPortTest::testReceiving() :
  * <pre>
 
-	receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+	receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
 	OSCListener listener = new OSCListener() {
 		public void acceptMessage(java.util.Date time, OSCMessage message) {
 			System.out.println("Message received!");
@@ -23,7 +26,8 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  * </pre>
  * <p>
  * Then, using a program such as SuperCollider or sendOSC, send a message
- * to this computer, port 57110 (defaultSCOSCPort), with the address /message/receiving
+ * to this computer, port 57110 (DEFAULT_SC_OSC_PORT), with the address
+ * /message/receiving
  * <p>
  * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
  * All rights reserved.
@@ -37,7 +41,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	// state for listening
 	protected boolean isListening;
-	protected OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
+	protected OSCByteArrayToJavaConverter converter
+			= new OSCByteArrayToJavaConverter();
 	protected OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
 
 	/**
@@ -51,18 +56,24 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Run the loop that listens for OSC on a socket until isListening becomes false.
+	 * Buffers were 1500 bytes in size, but were
+	 * increased to 1536, as this is a common MTU.
+	 */
+	private static final int BUFFER_SIZE = 1536;
+
+	/**
+	 * Run the loop that listens for OSC on a socket until
+	 * @{link #isListening()} becomes false.
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-			// buffers were 1500 bytes in size, but this was
-			// increased to 1536, as this is a common MTU
-		byte[] buffer = new byte[1536];
-		DatagramPacket packet = new DatagramPacket(buffer, 1536);
+		byte[] buffer = new byte[BUFFER_SIZE];
+		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
 		while (isListening) {
 			try {
 				socket.receive(packet);
-				OSCPacket oscPacket = converter.convert(buffer, packet.getLength());
+				OSCPacket oscPacket = converter.convert(buffer,
+						packet.getLength());
 				dispatcher.dispatchPacket(oscPacket);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -103,8 +114,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Close the socket and free-up resources. It's recommended that clients call
-	 * this when they are done with the port.
+	 * Close the socket and free-up resources.
+	 * It is recommended that clients call this when they are done with the
+	 * port.
 	 */
 	public void close() {
 		socket.close();
