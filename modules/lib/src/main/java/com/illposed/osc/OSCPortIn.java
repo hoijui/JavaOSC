@@ -112,13 +112,4 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void addListener(String anAddress, OSCListener listener) {
 		dispatcher.addListener(anAddress, listener);
 	}
-
-	/**
-	 * Close the socket and free-up resources.
-	 * It is recommended that clients call this when they are done with the
-	 * port.
-	 */
-	public void close() {
-		socket.close();
-	}
 }
