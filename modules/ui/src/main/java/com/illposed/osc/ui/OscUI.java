@@ -38,20 +38,20 @@ import com.illposed.osc.OSCPortOut;
 public class OscUI extends JPanel {
 
 	// declare some variables
-	protected JFrame parent;
-	protected JTextField addressWidget;
-	protected JLabel portWidget;
-	protected JTextField textBox;
-	protected JTextField textBox2;
-	protected JTextField textBox3;
-	protected JTextField textBox4 = new JTextField(String.valueOf(1000), 8);
-	protected JLabel delayLabel;
+	private JFrame parent;
+	private JTextField addressWidget;
+	private JLabel portWidget;
+	private JTextField textBox;
+	private JTextField textBox2;
+	private JTextField textBox3;
+	private JTextField textBox4 = new JTextField(String.valueOf(1000), 8);
+	private JLabel delayLabel;
 
-	protected JButton firstSynthButtonOn, secondSynthButtonOn, thirdSynthButtonOn;
-	protected JButton firstSynthButtonOff, secondSynthButtonOff, thirdSynthButtonOff;
-	protected JSlider slider, slider2, slider3;
+	private JButton firstSynthButtonOn, secondSynthButtonOn, thirdSynthButtonOn;
+	private JButton firstSynthButtonOff, secondSynthButtonOff, thirdSynthButtonOff;
+	private JSlider slider, slider2, slider3;
 
-	protected OSCPortOut oscPort;
+	private OSCPortOut oscPort;
 
 	// create a constructor
 	// OscUI takes an argument of myParent which is a JFrame
