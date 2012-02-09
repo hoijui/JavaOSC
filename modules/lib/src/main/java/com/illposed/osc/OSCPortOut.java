@@ -47,9 +47,8 @@ public class OSCPortOut extends OSCPort {
 	public OSCPortOut(InetAddress address, int port)
 		throws SocketException
 	{
-		this.socket = new DatagramSocket();
+		super(new DatagramSocket(), port);
 		this.address = address;
-		this.port = port;
 	}
 
 	/**
@@ -76,7 +75,7 @@ public class OSCPortOut extends OSCPort {
 	public void send(OSCPacket aPacket) throws IOException {
 		byte[] byteArray = aPacket.getByteArray();
 		DatagramPacket packet =
-				new DatagramPacket(byteArray, byteArray.length, address, port);
-		socket.send(packet);
+				new DatagramPacket(byteArray, byteArray.length, address, getPort());
+		getSocket().send(packet);
 	}
 }

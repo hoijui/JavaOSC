@@ -51,8 +51,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @throws SocketException
 	 */
 	public OSCPortIn(int port) throws SocketException {
-		socket = new DatagramSocket(port);
-		this.port = port;
+		super(new DatagramSocket(port), port);
 	}
 
 	/**
@@ -69,6 +68,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void run() {
 		byte[] buffer = new byte[BUFFER_SIZE];
 		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
+		DatagramSocket socket = getSocket();
 		while (isListening) {
 			try {
 				socket.receive(packet);

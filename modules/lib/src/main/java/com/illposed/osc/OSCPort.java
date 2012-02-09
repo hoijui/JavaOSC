@@ -16,11 +16,16 @@ import java.net.DatagramSocket;
  */
 public abstract class OSCPort {
 
-	protected DatagramSocket socket;
-	protected int port;
+	private DatagramSocket socket;
+	private int port;
 
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;
+
+	protected OSCPort(DatagramSocket socket, int port) {
+		this.socket = socket;
+		this.port = port;
+	}
 
 	/**
 	 * The port that the SuperCollider <b>synth</b> engine usually listens to
@@ -36,6 +41,22 @@ public abstract class OSCPort {
 	 */
 	public static int defaultSCLangOSCPort() {
 		return DEFAULT_SC_LANG_OSC_PORT;
+	}
+
+	/**
+	 * Returns the socket associated with this port.
+	 * @return this ports socket
+	 */
+	protected DatagramSocket getSocket() {
+		return socket;
+	}
+
+	/**
+	 * Returns the port number associated with this port.
+	 * @return this ports number
+	 */
+	protected int getPort() {
+		return port;
 	}
 
 	/**
