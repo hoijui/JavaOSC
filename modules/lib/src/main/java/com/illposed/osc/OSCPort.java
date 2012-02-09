@@ -48,8 +48,9 @@ public abstract class OSCPort {
 	}
 
 	/**
-	 * Close the socket and free-up resources. It's recommended that clients
-	 * call this when they are done with the port.
+	 * Close the socket and free-up resources.
+	 * It is recommended that clients call this when they are done with the
+	 * port.
 	 */
 	public void close() {
 		socket.close();
