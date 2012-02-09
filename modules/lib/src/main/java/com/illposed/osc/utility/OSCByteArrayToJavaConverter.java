@@ -21,9 +21,9 @@ import com.illposed.osc.OSCPacket;
  */
 public class OSCByteArrayToJavaConverter {
 
-	byte[] bytes;
-	int bytesLength;
-	int streamPosition;
+	private byte[] bytes;
+	private int bytesLength;
+	private int streamPosition;
 
 	/**
 	 * Creates a helper object for converting from a byte array to an OSCPacket

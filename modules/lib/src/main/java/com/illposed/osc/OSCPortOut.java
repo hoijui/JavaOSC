@@ -37,7 +37,7 @@ import java.net.UnknownHostException;
  */
 public class OSCPortOut extends OSCPort {
 
-	protected InetAddress address;
+	private InetAddress address;
 
 	/**
 	 * Create an OSCPort that sends to address:port.

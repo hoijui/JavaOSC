@@ -40,10 +40,10 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 public class OSCPortIn extends OSCPort implements Runnable {
 
 	// state for listening
-	protected boolean isListening;
-	protected OSCByteArrayToJavaConverter converter
+	private boolean isListening;
+	private OSCByteArrayToJavaConverter converter
 			= new OSCByteArrayToJavaConverter();
-	protected OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+	private OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
 
 	/**
 	 * Create an OSCPort that listens on the specified port.

@@ -19,7 +19,7 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  */
 public abstract class OSCPacket {
 
-	protected boolean isByteArrayComputed;
+	private boolean isByteArrayComputed;
 	protected byte[] byteArray;
 
 	/**

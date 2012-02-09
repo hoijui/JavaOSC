@@ -23,8 +23,8 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  */
 public class OSCMessage extends OSCPacket {
 
-	protected String address;
-	protected Vector arguments;
+	private String address;
+	private Vector arguments;
 
 	/**
 	 * Create an empty OSC Message.

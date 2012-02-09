@@ -30,7 +30,7 @@ import java.util.Vector;
  */
 public class OSCJavaToByteArrayConverter {
 
-	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	private ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	private byte[] intBytes = new byte[4];
 	private byte[] longintBytes = new byte[8];
 	// this should be long enough to accomodate any string
