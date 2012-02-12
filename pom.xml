@@ -9,8 +9,6 @@
 		<project.build.encoding>UTF-8</project.build.encoding>
 		<project.build.sourceEncoding>${project.build.encoding}</project.build.sourceEncoding>
 		<project.build.resourceEncoding>${project.build.encoding}</project.build.resourceEncoding>
-
-		<project.packageName>com.illposed.osc</project.packageName>
 	</properties>
 
 	<groupId>com.illposed.osc</groupId>
