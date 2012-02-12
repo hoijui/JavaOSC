@@ -6,22 +6,21 @@ package com.illposed.osc;
 
 import java.util.Date;
 
-import com.illposed.osc.*;
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCPacketDispatcher;
 
 /**
  * @author cramakrishnan
  *
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
- * 
+ *
  * See license.txt (or license.rtf) for license information.
  */
 public class OSCPacketDispatcherTest extends junit.framework.TestCase {
-	
-	OSCPacketDispatcher dispatcher;
-	boolean receivedOnListener1;
-	boolean receivedOnListener2;
+
+	private OSCPacketDispatcher dispatcher;
+	private boolean receivedOnListener1;
+	private boolean receivedOnListener2;
 
 	/**
 	 * Run the OSCPacketDispatcher through its paces
@@ -54,9 +53,9 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	 * @see junit.framework.TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
-		
+
 	}
-	
+
 	public void testDispatchToListener1() throws Exception {
 		receivedOnListener1 = false;
 		receivedOnListener2 = false;
@@ -67,7 +66,7 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		if (receivedOnListener2)
 			fail("Message to listener1 got sent to listener2");
 	}
-	
+
 	public void testDispatchToListener2() throws Exception {
 		receivedOnListener1 = false;
 		receivedOnListener2 = false;
@@ -87,7 +86,7 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		if (receivedOnListener1 || receivedOnListener2)
 			fail("Message to nobody got dispatched incorrectly");
 	}
-	
+
 	public void testDispatchBundle() throws Exception {
 		receivedOnListener1 = false;
 		receivedOnListener2 = false;
@@ -98,6 +97,6 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		if (!receivedOnListener1)
 			fail("Bundle didn't dispatch message to listener 1");
 		if (!receivedOnListener2)
-			fail("Bundle didn't dispatch message to listener 2");		
+			fail("Bundle didn't dispatch message to listener 2");
 	}
 }

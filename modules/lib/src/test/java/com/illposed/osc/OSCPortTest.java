@@ -10,19 +10,16 @@ package com.illposed.osc;
 
 import java.util.Date;
 
-import com.illposed.osc.*;
-
 public class OSCPortTest extends junit.framework.TestCase {
-	boolean messageReceived;
-	Date    receivedTimestamp;
-	OSCPortOut sender;
-	OSCPortIn  receiver;
+
+	private boolean messageReceived;
+	private Date    receivedTimestamp;
+	private OSCPortOut sender;
+	private OSCPortIn  receiver;
 
 	public OSCPortTest(String name) {
 		super(name);
 	}
-	
-	
 
 	/**
 	 * @see junit.framework.TestCase#setUp()
@@ -65,7 +62,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		OSCBundle bundle = new OSCBundle(mesgs);
 		sender.send(bundle);
 	}
-	
+
 	public void testBundle2() throws Exception {
 		OSCMessage mesg = new OSCMessage("/foo/bar");
 		mesg.addArgument(new Integer(3));
@@ -74,13 +71,13 @@ public class OSCPortTest extends junit.framework.TestCase {
 		bundle.addPacket(mesg);
 		sender.send(bundle);
 	}
-	
+
 	public void testReceiving() throws Exception {
 		OSCMessage mesg = new OSCMessage("/message/receiving");
 		messageReceived = false;
 		OSCListener listener = new OSCListener() {
 			public void acceptMessage(java.util.Date time, OSCMessage message) {
-				messageReceived = true; 
+				messageReceived = true;
 			}
 		};
 		receiver.addListener("/message/receiving", listener);
@@ -91,7 +88,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		if (!messageReceived)
 			fail("Message was not received");
 	}
-	
+
 	public void testBundleReceiving() throws Exception {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
@@ -99,7 +96,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		receivedTimestamp = null;
 		OSCListener listener = new OSCListener() {
 			public void acceptMessage(Date time, OSCMessage message) {
-				messageReceived = true; 
+				messageReceived = true;
 				receivedTimestamp = time;
 			}
 		};
@@ -113,5 +110,4 @@ public class OSCPortTest extends junit.framework.TestCase {
 		if (!receivedTimestamp.equals(bundle.getTimestamp()))
 			fail("Message should have timestamp " + bundle.getTimestamp() + " but has " + receivedTimestamp);
 	}
-
 }

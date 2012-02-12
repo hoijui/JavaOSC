@@ -10,50 +10,41 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.*;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
 	/**
-	 * @param name java.lang.String
+	 * @param name this tests name
 	 */
 	public OSCJavaToByteArrayConverterTest(String name) {
 		super(name);
 	}
 
-	/**
-	 * @param result byte[]
-	 * @param answer byte[]
-	 */
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
-		if (result.length != answer.length)
-			fail("Didn't convert correctly");
-		for (int i = 0; i < result.length; i++) {
-			if (result[i] != answer[i])
-				fail("Didn't convert correctly");
-		}
+		OSCMessageTest.checkResultEqualsAnswer(result, answer);
 	}
 
 	/**
 	 *
-	 * This is different from the Smalltalk implementation.
+	 * This is different from the SmallTalk implementation.
 	 * In Squeak, this produces:
-	 * byte[] answer = { 62, 76, (byte) 204, (byte) 204 };
+	 * byte[] answer = {62, 76, (byte) 204, (byte) 204};
 	 * (i.e. answer= {62, 76, -52, -52})
 	 *
-	 * The source of this discrepency is Squeak conversion 
+	 * The source of this discrepancy is Squeak conversion
 	 * routine Float>>asIEEE32BitWord vs. the Java
 	 * Float::floatToIntBits(float).
 	 *
 	 * 0.2 asIEEE32BitWord yields: 1045220556
 	 * Float.floatToIntBits((float) 0.2) yields: (int) 1045220557 (VA Java 3.5)
 	 *
-	 * Looks like there is an OBO bug somwhere -- either Java or Squeak.
+	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
 	 */
 	public void testPrintFloat2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(new Float(0.2));
-		byte[] answer = { 62, 76, -52, -51 };
+		byte[] answer = {62, 76, -52, -51};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -61,7 +52,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	public void testPrintFloatOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(new Float(10.7567));
-		byte[] answer = { 65, 44, 27, 113 };
+		byte[] answer = {65, 44, 27, 113};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -69,7 +60,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	public void testPrintIntegerOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(new Integer(1124));
-		byte[] answer = { 0, 0, 4, 100 };
+		byte[] answer = {0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -77,7 +68,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	public void testPrintString2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("abcd");
-		byte[] answer = { 97, 98, 99, 100, 0, 0, 0, 0 };
+		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -85,7 +76,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	public void testPrintStringOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("abc");
-		byte[] answer = { 97, 98, 99, 0 };
+		byte[] answer = {97, 98, 99, 0};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -93,7 +84,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	public void testPrintBigIntegerOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(new java.math.BigInteger("1124"));
-		byte[] answer = { 0, 0, 0, 0, 0, 0, 4, 100 };
+		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
 		System.out.println("result length " + result.length);
 		for (int i = 0; i < result.length; i++) {
@@ -102,5 +93,4 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		System.out.println("");
 		checkResultEqualsAnswer(result, answer);
 	}
-	
 }
