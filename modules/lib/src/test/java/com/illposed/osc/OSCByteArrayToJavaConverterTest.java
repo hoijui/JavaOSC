@@ -13,7 +13,7 @@ import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
  *
- * See license.txt (or license.rtf) for license information.
+ * See file LICENSE (or LICENSE.html) for license information.
  */
 public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 

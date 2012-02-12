@@ -18,7 +18,7 @@ import com.illposed.osc.OSCPacket;
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
  *
- * See license.txt (or license.rtf) for license information.
+ * See file LICENSE (or LICENSE.html) for license information.
  *
  * Dispatches OSCMessages to registered listeners.
  *

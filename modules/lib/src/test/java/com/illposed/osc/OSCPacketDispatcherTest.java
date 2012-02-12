@@ -14,7 +14,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  * Copyright (C) 2003, C. Ramakrishnan / Auracle
  * All rights reserved.
  *
- * See license.txt (or license.rtf) for license information.
+ * See file LICENSE (or LICENSE.html) for license information.
  */
 public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 
