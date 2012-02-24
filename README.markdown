@@ -80,6 +80,13 @@ To see examples, look at the tests or the simple UI located in
 `com.illposed.osc.ui.OscUI`.
 
 
+## Release a SNAPSHOT (devs only)
+
+To release a development version to the Sonatype snapshot repository only:
+
+		mvn clean deploy
+
+
 ## Release (devs only)
 
 ### Prepare "target/" for the release process
