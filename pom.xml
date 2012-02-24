@@ -29,6 +29,13 @@
 	</prerequisites>
 	<inceptionYear>2005</inceptionYear>
 
+	<!-- This is a requirement to be able to sync to Maven central -->
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<modules>
 		<module>modules/core</module>
 		<module>modules/ui</module>
