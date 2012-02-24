@@ -73,7 +73,17 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		DatagramSocket socket = getSocket();
 		while (isListening) {
 			try {
-				socket.receive(packet);
+				try {
+					socket.receive(packet);
+				} catch (SocketException ex) {
+					if (isListening) {
+						throw ex;
+					} else {
+						// if we closed the socket while receiving data,
+						// the exception is expected/normal, so we hide it
+						continue;
+					}
+				}
 				OSCPacket oscPacket = converter.convert(buffer,
 						packet.getLength());
 				dispatcher.dispatchPacket(oscPacket);
