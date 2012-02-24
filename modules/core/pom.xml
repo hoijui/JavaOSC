@@ -14,13 +14,13 @@
 	</parent>
 
 	<groupId>com.illposed.osc</groupId>
-	<artifactId>javaosc</artifactId>
+	<artifactId>javaosc-core</artifactId>
 	<version>0.1-SNAPSHOT</version>
 
 	<packaging>jar</packaging>
 
-	<name>JavaOSC - Library</name>
-	<description>An OSC library implementation in Java - library</description>
+	<name>JavaOSC - Core</name>
+	<description>An OSC library implementation in Java - Core</description>
 
 	<build>
 		<defaultGoal>package</defaultGoal>

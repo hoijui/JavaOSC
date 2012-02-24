@@ -69,7 +69,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.illposed.osc</groupId>
-			<artifactId>javaosc</artifactId>
+			<artifactId>javaosc-core</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
