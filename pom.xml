@@ -53,6 +53,23 @@
 		<url>http://github.com/hoijui/JavaOSC</url>
 	</scm>
 
+	<developers>
+		<developer>
+			<name>Chandrasekhar Ramakrishnan</name>
+			<email>cr_web@illposed.com</email>
+			<roles>
+				<role>main developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Robin Vobruba</name>
+			<email>hoijui.quaero@gmail.com</email>
+			<roles>
+				<role>co-dev</role>
+			</roles>
+		</developer>
+	</developers>
+
 	<reporting>
 		<plugins>
 
