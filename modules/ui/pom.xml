@@ -3,7 +3,7 @@
 
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
-		<project.mainClass>com.illposed.osc.Main</project.mainClass>
+		<project.mainClass>com.illposed.osc.ui.Main</project.mainClass>
 	</properties>
 
 	<parent>
