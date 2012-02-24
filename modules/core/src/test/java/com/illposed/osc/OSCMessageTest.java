@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import java.math.BigInteger;

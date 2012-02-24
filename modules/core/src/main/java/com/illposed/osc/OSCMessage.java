@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import java.util.Enumeration;
@@ -10,16 +18,10 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  *
  * An OSC message is made up of an address (the receiver of the message)
  * and arguments (the content of the message).
- * <p>
- * Internally, I use Vector to maintain jdk1.1 compatability
- * <p>
- * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
+ *
+ * Internally, I use Vector to maintain JDK 1.1 compatability.
  *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public class OSCMessage extends OSCPacket {
 

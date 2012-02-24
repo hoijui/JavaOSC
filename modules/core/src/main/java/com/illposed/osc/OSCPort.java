@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import java.net.DatagramSocket;
@@ -5,14 +13,8 @@ import java.net.DatagramSocket;
 /**
  * OSCPort is an abstract superclass, to send OSC messages, use @see OSCPortOut.
  * To listen for OSC messages, use @see OSCPortIn.
- * <p>
- * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
  *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public abstract class OSCPort {
 

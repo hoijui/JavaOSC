@@ -1,17 +1,18 @@
+/*
+ * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 /**
  * JavaOSCRunnerUtility is a simple utility class to run just a specific
  * test when trying to debug a particular problem.
  *
- * <p>
- * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
- *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public class JavaOSCRunnerUtility {
 

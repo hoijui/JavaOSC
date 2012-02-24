@@ -1,6 +1,11 @@
-/* $Id$
- * Created on 28.10.2003
+/*
+ * Copyright (C) 2003, C. Ramakrishnan / Auracle.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
  */
+
 package com.illposed.osc;
 
 import java.util.Date;
@@ -8,12 +13,7 @@ import java.util.Date;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 
 /**
- * @author cramakrishnan
- *
- * Copyright (C) 2003, C. Ramakrishnan / Auracle
- * All rights reserved.
- *
- * See file LICENSE (or LICENSE.html) for license information.
+ * @author Chandrasekhar Ramakrishnan
  */
 public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 

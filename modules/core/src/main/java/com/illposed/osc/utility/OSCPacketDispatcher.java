@@ -1,6 +1,11 @@
-/* $Id$
- * Created on 28.10.2003
+/*
+ * Copyright (C) 2003, C. Ramakrishnan / Auracle.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
  */
+
 package com.illposed.osc.utility;
 
 import java.util.Date;
@@ -13,19 +18,13 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 
 /**
- * @author cramakrishnan
- *
- * Copyright (C) 2003, C. Ramakrishnan / Auracle
- * All rights reserved.
- *
- * See file LICENSE (or LICENSE.html) for license information.
- *
  * Dispatches OSCMessages to registered listeners.
  *
+ * @author Chandrasekhar Ramakrishnan
  */
 
 public class OSCPacketDispatcher {
-	// use Hashtable for JDK1.1 compatability
+	// use Hashtable for JDK 1.1 compatability
 	private Hashtable addressToClassTable = new Hashtable();
 
 	/**

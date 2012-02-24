@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import java.net.DatagramPacket;
@@ -10,7 +18,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.
- * <p>
+ *
  * An example based on com.illposed.osc.test.OSCPortTest::testReceiving() :
  * <pre>
 
@@ -24,18 +32,12 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 	receiver.startListening();
 
  * </pre>
- * <p>
+ *
  * Then, using a program such as SuperCollider or sendOSC, send a message
  * to this computer, port 57110 (DEFAULT_SC_OSC_PORT), with the address
  * /message/receiving
- * <p>
- * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
  *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public class OSCPortIn extends OSCPort implements Runnable {
 

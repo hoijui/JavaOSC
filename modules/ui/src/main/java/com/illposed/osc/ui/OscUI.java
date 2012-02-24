@@ -1,11 +1,10 @@
-//
-//  OscUI.java
-//  JavaOSC
-//
-//  Created by cramakri on Thu Dec 13 2001.
-//  Copyright (c) 2001 Illposed Software. All rights reserved.
-//
-//  Modified by JT March 2003
+/*
+ * Copyright (C) 2001, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
 
 // this is the package we are in
 package com.illposed.osc.ui;
@@ -34,7 +33,12 @@ import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortOut;
 
-// OscUI is a subClass of JPanel
+/**
+ * OscUI is a subClass of JPanel.
+ *
+ * @author Chandrasekhar Ramakrishnan
+ * @author JT
+ */
 public class OscUI extends JPanel {
 
 	// declare some variables

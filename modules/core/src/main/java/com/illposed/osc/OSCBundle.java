@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import java.math.BigInteger;
@@ -10,22 +18,16 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 /**
  * A bundle represents a collection of OSC packets (either messages or other
  * bundles) and has a time-tag which can be used by a scheduler to execute
- * a bundle in the future instead of immediately (OSCMessages are executed
+ * a bundle in the future, instead of immediately (OSCMessages are executed
  * immediately).
  *
  * Bundles should be used if you want to send multiple messages to be executed
  * atomically together, or you want to schedule one or more messages to be
  * executed in the future.
- * <p>
- * Internally, I use Vector to maintain jdk1.1 compatability
- * <p>
- * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
+ *
+ * Internally, I use Vector to maintain JDK 1.1 compatability.
  *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public class OSCBundle extends OSCPacket {
 

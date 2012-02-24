@@ -1,17 +1,20 @@
-//  Created by cramakri on Thu Dec 13 2001.
-//  Copyright (c) 2001 Illposed Software. All rights reserved.
-//
-
 /*
- * This implementation is based on Markus Gaelli and
- * Iannis Zannos' OSC implementation in Squeak:
- * http://www.emergent.de/Goodies/
+ * Copyright (C) 2001, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
  */
 
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
+/**
+ * This implementation is based on Markus Gaelli and
+ * Iannis Zannos' OSC implementation in Squeak:
+ * http://www.emergent.de/Goodies/
+ */
 public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
 	/**

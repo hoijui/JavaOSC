@@ -1,21 +1,20 @@
-/* $Id$
- * Created on 28.10.2003
- */
-
-/**
- * @author cramakrishnan
- *
- * Copyright (C) 2003, C. Ramakrishnan / Auracle
+/*
+ * Copyright (C) 2003, C. Ramakrishnan / Auracle.
  * All rights reserved.
  *
- * See file LICENSE (or LICENSE.html) for license information.
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
  */
+
 package com.illposed.osc.ui;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
+/**
+ * @author Chandrasekhar Ramakrishnan
+ */
 public class Main extends JFrame {
 
 	private OscUI myUi;

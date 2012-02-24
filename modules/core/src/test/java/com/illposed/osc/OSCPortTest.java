@@ -1,10 +1,10 @@
-//
-//  TestOscPort.java
-//  JavaOSC
-//
-//  Created by cramakri on Thu Dec 13 2001.
-//  Copyright (c) 2001 Illposed Software. All rights reserved.
-//
+/*
+ * Copyright (C) 2001, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
 
 package com.illposed.osc;
 

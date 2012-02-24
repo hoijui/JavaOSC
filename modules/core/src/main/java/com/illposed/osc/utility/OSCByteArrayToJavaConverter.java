@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc.utility;
 
 import java.math.BigInteger;
@@ -10,14 +18,8 @@ import com.illposed.osc.OSCPacket;
 /**
  * Utility class to convert a byte array conforming to the OSC byte stream
  * format into Java objects.
- * <p>
- * Copyright (C) 2004-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
  *
  * @author Chandrasekhar Ramakrishnan
- * @version 1.0
  */
 public class OSCByteArrayToJavaConverter {
 

@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc.utility;
 
 import java.io.IOException;
@@ -10,23 +18,17 @@ import java.util.Vector;
  * OSCJavaToByteArrayConverter is a helper class that translates
  * from Java types to their byte stream representations according to
  * the OSC spec.
- * <p>
+ *
  * The implementation is based on
  * <a href=" http://www.emergent.de/">Markus Gaelli</a> and
  * Iannis Zannos' OSC implementation in Squeak.
- * <p>
+ *
  * This version includes bug fixes and improvements from
  * Martin Kaltenbrunner and Alex Potsides.
- * <p>
- * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
- * All rights reserved.
- * <p>
- * See file LICENSE (or LICENSE.html) for license information.
  *
  * @author Chandrasekhar Ramakrishnan
  * @author Martin Kaltenbrunner
  * @author Alex Potsides
- * @version 1.0
  */
 public class OSCJavaToByteArrayConverter {
 

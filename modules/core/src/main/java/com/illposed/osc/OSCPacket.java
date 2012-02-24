@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
@@ -12,7 +20,7 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  * <li>OSCBundle &mdash; OSC messages with timestamps and/or made up of multiple
  *   messages
  * </ul>
- * <p>
+ *
  * This implementation is based on
  * <a href="http://www.emergent.de/Goodies/">Markus Gaelli</a> and
  * Iannis Zannos' OSC implementation in Squeak Smalltalk.
