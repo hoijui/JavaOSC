@@ -21,7 +21,7 @@
 		<name>Illposed</name>
 		<url>http://illposed.com</url>
 	</organization>
-	<name>JavaOSC</name>
+	<name>JavaOSC - Parent</name>
 	<description>An OSC library implementation in Java - Parent</description>
 	<url>http://sourceforge.net/projects/javaosc/</url>
 	<prerequisites>
