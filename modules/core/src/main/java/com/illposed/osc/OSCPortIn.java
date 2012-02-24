@@ -42,7 +42,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 public class OSCPortIn extends OSCPort implements Runnable {
 
 	// state for listening
-	private boolean isListening;
+	private boolean listening;
 	private OSCByteArrayToJavaConverter converter
 			= new OSCByteArrayToJavaConverter();
 	private OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
@@ -71,12 +71,12 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		byte[] buffer = new byte[BUFFER_SIZE];
 		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
 		DatagramSocket socket = getSocket();
-		while (isListening) {
+		while (listening) {
 			try {
 				try {
 					socket.receive(packet);
 				} catch (SocketException ex) {
-					if (isListening) {
+					if (listening) {
 						throw ex;
 					} else {
 						// if we closed the socket while receiving data,
@@ -97,7 +97,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Start listening for incoming OSCPackets
 	 */
 	public void startListening() {
-		isListening = true;
+		listening = true;
 		Thread thread = new Thread(this);
 		thread.start();
 	}
@@ -106,14 +106,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Stop listening for incoming OSCPackets
 	 */
 	public void stopListening() {
-		isListening = false;
+		listening = false;
 	}
 
 	/**
 	 * Am I listening for packets?
 	 */
 	public boolean isListening() {
-		return isListening;
+		return listening;
 	}
 
 	/**
