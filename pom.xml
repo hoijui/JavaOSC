@@ -27,7 +27,7 @@
 	<prerequisites>
 		<maven>2.2.1</maven>
 	</prerequisites>
-	<inceptionYear>2005</inceptionYear>
+	<inceptionYear>2001</inceptionYear>
 
 	<!-- This is a requirement to be able to sync to Maven central -->
 	<parent>
