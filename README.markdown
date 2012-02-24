@@ -37,7 +37,7 @@ Then start the UI:
 	mvn exec:java
 
 Next, launch SuperCollider, open the file located in the
-"modules/core/src/main/resources/supercollider/" directory,
+`modules/core/src/main/resources/supercollider/` directory,
 and load the synthdef into SuperCollider.
 Start the SC local server. 
 Click the "All On" button and start moving the sliders.
@@ -51,7 +51,7 @@ There is also a PureData patch created by Alexandre Quessy,
 available [here](http://www.sourcelibre.com/puredata/).
 
 To try the demo app with PureData, launch PureData and open the file 
-"modules/core/src/main/resources/puredata/javaosc.pd".
+`modules/core/src/main/resources/puredata/javaosc.pd`.
 Turn down the volume a bit at first, as it might be very loud.
 Click the "All On" button, and start moving the sliders.
 You should hear the sounds change.
@@ -61,20 +61,23 @@ in the terminal.
 
 ## Orientation
 
-Open Sound Control (OSC) is a UDP-based protocol for transmission of musical control data over an IP network. Applications like SuperCollider, Max/MSP, and Reaktor (among others) use OSC for network communication.
+Open Sound Control (OSC) is an UDP-based protocol for transmission of musical control data over an IP network. Applications like SuperCollider, Max/MSP, and Reaktor (among others) use OSC for network communication.
 
 JavaOSC is a class library that gives Java programs the capability of sending and receiving OSC. 
 
-The classes that deal with sending OSC data are located in the com.illposed.osc package. The core classes are com.illposed.osc.OSCPort{In,  Out}, com.illposed.osc.OSCMessage and com.illposed.osc.OSCBundle.
+The classes that deal with sending OSC data are located in the `com.illposed.osc` package. The core classes are `com.illposed.osc.OSCPort{In,  Out}`, `com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
 
 There are some associated JUnit tests for the OSC classes. They can be run with `mvn test`.
 
 
 ## Use
 
-The way to use the library is to instantiate an OSCPort connected to the receiving machine and then call the send() message on the port with the packet to send as the argument.
+The way to use the library is to instantiate an `OSCPort`
+connected to the receiving machine and then call the `send()` method
+on the port with the packet to send as the argument.
 
-To see examples, look at the tests or the simple UI located in com.illposed.osc.ui.OscUI
+To see examples, look at the tests or the simple UI located in
+`com.illposed.osc.ui.OscUI`.
 
 
 ## Release (devs only)
