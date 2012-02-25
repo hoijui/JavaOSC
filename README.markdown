@@ -94,7 +94,7 @@ To release a development version to the Sonatype snapshot repository only:
 	mvn release:clean
 
 ### Prepare the release
-* asks for the version to use
+* asks for the release and new snapshot versions to use (for all modules)
 * packages
 * signs with GPG
 * commits
@@ -107,7 +107,6 @@ To release a development version to the Sonatype snapshot repository only:
 * checks-out the release tag
 * builds
 * deploy into sonatype staging repository
-* uploads artifacts to the github download section
 
 		mvn release:perform
 
@@ -116,7 +115,7 @@ To release a development version to the Sonatype snapshot repository only:
   visible under http://hoijui.github.com/JavaOSC/
 
 		git checkout <release-tag>
-		mvn site
+		mvn clean site
 		git checkout master
 
 ### Promote it on Maven
