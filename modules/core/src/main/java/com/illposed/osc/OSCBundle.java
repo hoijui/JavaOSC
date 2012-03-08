@@ -9,9 +9,12 @@
 package com.illposed.osc;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
@@ -24,8 +27,6 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  * Bundles should be used if you want to send multiple messages to be executed
  * atomically together, or you want to schedule one or more messages to be
  * executed in the future.
- *
- * Internally, I use Vector to maintain JDK 1.1 compatability.
  *
  * @author Chandrasekhar Ramakrishnan
  */
@@ -44,7 +45,7 @@ public class OSCBundle extends OSCPacket {
 	public static final Date TIMESTAMP_IMMEDIATE = new Date(0);
 
 	private Date timestamp;
-	private Vector packets;
+	private List packets;
 
 	/**
 	 * Create a new empty OSCBundle with a timestamp of immediately.
@@ -78,12 +79,10 @@ public class OSCBundle extends OSCPacket {
 	public OSCBundle(OSCPacket[] packets, Date timestamp) {
 		super();
 		if (null != packets) {
-			this.packets = new Vector(packets.length);
-			for (int i = 0; i < packets.length; i++) {
-				this.packets.add(packets[i]);
-			}
+			this.packets = new ArrayList(packets.length);
+			this.packets.addAll(Arrays.asList(packets));
 		} else {
-			this.packets = new Vector();
+			this.packets = new LinkedList();
 		}
 		this.timestamp = timestamp;
 		init();
@@ -153,11 +152,11 @@ public class OSCBundle extends OSCPacket {
 	protected void computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
-		Enumeration e = packets.elements();
+		Iterator pkgIter = packets.iterator();
 		OSCPacket nextElement;
 		byte[] packetBytes;
-		while (e.hasMoreElements()) {
-			nextElement = (OSCPacket) e.nextElement();
+		while (pkgIter.hasNext()) {
+			nextElement = (OSCPacket) pkgIter.next();
 			packetBytes = nextElement.getByteArray();
 			stream.write(packetBytes.length);
 			stream.write(packetBytes);

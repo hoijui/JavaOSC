@@ -11,8 +11,8 @@ package com.illposed.osc.utility;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * OSCJavaToByteArrayConverter is a helper class that translates
@@ -269,19 +269,18 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Write types for the arguments (use a vector for jdk1.1 compatibility,
-	 * rather than an ArrayList).
-	 * @param vector  the arguments to an OSCMessage
+	 * Write types for the arguments.
+	 * @param types  the arguments to an OSCMessage
 	 */
-	public void writeTypes(Vector vector) {
+	public void writeTypes(Collection types) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
 		// again?
 		// I really wish I could extend the base classes!
 
-		Enumeration enm = vector.elements();
+		Iterator typeIter = types.iterator();
 		Object nextObject;
-		while (enm.hasMoreElements()) {
-			nextObject = enm.nextElement();
+		while (typeIter.hasNext()) {
+			nextObject = typeIter.next();
 			if (null == nextObject) {
 				continue;
 			}

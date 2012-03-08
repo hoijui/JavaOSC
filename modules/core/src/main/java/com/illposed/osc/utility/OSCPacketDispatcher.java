@@ -9,8 +9,9 @@
 package com.illposed.osc.utility;
 
 import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCListener;
@@ -24,8 +25,8 @@ import com.illposed.osc.OSCPacket;
  */
 
 public class OSCPacketDispatcher {
-	// use Hashtable for JDK 1.1 compatability
-	private Hashtable addressToClassTable = new Hashtable();
+
+	private Map addressToClass = new HashMap();
 
 	/**
 	 *
@@ -35,7 +36,7 @@ public class OSCPacketDispatcher {
 	}
 
 	public void addListener(String address, OSCListener listener) {
-		addressToClassTable.put(address, listener);
+		addressToClass.put(address, listener);
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
@@ -67,15 +68,15 @@ public class OSCPacketDispatcher {
 	}
 
 	private void dispatchMessage(OSCMessage message, Date time) {
-		Enumeration keys = addressToClassTable.keys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
+		Iterator keys = addressToClass.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
 			// this supports the OSC regexp facility, but it
 			// only works in JDK 1.4, so don't support it right now
 			// if (key.matches(message.getAddress())) {
 			if (key.equals(message.getAddress())) {
 				OSCListener listener
-						= (OSCListener) addressToClassTable.get(key);
+						= (OSCListener) addressToClass.get(key);
 				listener.acceptMessage(time, message);
 			}
 		}

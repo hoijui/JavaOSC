@@ -8,8 +8,11 @@
 
 package com.illposed.osc;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
@@ -19,14 +22,12 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  * An OSC message is made up of an address (the receiver of the message)
  * and arguments (the content of the message).
  *
- * Internally, I use Vector to maintain JDK 1.1 compatability.
- *
  * @author Chandrasekhar Ramakrishnan
  */
 public class OSCMessage extends OSCPacket {
 
 	private String address;
-	private Vector arguments;
+	private List arguments;
 
 	/**
 	 * Create an empty OSC Message.
@@ -35,7 +36,7 @@ public class OSCMessage extends OSCPacket {
 	 */
 	public OSCMessage() {
 		super();
-		arguments = new Vector();
+		arguments = new LinkedList();
 	}
 
 	/**
@@ -55,12 +56,10 @@ public class OSCMessage extends OSCPacket {
 		super();
 		address = newAddress;
 		if (null != newArguments) {
-			arguments = new Vector(newArguments.length);
-			for (int i = 0; i < newArguments.length; i++) {
-				arguments.add(newArguments[i]);
-			}
+			arguments = new ArrayList(newArguments.length);
+			arguments.addAll(Arrays.asList(newArguments));
 		} else {
-			arguments = new Vector();
+			arguments = new LinkedList();
 		}
 		init();
 	}
@@ -117,9 +116,9 @@ public class OSCMessage extends OSCPacket {
 			return;
 		}
 		stream.writeTypes(arguments);
-		Enumeration e = arguments.elements();
-		while (e.hasMoreElements()) {
-			stream.write(e.nextElement());
+		Iterator argIter = arguments.iterator();
+		while (argIter.hasNext()) {
+			stream.write(argIter.next());
 		}
 	}
 
