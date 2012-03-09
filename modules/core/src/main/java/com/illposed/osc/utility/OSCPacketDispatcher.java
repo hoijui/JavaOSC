@@ -32,7 +32,6 @@ public class OSCPacketDispatcher {
 	 *
 	 */
 	public OSCPacketDispatcher() {
-		super();
 	}
 
 	public void addListener(String address, OSCListener listener) {

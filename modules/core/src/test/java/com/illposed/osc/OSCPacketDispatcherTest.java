@@ -25,7 +25,6 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	 * Run the OSCPacketDispatcher through its paces
 	 */
 	public OSCPacketDispatcherTest() {
-		super();
 	}
 
 	/**

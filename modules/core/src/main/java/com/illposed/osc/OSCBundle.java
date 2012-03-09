@@ -77,7 +77,6 @@ public class OSCBundle extends OSCPacket {
 	 * @param timestamp the time to execute the bundle
 	 */
 	public OSCBundle(OSCPacket[] packets, Date timestamp) {
-		super();
 		if (null != packets) {
 			this.packets = new ArrayList(packets.length);
 			this.packets.addAll(Arrays.asList(packets));

@@ -35,7 +35,6 @@ public class OSCMessage extends OSCPacket {
 	 * and, perhaps, some arguments.
 	 */
 	public OSCMessage() {
-		super();
 		arguments = new LinkedList();
 	}
 
@@ -53,7 +52,7 @@ public class OSCMessage extends OSCPacket {
 	 * @param newArguments  the data sent to the receiver
 	 */
 	public OSCMessage(String newAddress, Object[] newArguments) {
-		super();
+
 		address = newAddress;
 		if (null != newArguments) {
 			arguments = new ArrayList(newArguments.length);

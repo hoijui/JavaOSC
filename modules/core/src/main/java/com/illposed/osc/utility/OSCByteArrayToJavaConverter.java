@@ -32,7 +32,6 @@ public class OSCByteArrayToJavaConverter {
 	 * object.
 	 */
 	public OSCByteArrayToJavaConverter() {
-		super();
 	}
 
 	/**

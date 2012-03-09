@@ -40,7 +40,6 @@ public class OSCJavaToByteArrayConverter {
 //	private byte[] stringBytes = new byte[2048];
 
 	public OSCJavaToByteArrayConverter() {
-		super();
 	}
 
 	/**

@@ -23,7 +23,6 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 	 * Run the OSCByteArrayToJavaConverter through its paces
 	 */
 	public OSCByteArrayToJavaConverterTest() {
-		super();
 	}
 
 	/**
