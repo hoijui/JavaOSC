@@ -34,9 +34,6 @@ public class OSCJavaToByteArrayConverter {
 	private ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	private byte[] intBytes = new byte[4];
 	private byte[] longintBytes = new byte[8];
-	// this should be long enough to accomodate any string
-//	private char[] stringChars = new char[2048];
-//	private byte[] stringBytes = new byte[2048];
 
 	public OSCJavaToByteArrayConverter() {
 	}
@@ -84,7 +81,7 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write bytes into the byte stream.
-	 * @param bytes byte[]
+	 * @param bytes  bytes to be written
 	 */
 	public void write(byte[] bytes) {
 		writeUnderHandler(bytes);
@@ -92,7 +89,7 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write an integer into the byte stream.
-	 * @param i integer
+	 * @param i the integer to be written
 	 */
 	public void write(int i) {
 		writeInteger32ToByteArray(i);
@@ -100,21 +97,21 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a float into the byte stream.
-	 * @param f floating point number
+	 * @param f floating point number to be written
 	 */
 	public void write(Float f) {
 		writeInteger32ToByteArray(Float.floatToIntBits(f.floatValue()));
 	}
 
 	/**
-	 * @param i integer
+	 * @param i the integer to be written
 	 */
 	public void write(Integer i) {
 		writeInteger32ToByteArray(i.intValue());
 	}
 
 	/**
-	 * @param i integer
+	 * @param i the integer to be written
 	 */
 	public void write(BigInteger i) {
 		writeInteger64ToByteArray(i.longValue());
@@ -122,10 +119,11 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a string into the byte stream.
-	 * @param aString string
+	 * @param aString the string to be written
 	 */
 	public void write(String aString) {
 /*
+		XXX to be revised ...
 		int stringLength = aString.length();
 			// this is a deprecated method -- should use get char and convert
 			// the chars to bytes
@@ -161,7 +159,7 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a char into the byte stream.
-	 * @param c char
+	 * @param c the character to be written
 	 */
 	public void write(char c) {
 		stream.write(c);
@@ -338,9 +336,9 @@ public class OSCJavaToByteArrayConverter {
 
 		try {
 			stream.write(intBytes);
-		} catch (IOException e) {
+		} catch (IOException ex) {
 			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream");
+					+ " IOException writing to a ByteArrayOutputStream", ex);
 		}
 	}
 
@@ -360,9 +358,9 @@ public class OSCJavaToByteArrayConverter {
 
 		try {
 			stream.write(longintBytes);
-		} catch (IOException e) {
+		} catch (IOException ex) {
 			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream");
+					+ " IOException writing to a ByteArrayOutputStream", ex);
 		}
 	}
 }
