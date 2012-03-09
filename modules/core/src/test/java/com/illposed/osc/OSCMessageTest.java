@@ -82,14 +82,14 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	}
 
 	public void testRun() {
-		OSCMessage message = new OSCMessage("/sc/run", null);
+		OSCMessage message = new OSCMessage("/sc/run");
 		byte[] answer = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
 		byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	public void testStop() {
-		OSCMessage message = new OSCMessage("/sc/stop", null);
+		OSCMessage message = new OSCMessage("/sc/stop");
 		byte[] answer = {47, 115, 99, 47, 115, 116, 111, 112, 0, 0, 0, 0, 44, 0, 0, 0};
 		byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);

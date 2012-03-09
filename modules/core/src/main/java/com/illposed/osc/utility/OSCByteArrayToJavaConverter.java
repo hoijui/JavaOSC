@@ -9,7 +9,9 @@
 package com.illposed.osc.utility;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
@@ -93,22 +95,22 @@ public class OSCByteArrayToJavaConverter {
 	private OSCMessage convertMessage() {
 		OSCMessage message = new OSCMessage();
 		message.setAddress(readString());
-		char[] types = readTypes();
+		List<Character> types = readTypes();
 		if (null == types) {
 			// we are done
 			return message;
 		}
 		moveToFourByteBoundry();
-		for (int i = 0; i < types.length; ++i) {
-			if ('[' == types[i]) {
+		for (int i = 0; i < types.size(); ++i) {
+			if ('[' == types.get(i).charValue()) {
 				// we're looking at an array -- read it in
-				message.addArgument(readArray(types, ++i));
+				message.addArgument(readArray(types, ++i).toArray());
 				// then increment i to the end of the array
-				while (']' != types[i]) {
+				while (types.get(i).charValue() != ']') {
 					i++;
 				}
 			} else {
-				message.addArgument(readArgument(types[i]));
+				message.addArgument(readArgument(types.get(i)));
 			}
 		}
 		return message;
@@ -132,7 +134,7 @@ public class OSCByteArrayToJavaConverter {
 	 * Read the types of the arguments from the byte stream.
 	 * @return a char array with the types of the arguments
 	 */
-	private char[] readTypes() {
+	private List<Character> readTypes() {
 		// the next byte should be a ','
 		if (bytes[streamPosition] != 0x2C) {
 			return null;
@@ -145,9 +147,9 @@ public class OSCByteArrayToJavaConverter {
 		}
 
 		// read in the types
-		char[] typesChars = new char[typesLen];
+		List<Character> typesChars = new ArrayList<Character>(typesLen);
 		for (int i = 0; i < typesLen; i++) {
-			typesChars[i] = (char) bytes[streamPosition++];
+			typesChars.add((char) bytes[streamPosition++]);
 		}
 		return typesChars;
 	}
@@ -308,17 +310,17 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Read an array from the byte stream.
 	 * @param types
-	 * @param i
-	 * @return an Array
+	 * @param pos at which position to start reading
+	 * @return the array that was read
 	 */
-	private Object[] readArray(char[] types, int i) {
+	private List<Object> readArray(List<Character> types, int pos) {
 		int arrayLen = 0;
-		while (types[i + arrayLen] != ']') {
+		while (types.get(pos + arrayLen).charValue() != ']') {
 			arrayLen++;
 		}
-		Object[] array = new Object[arrayLen];
+		List<Object> array = new ArrayList<Object>(arrayLen);
 		for (int j = 0; j < arrayLen; j++) {
-			array[j] = readArgument(types[i + j]);
+			array.add(readArgument(types.get(pos + j)));
 		}
 		return array;
 	}

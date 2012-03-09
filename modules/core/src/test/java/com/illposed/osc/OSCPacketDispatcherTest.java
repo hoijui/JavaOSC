@@ -30,6 +30,7 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	/**
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		dispatcher = new OSCPacketDispatcher();
 		OSCListener myListener;
@@ -50,6 +51,7 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	/**
 	 * @see junit.framework.TestCase#tearDown()
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 
 	}

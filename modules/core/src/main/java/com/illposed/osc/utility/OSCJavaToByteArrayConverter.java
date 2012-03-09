@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.Iterator;
 
 /**
  * OSCJavaToByteArrayConverter is a helper class that translates
@@ -271,42 +270,39 @@ public class OSCJavaToByteArrayConverter {
 	 * Write types for the arguments.
 	 * @param types  the arguments to an OSCMessage
 	 */
-	public void writeTypes(Collection types) {
+	public void writeTypes(Collection<Object> types) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
 		// again?
 		// I really wish I could extend the base classes!
 
-		Iterator typeIter = types.iterator();
-		Object nextObject;
-		while (typeIter.hasNext()) {
-			nextObject = typeIter.next();
-			if (null == nextObject) {
+		for (Object type : types) {
+			if (null == type) {
 				continue;
 			}
 			// if the array at i is a type of array write a [
 			// This is used for nested arguments
-			if (nextObject.getClass().isArray()) {
+			if (type.getClass().isArray()) {
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
-				writeTypesArray((Object[]) nextObject);
+				writeTypesArray((Object[]) type);
 				// close the array
 				stream.write(']');
 				continue;
 			}
 			// Create a way to deal with Boolean type objects
-			if (Boolean.TRUE.equals(nextObject)) {
+			if (Boolean.TRUE.equals(type)) {
 				stream.write('T');
 				continue;
 			}
-			if (Boolean.FALSE.equals(nextObject)) {
+			if (Boolean.FALSE.equals(type)) {
 				stream.write('F');
 				continue;
 			}
 			// go through the array and write the superCollider types as shown
 			// in the above method.
 			// The classes derived here are used as the arg to the above method.
-			writeType(nextObject.getClass());
+			writeType(type.getClass());
 		}
 		// align the stream with padded bytes
 		appendNullCharToAlignStream();

@@ -10,8 +10,9 @@ package com.illposed.osc.utility;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCListener;
@@ -26,7 +27,8 @@ import com.illposed.osc.OSCPacket;
 
 public class OSCPacketDispatcher {
 
-	private Map addressToClass = new HashMap();
+	private Map<String, OSCListener> addressToListener
+			= new HashMap<String, OSCListener>();
 
 	/**
 	 *
@@ -35,7 +37,7 @@ public class OSCPacketDispatcher {
 	}
 
 	public void addListener(String address, OSCListener listener) {
-		addressToClass.put(address, listener);
+		addressToListener.put(address, listener);
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
@@ -56,9 +58,9 @@ public class OSCPacketDispatcher {
 
 	private void dispatchBundle(OSCBundle bundle) {
 		Date timestamp = bundle.getTimestamp();
-		OSCPacket[] packets = bundle.getPackets();
-		for (int i = 0; i < packets.length; i++) {
-			dispatchPacket(packets[i], timestamp);
+		List<OSCPacket> packets = bundle.getPackets();
+		for (OSCPacket packet : packets) {
+			dispatchPacket(packet, timestamp);
 		}
 	}
 
@@ -67,16 +69,12 @@ public class OSCPacketDispatcher {
 	}
 
 	private void dispatchMessage(OSCMessage message, Date time) {
-		Iterator keys = addressToClass.keySet().iterator();
-		while (keys.hasNext()) {
-			String key = (String) keys.next();
-			// this supports the OSC regexp facility, but it
+		for (Entry<String, OSCListener> addrList : addressToListener.entrySet()) {
+			// TODO this supports the OSC regexp facility, but it
 			// only works in JDK 1.4, so don't support it right now
-			// if (key.matches(message.getAddress())) {
-			if (key.equals(message.getAddress())) {
-				OSCListener listener
-						= (OSCListener) addressToClass.get(key);
-				listener.acceptMessage(time, message);
+			// if (addrList.getKey().matches(message.getAddress())) {
+			if (addrList.getKey().equals(message.getAddress())) {
+				addrList.getValue().acceptMessage(time, message);
 			}
 		}
 	}

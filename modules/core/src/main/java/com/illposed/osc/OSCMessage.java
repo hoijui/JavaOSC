@@ -10,7 +10,7 @@ package com.illposed.osc;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 public class OSCMessage extends OSCPacket {
 
 	private String address;
-	private List arguments;
+	private List<Object> arguments;
 
 	/**
 	 * Create an empty OSC Message.
@@ -35,7 +35,7 @@ public class OSCMessage extends OSCPacket {
 	 * and, perhaps, some arguments.
 	 */
 	public OSCMessage() {
-		arguments = new LinkedList();
+		arguments = new LinkedList<Object>();
 	}
 
 	/**
@@ -43,13 +43,15 @@ public class OSCMessage extends OSCPacket {
 	 * @param newAddress the recipient of this OSC message
 	 */
 	public OSCMessage(String newAddress) {
-		this(newAddress, null);
+		this(newAddress, (Collection<Object>) null);
 	}
 
+	// deprecated since version 1.0, March 2012
 	/**
 	 * Create an OSCMessage with an address and arguments already initialized.
 	 * @param newAddress    the recipient of this OSC message
 	 * @param newArguments  the data sent to the receiver
+	 * @deprecated
 	 */
 	public OSCMessage(String newAddress, Object[] newArguments) {
 
@@ -59,6 +61,22 @@ public class OSCMessage extends OSCPacket {
 			arguments.addAll(Arrays.asList(newArguments));
 		} else {
 			arguments = new LinkedList();
+		}
+		init();
+	}
+
+	/**
+	 * Create an OSCMessage with an address and arguments already initialized.
+	 * @param newAddress    the recipient of this OSC message
+	 * @param newArguments  the data sent to the receiver
+	 */
+	public OSCMessage(String newAddress, Collection<Object> newArguments) {
+
+		address = newAddress;
+		if (newArguments == null) {
+			arguments = new LinkedList();
+		} else {
+			arguments = new ArrayList(newArguments);
 		}
 		init();
 	}
@@ -115,9 +133,8 @@ public class OSCMessage extends OSCPacket {
 			return;
 		}
 		stream.writeTypes(arguments);
-		Iterator argIter = arguments.iterator();
-		while (argIter.hasNext()) {
-			stream.write(argIter.next());
+		for (Object argument : arguments) {
+			stream.write(argument);
 		}
 	}
 

@@ -28,6 +28,7 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 	/**
 	 * @see junit.framework.TestCase#setUp()
 	 */
+	@Override
 	protected void setUp() throws Exception {
 		converter = new OSCByteArrayToJavaConverter();
 	}
@@ -35,6 +36,7 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 	/**
 	 * @see junit.framework.TestCase#tearDown()
 	 */
+	@Override
 	protected void tearDown() throws Exception {
 
 	}
