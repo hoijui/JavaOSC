@@ -40,24 +40,24 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Create an OSCMessage with an address already initialized.
-	 * @param newAddress the recipient of this OSC message
+	 * @param address the recipient of this OSC message
 	 */
-	public OSCMessage(String newAddress) {
+	public OSCMessage(String address) {
 		this(address, null);
 	}
 
 	/**
 	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param newAddress    the recipient of this OSC message
-	 * @param newArguments  the data sent to the receiver
+	 * @param address    the recipient of this OSC message
+	 * @param arguments  the data sent to the receiver
 	 */
-	public OSCMessage(String newAddress, Collection<Object> newArguments) {
+	public OSCMessage(String address, Collection<Object> arguments) {
 
-		address = newAddress;
-		if (newArguments == null) {
-			arguments = new LinkedList();
+		this.address = address;
+		if (arguments == null) {
+			this.arguments = new LinkedList();
 		} else {
-			arguments = new ArrayList(newArguments);
+			this.arguments = new ArrayList(arguments);
 		}
 		init();
 	}
@@ -72,10 +72,10 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Set the address of this message.
-	 * @param anAddress the receiver of the message
+	 * @param address the receiver of the message
 	 */
-	public void setAddress(String anAddress) {
-		address = anAddress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	/**

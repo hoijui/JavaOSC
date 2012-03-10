@@ -67,14 +67,14 @@ public class OscUI extends JPanel {
 		makeDisplay();
 		try {
 			oscPort = new OSCPortOut();
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// this is just a demo program, so this is acceptable behavior
-			e.printStackTrace();
+			ex.printStackTrace();
 		}
 	}
 
 	// create a method for widget building
-	public void makeDisplay() {
+	private final void makeDisplay() {
 
 		// setLayout to be a BoxLayout
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -534,7 +534,7 @@ public class OscUI extends JPanel {
 		// send an error message if this doesn't happen
 		try {
 			oscPort.send(msg);
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			showError("Couldn't send");
 		}
 	}
