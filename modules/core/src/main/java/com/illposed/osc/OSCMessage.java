@@ -9,8 +9,8 @@
 package com.illposed.osc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class OSCMessage extends OSCPacket {
 	 * and, perhaps, some arguments.
 	 */
 	public OSCMessage() {
-		arguments = new LinkedList<Object>();
+		this(null);
 	}
 
 	/**
@@ -43,26 +43,7 @@ public class OSCMessage extends OSCPacket {
 	 * @param newAddress the recipient of this OSC message
 	 */
 	public OSCMessage(String newAddress) {
-		this(newAddress, (Collection<Object>) null);
-	}
-
-	// deprecated since version 1.0, March 2012
-	/**
-	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param newAddress    the recipient of this OSC message
-	 * @param newArguments  the data sent to the receiver
-	 * @deprecated
-	 */
-	public OSCMessage(String newAddress, Object[] newArguments) {
-
-		address = newAddress;
-		if (null != newArguments) {
-			arguments = new ArrayList(newArguments.length);
-			arguments.addAll(Arrays.asList(newArguments));
-		} else {
-			arguments = new LinkedList();
-		}
-		init();
+		this(address, null);
 	}
 
 	/**
@@ -110,8 +91,8 @@ public class OSCMessage extends OSCPacket {
 	 * The arguments of this message.
 	 * @return the arguments to this message
 	 */
-	public Object[] getArguments() {
-		return arguments.toArray();
+	public List<Object> getArguments() {
+		return Collections.unmodifiableList(arguments);
 	}
 
 	/**

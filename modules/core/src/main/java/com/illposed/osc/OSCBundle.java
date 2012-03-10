@@ -10,8 +10,8 @@ package com.illposed.osc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,17 +60,7 @@ public class OSCBundle extends OSCPacket {
 	 * @param timestamp the time to execute the bundle
 	 */
 	public OSCBundle(Date timestamp) {
-		this((Collection<OSCPacket>) null, timestamp);
-	}
-
-	// deprecated since version 1.0, March 2012
-	/**
-	 * Create an OSCBundle made up of the given packets with a timestamp of now.
-	 * @param packets array of OSCPackets to initialize this object with
-	 * @deprecated
-	 */
-	public OSCBundle(OSCPacket[] packets) {
-		this(packets, TIMESTAMP_IMMEDIATE);
+		this(null, timestamp);
 	}
 
 	/**
@@ -79,20 +69,6 @@ public class OSCBundle extends OSCPacket {
 	 */
 	public OSCBundle(Collection<OSCPacket> packets) {
 		this(packets, TIMESTAMP_IMMEDIATE);
-	}
-
-	// deprecated since version 1.0, March 2012
-	/**
-	 * Create an OSCBundle, specifying the packets and timestamp.
-	 * @param packets the packets that make up the bundle
-	 * @param timestamp the time to execute the bundle
-	 * @deprecated
-	 */
-	public OSCBundle(OSCPacket[] packets, Date timestamp) {
-		this((packets == null)
-				? new LinkedList<OSCPacket>()
-				: Arrays.asList(packets),
-				timestamp);
 	}
 
 	/**
@@ -139,10 +115,8 @@ public class OSCBundle extends OSCPacket {
 	 * Get the packets contained in this bundle.
 	 * @return the packets contained in this bundle.
 	 */
-	public OSCPacket[] getPackets() {
-		OSCPacket[] packetArray = new OSCPacket[packets.size()];
-		packets.toArray(packetArray);
-		return packetArray;
+	public List<OSCPacket> getPackets() {
+		return Collections.unmodifiableList(packets);
 	}
 
 	/**

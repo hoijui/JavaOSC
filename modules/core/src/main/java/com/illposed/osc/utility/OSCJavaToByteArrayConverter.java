@@ -175,10 +175,10 @@ public class OSCJavaToByteArrayConverter {
 		if (null == anObject) {
 			return;
 		}
-		if (anObject instanceof Object[]) {
-			Object[] theArray = (Object[]) anObject;
-			for(int i = 0; i < theArray.length; ++i) {
-				write(theArray[i]);
+		if (anObject instanceof Collection) {
+			Collection<Object> theArray = (Collection<Object>) anObject;
+			for (Object entry : theArray) {
+				write(entry);
 			}
 			return;
 		}
@@ -239,28 +239,28 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write the types for an array element in the arguments.
-	 * @param array object[]
+	 * @param array array of base Objects
 	 */
-	public void writeTypesArray(Object[] array) {
+	public void writeTypesArray(Collection<Object> array) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
 		// again?
 		// I really wish I could extend the base classes!
 
-		for (int i = 0; i < array.length; i++) {
-			if (null == array[i]) {
+		for (Object element : array) {
+			if (element == null) {
 				continue;
 			}
 			// Create a way to deal with Boolean type objects
-			if (Boolean.TRUE.equals(array[i])) {
+			if (Boolean.TRUE.equals(element)) {
 				stream.write('T');
 				continue;
 			}
-			if (Boolean.FALSE.equals(array[i])) {
+			if (Boolean.FALSE.equals(element)) {
 				stream.write('F');
 				continue;
 			}
 			// this is an object -- write the type for the class
-			writeType(array[i].getClass());
+			writeType(element.getClass());
 		}
 	}
 
@@ -279,11 +279,11 @@ public class OSCJavaToByteArrayConverter {
 			}
 			// if the array at i is a type of array write a [
 			// This is used for nested arguments
-			if (type.getClass().isArray()) {
+			if (type instanceof Collection) {
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
-				writeTypesArray((Object[]) type);
+				writeTypesArray((Collection<Object>) type);
 				// close the array
 				stream.write(']');
 				continue;
