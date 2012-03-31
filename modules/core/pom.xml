@@ -33,8 +33,6 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>dependency</classpathPrefix>
 							<packageName>${project.packageName}</packageName>
 							<mainClass>${project.mainClass}</mainClass>
 						</manifest>
