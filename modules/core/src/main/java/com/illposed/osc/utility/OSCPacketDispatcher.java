@@ -70,10 +70,7 @@ public class OSCPacketDispatcher {
 
 	private void dispatchMessage(OSCMessage message, Date time) {
 		for (Entry<String, OSCListener> addrList : addressToListener.entrySet()) {
-			// TODO this supports the OSC regexp facility, but it
-			// only works in JDK 1.4, so don't support it right now
-			// if (addrList.getKey().matches(message.getAddress())) {
-			if (addrList.getKey().equals(message.getAddress())) {
+			if (message.getAddress().matches(addrList.getKey())) {
 				addrList.getValue().acceptMessage(time, message);
 			}
 		}

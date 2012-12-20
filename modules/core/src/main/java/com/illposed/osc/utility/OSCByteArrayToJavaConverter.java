@@ -177,6 +177,8 @@ public class OSCByteArrayToJavaConverter {
 				return Boolean.TRUE;
 			case 'F' :
 				return Boolean.FALSE;
+			case 't' :
+				return readTimeTag();
 			default:
 				return null;
 		}
