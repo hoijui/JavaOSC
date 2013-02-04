@@ -19,7 +19,8 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 /**
  * OSCPortIn is the class that listens for OSC messages.
  *
- * An example based on com.illposed.osc.test.OSCPortTest::testReceiving() :
+ * An example based on
+ * {@link com.illposed.osc.OSCPortTest#testReceiving()}:
  * <pre>
 
 	receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
@@ -34,8 +35,8 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
  * </pre>
  *
  * Then, using a program such as SuperCollider or sendOSC, send a message
- * to this computer, port 57110 (DEFAULT_SC_OSC_PORT), with the address
- * /message/receiving
+ * to this computer, port {@link #DEFAULT_SC_OSC_PORT},
+ * with the address "/message/receiving".
  *
  * @author Chandrasekhar Ramakrishnan
  */
@@ -64,7 +65,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Run the loop that listens for OSC on a socket until
-	 * @{link #isListening()} becomes false.
+	 * {@link #isListening()} becomes false.
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {

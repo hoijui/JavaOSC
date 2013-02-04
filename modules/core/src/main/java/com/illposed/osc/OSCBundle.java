@@ -19,10 +19,12 @@ import java.util.List;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
- * A bundle represents a collection of OSC packets (either messages or other
- * bundles) and has a time-tag which can be used by a scheduler to execute
- * a bundle in the future, instead of immediately (OSCMessages are executed
- * immediately).
+ * A bundle represents a collection of OSC packets
+ * (either messages or other bundles)
+ * and has a time-tag which can be used by a scheduler to execute
+ * a bundle in the future,
+ * instead of immediately.
+ * {@link OSCMessage}s are executed immediately.
  *
  * Bundles should be used if you want to send multiple messages to be executed
  * atomically together, or you want to schedule one or more messages to be
@@ -65,7 +67,8 @@ public class OSCBundle extends OSCPacket {
 
 	// deprecated since version 1.0, March 2012
 	/**
-	 * Create an OSCBundle made up of the given packets with a timestamp of now.
+	 * Creates an OSCBundle made up of the given packets
+	 * with a timestamp of now.
 	 * @param packets array of OSCPackets to initialize this object with
 	 * @deprecated
 	 */
@@ -74,7 +77,8 @@ public class OSCBundle extends OSCPacket {
 	}
 
 	/**
-	 * Create an OSCBundle made up of the given packets with a timestamp of now.
+	 * Creates an OSCBundle made up of the given packets
+	 * with a timestamp of now.
 	 * @param packets array of OSCPackets to initialize this object with
 	 */
 	public OSCBundle(Collection<OSCPacket> packets) {
@@ -83,7 +87,7 @@ public class OSCBundle extends OSCPacket {
 
 	// deprecated since version 1.0, March 2012
 	/**
-	 * Create an OSCBundle, specifying the packets and timestamp.
+	 * Creates an OSCBundle, specifying the packets and timestamp.
 	 * @param packets the packets that make up the bundle
 	 * @param timestamp the time to execute the bundle
 	 * @deprecated

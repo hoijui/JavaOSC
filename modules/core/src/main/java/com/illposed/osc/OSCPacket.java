@@ -16,9 +16,9 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  *
  * The actual packets are:
  * <ul>
- * <li>OSCMessage &mdash; simple OSC messages
- * <li>OSCBundle &mdash; OSC messages with timestamps and/or made up of multiple
- *   messages
+ * <li>{@link OSCMessage}: simple OSC messages
+ * <li>{@link OSCBundle}: OSC messages with timestamps
+ *   and/or made up of multiple messages
  * </ul>
  *
  * This implementation is based on

@@ -11,8 +11,9 @@ package com.illposed.osc;
 import java.net.DatagramSocket;
 
 /**
- * OSCPort is an abstract superclass, to send OSC messages, use @see OSCPortOut.
- * To listen for OSC messages, use @see OSCPortIn.
+ * OSCPort is an abstract superclass, to send OSC messages,
+ * use {@link OSCPortOut}.
+ * To listen for OSC messages, use {@link OSCPortIn}.
  *
  * @author Chandrasekhar Ramakrishnan
  */
@@ -30,16 +31,18 @@ public abstract class OSCPort {
 	}
 
 	/**
-	 * The port that the SuperCollider <b>synth</b> engine usually listens to
-	 * &mdash; 57110.
+	 * The port that the SuperCollider <b>synth</b> engine
+	 * usually listens to.
+	 * @see #DEFAULT_SC_OSC_PORT
 	 */
 	public static int defaultSCOSCPort() {
 		return DEFAULT_SC_OSC_PORT;
 	}
 
 	/**
-	 * The port that the SuperCollider <b>language</b> engine usually listens to
-	 * &mdash; 57120.
+	 * The port that the SuperCollider <b>language</b> engine
+	 * usually listens to.
+	 * @see #DEFAULT_SC_LANG_OSC_PORT
 	 */
 	public static int defaultSCLangOSCPort() {
 		return DEFAULT_SC_LANG_OSC_PORT;

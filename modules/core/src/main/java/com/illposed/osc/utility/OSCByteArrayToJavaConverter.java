@@ -18,8 +18,9 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 
 /**
- * Utility class to convert a byte array conforming to the OSC byte stream
- * format into Java objects.
+ * Utility class to convert a byte array,
+ * conforming to the OSC byte stream format,
+ * into Java objects.
  *
  * @author Chandrasekhar Ramakrishnan
  */
@@ -30,16 +31,15 @@ public class OSCByteArrayToJavaConverter {
 	private int streamPosition;
 
 	/**
-	 * Creates a helper object for converting from a byte array to an OSCPacket
-	 * object.
+	 * Creates a helper object for converting from a byte array
+	 * to an {@link OSCPacket} object.
 	 */
 	public OSCByteArrayToJavaConverter() {
 	}
 
 	/**
-	 * Converts a byte array into an OSCPacket (either an OSCMessage or
-	 * OSCBundle).
-	 * @return an OSCPacket
+	 * Converts a byte array into an {@link OSCPacket}
+	 * (either an {@link OSCMessage} or {@link OSCBundle}).
 	 */
 	public OSCPacket convert(byte[] byteArray, int bytesLength) {
 		this.bytes = byteArray;
@@ -63,7 +63,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Convert the byte array a bundle.
+	 * Converts the byte array to a bundle.
 	 * Assumes that the byte array is a bundle.
 	 * @return a bundle containing the data specified in the byte stream
 	 */
@@ -88,7 +88,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Convert the byte array a simple message.
+	 * Converts the byte array to a simple message.
 	 * Assumes that the byte array is a message.
 	 * @return a message containing the data specified in the byte stream
 	 */
@@ -117,7 +117,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read a string from the byte stream.
+	 * Reads a string from the byte stream.
 	 * @return the next string in the byte stream
 	 */
 	private String readString() {
@@ -131,7 +131,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read the types of the arguments from the byte stream.
+	 * Reads the types of the arguments from the byte stream.
 	 * @return a char array with the types of the arguments
 	 */
 	private List<Character> readTypes() {
@@ -155,8 +155,8 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read an object of the type specified by the type char.
-	 * @param type type of argument to read
+	 * Reads an object of the type specified by the type char.
+	 * @param type type of the argument to read
 	 * @return a Java representation of the argument
 	 */
 	private Object readArgument(char type) {
@@ -185,24 +185,25 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read a char from the byte stream.
-	 * @return a character
+	 * Reads a char from the byte stream.
+	 * @return a {@link Character}
 	 */
 	private Object readChar() {
 		return new Character((char) bytes[streamPosition++]);
 	}
 
 	/**
-	 * Read a double &mdash; this just read a float.
-	 * @return a Double
+	 * Reads a double from the byte stream.
+	 * This just reads a float.
+	 * @return a {@link Double}
 	 */
 	private Object readDouble() {
 		return readFloat();
 	}
 
 	/**
-	 * Read a float from the byte stream.
-	 * @return a Float
+	 * Reads a float from the byte stream.
+	 * @return a {@link Float}
 	 */
 	private Object readFloat() {
 		byte[] floatBytes = new byte[4];
@@ -220,8 +221,8 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read a Big Integer (64 bit integer) from the byte stream.
-	 * @return a BigInteger
+	 * Reads a Big Integer (64 bit integer) from the byte stream.
+	 * @return a {@link BigInteger}
 	 */
 	private Object readBigInteger() {
 		byte[] longintBytes = new byte[8];
@@ -237,8 +238,8 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read an Integer (32 bit integer) from the byte stream.
-	 * @return an Integer
+	 * Reads an Integer (32 bit integer) from the byte stream.
+	 * @return an {@link Integer}
 	 */
 	private Object readInteger() {
 		byte[] intBytes = new byte[4];
@@ -251,11 +252,11 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read the time tag and convert it to a Java Date object.
+	 * Reads the time tag and convert it to a Java Date object.
 	 * A timestamp is a 64 bit number representing the time in NTP format.
 	 * The first 32 bits are seconds since 1900, the second 32 bits are
 	 * fractions of a second.
-	 * @return a Date
+	 * @return a {@link Date}
 	 */
 	private Date readTimeTag() {
 		byte[] secondBytes = new byte[8];
@@ -310,7 +311,7 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Read an array from the byte stream.
+	 * Reads an array from the byte stream.
 	 * @param types
 	 * @param pos at which position to start reading
 	 * @return the array that was read
@@ -339,10 +340,11 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Move to the next byte with an index in the byte array dividable by four.
+	 * Move to the next byte with an index in the byte array
+	 * which is dividable by four.
 	 */
 	private void moveToFourByteBoundry() {
-		// If i'm already at a 4 byte boundry, I need to move to the next one
+		// If i am already at a 4 byte boundry, I need to move to the next one
 		int mod = streamPosition % 4;
 		streamPosition += (4 - mod);
 	}
