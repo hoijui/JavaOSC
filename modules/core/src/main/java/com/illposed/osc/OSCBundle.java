@@ -187,5 +187,4 @@ public class OSCBundle extends OSCPacket {
 		}
 		return stream.toByteArray();
 	}
-
 }
