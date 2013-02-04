@@ -39,44 +39,45 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Create an OSCMessage with an address already initialized.
-	 * @param newAddress the recipient of this OSC message
+	 * Creates an OSCMessage with an address already initialized.
+	 * @param address  the recipient of this OSC message
 	 */
-	public OSCMessage(String newAddress) {
-		this(newAddress, (Collection<Object>) null);
+	public OSCMessage(String address) {
+		this(address, (Collection<Object>) null);
 	}
 
 	// deprecated since version 1.0, March 2012
 	/**
-	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param newAddress    the recipient of this OSC message
-	 * @param newArguments  the data sent to the receiver
+	 * Creates an OSCMessage with an address and arguments already initialized.
+	 * @param address  the recipient of this OSC message
+	 * @param arguments  the data sent to the receiver
 	 * @deprecated
 	 */
-	public OSCMessage(String newAddress, Object[] newArguments) {
+	public OSCMessage(String address, Object[] arguments) {
 
-		address = newAddress;
-		if (null != newArguments) {
-			arguments = new ArrayList(newArguments.length);
-			arguments.addAll(Arrays.asList(newArguments));
+		this.address = address;
+		if (arguments == null) {
+			this.arguments = new LinkedList();
 		} else {
-			arguments = new LinkedList();
+			this.arguments = new ArrayList(arguments.length);
+			this.arguments.addAll(Arrays.asList(arguments));
 		}
 		init();
 	}
 
 	/**
-	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param newAddress    the recipient of this OSC message
-	 * @param newArguments  the data sent to the receiver
+	 * Creates an OSCMessage with an address
+	 * and arguments already initialized.
+	 * @param address  the recipient of this OSC message
+	 * @param arguments  the data sent to the receiver
 	 */
-	public OSCMessage(String newAddress, Collection<Object> newArguments) {
+	public OSCMessage(String address, Collection<Object> arguments) {
 
-		address = newAddress;
-		if (newArguments == null) {
-			arguments = new LinkedList();
+		this.address = address;
+		if (arguments == null) {
+			this.arguments = new LinkedList();
 		} else {
-			arguments = new ArrayList(newArguments);
+			this.arguments = new ArrayList(arguments);
 		}
 		init();
 	}
