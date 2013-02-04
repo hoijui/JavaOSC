@@ -28,14 +28,16 @@ public class OSCBundleTest extends junit.framework.TestCase {
 		byte[] byteArray = bundle.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
-		if (!packet.getTimestamp().equals(timestamp))
+		if (!packet.getTimestamp().equals(timestamp)) {
 			fail("Send Bundle did not receive the correct timestamp " + packet.getTimestamp()
 				+ "(" + packet.getTimestamp().getTime() +
 				") (should be " + timestamp +"( " + timestamp.getTime() + ")) ");
+		}
 		OSCPacket[] packets = packet.getPackets();
 		OSCMessage msg = (OSCMessage) packets[0];
-		if (!msg.getAddress().equals("/dummy"))
+		if (!msg.getAddress().equals("/dummy")) {
 			fail("Send Bundle's message did not receive the correct address");
+		}
 	}
 
 	public void testSendBundleImmediate() {
@@ -44,12 +46,14 @@ public class OSCBundleTest extends junit.framework.TestCase {
 		byte[] byteArray = bundle.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
-		if (!packet.getTimestamp().equals(OSCBundle.TIMESTAMP_IMMEDIATE))
+		if (!packet.getTimestamp().equals(OSCBundle.TIMESTAMP_IMMEDIATE)) {
 			fail("Timestamp should have been immediate, not " + packet.getTimestamp()
 				+ "(" + packet.getTimestamp().getTime() + ")");
+		}
 		OSCPacket[] packets = packet.getPackets();
 		OSCMessage msg = (OSCMessage) packets[0];
-		if (!msg.getAddress().equals("/dummy"))
+		if (!msg.getAddress().equals("/dummy")) {
 			fail("Send Bundle's message did not receive the correct address");
+		}
 	}
 }

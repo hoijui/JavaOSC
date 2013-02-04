@@ -112,15 +112,19 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
-		if (!packet.getAddress().equals("/dummy"))
+		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Big Integer did not receive the correct address");
+		}
 		Object[] arguments = packet.getArguments();
-		if (arguments.length != 1)
+		if (arguments.length != 1) {
 			fail("Send Big Integer should have 1 argument, not " + arguments.length);
-		if (!(arguments[0] instanceof BigInteger))
+		}
+		if (!(arguments[0] instanceof BigInteger)) {
 			fail("arguments[0] should be a BigInteger, not " + arguments[0]);
-		if (!(new BigInteger("1001").equals(arguments[0])))
+		}
+		if (!(new BigInteger("1001").equals(arguments[0]))) {
 			fail("Instead of BigInteger(1001), received " + arguments[0]);
+		}
 	}
 
 	public void testSendArray() {
@@ -130,17 +134,21 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
-		if (!packet.getAddress().equals("/dummy"))
+		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Array did not receive the correct address");
+		}
 		Object[] arguments = packet.getArguments();
-		if (arguments.length != 1)
+		if (arguments.length != 1) {
 			fail("Send Array should have 1 argument, not " + arguments.length);
-		if (!(arguments[0] instanceof Object[]))
+		}
+		if (!(arguments[0] instanceof Object[])) {
 			fail("arguments[0] should be a Object array, not " + arguments[0]);
+		}
 		for (int i = 0; i < 2; ++i) {
 			Object[] theArray = (Object[]) arguments[0];
-			if (!floats[i].equals(theArray[i]))
+			if (!floats[i].equals(theArray[i])) {
 				fail("Array element " + i + " should be " + floats[i] + " not " + theArray[i]);
+			}
 		}
 	}
 }
