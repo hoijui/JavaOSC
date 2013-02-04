@@ -28,7 +28,7 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 public abstract class OSCPacket {
 
 	private boolean isByteArrayComputed;
-	protected byte[] byteArray;
+	private byte[] byteArray;
 
 	/**
 	 * Default constructor for the abstract class
@@ -40,9 +40,9 @@ public abstract class OSCPacket {
 	 * Generate a representation of this packet conforming to the
 	 * the OSC byte stream specification. Used Internally.
 	 */
-	protected void computeByteArray() {
+	protected byte[] computeByteArray() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		computeByteArray(stream);
+		return computeByteArray(stream);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public abstract class OSCPacket {
 	 * formatted according to the OSC specification.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected abstract void computeByteArray(OSCJavaToByteArrayConverter stream);
+	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
 
 	/**
 	 * Return the OSC byte stream for this packet.
@@ -58,7 +58,7 @@ public abstract class OSCPacket {
 	 */
 	public byte[] getByteArray() {
 		if (!isByteArrayComputed) {
-			computeByteArray();
+			byteArray = computeByteArray();
 		}
 		return byteArray;
 	}

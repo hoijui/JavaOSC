@@ -142,9 +142,9 @@ public class OSCMessage extends OSCPacket {
 	 * Convert the message into a byte array. Used internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected void computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
-		byteArray = stream.toByteArray();
+		return stream.toByteArray();
 	}
 }

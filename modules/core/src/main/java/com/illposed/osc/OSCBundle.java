@@ -176,7 +176,7 @@ public class OSCBundle extends OSCPacket {
 	 * Used Internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected void computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
 		byte[] packetBytes;
@@ -185,7 +185,7 @@ public class OSCBundle extends OSCPacket {
 			stream.write(packetBytes.length);
 			stream.write(packetBytes);
 		}
-		byteArray = stream.toByteArray();
+		return stream.toByteArray();
 	}
 
 }
