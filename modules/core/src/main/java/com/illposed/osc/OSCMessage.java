@@ -30,9 +30,9 @@ public class OSCMessage extends OSCPacket {
 	private List<Object> arguments;
 
 	/**
-	 * Create an empty OSC Message.
-	 * In order to send this OSC message, you need to set the address
-	 * and, perhaps, some arguments.
+	 * Creates an empty OSC Message.
+	 * In order to send this OSC message,
+	 * you need to set the address and optionally some arguments.
 	 */
 	public OSCMessage() {
 		arguments = new LinkedList<Object>();
@@ -91,16 +91,16 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Set the address of this message.
-	 * @param anAddress the receiver of the message
+	 * @param address the receiver of the message
 	 */
-	public void setAddress(String anAddress) {
-		address = anAddress;
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 	/**
 	 * Add an argument to the list of arguments.
-	 * @param argument a Float, String, Integer, BigInteger, Boolean or
-	 *          an array of these
+	 * @param argument a Float, String, Integer, BigInteger, Boolean
+	 *   or an array of these
 	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
@@ -115,16 +115,16 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Convert the address into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the address into a byte array.
+	 * Used internally only.
 	 */
 	protected void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(address);
 	}
 
 	/**
-	 * Convert the arguments into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the arguments into a byte array.
+	 * Used internally only.
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
@@ -138,8 +138,8 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Convert the message into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the message into a byte array.
+	 * Used internally only.
 	 */
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);

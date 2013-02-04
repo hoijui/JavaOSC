@@ -29,7 +29,6 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 *
 	 * This is different from the SmallTalk implementation.
 	 * In Squeak, this produces:
 	 * byte[] answer = {62, 76, (byte) 204, (byte) 204};
