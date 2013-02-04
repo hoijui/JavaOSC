@@ -16,12 +16,13 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * OSCPortOut is the class that sends OSC messages to a specific address and
- * port.
+ * OSCPortOut is the class that sends OSC messages
+ * to a specific address and port.
  *
  * To send an OSC message, call send().
  *
- * An example based on com.illposed.osc.test.OSCPortTest::testMessageWithArgs() :
+ * An example based on
+ * {@link com.illposed.osc.OSCPortTest#testMessageWithArgs()}:
  * <pre>
 	OSCPort sender = new OSCPort();
 	List<Object> args = new ArrayList<Object>(2);
@@ -54,17 +55,17 @@ public class OSCPortOut extends OSCPort {
 	}
 
 	/**
-	 * Create an OSCPort that sends to address, using the standard SuperCollider
-	 * port.
+	 * Create an OSCPort that sends to address,
+	 * using the standard SuperCollider port.
 	 * @param address the UDP address to send to
 	 */
-	public OSCPortOut(InetAddress newAddress) throws SocketException {
-		this(newAddress, DEFAULT_SC_OSC_PORT);
+	public OSCPortOut(InetAddress address) throws SocketException {
+		this(address, DEFAULT_SC_OSC_PORT);
 	}
 
 	/**
-	 * Create an OSCPort that sends to localhost, on the standard SuperCollider
-	 * port.
+	 * Create an OSCPort that sends to "localhost",
+	 * on the standard SuperCollider port.
 	 */
 	public OSCPortOut() throws UnknownHostException, SocketException {
 		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
