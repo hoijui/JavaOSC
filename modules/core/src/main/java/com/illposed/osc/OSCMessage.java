@@ -75,9 +75,9 @@ public class OSCMessage extends OSCPacket {
 
 		this.address = address;
 		if (arguments == null) {
-			this.arguments = new LinkedList();
+			this.arguments = new LinkedList<Object>();
 		} else {
-			this.arguments = new ArrayList(arguments);
+			this.arguments = new ArrayList<Object>(arguments);
 		}
 		init();
 	}
