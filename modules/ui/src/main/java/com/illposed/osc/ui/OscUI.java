@@ -560,20 +560,14 @@ public class OscUI extends JPanel {
 	}
 
 	public void doPrintValue(float freq) {
-		String freqString = new String();
-		//freqString.toString(freq);
 		textBox.setText(String.valueOf(freq));
 	}
 
 	public void doPrintValue2(float freq) {
-		String freqString = new String();
-		//freqString.toString(freq);
 		textBox2.setText(String.valueOf(freq));
 	}
 
 	public void doPrintValue3(float freq) {
-		String freqString = new String();
-		//freqString.toString(freq);
 		textBox3.setText(String.valueOf(freq));
 	}
 
