@@ -147,6 +147,7 @@
 					<target>1.5</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 					<showDeprecation>true</showDeprecation>
+					<compilerArgument>-Xlint:unchecked</compilerArgument>
 				</configuration>
 			</plugin>
 
