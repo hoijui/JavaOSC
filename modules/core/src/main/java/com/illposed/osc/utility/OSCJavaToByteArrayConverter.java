@@ -173,30 +173,19 @@ public class OSCJavaToByteArrayConverter {
 	public void write(Object anObject) {
 		// Can't do switch on class
 		if (null == anObject) {
-			return;
-		}
-		if (anObject instanceof Collection) {
+		} else if (anObject instanceof Collection) {
 			Collection<Object> theArray = (Collection<Object>) anObject;
 			for (Object entry : theArray) {
 				write(entry);
 			}
-			return;
-		}
-		if (anObject instanceof Float) {
+		} else if (anObject instanceof Float) {
 			write((Float) anObject);
-			return;
-		}
-		if (anObject instanceof String) {
+		} else if (anObject instanceof String) {
 			write((String) anObject);
-			return;
-		}
-		if (anObject instanceof Integer) {
+		} else if (anObject instanceof Integer) {
 			write((Integer) anObject);
-			return;
-		}
-		if (anObject instanceof BigInteger) {
+		} else if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
-			return;
 		}
 	}
 
@@ -213,27 +202,16 @@ public class OSCJavaToByteArrayConverter {
 
 		if (Integer.class.equals(c)) {
 			stream.write('i');
-			return;
-		}
-		if (java.math.BigInteger.class.equals(c)) {
+		} else if (java.math.BigInteger.class.equals(c)) {
 			stream.write('h');
-			return;
-		}
-		if (Float.class.equals(c)) {
+		} else if (Float.class.equals(c)) {
 			stream.write('f');
-			return;
-		}
-		if (Double.class.equals(c)) {
+		} else if (Double.class.equals(c)) {
 			stream.write('d');
-			return;
-		}
-		if (String.class.equals(c)) {
+		} else if (String.class.equals(c)) {
 			stream.write('s');
-			return;
-		}
-		if (Character.class.equals(c)) {
+		} else if (Character.class.equals(c)) {
 			stream.write('c');
-			return;
 		}
 	}
 
@@ -248,19 +226,15 @@ public class OSCJavaToByteArrayConverter {
 
 		for (Object element : array) {
 			if (element == null) {
-				continue;
-			}
-			// Create a way to deal with Boolean type objects
-			if (Boolean.TRUE.equals(element)) {
+			} else if (Boolean.TRUE.equals(element)) {
+				// Create a way to deal with Boolean type objects
 				stream.write('T');
-				continue;
-			}
-			if (Boolean.FALSE.equals(element)) {
+			} else if (Boolean.FALSE.equals(element)) {
 				stream.write('F');
-				continue;
+			} else {
+				// this is an object -- write the type for the class
+				writeType(element.getClass());
 			}
-			// this is an object -- write the type for the class
-			writeType(element.getClass());
 		}
 	}
 

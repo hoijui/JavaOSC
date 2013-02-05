@@ -118,15 +118,19 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
-		if (!packet.getAddress().equals("/dummy"))
+		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Big Integer did not receive the correct address");
+		}
 		List<Object> arguments = packet.getArguments();
-		if (arguments.size() != 1)
+		if (arguments.size() != 1) {
 			fail("Send Big Integer should have 1 argument, not " + arguments.size());
-		if (!(arguments.get(0) instanceof BigInteger))
+		}
+		if (!(arguments.get(0) instanceof BigInteger)) {
 			fail("arguments.get(0) should be a BigInteger, not " + arguments.get(0));
-		if (!(new BigInteger("1001").equals(arguments.get(0))))
+		}
+		if (!(new BigInteger("1001").equals(arguments.get(0)))) {
 			fail("Instead of BigInteger(1001), received " + arguments.get(0));
+		}
 	}
 
 	public void testSendArray() {
@@ -138,17 +142,21 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
-		if (!packet.getAddress().equals("/dummy"))
+		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Array did not receive the correct address");
+		}
 		List<Object> arguments = packet.getArguments();
-		if (arguments.size() != 1)
+		if (arguments.size() != 1) {
 			fail("Send Array should have 1 argument, not " + arguments.size());
-		if (!(arguments.get(0) instanceof List))
+		}
+		if (!(arguments.get(0) instanceof List)) {
 			fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
+		}
 		for (int i = 0; i < 2; ++i) {
 			List<Object> theArray = (List<Object>) arguments.get(0);
-			if (!floats.get(i).equals(theArray.get(i)))
+			if (!floats.get(i).equals(theArray.get(i))) {
 				fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
+			}
 		}
 	}
 }

@@ -88,8 +88,9 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.send(mesg);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
-		if (!messageReceived)
+		if (!messageReceived) {
 			fail("Message was not received");
+		}
 	}
 
 	public void testBundleReceiving() throws Exception {
@@ -108,9 +109,11 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.send(bundle);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
-		if (!messageReceived)
+		if (!messageReceived) {
 			fail("Message was not received");
-		if (!receivedTimestamp.equals(bundle.getTimestamp()))
+		}
+		if (!receivedTimestamp.equals(bundle.getTimestamp())) {
 			fail("Message should have timestamp " + bundle.getTimestamp() + " but has " + receivedTimestamp);
+		}
 	}
 }

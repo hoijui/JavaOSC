@@ -30,34 +30,35 @@ public class OSCMessage extends OSCPacket {
 	private List<Object> arguments;
 
 	/**
-	 * Create an empty OSC Message.
-	 * In order to send this OSC message, you need to set the address
-	 * and, perhaps, some arguments.
+	 * Creates an empty OSC Message.
+	 * In order to send this OSC message,
+	 * you need to set the address and optionally some arguments.
 	 */
 	public OSCMessage() {
 		this(null);
 	}
 
 	/**
-	 * Create an OSCMessage with an address already initialized.
-	 * @param address the recipient of this OSC message
+	 * Creates an OSCMessage with an address already initialized.
+	 * @param address  the recipient of this OSC message
 	 */
 	public OSCMessage(String address) {
 		this(address, null);
 	}
 
 	/**
-	 * Create an OSCMessage with an address and arguments already initialized.
-	 * @param address    the recipient of this OSC message
+	 * Creates an OSCMessage with an address
+	 * and arguments already initialized.
+	 * @param address  the recipient of this OSC message
 	 * @param arguments  the data sent to the receiver
 	 */
 	public OSCMessage(String address, Collection<Object> arguments) {
 
 		this.address = address;
 		if (arguments == null) {
-			this.arguments = new LinkedList();
+			this.arguments = new LinkedList<Object>();
 		} else {
-			this.arguments = new ArrayList(arguments);
+			this.arguments = new ArrayList<Object>(arguments);
 		}
 		init();
 	}
@@ -80,8 +81,8 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Add an argument to the list of arguments.
-	 * @param argument a Float, String, Integer, BigInteger, Boolean or
-	 *          an array of these
+	 * @param argument a Float, String, Integer, BigInteger, Boolean
+	 *   or an array of these
 	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
@@ -96,16 +97,16 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Convert the address into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the address into a byte array.
+	 * Used internally only.
 	 */
 	protected void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(address);
 	}
 
 	/**
-	 * Convert the arguments into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the arguments into a byte array.
+	 * Used internally only.
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
@@ -119,8 +120,8 @@ public class OSCMessage extends OSCPacket {
 	}
 
 	/**
-	 * Convert the message into a byte array. Used internally.
-	 * @param stream OscPacketByteArrayConverter
+	 * Convert the message into a byte array.
+	 * Used internally only.
 	 */
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);

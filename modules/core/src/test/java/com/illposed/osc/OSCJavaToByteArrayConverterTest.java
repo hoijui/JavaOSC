@@ -29,7 +29,6 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 *
 	 * This is different from the SmallTalk implementation.
 	 * In Squeak, this produces:
 	 * byte[] answer = {62, 76, (byte) 204, (byte) 204};
@@ -89,11 +88,6 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		stream.write(new java.math.BigInteger("1124"));
 		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
-		System.out.println("result length " + result.length);
-		for (int i = 0; i < result.length; i++) {
-			System.out.print(result[i]);
-		}
-		System.out.println("");
 		checkResultEqualsAnswer(result, answer);
 	}
 }

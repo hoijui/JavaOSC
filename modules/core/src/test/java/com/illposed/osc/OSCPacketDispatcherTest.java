@@ -61,10 +61,12 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		receivedOnListener2 = false;
 		OSCMessage message = new OSCMessage("/listener1");
 		dispatcher.dispatchPacket(message);
-		if (!receivedOnListener1)
+		if (!receivedOnListener1) {
 			fail("Message to listener1 didn't get sent to listener1");
-		if (receivedOnListener2)
+		}
+		if (receivedOnListener2) {
 			fail("Message to listener1 got sent to listener2");
+		}
 	}
 
 	public void testDispatchToListener2() throws Exception {
@@ -72,10 +74,12 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		receivedOnListener2 = false;
 		OSCMessage message = new OSCMessage("/listener2");
 		dispatcher.dispatchPacket(message);
-		if (receivedOnListener1)
+		if (receivedOnListener1) {
 			fail("Message to listener2 got sent to listener1");
-		if (!receivedOnListener2)
+		}
+		if (!receivedOnListener2) {
 			fail("Message to listener2 didn't get sent to listener2");
+		}
 	}
 
 	public void testDispatchToNobody() throws Exception {
@@ -83,8 +87,9 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		receivedOnListener2 = false;
 		OSCMessage message = new OSCMessage("/nobody");
 		dispatcher.dispatchPacket(message);
-		if (receivedOnListener1 || receivedOnListener2)
+		if (receivedOnListener1 || receivedOnListener2) {
 			fail("Message to nobody got dispatched incorrectly");
+		}
 	}
 
 	public void testDispatchBundle() throws Exception {
@@ -94,9 +99,11 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 		bundle.addPacket(new OSCMessage("/listener1"));
 		bundle.addPacket(new OSCMessage("/listener2"));
 		dispatcher.dispatchPacket(bundle);
-		if (!receivedOnListener1)
+		if (!receivedOnListener1) {
 			fail("Bundle didn't dispatch message to listener 1");
-		if (!receivedOnListener2)
+		}
+		if (!receivedOnListener2) {
 			fail("Bundle didn't dispatch message to listener 2");
+		}
 	}
 }
