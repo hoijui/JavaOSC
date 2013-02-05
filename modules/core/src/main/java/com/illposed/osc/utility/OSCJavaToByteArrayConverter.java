@@ -173,30 +173,19 @@ public class OSCJavaToByteArrayConverter {
 	public void write(Object anObject) {
 		// Can't do switch on class
 		if (null == anObject) {
-			return;
-		}
-		if (anObject instanceof Object[]) {
+		} else if (anObject instanceof Object[]) {
 			Object[] theArray = (Object[]) anObject;
-			for(int i = 0; i < theArray.length; ++i) {
+			for (int i = 0; i < theArray.length; ++i) {
 				write(theArray[i]);
 			}
-			return;
-		}
-		if (anObject instanceof Float) {
+		} else if (anObject instanceof Float) {
 			write((Float) anObject);
-			return;
-		}
-		if (anObject instanceof String) {
+		} else if (anObject instanceof String) {
 			write((String) anObject);
-			return;
-		}
-		if (anObject instanceof Integer) {
+		} else if (anObject instanceof Integer) {
 			write((Integer) anObject);
-			return;
-		}
-		if (anObject instanceof BigInteger) {
+		} else if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
-			return;
 		}
 	}
 
@@ -213,33 +202,22 @@ public class OSCJavaToByteArrayConverter {
 
 		if (Integer.class.equals(c)) {
 			stream.write('i');
-			return;
-		}
-		if (java.math.BigInteger.class.equals(c)) {
+		} else if (java.math.BigInteger.class.equals(c)) {
 			stream.write('h');
-			return;
-		}
-		if (Float.class.equals(c)) {
+		} else if (Float.class.equals(c)) {
 			stream.write('f');
-			return;
-		}
-		if (Double.class.equals(c)) {
+		} else if (Double.class.equals(c)) {
 			stream.write('d');
-			return;
-		}
-		if (String.class.equals(c)) {
+		} else if (String.class.equals(c)) {
 			stream.write('s');
-			return;
-		}
-		if (Character.class.equals(c)) {
+		} else if (Character.class.equals(c)) {
 			stream.write('c');
-			return;
 		}
 	}
 
 	/**
 	 * Write the types for an array element in the arguments.
-	 * @param array object[]
+	 * @param array array of base Objects
 	 */
 	public void writeTypesArray(Object[] array) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
@@ -247,20 +225,16 @@ public class OSCJavaToByteArrayConverter {
 		// I really wish I could extend the base classes!
 
 		for (int i = 0; i < array.length; i++) {
-			if (null == array[i]) {
-				continue;
-			}
-			// Create a way to deal with Boolean type objects
-			if (Boolean.TRUE.equals(array[i])) {
+			if (array[i] == null) {
+			} else if (Boolean.TRUE.equals(array[i])) {
+				// Create a way to deal with Boolean type objects
 				stream.write('T');
-				continue;
-			}
-			if (Boolean.FALSE.equals(array[i])) {
+			} else if (Boolean.FALSE.equals(array[i])) {
 				stream.write('F');
-				continue;
+			} else {
+				// this is an object -- write the type for the class
+				writeType(array[i].getClass());
 			}
-			// this is an object -- write the type for the class
-			writeType(array[i].getClass());
 		}
 	}
 
