@@ -172,8 +172,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(Object anObject) {
 		// Can't do switch on class
-		if (null == anObject) {
-		} else if (anObject instanceof Collection) {
+		if (anObject instanceof Collection) {
 			Collection<Object> theArray = (Collection<Object>) anObject;
 			for (Object entry : theArray) {
 				write(entry);
@@ -186,6 +185,10 @@ public class OSCJavaToByteArrayConverter {
 			write((Integer) anObject);
 		} else if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
+		} else if (anObject == null) {
+			throw new RuntimeException("Can not write null");
+		} else {
+			throw new RuntimeException("Unknown object type: " + anObject.getClass());
 		}
 	}
 
@@ -225,8 +228,7 @@ public class OSCJavaToByteArrayConverter {
 		// I really wish I could extend the base classes!
 
 		for (Object element : array) {
-			if (element == null) {
-			} else if (Boolean.TRUE.equals(element)) {
+			if (Boolean.TRUE.equals(element)) {
 				// Create a way to deal with Boolean type objects
 				stream.write('T');
 			} else if (Boolean.FALSE.equals(element)) {

@@ -9,6 +9,9 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This implementation is based on Markus Gaelli and
@@ -84,5 +87,60 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
+	}
+
+	public void testIfExceptionOnNullWrite() {
+		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+
+		try {
+			stream.write((BigInteger) null);
+			fail("No exception thrown on writing (BigInteger)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((Float) null);
+			fail("No exception thrown on writing (Float)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((Integer) null);
+			fail("No exception thrown on writing (Integer)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((Object) null);
+			fail("No exception thrown on writing (Object)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((String) null);
+			fail("No exception thrown on writing (String)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((byte[]) null);
+			fail("No exception thrown on writing (byte[])null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			List<Float> nullFloats = new ArrayList<Float>(1);
+			nullFloats.add(null);
+			stream.write(nullFloats);
+			fail("No exception thrown on writing Float[] {null}");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
 	}
 }
