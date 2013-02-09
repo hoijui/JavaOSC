@@ -20,18 +20,14 @@ import java.util.List;
  */
 public class OSCBundleTest extends junit.framework.TestCase {
 
-	public void testSendBundle() {
-		Date timestamp = GregorianCalendar.getInstance().getTime();
-		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
-		packetsSent.add(new OSCMessage("/dummy"));
-		OSCBundle bundle = new OSCBundle(packetsSent, timestamp);
+	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) {
 		byte[] byteArray = bundle.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
-		if (!packet.getTimestamp().equals(timestamp)) {
+		if (!packet.getTimestamp().equals(expectedTimestamp)) {
 			fail("Send Bundle did not receive the correct timestamp " + packet.getTimestamp()
 				+ "(" + packet.getTimestamp().getTime() +
-				") (should be " + timestamp +"( " + timestamp.getTime() + ")) ");
+				") (should be " + expectedTimestamp +"( " + expectedTimestamp.getTime() + ")) ");
 		}
 		List<OSCPacket> packets = packet.getPackets();
 		OSCMessage msg = (OSCMessage) packets.get(0);
@@ -40,21 +36,18 @@ public class OSCBundleTest extends junit.framework.TestCase {
 		}
 	}
 
+	public void testSendBundle() {
+		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		packetsSent.add(new OSCMessage("/dummy"));
+		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
+		sendBundleTimestampTestHelper(bundle, timestampNow);
+	}
+
 	public void testSendBundleImmediate() {
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
-		byte[] byteArray = bundle.getByteArray();
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
-		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
-		if (!packet.getTimestamp().equals(OSCBundle.TIMESTAMP_IMMEDIATE)) {
-			fail("Timestamp should have been immediate, not " + packet.getTimestamp()
-				+ "(" + packet.getTimestamp().getTime() + ")");
-		}
-		List<OSCPacket> packets = packet.getPackets();
-		OSCMessage msg = (OSCMessage) packets.get(0);
-		if (!msg.getAddress().equals("/dummy")) {
-			fail("Send Bundle's message did not receive the correct address");
-		}
+		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
 	}
 }
