@@ -58,6 +58,7 @@
 		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
 		<developerConnection>scm:git:git@github.com:hoijui/JavaOSC.git</developerConnection>
 		<url>http://github.com/hoijui/JavaOSC</url>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
