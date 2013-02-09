@@ -13,7 +13,7 @@
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-parent</artifactId>
-	<version>0.2</version>
+	<version>0.3-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -58,7 +58,7 @@
 		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
 		<developerConnection>scm:git:git@github.com:hoijui/JavaOSC.git</developerConnection>
 		<url>http://github.com/hoijui/JavaOSC</url>
-		<tag>javaosc-0.2</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<developers>
