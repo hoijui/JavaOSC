@@ -57,8 +57,8 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 *
-	 * See the comment in TestOscPacketByteArrayConverter::testFloat2OnStream
+	 * See the comment in
+	 * {@link OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
 	 */
 	public void testIncreaseVolume() {
 		Object[] args = {new Integer(1), new Float(1.0)};

@@ -36,10 +36,11 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	 *
 	 * The source of this discrepancy is Squeak conversion
 	 * routine Float>>asIEEE32BitWord vs. the Java
-	 * Float::floatToIntBits(float).
+	 * {@link Float#floatToIntBits(float)}.
 	 *
 	 * 0.2 asIEEE32BitWord yields: 1045220556
-	 * Float.floatToIntBits((float) 0.2) yields: (int) 1045220557 (VA Java 3.5)
+	 * {@link Float#floatToIntBits(float)} with parameter 0.2f
+	 * yields: (int) 1045220557 (VA Java 3.5)
 	 *
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
 	 */
