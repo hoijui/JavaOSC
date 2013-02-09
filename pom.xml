@@ -165,6 +165,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<!--
 						Workaround to prevent the gpg plugin from hanging, see:
 						http://jira.codehaus.org/browse/MGPG-9
