@@ -13,11 +13,11 @@ import java.util.GregorianCalendar;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 
+/**
+ * @author Chandrasekhar Ramakrishnan
+ * @see OSCBundle
+ */
 public class OSCBundleTest extends junit.framework.TestCase {
-
-	public OSCBundleTest(String name) {
-		super(name);
-	}
 
 	public void testSendBundle() {
 		Date timestamp = GregorianCalendar.getInstance().getTime();

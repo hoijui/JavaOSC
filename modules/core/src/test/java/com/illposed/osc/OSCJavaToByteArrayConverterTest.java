@@ -14,15 +14,9 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
  * This implementation is based on Markus Gaelli and
  * Iannis Zannos' OSC implementation in Squeak:
  * http://www.emergent.de/Goodies/
+ * @see OSCJavaToByteArrayConverter
  */
 public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
-
-	/**
-	 * @param name this tests name
-	 */
-	public OSCJavaToByteArrayConverterTest(String name) {
-		super(name);
-	}
 
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		OSCMessageTest.checkResultEqualsAnswer(result, answer);

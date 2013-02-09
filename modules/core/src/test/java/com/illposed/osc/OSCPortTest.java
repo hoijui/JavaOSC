@@ -10,6 +10,12 @@ package com.illposed.osc;
 
 import java.util.Date;
 
+/**
+ * @author Chandrasekhar Ramakrishnan
+ * @see OSCPort
+ * @see OSCPortIn
+ * @see OSCPortOut
+ */
 public class OSCPortTest extends junit.framework.TestCase {
 
 	private boolean messageReceived;
@@ -17,13 +23,6 @@ public class OSCPortTest extends junit.framework.TestCase {
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
 
-	public OSCPortTest(String name) {
-		super(name);
-	}
-
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -31,9 +30,6 @@ public class OSCPortTest extends junit.framework.TestCase {
 		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
 	}
 
-	/**
-	 * @see junit.framework.TestCase#tearDown()
-	 */
 	@Override
 	protected void tearDown() throws Exception {
 		sender.close();

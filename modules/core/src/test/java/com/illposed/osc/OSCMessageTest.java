@@ -13,15 +13,11 @@ import java.math.BigInteger;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
+/**
+ * @author Chandrasekhar Ramakrishnan
+ * @see OSCMessage
+ */
 public class OSCMessageTest extends junit.framework.TestCase {
-
-	/**
-	 * OscFloatTest constructor comment.
-	 * @param name this tests name
-	 */
-	public OSCMessageTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * @param result received from OSC

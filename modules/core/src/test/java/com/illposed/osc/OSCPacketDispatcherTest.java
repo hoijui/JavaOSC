@@ -14,6 +14,7 @@ import com.illposed.osc.utility.OSCPacketDispatcher;
 
 /**
  * @author Chandrasekhar Ramakrishnan
+ * @see OSCPacketDispatcher
  */
 public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 
@@ -21,15 +22,6 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	private boolean receivedOnListener1;
 	private boolean receivedOnListener2;
 
-	/**
-	 * Run the OSCPacketDispatcher through its paces
-	 */
-	public OSCPacketDispatcherTest() {
-	}
-
-	/**
-	 * @see junit.framework.TestCase#setUp()
-	 */
 	@Override
 	protected void setUp() throws Exception {
 		dispatcher = new OSCPacketDispatcher();
