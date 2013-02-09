@@ -100,7 +100,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	public void testMessageWithArgs() throws Exception {
 		List<Object> args = new ArrayList<Object>(2);
-		args.add(new Integer(3));
+		args.add(Integer.valueOf(3));
 		args.add("hello");
 		OSCMessage mesg = new OSCMessage("/foo/bar", args);
 		sender.send(mesg);
@@ -108,7 +108,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	public void testBundle() throws Exception {
 		List<Object> args = new ArrayList<Object>(2);
-		args.add(new Integer(3));
+		args.add(Integer.valueOf(3));
 		args.add("hello");
 		List<OSCPacket> msgs = new ArrayList<OSCPacket>(1);
 		msgs.add(new OSCMessage("/foo/bar", args));
@@ -118,7 +118,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	public void testBundle2() throws Exception {
 		OSCMessage mesg = new OSCMessage("/foo/bar");
-		mesg.addArgument(new Integer(3));
+		mesg.addArgument(Integer.valueOf(3));
 		mesg.addArgument("hello");
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(mesg);

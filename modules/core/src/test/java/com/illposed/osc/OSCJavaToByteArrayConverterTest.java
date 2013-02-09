@@ -43,7 +43,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	 */
 	public void testPrintFloat2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(new Float(0.2));
+		stream.write(Float.valueOf(0.2f));
 		byte[] answer = {62, 76, -52, -51};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -51,7 +51,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
 	public void testPrintFloatOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(new Float(10.7567));
+		stream.write(Float.valueOf(10.7567f));
 		byte[] answer = {65, 44, 27, 113};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -59,7 +59,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
 	public void testPrintIntegerOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(new Integer(1124));
+		stream.write(Integer.valueOf(1124));
 		byte[] answer = {0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);

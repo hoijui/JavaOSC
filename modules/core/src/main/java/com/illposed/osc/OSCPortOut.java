@@ -26,7 +26,7 @@ import java.net.UnknownHostException;
  * <pre>
 	OSCPort sender = new OSCPort();
 	List<Object> args = new ArrayList<Object>(2);
-	args.add(new Integer(3));
+	args.add(Integer.valueOf(3));
 	args.add("hello");
 	OSCMessage msg = new OSCMessage("/sayhello", args);
 	 try {

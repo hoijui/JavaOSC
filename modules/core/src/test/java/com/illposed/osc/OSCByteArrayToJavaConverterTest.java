@@ -49,13 +49,13 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 		if (arguments.size() != 3) {
 			fail("Num arguments should be 3, but is " + arguments.size());
 		}
-		if (!(new Integer(1001).equals(arguments.get(0)))) {
+		if (!(Integer.valueOf(1001).equals(arguments.get(0)))) {
 			fail("Argument 1 should be 1001, but is " + arguments.get(0));
 		}
 		if (!("freq".equals(arguments.get(1)))) {
 			fail("Argument 2 should be freq, but is " + arguments.get(1));
 		}
-		if (!(new Float(440.0).equals(arguments.get(2)))) {
+		if (!(Float.valueOf(440.0f).equals(arguments.get(2)))) {
 			fail("Argument 3 should be 440.0, but is " + arguments.get(2));
 		}
 	}
