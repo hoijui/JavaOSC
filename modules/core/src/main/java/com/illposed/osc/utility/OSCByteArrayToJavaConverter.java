@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class OSCByteArrayToJavaConverter {
 
+	private static final String BUNDLE_START = "#bundle";
+
 	private byte[] bytes;
 	private int bytesLength;
 	private int streamPosition;
@@ -56,9 +58,10 @@ public class OSCByteArrayToJavaConverter {
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle() {
-		// only need the first 7 to check if it is a bundle
-		String bytesAsString = new String(bytes, 0, 7);
-		return bytesAsString.startsWith("#bundle");
+		// only need the first few chars to check if it is a bundle
+		String bytesAsString
+				= new String(bytes, 0, BUNDLE_START.length());
+		return bytesAsString.startsWith(BUNDLE_START);
 	}
 
 	/**
@@ -68,7 +71,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private OSCBundle convertBundle() {
 		// skip the "#bundle " stuff
-		streamPosition = 8;
+		streamPosition = BUNDLE_START.length() + 1;
 		Date timestamp = readTimeTag();
 		OSCBundle bundle = new OSCBundle(timestamp);
 		OSCByteArrayToJavaConverter myConverter
