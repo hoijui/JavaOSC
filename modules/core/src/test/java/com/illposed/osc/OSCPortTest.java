@@ -36,9 +36,9 @@ public class OSCPortTest extends junit.framework.TestCase {
 	 */
 	@Override
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		sender.close();
 		receiver.close();
+		super.tearDown();
 	}
 
 	public void testStart() throws Exception {
