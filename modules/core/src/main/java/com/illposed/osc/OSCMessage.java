@@ -109,9 +109,6 @@ public class OSCMessage extends OSCPacket {
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
-		if (null == arguments) {
-			return;
-		}
 		stream.writeTypes(arguments);
 		for (Object argument : arguments) {
 			stream.write(argument);
