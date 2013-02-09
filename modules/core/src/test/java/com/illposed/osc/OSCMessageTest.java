@@ -28,15 +28,14 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		if (result.length != answer.length) {
 			fail(
 				"Result and answer aren't the same length "
-					+ result.length
-					+ " vs "
-					+ answer.length);
+					+ result.length + " vs " + answer.length
+					+ " (\"" + new String(result) + "\" vs \"" + new String(answer) + "\")");
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] != answer[i]) {
 				String errorString = "Didn't convert correctly: " + i;
-				errorString = errorString + " result: " + result[i];
-				errorString = errorString + " answer: " + answer[i];
+				errorString = errorString + " result: \"" + new String(result) + "\"";
+				errorString = errorString + " answer: \"" + new String(answer) + "\"";
 				fail(errorString);
 			}
 		}
