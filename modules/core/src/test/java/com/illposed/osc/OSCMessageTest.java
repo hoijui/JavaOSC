@@ -105,7 +105,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
-	public void testSendBigInteger() {
+	public void testEncodeBigInteger() {
 		OSCMessage message = new OSCMessage("/dummy");
 		BigInteger one001 = new BigInteger("1001");
 		message.addArgument(one001);
@@ -127,7 +127,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		}
 	}
 
-	public void testSendArray() {
+	public void testEncodeArray() {
 		OSCMessage message = new OSCMessage("/dummy");
 		Float[] floats = {new Float(10.0), new Float(100.0)};
 		message.addArgument(floats);
