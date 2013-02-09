@@ -8,8 +8,6 @@
 
 package com.illposed.osc;
 
-import java.util.Date;
-
 /**
  * @author Chandrasekhar Ramakrishnan
  * @see OSCPort
@@ -18,8 +16,6 @@ import java.util.Date;
  */
 public class OSCPortTest extends junit.framework.TestCase {
 
-	private boolean messageReceived;
-	private Date    receivedTimestamp;
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
 
@@ -72,18 +68,13 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	public void testReceiving() throws Exception {
 		OSCMessage mesg = new OSCMessage("/message/receiving");
-		messageReceived = false;
-		OSCListener listener = new OSCListener() {
-			public void acceptMessage(java.util.Date time, OSCMessage message) {
-				messageReceived = true;
-			}
-		};
+		TestOSCListener listener = new TestOSCListener();
 		receiver.addListener("/message/receiving", listener);
 		receiver.startListening();
 		sender.send(mesg);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
-		if (!messageReceived) {
+		if (!listener.isMessageReceived()) {
 			fail("Message was not received");
 		}
 	}
@@ -91,24 +82,18 @@ public class OSCPortTest extends junit.framework.TestCase {
 	public void testBundleReceiving() throws Exception {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
-		messageReceived = false;
-		receivedTimestamp = null;
-		OSCListener listener = new OSCListener() {
-			public void acceptMessage(Date time, OSCMessage message) {
-				messageReceived = true;
-				receivedTimestamp = time;
-			}
-		};
+		TestOSCListener listener = new TestOSCListener();
 		receiver.addListener("/bundle/receiving", listener);
 		receiver.startListening();
 		sender.send(bundle);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
-		if (!messageReceived) {
+		if (!listener.isMessageReceived()) {
 			fail("Message was not received");
 		}
-		if (!receivedTimestamp.equals(bundle.getTimestamp())) {
-			fail("Message should have timestamp " + bundle.getTimestamp() + " but has " + receivedTimestamp);
+		if (!listener.getReceivedTimestamp().equals(bundle.getTimestamp())) {
+			fail("Message should have timestamp " + bundle.getTimestamp()
+					+ " but has " + listener.getReceivedTimestamp());
 		}
 	}
 }
