@@ -15,15 +15,11 @@ import java.util.List;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
+/**
+ * @author Chandrasekhar Ramakrishnan
+ * @see OSCMessage
+ */
 public class OSCMessageTest extends junit.framework.TestCase {
-
-	/**
-	 * OscFloatTest constructor comment.
-	 * @param name this tests name
-	 */
-	public OSCMessageTest(String name) {
-		super(name);
-	}
 
 	/**
 	 * @param result received from OSC
@@ -61,8 +57,8 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	}
 
 	/**
-	 *
-	 * See the comment in TestOscPacketByteArrayConverter::testFloat2OnStream
+	 * See the comment in
+	 * {@link OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
 	 */
 	public void testIncreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
@@ -111,7 +107,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
-	public void testSendBigInteger() {
+	public void testEncodeBigInteger() {
 		OSCMessage message = new OSCMessage("/dummy");
 		BigInteger one001 = new BigInteger("1001");
 		message.addArgument(one001);
@@ -133,7 +129,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		}
 	}
 
-	public void testSendArray() {
+	public void testEncodeArray() {
 		OSCMessage message = new OSCMessage("/dummy");
 		List<Float> floats = new ArrayList<Float>(2);
 		floats.add(new Float(10.0));

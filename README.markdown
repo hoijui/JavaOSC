@@ -5,9 +5,11 @@ It is not, in itself, a usable program.
 Rather, it is a library designed for building programs that need to communicate
 over OSC (e.g., SuperCollider, Max/MSP, Reaktor, etc.).
 
-The latest version of javaosc is available at
-[the project homepage](http://www.illposed.com/software/javaosc.html)
+The latest release version of the library is available on
+[Maven central](http://mvnrepository.com/artifact/com.illposed.osc/javaosc-core)
 or
+[the project homepage](http://www.illposed.com/software/javaosc.html).
+Latest development sources can be found
 [on github](https://github.com/hoijui/JavaOSC).
 
 
