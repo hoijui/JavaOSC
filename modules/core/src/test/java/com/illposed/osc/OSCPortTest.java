@@ -14,6 +14,8 @@ import java.util.List;
 
 public class OSCPortTest extends junit.framework.TestCase {
 
+	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
+
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
 
@@ -26,8 +28,12 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		sender.close();
 		receiver.close();
+		sender.close();
+		// wait a bit after closing the receiver,
+		// because (some) operating systems need some time
+		// to actually close the underlying socket
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
 		super.tearDown();
 	}
 
