@@ -8,6 +8,7 @@
 
 package com.illposed.osc;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,27 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.close();
 		receiver.close();
 		super.tearDown();
+	}
+
+	public void testPorts() throws Exception {
+
+		assertEquals("Bad default SuperCollider OSC port",
+				57110, OSCPort.defaultSCOSCPort());
+		assertEquals("Bad default SuperCollider Language OSC port",
+				57120, OSCPort.defaultSCLangOSCPort());
+
+		assertEquals("Bad default port with ctor()",
+				57110, sender.getPort());
+
+		sender.close();
+		sender = new OSCPortOut(InetAddress.getLocalHost());
+		assertEquals("Bad default port with ctor(address)",
+				57110, sender.getPort());
+
+		sender.close();
+		sender = new OSCPortOut(InetAddress.getLocalHost(), 12345);
+		assertEquals("Bad port with ctor(address, port)",
+				12345, sender.getPort());
 	}
 
 	public void testStart() throws Exception {
