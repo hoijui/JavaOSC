@@ -10,6 +10,7 @@ package com.illposed.osc.utility;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,7 +58,7 @@ public class OSCPacketDispatcher {
 
 	private void dispatchBundle(OSCBundle bundle) {
 		Date timestamp = bundle.getTimestamp();
-		OSCPacket[] packets = bundle.getPackets();
+		List<OSCPacket> packets = bundle.getPackets();
 		for (OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
 		}

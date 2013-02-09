@@ -8,12 +8,10 @@
 
 package com.illposed.osc;
 
-/**
- * @author Chandrasekhar Ramakrishnan
- * @see OSCPort
- * @see OSCPortIn
- * @see OSCPortOut
- */
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class OSCPortTest extends junit.framework.TestCase {
 
 	private OSCPortOut sender;
@@ -39,21 +37,20 @@ public class OSCPortTest extends junit.framework.TestCase {
 	}
 
 	public void testMessageWithArgs() throws Exception {
-		Object args[] = new Object[2];
-		args[0] = new Integer(3);
-		args[1] = "hello";
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(new Integer(3));
+		args.add("hello");
 		OSCMessage mesg = new OSCMessage("/foo/bar", args);
 		sender.send(mesg);
 	}
 
 	public void testBundle() throws Exception {
-		Object args[] = new Object[2];
-		OSCPacket mesgs[] = new OSCPacket[1];
-		args[0] = new Integer(3);
-		args[1] = "hello";
-		OSCMessage mesg = new OSCMessage("/foo/bar", args);
-		mesgs[0] = mesg;
-		OSCBundle bundle = new OSCBundle(mesgs);
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(new Integer(3));
+		args.add("hello");
+		List<OSCPacket> msgs = new ArrayList<OSCPacket>(1);
+		msgs.add(new OSCMessage("/foo/bar", args));
+		OSCBundle bundle = new OSCBundle(msgs);
 		sender.send(bundle);
 	}
 

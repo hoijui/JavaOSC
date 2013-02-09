@@ -104,7 +104,7 @@ public class OSCByteArrayToJavaConverter {
 		for (int i = 0; i < types.size(); ++i) {
 			if ('[' == types.get(i).charValue()) {
 				// we're looking at an array -- read it in
-				message.addArgument(readArray(types, ++i).toArray());
+				message.addArgument(readArray(types, ++i));
 				// then increment i to the end of the array
 				while (types.get(i).charValue() != ']') {
 					i++;

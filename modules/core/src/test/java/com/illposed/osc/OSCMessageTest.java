@@ -9,6 +9,8 @@
 package com.illposed.osc;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
@@ -42,7 +44,9 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	}
 
 	public void testDecreaseVolume() {
-		Object[] args = {new Integer(1), new Float(0.2)};
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(new Integer(1));
+		args.add(new Float(0.2));
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
 		byte[] answer = {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111,
@@ -57,7 +61,9 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	 * {@link OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
 	 */
 	public void testIncreaseVolume() {
-		Object[] args = {new Integer(1), new Float(1.0)};
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(new Integer(1));
+		args.add(new Float(1.0));
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
 		byte[] answer =	{
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111, 108,
@@ -111,21 +117,23 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Big Integer did not receive the correct address");
 		}
-		Object[] arguments = packet.getArguments();
-		if (arguments.length != 1) {
-			fail("Send Big Integer should have 1 argument, not " + arguments.length);
+		List<Object> arguments = packet.getArguments();
+		if (arguments.size() != 1) {
+			fail("Send Big Integer should have 1 argument, not " + arguments.size());
 		}
-		if (!(arguments[0] instanceof BigInteger)) {
-			fail("arguments[0] should be a BigInteger, not " + arguments[0]);
+		if (!(arguments.get(0) instanceof BigInteger)) {
+			fail("arguments.get(0) should be a BigInteger, not " + arguments.get(0));
 		}
-		if (!(new BigInteger("1001").equals(arguments[0]))) {
-			fail("Instead of BigInteger(1001), received " + arguments[0]);
+		if (!(new BigInteger("1001").equals(arguments.get(0)))) {
+			fail("Instead of BigInteger(1001), received " + arguments.get(0));
 		}
 	}
 
 	public void testEncodeArray() {
 		OSCMessage message = new OSCMessage("/dummy");
-		Float[] floats = {new Float(10.0), new Float(100.0)};
+		List<Float> floats = new ArrayList<Float>(2);
+		floats.add(new Float(10.0));
+		floats.add(new Float(100.0));
 		message.addArgument(floats);
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
@@ -133,17 +141,17 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Array did not receive the correct address");
 		}
-		Object[] arguments = packet.getArguments();
-		if (arguments.length != 1) {
-			fail("Send Array should have 1 argument, not " + arguments.length);
+		List<Object> arguments = packet.getArguments();
+		if (arguments.size() != 1) {
+			fail("Send Array should have 1 argument, not " + arguments.size());
 		}
-		if (!(arguments[0] instanceof Object[])) {
-			fail("arguments[0] should be a Object array, not " + arguments[0]);
+		if (!(arguments.get(0) instanceof List)) {
+			fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
 		}
 		for (int i = 0; i < 2; ++i) {
-			Object[] theArray = (Object[]) arguments[0];
-			if (!floats[i].equals(theArray[i])) {
-				fail("Array element " + i + " should be " + floats[i] + " not " + theArray[i]);
+			List<Object> theArray = (List<Object>) arguments.get(0);
+			if (!floats.get(i).equals(theArray.get(i))) {
+				fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
 			}
 		}
 	}
