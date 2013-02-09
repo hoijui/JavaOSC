@@ -50,4 +50,22 @@ public class OSCBundleTest extends junit.framework.TestCase {
 		OSCBundle bundle = new OSCBundle(packetsSent);
 		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
 	}
+
+	public void testSendBundleImmediateExplicit() {
+		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		packetsSent.add(new OSCMessage("/dummy"));
+		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
+		bundle.setTimestamp(OSCBundle.TIMESTAMP_IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
+	}
+
+	public void testSendBundleImmediateExplicitNull() {
+		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		packetsSent.add(new OSCMessage("/dummy"));
+		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
+		bundle.setTimestamp(null);
+		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
+	}
 }
