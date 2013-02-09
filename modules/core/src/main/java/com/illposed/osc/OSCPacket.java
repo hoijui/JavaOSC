@@ -34,6 +34,7 @@ public abstract class OSCPacket {
 	 * Default constructor for the abstract class
 	 */
 	public OSCPacket() {
+		this.isByteArrayComputed = false;
 	}
 
 	/**
