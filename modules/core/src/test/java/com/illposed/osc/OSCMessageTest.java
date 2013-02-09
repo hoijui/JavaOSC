@@ -8,12 +8,11 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
  * @author Chandrasekhar Ramakrishnan

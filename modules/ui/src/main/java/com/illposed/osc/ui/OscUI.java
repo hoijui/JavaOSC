@@ -9,31 +9,29 @@
 // this is the package we are in
 package com.illposed.osc.ui;
 
-// import these packages as well
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortOut;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * OscUI is a subClass of JPanel.

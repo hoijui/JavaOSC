@@ -8,16 +8,15 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCListener;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.illposed.osc.OSCBundle;
-import com.illposed.osc.OSCListener;
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPacket;
 
 /**
  * Dispatches OSCMessages to registered listeners.

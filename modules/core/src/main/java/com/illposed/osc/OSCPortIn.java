@@ -8,13 +8,12 @@
 
 package com.illposed.osc;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.io.IOException;
-import java.net.SocketException;
-
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.

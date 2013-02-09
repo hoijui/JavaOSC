@@ -8,10 +8,9 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import java.util.Date;
 import java.util.List;
-
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 
 /**
  * @author Chandrasekhar Ramakrishnan

@@ -9,7 +9,6 @@
 package com.illposed.osc;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class OSCPortTest extends junit.framework.TestCase {

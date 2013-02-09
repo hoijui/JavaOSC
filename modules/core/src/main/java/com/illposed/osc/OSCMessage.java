@@ -8,13 +8,12 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
  * An simple (non-bundle) OSC message.
