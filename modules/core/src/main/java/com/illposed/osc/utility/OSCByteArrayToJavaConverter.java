@@ -158,7 +158,8 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private List<Character> readTypes() {
 		// the next byte should be a ','
-		if (bytes[streamPosition] != 0x2C) {
+		if (bytes[streamPosition] != ',') {
+			// XXX should we not rather fail-fast -> throw exception?
 			return null;
 		}
 		streamPosition++;
