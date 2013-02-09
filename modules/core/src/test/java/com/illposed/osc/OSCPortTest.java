@@ -37,6 +37,41 @@ public class OSCPortTest extends junit.framework.TestCase {
 		super.tearDown();
 	}
 
+	public void testSocketClose() throws Exception {
+
+		// close the underlying sockets
+		receiver.close();
+		sender.close();
+
+		// make sure the old receiver is gone for good
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		// check if the underlying sockets were closed
+		// NOTE We can have many (out-)sockets sending
+		//   on the same address and port,
+		//   but only one receiving per each such tuple.
+		sender = new OSCPortOut();
+		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+	}
+
+	public void testSocketAutoClose() throws Exception {
+
+		// DANGEROUS! here we forget to close the underlying sockets!
+		receiver = null;
+		sender = null;
+
+		// make sure the old receiver is gone for good
+		System.gc();
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		// check if the underlying sockets were closed
+		// NOTE We can have many (out-)sockets sending
+		//   on the same address and port,
+		//   but only one receiving per each such tuple.
+		sender = new OSCPortOut();
+		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+	}
+
 	public void testPorts() throws Exception {
 
 		assertEquals("Bad default SuperCollider OSC port",
