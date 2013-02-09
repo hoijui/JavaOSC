@@ -12,6 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +29,8 @@ public class OSCByteArrayToJavaConverter {
 	private static final String BUNDLE_START = "#bundle";
 
 	private byte[] bytes;
+	/** Used to decode message addresses and string parameters. */
+	private Charset charset;
 	private int bytesLength;
 	private int streamPosition;
 
@@ -36,6 +39,24 @@ public class OSCByteArrayToJavaConverter {
 	 * to an {@link OSCPacket} object.
 	 */
 	public OSCByteArrayToJavaConverter() {
+
+		this.charset = Charset.defaultCharset();
+	}
+
+	/**
+	 * Returns the character set used to decode message addresses
+	 * and string parameters.
+	 */
+	public Charset getCharset() {
+		return charset;
+	}
+
+	/**
+	 * Sets the character set used to decode message addresses
+	 * and string parameters.
+	 */
+	public void setCharset(Charset charset) {
+		this.charset = charset;
 	}
 
 	/**
@@ -60,7 +81,7 @@ public class OSCByteArrayToJavaConverter {
 	private boolean isBundle() {
 		// only need the first few chars to check if it is a bundle
 		String bytesAsString
-				= new String(bytes, 0, BUNDLE_START.length());
+				= new String(bytes, 0, BUNDLE_START.length(), charset);
 		return bytesAsString.startsWith(BUNDLE_START);
 	}
 
@@ -76,6 +97,7 @@ public class OSCByteArrayToJavaConverter {
 		OSCBundle bundle = new OSCBundle(timestamp);
 		OSCByteArrayToJavaConverter myConverter
 				= new OSCByteArrayToJavaConverter();
+		myConverter.setCharset(charset);
 		while (streamPosition < bytesLength) {
 			// recursively read through the stream and convert packets you find
 			int packetLength = ((Integer) readInteger()).intValue();
@@ -124,12 +146,10 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private String readString() {
 		int strLen = lengthOfCurrentString();
-		char[] stringChars = new char[strLen];
-		for (int i = 0; i < strLen; i++) {
-			stringChars[i] = (char) bytes[streamPosition++];
-		}
+		String res = new String(bytes, streamPosition, strLen, charset);
+		streamPosition += strLen;
 		moveToFourByteBoundry();
-		return new String(stringChars);
+		return res;
 	}
 
 	/**

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.
@@ -49,11 +50,27 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Create an OSCPort that listens on the specified port.
+	 * Strings will be decoded using the systems default character set.
 	 * @param port UDP port to listen on.
 	 * @throws SocketException
 	 */
 	public OSCPortIn(int port) throws SocketException {
 		super(new DatagramSocket(port), port);
+	}
+
+	/**
+	 * Create an OSCPort that listens on the specified port,
+	 * and decodes strings with a specific character set.
+	 * @param port UDP port to listen on.
+	 * @param charset how to decode strings read from incoming packages.
+	 *   This includes message addresses and string parameters.
+	 * @throws SocketException if the port number is invalid,
+	 *   or there is already a socket listening on it
+	 */
+	public OSCPortIn(int port, Charset charset) throws SocketException {
+		this(port);
+
+		this.converter.setCharset(charset);
 	}
 
 	/**

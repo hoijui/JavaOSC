@@ -11,6 +11,7 @@ package com.illposed.osc.utility;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 /**
@@ -32,10 +33,31 @@ import java.util.Collection;
 public class OSCJavaToByteArrayConverter {
 
 	private ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	/** Used to encode message addresses and string parameters. */
+	private Charset charset;
 	private byte[] intBytes = new byte[4];
 	private byte[] longintBytes = new byte[8];
 
 	public OSCJavaToByteArrayConverter() {
+
+		this.stream = new ByteArrayOutputStream();
+		this.charset = Charset.defaultCharset();
+	}
+
+	/**
+	 * Returns the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public Charset getCharset() {
+		return charset;
+	}
+
+	/**
+	 * Sets the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public void setCharset(Charset charset) {
+		this.charset = charset;
 	}
 
 	/**
@@ -140,7 +162,7 @@ public class OSCJavaToByteArrayConverter {
 		}
 		stream.write(stringBytes, 0, stringLength);
 */
-		byte[] stringBytes = aString.getBytes();
+		byte[] stringBytes = aString.getBytes(charset);
 
 		// pad out to align on 4 byte boundry
 		int mod = aString.length() % 4;
