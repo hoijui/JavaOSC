@@ -65,15 +65,6 @@ public abstract class OSCPort {
 	}
 
 	/**
-	 * Close the socket if this hasn't already happened.
-	 * @see java.lang.Object#finalize()
-	 */
-	protected void finalize() throws Throwable {
-		super.finalize();
-		socket.close();
-	}
-
-	/**
 	 * Close the socket and free-up resources.
 	 * It is recommended that clients call this when they are done with the
 	 * port.
