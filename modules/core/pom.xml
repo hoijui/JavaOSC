@@ -10,7 +10,7 @@
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
 		<version>0.3-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+		<relativePath>../parent</relativePath>
 	</parent>
 
 	<groupId>com.illposed.osc</groupId>
