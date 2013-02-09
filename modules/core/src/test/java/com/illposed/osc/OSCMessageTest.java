@@ -41,6 +41,14 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		}
 	}
 
+	public void testEmpty() {
+		List<Object> args = new ArrayList<Object>(0);
+		OSCMessage message = new OSCMessage("/empty", args);
+		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
+		byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
 	public void testDecreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(new Integer(1));
