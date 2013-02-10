@@ -212,7 +212,7 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a {@link Character}
 	 */
 	private Object readChar() {
-		return new Character((char) bytes[streamPosition++]);
+		return Character.valueOf((char) bytes[streamPosition++]);
 	}
 
 	/**
