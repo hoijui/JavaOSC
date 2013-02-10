@@ -12,6 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,11 +29,9 @@ public class OSCByteArrayToJavaConverter {
 
 	private static final String BUNDLE_START = "#bundle";
 
-	private byte[] bytes;
 	/** Used to decode message addresses and string parameters. */
 	private Charset charset;
-	private int bytesLength;
-	private int streamPosition;
+	private ByteBuffer bytes;
 
 	/**
 	 * Creates a helper object for converting from a byte array
@@ -64,9 +63,7 @@ public class OSCByteArrayToJavaConverter {
 	 * (either an {@link OSCMessage} or {@link OSCBundle}).
 	 */
 	public OSCPacket convert(byte[] byteArray, int bytesLength) {
-		this.bytes = byteArray;
-		this.bytesLength = bytesLength;
-		this.streamPosition = 0;
+		this.bytes = ByteBuffer.wrap(byteArray, 0, bytesLength).asReadOnlyBuffer();
 		if (isBundle()) {
 			return convertBundle();
 		} else {
@@ -79,10 +76,19 @@ public class OSCByteArrayToJavaConverter {
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle() {
-		// only need the first few chars to check if it is a bundle
-		String bytesAsString
-				= new String(bytes, 0, BUNDLE_START.length(), charset);
-		return bytesAsString.startsWith(BUNDLE_START);
+		bytes.rewind();
+		// we only need the first few chars to check if it is a bundle
+		byte[] firstFewBytes = new byte[BUNDLE_START.length()];
+		bytes.get(firstFewBytes);
+		moveToFourByteBoundry();
+		String bytesAsString = new String(firstFewBytes, charset);
+		boolean bundle = bytesAsString.equals(BUNDLE_START);
+		if (!bundle) {
+			// if the beginning is not BUNDLE_START,
+			// we have to parse it again, later on
+			bytes.rewind();
+		}
+		return bundle;
 	}
 
 	/**
@@ -91,20 +97,16 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a bundle containing the data specified in the byte stream
 	 */
 	private OSCBundle convertBundle() {
-		// skip the "#bundle " stuff
-		streamPosition = BUNDLE_START.length() + 1;
 		Date timestamp = readTimeTag();
 		OSCBundle bundle = new OSCBundle(timestamp);
 		OSCByteArrayToJavaConverter myConverter
 				= new OSCByteArrayToJavaConverter();
 		myConverter.setCharset(charset);
-		while (streamPosition < bytesLength) {
+		while (bytes.hasRemaining()) {
 			// recursively read through the stream and convert packets you find
 			int packetLength = ((Integer) readInteger()).intValue();
 			byte[] packetBytes = new byte[packetLength];
-			for (int i = 0; i < packetLength; i++) {
-				packetBytes[i] = bytes[streamPosition++];
-			}
+			bytes.get(packetBytes);
 			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
 			bundle.addPacket(packet);
 		}
@@ -146,8 +148,9 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private String readString() {
 		int strLen = lengthOfCurrentString();
-		String res = new String(bytes, streamPosition, strLen, charset);
-		streamPosition += strLen;
+		byte[] strBytes = new byte[strLen];
+		bytes.get(strBytes);
+		String res = new String(strBytes, charset);
 		moveToFourByteBoundry();
 		return res;
 	}
@@ -158,11 +161,11 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private List<Character> readTypes() {
 		// the next byte should be a ','
-		if (bytes[streamPosition] != ',') {
+		if (bytes.get() != ',') {
+			bytes.position(bytes.position() - 1);
 			// XXX should we not rather fail-fast -> throw exception?
 			return null;
 		}
-		streamPosition++;
 		// find out how long the list of types is
 		int typesLen = lengthOfCurrentString();
 		if (0 == typesLen) {
@@ -172,7 +175,7 @@ public class OSCByteArrayToJavaConverter {
 		// read in the types
 		List<Character> typesChars = new ArrayList<Character>(typesLen);
 		for (int i = 0; i < typesLen; i++) {
-			typesChars.add((char) bytes[streamPosition++]);
+			typesChars.add((char) bytes.get());
 		}
 		return typesChars;
 	}
@@ -212,7 +215,7 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a {@link Character}
 	 */
 	private Object readChar() {
-		return Character.valueOf((char) bytes[streamPosition++]);
+		return Character.valueOf((char) bytes.get());
 	}
 
 	/**
@@ -230,10 +233,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readFloat() {
 		byte[] floatBytes = new byte[4];
-		floatBytes[0] = bytes[streamPosition++];
-		floatBytes[1] = bytes[streamPosition++];
-		floatBytes[2] = bytes[streamPosition++];
-		floatBytes[3] = bytes[streamPosition++];
+		bytes.get(floatBytes);
 //		int floatBits =
 //			(floatBytes[0] << 24)
 //				| (floatBytes[1] << 16)
@@ -249,9 +249,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readBigInteger() {
 		byte[] longintBytes = new byte[8];
-		for (int i = 0; i < longintBytes.length; i++) {
-			longintBytes[i] = bytes[streamPosition++];
-		}
+		bytes.get(longintBytes);
 		return new BigInteger(longintBytes);
 	}
 
@@ -261,9 +259,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readInteger() {
 		byte[] intBytes = new byte[4];
-		for (int i = 0; i < intBytes.length; i++) {
-			intBytes[i] = bytes[streamPosition++];
-		}
+		bytes.get(intBytes);
 		BigInteger intBits = new BigInteger(intBytes);
 		return Integer.valueOf(intBits.intValue());
 	}
@@ -287,13 +283,13 @@ public class OSCByteArrayToJavaConverter {
 		// this timetag has immediate semantics
 		boolean isImmediate = true;
 		for (int i = 4; i < 8; i++) {
-			secondBytes[i] = bytes[streamPosition++];
+			secondBytes[i] = bytes.get();
 			if (secondBytes[i] > 0) {
 				isImmediate = false;
 			}
 		}
 		for (int i = 4; i < 8; i++) {
-			fractionBytes[i] = bytes[streamPosition++];
+			fractionBytes[i] = bytes.get();
 			if (i < 7) {
 				if (fractionBytes[i] > 0) {
 					isImmediate = false;
@@ -351,9 +347,11 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private int lengthOfCurrentString() {
 		int len = 0;
-		while (bytes[streamPosition + len] != 0) {
+		bytes.mark();
+		while (bytes.get() != 0) {
 			len++;
 		}
+		bytes.reset();
 		return len;
 	}
 
@@ -363,7 +361,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private void moveToFourByteBoundry() {
 		// If i am already at a 4 byte boundry, I need to move to the next one
-		int mod = streamPosition % 4;
-		streamPosition += (4 - mod);
+		int mod = bytes.position() % 4;
+		bytes.position(bytes.position() + (4 - mod));
 	}
 }
