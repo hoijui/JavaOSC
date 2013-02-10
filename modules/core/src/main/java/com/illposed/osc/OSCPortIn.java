@@ -51,7 +51,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Create an OSCPort that listens on the specified port.
 	 * Strings will be decoded using the systems default character set.
 	 * @param port UDP port to listen on.
-	 * @throws SocketException
+	 * @throws SocketException if the port number is invalid,
+	 *   or there is already a socket listening on it
 	 */
 	public OSCPortIn(int port) throws SocketException {
 		super(new DatagramSocket(port), port);
