@@ -249,14 +249,9 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readBigInteger() {
 		byte[] longintBytes = new byte[8];
-		longintBytes[0] = bytes[streamPosition++];
-		longintBytes[1] = bytes[streamPosition++];
-		longintBytes[2] = bytes[streamPosition++];
-		longintBytes[3] = bytes[streamPosition++];
-		longintBytes[4] = bytes[streamPosition++];
-		longintBytes[5] = bytes[streamPosition++];
-		longintBytes[6] = bytes[streamPosition++];
-		longintBytes[7] = bytes[streamPosition++];
+		for (int i = 0; i < longintBytes.length; i++) {
+			longintBytes[i] = bytes[streamPosition++];
+		}
 		return new BigInteger(longintBytes);
 	}
 
@@ -266,10 +261,9 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readInteger() {
 		byte[] intBytes = new byte[4];
-		intBytes[0] = bytes[streamPosition++];
-		intBytes[1] = bytes[streamPosition++];
-		intBytes[2] = bytes[streamPosition++];
-		intBytes[3] = bytes[streamPosition++];
+		for (int i = 0; i < intBytes.length; i++) {
+			intBytes[i] = bytes[streamPosition++];
+		}
 		BigInteger intBits = new BigInteger(intBytes);
 		return Integer.valueOf(intBits.intValue());
 	}
