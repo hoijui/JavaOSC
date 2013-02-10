@@ -44,9 +44,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	// state for listening
 	private boolean listening;
-	private OSCByteArrayToJavaConverter converter
-			= new OSCByteArrayToJavaConverter();
-	private OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+	private final OSCByteArrayToJavaConverter converter;
+	private final OSCPacketDispatcher dispatcher;
 
 	/**
 	 * Create an OSCPort that listens on the specified port.
@@ -56,6 +55,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public OSCPortIn(int port) throws SocketException {
 		super(new DatagramSocket(port), port);
+
+		this.converter = new OSCByteArrayToJavaConverter();
+		this.dispatcher = new OSCPacketDispatcher();
 	}
 
 	/**
