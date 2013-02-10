@@ -58,7 +58,7 @@ public abstract class OSCPacket {
 	 * Generate a representation of this packet conforming to the
 	 * the OSC byte stream specification. Used Internally.
 	 */
-	protected byte[] computeByteArray() {
+	private byte[] computeByteArray() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.setCharset(charset);
 		return computeByteArray(stream);
