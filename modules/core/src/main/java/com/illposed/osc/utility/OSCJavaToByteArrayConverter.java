@@ -32,16 +32,18 @@ import java.util.Collection;
  */
 public class OSCJavaToByteArrayConverter {
 
-	private ByteArrayOutputStream stream = new ByteArrayOutputStream();
+	private ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
-	private byte[] intBytes = new byte[4];
-	private byte[] longintBytes = new byte[8];
+	private byte[] intBytes;
+	private byte[] longintBytes;
 
 	public OSCJavaToByteArrayConverter() {
 
 		this.stream = new ByteArrayOutputStream();
 		this.charset = Charset.defaultCharset();
+		this.intBytes = new byte[4];
+		this.longintBytes = new byte[8];
 	}
 
 	/**
