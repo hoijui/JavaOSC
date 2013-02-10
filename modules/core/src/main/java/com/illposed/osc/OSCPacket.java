@@ -33,9 +33,6 @@ public abstract class OSCPacket {
 	private Charset charset;
 	private byte[] byteArray;
 
-	/**
-	 * Default constructor for the abstract class
-	 */
 	public OSCPacket() {
 		this.isByteArrayComputed = false;
 		this.charset = Charset.defaultCharset();
