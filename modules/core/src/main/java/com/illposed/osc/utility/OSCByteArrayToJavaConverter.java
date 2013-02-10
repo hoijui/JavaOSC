@@ -280,10 +280,11 @@ public class OSCByteArrayToJavaConverter {
 		byte[] fractionBytes = new byte[8];
 		for (int i = 0; i < 4; i++) {
 			// clear the higher order 4 bytes
-			secondBytes[i] = 0; fractionBytes[i] = 0;
+			secondBytes[i] = 0;
+			fractionBytes[i] = 0;
 		}
-			// while reading in the seconds & fraction, check if
-			// this timetag has immediate semantics
+		// while reading in the seconds & fraction, check if
+		// this timetag has immediate semantics
 		boolean isImmediate = true;
 		for (int i = 4; i < 8; i++) {
 			secondBytes[i] = bytes[streamPosition++];
@@ -349,11 +350,11 @@ public class OSCByteArrayToJavaConverter {
 	 * Get the length of the string currently in the byte stream.
 	 */
 	private int lengthOfCurrentString() {
-		int i = 0;
-		while (bytes[streamPosition + i] != 0) {
-			i++;
+		int len = 0;
+		while (bytes[streamPosition + len] != 0) {
+			len++;
 		}
-		return i;
+		return len;
 	}
 
 	/**
