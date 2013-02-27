@@ -119,7 +119,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Register the listener for incoming OSCPackets addressed to an Address
-	 * @param anAddress  the address to listen for
+	 * @param anAddress  the address to listen for. The address can be specified as a regex, e.g., "/m.*e/receiving"
 	 * @param listener   the object to invoke when a message comes in
 	 */
 	public void addListener(String anAddress, OSCListener listener) {
