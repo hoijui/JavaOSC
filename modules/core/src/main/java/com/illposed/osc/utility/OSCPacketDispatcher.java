@@ -42,11 +42,7 @@ public class OSCPacketDispatcher {
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
-		if (packet instanceof OSCBundle) {
-			dispatchBundle((OSCBundle) packet);
-		} else {
-			dispatchMessage((OSCMessage) packet);
-		}
+		dispatchPacket(packet, null);
 	}
 
 	public void dispatchPacket(OSCPacket packet, Date timestamp) {
@@ -63,10 +59,6 @@ public class OSCPacketDispatcher {
 		for (OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
 		}
-	}
-
-	private void dispatchMessage(OSCMessage message) {
-		dispatchMessage(message, null);
 	}
 
 	private void dispatchMessage(OSCMessage message, Date time) {
