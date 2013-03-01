@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -119,9 +120,10 @@ public class OSCMessage extends OSCPacket {
 	 * Convert the message into a byte array.
 	 * Used internally only.
 	 */
-	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
-		computeAddressByteArray(stream);
-		computeArgumentsByteArray(stream);
-		return stream.toByteArray();
+	@Override
+	protected ByteBuffer computeByteArray(OSCJavaToByteArrayConverter encoder) {
+		computeAddressByteArray(encoder);
+		computeArgumentsByteArray(encoder);
+		return encoder.toBytes();
 	}
 }

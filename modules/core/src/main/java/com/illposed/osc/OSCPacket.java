@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
@@ -28,14 +29,13 @@ import java.nio.charset.Charset;
  */
 public abstract class OSCPacket {
 
-	private boolean isByteArrayComputed;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
-	private byte[] byteArray;
+	private ByteBuffer bytes;
 
 	public OSCPacket() {
-		this.isByteArrayComputed = false;
 		this.charset = Charset.defaultCharset();
+		this.bytes = null;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public abstract class OSCPacket {
 	 * Generate a representation of this packet conforming to the
 	 * the OSC byte stream specification. Used Internally.
 	 */
-	private byte[] computeByteArray() {
+	private ByteBuffer computeByteArray() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.setCharset(charset);
 		return computeByteArray(stream);
@@ -69,17 +69,25 @@ public abstract class OSCPacket {
 	 * formatted according to the OSC specification.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
+	protected abstract ByteBuffer computeByteArray(OSCJavaToByteArrayConverter stream);
 
 	/**
 	 * Return the OSC byte stream for this packet.
-	 * @return byte[]
+	 * @return a read only buffer
+	 */
+	public ByteBuffer getBytes() {
+		if (bytes == null) {
+			bytes = computeByteArray();
+		}
+		return bytes.asReadOnlyBuffer();
+	}
+
+	/**
+	 * @deprecated
+	 * @see getBytes()
 	 */
 	public byte[] getByteArray() {
-		if (!isByteArrayComputed) {
-			byteArray = computeByteArray();
-		}
-		return byteArray;
+		return getBytes().array();
 	}
 
 	/**

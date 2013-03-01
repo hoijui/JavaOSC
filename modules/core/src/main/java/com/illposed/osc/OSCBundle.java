@@ -10,6 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -148,7 +149,8 @@ public class OSCBundle extends OSCPacket {
 	 * Used Internally.
 	 * @param stream OscPacketByteArrayConverter
 	 */
-	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	@Override
+	protected ByteBuffer computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
 		byte[] packetBytes;
@@ -157,6 +159,6 @@ public class OSCBundle extends OSCPacket {
 			stream.write(packetBytes.length);
 			stream.write(packetBytes);
 		}
-		return stream.toByteArray();
+		return stream.toBytes();
 	}
 }
