@@ -153,10 +153,10 @@ public class OSCBundle extends OSCPacket {
 	protected ByteBuffer computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
-		byte[] packetBytes;
+		ByteBuffer packetBytes;
 		for (OSCPacket pkg : packets) {
-			packetBytes = pkg.getByteArray();
-			stream.write(packetBytes.length);
+			packetBytes = pkg.getBytes();
+			stream.write(packetBytes.limit());
 			stream.write(packetBytes);
 		}
 		return stream.toBytes();

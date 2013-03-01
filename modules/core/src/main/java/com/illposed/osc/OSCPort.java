@@ -8,7 +8,13 @@
 
 package com.illposed.osc;
 
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.channels.DatagramChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 
 /**
  * OSCPort is an abstract superclass, to send OSC messages,
@@ -19,15 +25,25 @@ import java.net.DatagramSocket;
  */
 public abstract class OSCPort {
 
-	private DatagramSocket socket;
-	private int port;
+	private DatagramChannel channel;
+//	protected DatagramSocket socket;
+	private SocketAddress remote;
 
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;
 
-	protected OSCPort(DatagramSocket socket, int port) {
-		this.socket = socket;
-		this.port = port;
+	protected OSCPort(SocketAddress local) throws IOException {
+		this.channel = DatagramChannel.open();
+
+		this.channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
+		this.channel.socket().bind(local);
+//		this.channel.connect(address);
+		//this.socket = this.channel.socket();
+		this.remote = remote;
+
+//		this.socket.bind(this.remote);
+		// this is requried for read() and write() on the channel
+		//this.channel.connect(this.remote);
 	}
 
 	/**
@@ -49,11 +65,11 @@ public abstract class OSCPort {
 	}
 
 	/**
-	 * Returns the socket associated with this port.
-	 * @return this ports socket
+	 * Returns the channel associated with this port.
+	 * @return this ports channel
 	 */
-	protected DatagramSocket getSocket() {
-		return socket;
+	protected DatagramChannel getChannel() {
+		return channel;
 	}
 
 	/**
@@ -61,7 +77,12 @@ public abstract class OSCPort {
 	 * @return this ports number
 	 */
 	protected int getPort() {
-		return port;
+
+		if (remote instanceof InetSocketAddress) {
+			return ((InetSocketAddress)remote).getPort();
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -69,7 +90,7 @@ public abstract class OSCPort {
 	 * It is recommended that clients call this when they are done with the
 	 * port.
 	 */
-	public void close() {
-		socket.close();
+	public void close() throws IOException {
+		channel.close();
 	}
 }

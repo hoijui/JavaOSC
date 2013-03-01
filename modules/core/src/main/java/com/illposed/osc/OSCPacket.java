@@ -87,7 +87,9 @@ public abstract class OSCPacket {
 	 * @see getBytes()
 	 */
 	public byte[] getByteArray() {
-		return getBytes().array();
+		// to ensure that the bytes are computed
+		getBytes();
+		return bytes.array();
 	}
 
 	/**

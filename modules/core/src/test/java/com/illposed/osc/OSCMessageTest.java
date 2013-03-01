@@ -11,6 +11,7 @@ package com.illposed.osc;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,33 +21,85 @@ import java.util.List;
  */
 public class OSCMessageTest extends junit.framework.TestCase {
 
+	private static OSCPacket reencode(OSCPacket packet) {
+		ByteBuffer bytes = packet.getBytes();
+		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
+		return converter.convert(bytes);
+	}
+
+	private static byte[] toByteArray(ByteBuffer bytes) {
+		if (bytes.hasArray()) {
+			return bytes.array();
+		} else {
+			byte[] bytesArray = new byte[bytes.limit() - bytes.position()];
+			int oldPos = bytes.position();
+			bytes.get(bytesArray);
+			bytes.position(oldPos);
+			return bytesArray;
+		}
+	}
+
+	public static void check(ByteBuffer expected, ByteBuffer result) {
+		if (expected.compareTo(result) != 0) {
+			fail("Computed and expected answers differ: "
+					+ "\"" + new String(toByteArray(result)) + "\" (length: "
+					+ (result.limit() - result.position()) + ") vs "
+					+ "\"" + new String(toByteArray(expected)) + "\" (length: "
+					+ (expected.limit() - expected.position()) + ")");
+		}
+	}
+
 	/**
 	 * @param result received from OSC
-	 * @param answer what should have been received
+	 * @param expectedBytes what should have been received
 	 */
-	public static void checkResultEqualsAnswer(byte[] result, byte[] answer) {
-		if (result.length != answer.length) {
-			fail(
-				"Result and answer aren't the same length "
-					+ result.length + " vs " + answer.length
-					+ " (\"" + new String(result) + "\" vs \"" + new String(answer) + "\")");
-		}
-		for (int i = 0; i < result.length; i++) {
-			if (result[i] != answer[i]) {
-				String errorString = "Didn't convert correctly: " + i;
-				errorString = errorString + " result: \"" + new String(result) + "\"";
-				errorString = errorString + " answer: \"" + new String(answer) + "\"";
-				fail(errorString);
-			}
-		}
+	public static void check(byte[] expectedBytes, ByteBuffer result) {
+
+		ByteBuffer expected = ByteBuffer.wrap(expectedBytes);
+		check(expected, result);
+	}
+
+	public static void check(byte[] expectedBytes, OSCPacket packet) {
+		check(expectedBytes, packet.getBytes());
+	}
+
+	public static void check(byte[] expectedBytes, OSCJavaToByteArrayConverter stream) {
+		check(expectedBytes, stream.toBytes());
 	}
 
 	public void testEmpty() {
 		List<Object> args = new ArrayList<Object>(0);
 		OSCMessage message = new OSCMessage("/empty", args);
 		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
+	}
+
+	public void testEmpty2() {
+		OSCMessage message = new OSCMessage("/empty");
+		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
+		check(answer, message);
+	}
+
+	public void testChangingAfterBytesFetch() {
+		OSCMessage message = new OSCMessage("/sc/mixer/volume");
+		message.addArgument(Integer.valueOf(1));
+		message.getBytes();
+		boolean exceptionThrown = false;
+		try {
+			message.addArgument(Float.valueOf(0.2f));
+		} catch (RuntimeException ex) {
+			// Good!
+			// This is acceptable, though it would also be OK
+			// to return the correct bytes later on.
+			exceptionThrown = true;
+		}
+		if (!exceptionThrown) {
+			byte[] answer = {
+				47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111,
+				108, 117, 109, 101, 0, 0, 0, 0, 44, 105, 102, 0, 0, 0, 0,
+				1, 62, 76, -52, -51 };
+			check(answer, message);
+		}
 	}
 
 	public void testDecreaseVolume() {
@@ -58,8 +111,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111,
 			108, 117, 109, 101, 0, 0, 0, 0, 44, 105, 102, 0, 0, 0, 0,
 			1, 62, 76, -52, -51 };
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
 	}
 
 	/**
@@ -75,8 +127,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111, 108,
 			117, 109, 101, 0, 0, 0, 0, 44, 105, 102, 0, 0, 0, 0, 1,	63,
 			(byte) 128, 0, 0};
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
 	}
 
 	public void testPrintStringOnStream() {
@@ -85,22 +136,19 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		stream.write(100);
 		byte[] answer =
 			{47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, stream);
 	}
 
 	public void testRun() {
 		OSCMessage message = new OSCMessage("/sc/run");
 		byte[] answer = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
 	}
 
 	public void testStop() {
 		OSCMessage message = new OSCMessage("/sc/stop");
 		byte[] answer = {47, 115, 99, 47, 115, 116, 111, 112, 0, 0, 0, 0, 44, 0, 0, 0};
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
 	}
 
 	public void testCreateSynth() {
@@ -109,17 +157,14 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		message.addArgument("freq");
 		message.addArgument(Float.valueOf(440.0f));
 		byte[] answer = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
+		check(answer, message);
 	}
 
 	public void testEncodeBigInteger() {
 		OSCMessage message = new OSCMessage("/dummy");
 		BigInteger one001 = new BigInteger("1001");
 		message.addArgument(one001);
-		byte[] byteArray = message.getByteArray();
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
-		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
+		OSCMessage packet = (OSCMessage) reencode(message);
 		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Big Integer did not receive the correct address");
 		}
@@ -141,9 +186,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		floats.add(Float.valueOf(10.0f));
 		floats.add(Float.valueOf(100.0f));
 		message.addArgument(floats);
-		byte[] byteArray = message.getByteArray();
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
-		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
+		OSCMessage packet = (OSCMessage) reencode(message);
 		if (!packet.getAddress().equals("/dummy")) {
 			fail("Send Array did not receive the correct address");
 		}

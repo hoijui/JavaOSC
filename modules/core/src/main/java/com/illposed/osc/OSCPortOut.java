@@ -9,10 +9,10 @@
 package com.illposed.osc;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 
 /**
@@ -24,7 +24,7 @@ import java.net.UnknownHostException;
  * An example based on
  * {@link com.illposed.osc.OSCPortTest#testMessageWithArgs()}:
  * <pre>
-	OSCPort sender = new OSCPort();
+	OSCPortOut sender = new OSCPortOut();
 	List<Object> args = new ArrayList<Object>(2);
 	args.add(Integer.valueOf(3));
 	args.add("hello");
@@ -40,7 +40,11 @@ import java.net.UnknownHostException;
  */
 public class OSCPortOut extends OSCPort {
 
-	private InetAddress address;
+	public OSCPortOut(SocketAddress address) throws IOException {
+		super(address);
+//		getChannel().socket().bind(address);
+		getChannel().connect(address);
+	}
 
 	/**
 	 * Create an OSCPort that sends to address:port.
@@ -48,10 +52,9 @@ public class OSCPortOut extends OSCPort {
 	 * @param port the UDP port to send to
 	 */
 	public OSCPortOut(InetAddress address, int port)
-		throws SocketException
+		throws IOException
 	{
-		super(new DatagramSocket(), port);
-		this.address = address;
+		this(new InetSocketAddress(address, port));
 	}
 
 	/**
@@ -59,7 +62,7 @@ public class OSCPortOut extends OSCPort {
 	 * using the standard SuperCollider port.
 	 * @param address the UDP address to send to
 	 */
-	public OSCPortOut(InetAddress address) throws SocketException {
+	public OSCPortOut(InetAddress address) throws IOException {
 		this(address, DEFAULT_SC_OSC_PORT);
 	}
 
@@ -67,18 +70,16 @@ public class OSCPortOut extends OSCPort {
 	 * Create an OSCPort that sends to "localhost",
 	 * on the standard SuperCollider port.
 	 */
-	public OSCPortOut() throws UnknownHostException, SocketException {
+	public OSCPortOut() throws UnknownHostException, IOException {
 		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
 	}
 
 	/**
-	 * Send an OSC packet (message or bundle) to the receiver we are bound to.
+	 * Send an OSC packet (message or bundle) to the receiver
+	 * we are connected to.
 	 * @param aPacket the bundle or message to send
 	 */
 	public void send(OSCPacket aPacket) throws IOException {
-		byte[] byteArray = aPacket.getByteArray();
-		DatagramPacket packet =
-				new DatagramPacket(byteArray, byteArray.length, address, getPort());
-		getSocket().send(packet);
+		getChannel().write(aPacket.getBytes());
 	}
 }

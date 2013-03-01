@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -21,9 +22,9 @@ import java.util.List;
 public class OSCBundleTest extends junit.framework.TestCase {
 
 	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) {
-		byte[] byteArray = bundle.getByteArray();
+		ByteBuffer bytes = bundle.getBytes();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
-		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
+		OSCBundle packet = (OSCBundle) converter.convert(bytes);
 		if (!packet.getTimestamp().equals(expectedTimestamp)) {
 			fail("Send Bundle did not receive the correct timestamp " + packet.getTimestamp()
 				+ "(" + packet.getTimestamp().getTime() +

@@ -10,6 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,13 @@ import java.util.List;
  */
 public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
-	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
-		OSCMessageTest.checkResultEqualsAnswer(result, answer);
+	private void checkEncoding(Object toBeEncoded, byte[] expectedBytes) {
+		ByteBuffer expected = ByteBuffer.wrap(expectedBytes);
+		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		stream.write(toBeEncoded);
+		ByteBuffer result = stream.toBytes();
+
+		OSCMessageTest.check(expected, result);
 	}
 
 	/**
@@ -42,51 +48,39 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
 	 */
 	public void testPrintFloat2OnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(Float.valueOf(0.2f));
-		byte[] answer = {62, 76, -52, -51};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = Float.valueOf(0.2f);
+		byte[] expected = {62, 76, -52, -51};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testPrintFloatOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(Float.valueOf(10.7567f));
-		byte[] answer = {65, 44, 27, 113};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = Float.valueOf(10.7567f);
+		byte[] expected = {65, 44, 27, 113};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testPrintIntegerOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(Integer.valueOf(1124));
-		byte[] answer = {0, 0, 4, 100};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = Integer.valueOf(1124);
+		byte[] expected = {0, 0, 4, 100};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testPrintString2OnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write("abcd");
-		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = "abcd";
+		byte[] expected = {97, 98, 99, 100, 0, 0, 0, 0};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testPrintStringOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write("abc");
-		byte[] answer = {97, 98, 99, 0};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = "abc";
+		byte[] expected = {97, 98, 99, 0};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testPrintBigIntegerOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(new java.math.BigInteger("1124"));
-		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
-		byte[] result = stream.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		Object toBeEncoded = new java.math.BigInteger("1124");
+		byte[] expected = {0, 0, 0, 0, 0, 0, 4, 100};
+		checkEncoding(toBeEncoded, expected);
 	}
 
 	public void testIfExceptionOnNullWrite() {
@@ -95,6 +89,13 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		try {
 			stream.write((BigInteger) null);
 			fail("No exception thrown on writing (BigInteger)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			stream.write((ByteBuffer) null);
+			fail("No exception thrown on writing (ByteBuffer)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}

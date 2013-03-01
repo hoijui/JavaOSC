@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,8 +23,11 @@ public class OSCPortTest extends junit.framework.TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		sender = new OSCPortOut();
-		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+		InetSocketAddress address = new InetSocketAddress(
+//				InetAddress.getLocalHost(), OSCPort.defaultSCOSCPort());
+				OSCPort.defaultSCOSCPort());
+		sender = new OSCPortOut(address);
+		receiver = new OSCPortIn(address);
 	}
 
 	@Override

@@ -97,11 +97,11 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Convert the contents of the output stream to a read-only byte buffer.
+	 * Convert the contents of the output stream to a byte buffer.
 	 * @return the combined bytes written to this converter
 	 */
 	public ByteBuffer toBytes() {
-		return ByteBuffer.wrap(stream.toByteArray()).asReadOnlyBuffer();
+		return ByteBuffer.wrap(stream.toByteArray());
 	}
 
 	/**
@@ -126,6 +126,26 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(int i) {
 		writeInteger32ToByteArray(i);
+	}
+
+	/**
+	 * Write a set of bytes into the byte stream.
+	 * @param bytes raw bytes to be written
+	 */
+	public void write(ByteBuffer bytes) {
+		
+		try {
+			if (bytes.hasArray()) {
+				stream.write(bytes.array());
+			} else {
+				byte[] bytesArray = new byte[bytes.limit() - bytes.position()];
+				bytes.get(bytesArray);
+				stream.write(bytesArray);
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException("You're screwed:"
+					+ " IOException writing to a ByteArrayOutputStream", ex);
+		}
 	}
 
 	/**

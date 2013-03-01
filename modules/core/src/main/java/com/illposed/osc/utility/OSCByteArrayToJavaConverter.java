@@ -59,11 +59,16 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Converts a byte array into an {@link OSCPacket}
+	 * Converts a byte buffer into an {@link OSCPacket}
 	 * (either an {@link OSCMessage} or {@link OSCBundle}).
+	 * @param inBytes to be converted from the currently marked position
+	 *   till the buffers limit
 	 */
-	public OSCPacket convert(byte[] byteArray, int bytesLength) {
-		this.bytes = ByteBuffer.wrap(byteArray, 0, bytesLength).asReadOnlyBuffer();
+	public OSCPacket convert(ByteBuffer inBytes) {
+		// copies the mark and limit
+		//bytes = inBytes.asReadOnlyBuffer();
+		bytes = inBytes;
+		bytes.mark();
 		if (isBundle()) {
 			return convertBundle();
 		} else {
@@ -76,7 +81,7 @@ public class OSCByteArrayToJavaConverter {
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle() {
-		bytes.rewind();
+		bytes.reset();
 		// we only need the first few chars to check if it is a bundle
 		byte[] firstFewBytes = new byte[BUNDLE_START.length()];
 		bytes.get(firstFewBytes);
@@ -86,7 +91,7 @@ public class OSCByteArrayToJavaConverter {
 		if (!bundle) {
 			// if the beginning is not BUNDLE_START,
 			// we have to parse it again, later on
-			bytes.rewind();
+			bytes.reset();
 		}
 		return bundle;
 	}
@@ -105,10 +110,15 @@ public class OSCByteArrayToJavaConverter {
 		while (bytes.hasRemaining()) {
 			// recursively read through the stream and convert packets you find
 			int packetLength = ((Integer) readInteger()).intValue();
-			byte[] packetBytes = new byte[packetLength];
-			bytes.get(packetBytes);
-			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
+			// NOTE This would be problematic, if we would use the buffer
+			//   concurrently for receiving an other packet already.
+			ByteBuffer subPacketBytes = bytes.slice();
+			subPacketBytes.mark();
+			subPacketBytes.limit(packetLength);
+			OSCPacket packet = myConverter.convert(subPacketBytes);
 			bundle.addPacket(packet);
+
+			bytes.position(bytes.position() + packetLength);
 		}
 		return bundle;
 	}

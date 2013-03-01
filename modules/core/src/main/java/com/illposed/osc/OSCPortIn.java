@@ -11,9 +11,12 @@ package com.illposed.osc;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 import java.nio.charset.Charset;
 
 /**
@@ -22,8 +25,7 @@ import java.nio.charset.Charset;
  * An example based on
  * {@link com.illposed.osc.OSCPortTest#testReceiving()}:
  * <pre>
-
-	receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
+	OSCPortIn receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
 	OSCListener listener = new OSCListener() {
 		public void acceptMessage(java.util.Date time, OSCMessage message) {
 			System.out.println("Message received!");
@@ -31,7 +33,6 @@ import java.nio.charset.Charset;
 	};
 	receiver.addListener("/message/receiving", listener);
 	receiver.startListening();
-
  * </pre>
  *
  * Then, using a program such as SuperCollider or sendOSC, send a message
@@ -47,18 +48,22 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCByteArrayToJavaConverter converter;
 	private final OSCPacketDispatcher dispatcher;
 
+	public OSCPortIn(SocketAddress local) throws IOException {
+		super(local);
+
+		this.converter = new OSCByteArrayToJavaConverter();
+		this.dispatcher = new OSCPacketDispatcher();
+	}
+
 	/**
 	 * Create an OSCPort that listens on the specified port.
 	 * Strings will be decoded using the systems default character set.
 	 * @param port UDP port to listen on.
-	 * @throws SocketException if the port number is invalid,
-	 *   or there is already a socket listening on it
+	 * @throws IOException if the port number is invalid,
+	 *   or there is already something else listening on it
 	 */
-	public OSCPortIn(int port) throws SocketException {
-		super(new DatagramSocket(port), port);
-
-		this.converter = new OSCByteArrayToJavaConverter();
-		this.dispatcher = new OSCPacketDispatcher();
+	public OSCPortIn(int port) throws IOException {
+		this(new InetSocketAddress(port));
 	}
 
 	/**
@@ -67,10 +72,10 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param port UDP port to listen on.
 	 * @param charset how to decode strings read from incoming packages.
 	 *   This includes message addresses and string parameters.
-	 * @throws SocketException if the port number is invalid,
-	 *   or there is already a socket listening on it
+	 * @throws IOException if the port number is invalid,
+	 *   or there is already something else listening on it
 	 */
-	public OSCPortIn(int port, Charset charset) throws SocketException {
+	public OSCPortIn(int port, Charset charset) throws IOException {
 		this(port);
 
 		this.converter.setCharset(charset);
@@ -88,24 +93,32 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		byte[] buffer = new byte[BUFFER_SIZE];
-		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
-		DatagramSocket socket = getSocket();
+		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		DatagramChannel channel = getChannel();
 		while (listening) {
 			try {
+				buffer.clear();
+				long bt = System.currentTimeMillis();
 				try {
-					socket.receive(packet);
+					System.err.println("XXX reading ...");
+//					int read = channel.read(buffer);
+					channel.receive(buffer);
+					int read = buffer.limit();
+					System.err.println("XXX read: " + read);
 				} catch (SocketException ex) {
 					if (listening) {
 						throw ex;
 					} else {
-						// if we closed the socket while receiving data,
+						// if we closed the channel while receiving data,
 						// the exception is expected/normal, so we hide it
 						continue;
 					}
+				} catch (java.nio.channels.AsynchronousCloseException ex) {
+					System.err.println("XXX tried reading for: " + (System.currentTimeMillis() - bt));
 				}
-				OSCPacket oscPacket = converter.convert(buffer,
-						packet.getLength());
+				buffer.flip();
+				// FIXME this will fail if the packet to be received is larger then BUFFER_SIZE
+				OSCPacket oscPacket = converter.convert(buffer);
 				dispatcher.dispatchPacket(oscPacket);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -118,7 +131,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void startListening() {
 		listening = true;
-		Thread thread = new Thread(this);
+		Thread thread = new Thread(this); // FIXME store this thread, so it can be shut down in stopListening()
 		thread.start();
 	}
 
