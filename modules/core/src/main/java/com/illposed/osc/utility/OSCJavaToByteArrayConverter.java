@@ -11,6 +11,7 @@ package com.illposed.osc.utility;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -96,8 +97,16 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Convert the contents of the output stream to a byte array.
-	 * @return the byte array containing the byte stream
+	 * Convert the contents of the output stream to a read-only byte buffer.
+	 * @return the combined bytes written to this converter
+	 */
+	public ByteBuffer toBytes() {
+		return ByteBuffer.wrap(stream.toByteArray()).asReadOnlyBuffer();
+	}
+
+	/**
+	 * @deprecated
+	 * @see getBytes()
 	 */
 	public byte[] toByteArray() {
 		return stream.toByteArray();
