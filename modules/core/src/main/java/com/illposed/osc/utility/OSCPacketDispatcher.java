@@ -19,24 +19,26 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Dispatches OSCMessages to registered listeners.
+ * Dispatches {@link OSCPacket}s to registered listeners.
  *
  * @author Chandrasekhar Ramakrishnan
  */
-
 public class OSCPacketDispatcher {
 
-	private Map<String, OSCListener> addressToListener
-			= new HashMap<String, OSCListener>();
+	private final Map<String, OSCListener> addressToListener;
 
-	/**
-	 *
-	 */
 	public OSCPacketDispatcher() {
+		this.addressToListener = new HashMap<String, OSCListener>();
 	}
 
-	public void addListener(String address, OSCListener listener) {
-		addressToListener.put(address, listener);
+	/**
+	 * Adds a listener that will then be notified of incoming messages.
+	 * @param addressSelector addresses of incoming messages are checked
+	 *   against this; you may use Java regular expressions here
+	 * @param listener will be notified of incoming packets, if they match
+	 */
+	public void addListener(String addressSelector, OSCListener listener) {
+		addressToListener.put(addressSelector, listener);
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
