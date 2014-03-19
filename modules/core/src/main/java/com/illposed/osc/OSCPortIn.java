@@ -100,6 +100,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void startListening() {
 		listening = true;
 		Thread thread = new Thread(this);
+		thread.setDaemon(true);
 		thread.start();
 	}
 
