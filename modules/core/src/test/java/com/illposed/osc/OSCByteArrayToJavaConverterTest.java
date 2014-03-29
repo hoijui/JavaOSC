@@ -8,9 +8,9 @@
 
 package com.illposed.osc;
 
-import java.util.Date;
-
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Chandrasekhar Ramakrishnan
@@ -45,18 +45,18 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 		if (!packet.getAddress().equals("/s_new")) {
 			fail("Address should be /s_new, but is " + packet.getAddress());
 		}
-		Object[] arguments = packet.getArguments();
-		if (arguments.length != 3) {
-			fail("Num arguments should be 3, but is " + arguments.length);
+		List<Object> arguments = packet.getArguments();
+		if (arguments.size() != 3) {
+			fail("Num arguments should be 3, but is " + arguments.size());
 		}
-		if (!(new Integer(1001).equals(arguments[0]))) {
-			fail("Argument 1 should be 1001, but is " + arguments[0]);
+		if (!(Integer.valueOf(1001).equals(arguments.get(0)))) {
+			fail("Argument 1 should be 1001, but is " + arguments.get(0));
 		}
-		if (!("freq".equals(arguments[1]))) {
-			fail("Argument 2 should be freq, but is " + arguments[1]);
+		if (!("freq".equals(arguments.get(1)))) {
+			fail("Argument 2 should be freq, but is " + arguments.get(1));
 		}
-		if (!(new Float(440.0).equals(arguments[2]))) {
-			fail("Argument 3 should be 440.0, but is " + arguments[2]);
+		if (!(Float.valueOf(440.0f).equals(arguments.get(2)))) {
+			fail("Argument 3 should be 440.0, but is " + arguments.get(2));
 		}
 	}
 
@@ -67,11 +67,11 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 		if (!bundle.getTimestamp().equals(new Date(0))) {
 			fail("Timestamp should be 0, but is " + bundle.getTimestamp());
 		}
-		OSCPacket[] packets = bundle.getPackets();
-		if (packets.length != 1) {
-			fail("Num packets should be 1, but is " + packets.length);
+		List<OSCPacket> packets = bundle.getPackets();
+		if (packets.size() != 1) {
+			fail("Num packets should be 1, but is " + packets.size());
 		}
-		OSCMessage message = (OSCMessage) packets[0];
+		OSCMessage message = (OSCMessage) packets.get(0);
 		if (!("/test".equals(message.getAddress()))) {
 			fail("Address of message should be /test, but is " + message.getAddress());
 		}

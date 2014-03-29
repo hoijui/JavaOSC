@@ -8,13 +8,12 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 
 /**
  * An simple (non-bundle) OSC message.
@@ -35,7 +34,7 @@ public class OSCMessage extends OSCPacket {
 	 * you need to set the address and optionally some arguments.
 	 */
 	public OSCMessage() {
-		arguments = new LinkedList<Object>();
+		this(null);
 	}
 
 	/**
@@ -43,26 +42,7 @@ public class OSCMessage extends OSCPacket {
 	 * @param address  the recipient of this OSC message
 	 */
 	public OSCMessage(String address) {
-		this(address, (Collection<Object>) null);
-	}
-
-	// deprecated since version 1.0, March 2012
-	/**
-	 * Creates an OSCMessage with an address and arguments already initialized.
-	 * @param address  the recipient of this OSC message
-	 * @param arguments  the data sent to the receiver
-	 * @deprecated
-	 */
-	public OSCMessage(String address, Object[] arguments) {
-
-		this.address = address;
-		if (arguments == null) {
-			this.arguments = new LinkedList<Object>();
-		} else {
-			this.arguments = new ArrayList<Object>(arguments.length);
-			this.arguments.addAll(Arrays.asList(arguments));
-		}
-		init();
+		this(address, null);
 	}
 
 	/**
@@ -111,8 +91,8 @@ public class OSCMessage extends OSCPacket {
 	 * The arguments of this message.
 	 * @return the arguments to this message
 	 */
-	public Object[] getArguments() {
-		return arguments.toArray();
+	public List<Object> getArguments() {
+		return Collections.unmodifiableList(arguments);
 	}
 
 	/**
@@ -129,9 +109,6 @@ public class OSCMessage extends OSCPacket {
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
-		if (null == arguments) {
-			return;
-		}
 		stream.writeTypes(arguments);
 		for (Object argument : arguments) {
 			stream.write(argument);

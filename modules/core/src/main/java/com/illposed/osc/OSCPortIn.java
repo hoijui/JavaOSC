@@ -8,13 +8,13 @@
 
 package com.illposed.osc;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.io.IOException;
-import java.net.SocketException;
-
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.nio.charset.Charset;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.
@@ -44,17 +44,36 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	// state for listening
 	private boolean listening;
-	private OSCByteArrayToJavaConverter converter
-			= new OSCByteArrayToJavaConverter();
-	private OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+	private final OSCByteArrayToJavaConverter converter;
+	private final OSCPacketDispatcher dispatcher;
 
 	/**
 	 * Create an OSCPort that listens on the specified port.
+	 * Strings will be decoded using the systems default character set.
 	 * @param port UDP port to listen on.
-	 * @throws SocketException
+	 * @throws SocketException if the port number is invalid,
+	 *   or there is already a socket listening on it
 	 */
 	public OSCPortIn(int port) throws SocketException {
 		super(new DatagramSocket(port), port);
+
+		this.converter = new OSCByteArrayToJavaConverter();
+		this.dispatcher = new OSCPacketDispatcher();
+	}
+
+	/**
+	 * Create an OSCPort that listens on the specified port,
+	 * and decodes strings with a specific character set.
+	 * @param port UDP port to listen on.
+	 * @param charset how to decode strings read from incoming packages.
+	 *   This includes message addresses and string parameters.
+	 * @throws SocketException if the port number is invalid,
+	 *   or there is already a socket listening on it
+	 */
+	public OSCPortIn(int port, Charset charset) throws SocketException {
+		this(port);
+
+		this.converter.setCharset(charset);
 	}
 
 	/**

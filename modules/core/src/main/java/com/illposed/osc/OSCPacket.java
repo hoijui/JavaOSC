@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.nio.charset.Charset;
 
 /**
  * OSCPacket is the abstract superclass for the various
@@ -28,20 +29,38 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 public abstract class OSCPacket {
 
 	private boolean isByteArrayComputed;
+	/** Used to encode message addresses and string parameters. */
+	private Charset charset;
 	private byte[] byteArray;
 
-	/**
-	 * Default constructor for the abstract class
-	 */
 	public OSCPacket() {
+		this.isByteArrayComputed = false;
+		this.charset = Charset.defaultCharset();
+	}
+
+	/**
+	 * Returns the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public Charset getCharset() {
+		return charset;
+	}
+
+	/**
+	 * Sets the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public void setCharset(Charset charset) {
+		this.charset = charset;
 	}
 
 	/**
 	 * Generate a representation of this packet conforming to the
 	 * the OSC byte stream specification. Used Internally.
 	 */
-	protected byte[] computeByteArray() {
+	private byte[] computeByteArray() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		stream.setCharset(charset);
 		return computeByteArray(stream);
 	}
 

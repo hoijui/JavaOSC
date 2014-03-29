@@ -8,13 +8,13 @@
 
 package com.illposed.osc;
 
-/**
- * @author Chandrasekhar Ramakrishnan
- * @see OSCPort
- * @see OSCPortIn
- * @see OSCPortOut
- */
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
+
 public class OSCPortTest extends junit.framework.TestCase {
+
+	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
 
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
@@ -28,9 +28,69 @@ public class OSCPortTest extends junit.framework.TestCase {
 
 	@Override
 	protected void tearDown() throws Exception {
-		sender.close();
 		receiver.close();
+		sender.close();
+		// wait a bit after closing the receiver,
+		// because (some) operating systems need some time
+		// to actually close the underlying socket
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
 		super.tearDown();
+	}
+
+	public void testSocketClose() throws Exception {
+
+		// close the underlying sockets
+		receiver.close();
+		sender.close();
+
+		// make sure the old receiver is gone for good
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		// check if the underlying sockets were closed
+		// NOTE We can have many (out-)sockets sending
+		//   on the same address and port,
+		//   but only one receiving per each such tuple.
+		sender = new OSCPortOut();
+		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+	}
+
+	public void testSocketAutoClose() throws Exception {
+
+		// DANGEROUS! here we forget to close the underlying sockets!
+		receiver = null;
+		sender = null;
+
+		// make sure the old receiver is gone for good
+		System.gc();
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		// check if the underlying sockets were closed
+		// NOTE We can have many (out-)sockets sending
+		//   on the same address and port,
+		//   but only one receiving per each such tuple.
+		sender = new OSCPortOut();
+		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+	}
+
+	public void testPorts() throws Exception {
+
+		assertEquals("Bad default SuperCollider OSC port",
+				57110, OSCPort.defaultSCOSCPort());
+		assertEquals("Bad default SuperCollider Language OSC port",
+				57120, OSCPort.defaultSCLangOSCPort());
+
+		assertEquals("Bad default port with ctor()",
+				57110, sender.getPort());
+
+		sender.close();
+		sender = new OSCPortOut(InetAddress.getLocalHost());
+		assertEquals("Bad default port with ctor(address)",
+				57110, sender.getPort());
+
+		sender.close();
+		sender = new OSCPortOut(InetAddress.getLocalHost(), 12345);
+		assertEquals("Bad port with ctor(address, port)",
+				12345, sender.getPort());
 	}
 
 	public void testStart() throws Exception {
@@ -39,27 +99,26 @@ public class OSCPortTest extends junit.framework.TestCase {
 	}
 
 	public void testMessageWithArgs() throws Exception {
-		Object args[] = new Object[2];
-		args[0] = new Integer(3);
-		args[1] = "hello";
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(Integer.valueOf(3));
+		args.add("hello");
 		OSCMessage mesg = new OSCMessage("/foo/bar", args);
 		sender.send(mesg);
 	}
 
 	public void testBundle() throws Exception {
-		Object args[] = new Object[2];
-		OSCPacket mesgs[] = new OSCPacket[1];
-		args[0] = new Integer(3);
-		args[1] = "hello";
-		OSCMessage mesg = new OSCMessage("/foo/bar", args);
-		mesgs[0] = mesg;
-		OSCBundle bundle = new OSCBundle(mesgs);
+		List<Object> args = new ArrayList<Object>(2);
+		args.add(Integer.valueOf(3));
+		args.add("hello");
+		List<OSCPacket> msgs = new ArrayList<OSCPacket>(1);
+		msgs.add(new OSCMessage("/foo/bar", args));
+		OSCBundle bundle = new OSCBundle(msgs);
 		sender.send(bundle);
 	}
 
 	public void testBundle2() throws Exception {
 		OSCMessage mesg = new OSCMessage("/foo/bar");
-		mesg.addArgument(new Integer(3));
+		mesg.addArgument(Integer.valueOf(3));
 		mesg.addArgument("hello");
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(mesg);

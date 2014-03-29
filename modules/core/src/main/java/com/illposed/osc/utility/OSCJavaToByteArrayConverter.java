@@ -8,9 +8,10 @@
 
 package com.illposed.osc.utility;
 
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 /**
@@ -31,11 +32,34 @@ import java.util.Collection;
  */
 public class OSCJavaToByteArrayConverter {
 
-	private ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	private byte[] intBytes = new byte[4];
-	private byte[] longintBytes = new byte[8];
+	private ByteArrayOutputStream stream;
+	/** Used to encode message addresses and string parameters. */
+	private Charset charset;
+	private byte[] intBytes;
+	private byte[] longintBytes;
 
 	public OSCJavaToByteArrayConverter() {
+
+		this.stream = new ByteArrayOutputStream();
+		this.charset = Charset.defaultCharset();
+		this.intBytes = new byte[4];
+		this.longintBytes = new byte[8];
+	}
+
+	/**
+	 * Returns the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public Charset getCharset() {
+		return charset;
+	}
+
+	/**
+	 * Sets the character set used to encode message addresses
+	 * and string parameters.
+	 */
+	public void setCharset(Charset charset) {
+		this.charset = charset;
 	}
 
 	/**
@@ -140,7 +164,7 @@ public class OSCJavaToByteArrayConverter {
 		}
 		stream.write(stringBytes, 0, stringLength);
 */
-		byte[] stringBytes = aString.getBytes();
+		byte[] stringBytes = aString.getBytes(charset);
 
 		// pad out to align on 4 byte boundry
 		int mod = aString.length() % 4;
@@ -172,11 +196,10 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(Object anObject) {
 		// Can't do switch on class
-		if (null == anObject) {
-		} else if (anObject instanceof Object[]) {
-			Object[] theArray = (Object[]) anObject;
-			for (int i = 0; i < theArray.length; ++i) {
-				write(theArray[i]);
+		if (anObject instanceof Collection) {
+			Collection<Object> theArray = (Collection<Object>) anObject;
+			for (Object entry : theArray) {
+				write(entry);
 			}
 		} else if (anObject instanceof Float) {
 			write((Float) anObject);
@@ -186,6 +209,10 @@ public class OSCJavaToByteArrayConverter {
 			write((Integer) anObject);
 		} else if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
+		} else if (anObject == null) {
+			throw new RuntimeException("Can not write null");
+		} else {
+			throw new RuntimeException("Unknown object type: " + anObject.getClass());
 		}
 	}
 
@@ -219,21 +246,20 @@ public class OSCJavaToByteArrayConverter {
 	 * Write the types for an array element in the arguments.
 	 * @param array array of base Objects
 	 */
-	public void writeTypesArray(Object[] array) {
+	public void writeTypesArray(Collection<Object> array) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
 		// again?
 		// I really wish I could extend the base classes!
 
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] == null) {
-			} else if (Boolean.TRUE.equals(array[i])) {
+		for (Object element : array) {
+			if (Boolean.TRUE.equals(element)) {
 				// Create a way to deal with Boolean type objects
 				stream.write('T');
-			} else if (Boolean.FALSE.equals(array[i])) {
+			} else if (Boolean.FALSE.equals(element)) {
 				stream.write('F');
 			} else {
 				// this is an object -- write the type for the class
-				writeType(array[i].getClass());
+				writeType(element.getClass());
 			}
 		}
 	}
@@ -253,11 +279,11 @@ public class OSCJavaToByteArrayConverter {
 			}
 			// if the array at i is a type of array write a [
 			// This is used for nested arguments
-			if (type.getClass().isArray()) {
+			if (type instanceof Collection) {
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
-				writeTypesArray((Object[]) type);
+				writeTypesArray((Collection<Object>) type);
 				// close the array
 				stream.write(']');
 				continue;

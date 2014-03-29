@@ -9,29 +9,29 @@
 // this is the package we are in
 package com.illposed.osc.ui;
 
-// import these packages as well
-import java.net.InetAddress;
-import java.util.Date;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortOut;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * OscUI is a subClass of JPanel.
@@ -65,14 +65,14 @@ public class OscUI extends JPanel {
 		makeDisplay();
 		try {
 			oscPort = new OSCPortOut();
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			// this is just a demo program, so this is acceptable behavior
-			e.printStackTrace();
+			ex.printStackTrace();
 		}
 	}
 
 	// create a method for widget building
-	public void makeDisplay() {
+	private final void makeDisplay() {
 
 		// setLayout to be a BoxLayout
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -514,14 +514,13 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to start the synth "pink" on node 1000.
-		Object[] args =
-			{
-				"javaosc-example",
-				new Integer(node),
-				new Integer(1),
-				new Integer(0),
-				"freq",
-				new Float(freq)};
+		List<Object> args = new ArrayList<Object>(6);
+		args.add("javaosc-example");
+		args.add(new Integer(node));
+		args.add(new Integer(1));
+		args.add(new Integer(0));
+		args.add("freq");
+		args.add(new Float(freq));
 		// a comma is placed after /s_new in the code
 		OSCMessage msg = new OSCMessage("/s_new", args);
 
@@ -533,7 +532,7 @@ public class OscUI extends JPanel {
 		// send an error message if this doesn't happen
 		try {
 			oscPort.send(msg);
-		} catch (Exception e) {
+		} catch (Exception ex) {
 			showError("Couldn't send");
 		}
 	}
@@ -547,7 +546,8 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to free the node 1000
-		Object[] args = {new Integer(node)};
+		List<Object> args = new ArrayList<Object>(1);
+		args.add(new Integer(node));
 		OSCMessage msg = new OSCMessage("/n_free", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
@@ -580,7 +580,10 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to set the node 1000
-		Object[] args = {new Integer(node), "freq", new Float(freq)};
+		List<Object> args = new ArrayList<Object>(3);
+		args.add(new Integer(node));
+		args.add("freq");
+		args.add(new Float(freq));
 		OSCMessage msg = new OSCMessage("/n_set", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
@@ -597,17 +600,23 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		Object[] args1 = {new Integer(node1)};
+		List<Object> args1 = new ArrayList<Object>(1);
+		args1.add(new Integer(node1));
 		OSCMessage msg1 = new OSCMessage("/n_free", args1);
 
-		Object[] args2 = {new Integer(node2)};
+		List<Object> args2 = new ArrayList<Object>(1);
+		args2.add(new Integer(node2));
 		OSCMessage msg2 = new OSCMessage("/n_free", args2);
 
-		Object[] args3 = {new Integer(node3)};
+		List<Object> args3 = new ArrayList<Object>(1);
+		args3.add(new Integer(node3));
 		OSCMessage msg3 = new OSCMessage("/n_free", args3);
 
 		// create a timeStamped bundle of the messages
-		OSCPacket[] packets = {msg1, msg2, msg3 };
+		List<OSCPacket> packets = new ArrayList<OSCPacket>(3);
+		packets.add(msg1);
+		packets.add(msg2);
+		packets.add(msg3);
 		Date newDate = new Date();
 		long time = newDate.getTime();
 		Integer delayTime = Integer.valueOf(textBox4.getText());
@@ -629,16 +638,25 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		Object[] args1 = {"javaosc-example", new Integer(node1),
-				new Integer(1), new Integer(0)};
+		List<Object> args1 = new ArrayList<Object>(4);
+		args1.add("javaosc-example");
+		args1.add(new Integer(node1));
+		args1.add(new Integer(1));
+		args1.add(new Integer(0));
 		OSCMessage msg1 = new OSCMessage("/s_new", args1);
 
-		Object[] args2 = {"javaosc-example", new Integer(node2),
-				new Integer(1), new Integer(0)};
+		List<Object> args2 = new ArrayList<Object>(4);
+		args2.add("javaosc-example");
+		args2.add(new Integer(node2));
+		args2.add(new Integer(1));
+		args2.add(new Integer(0));
 		OSCMessage msg2 = new OSCMessage("/s_new", args2);
 
-		Object[] args3 = {"javaosc-example", new Integer(node3),
-				new Integer(1), new Integer(0)};
+		List<Object> args3 = new ArrayList<Object>(4);
+		args3.add("javaosc-example");
+		args3.add(new Integer(node3));
+		args3.add(new Integer(1));
+		args3.add(new Integer(0));
 		OSCMessage msg3 = new OSCMessage("/s_new", args3);
 
 		try {

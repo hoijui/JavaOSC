@@ -8,43 +8,41 @@
 
 package com.illposed.osc.utility;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
- * Dispatches OSCMessages to registered listeners.
+ * Dispatches {@link OSCPacket}s to registered listeners.
  *
  * @author Chandrasekhar Ramakrishnan
  */
-
 public class OSCPacketDispatcher {
 
-	private Map<String, OSCListener> addressToListener
-			= new HashMap<String, OSCListener>();
+	private final Map<String, OSCListener> addressToListener;
 
-	/**
-	 *
-	 */
 	public OSCPacketDispatcher() {
+		this.addressToListener = new HashMap<String, OSCListener>();
 	}
 
-	public void addListener(String address, OSCListener listener) {
-		addressToListener.put(address, listener);
+	/**
+	 * Adds a listener that will then be notified of incoming messages.
+	 * @param addressSelector addresses of incoming messages are checked
+	 *   against this; you may use Java regular expressions here
+	 * @param listener will be notified of incoming packets, if they match
+	 */
+	public void addListener(String addressSelector, OSCListener listener) {
+		addressToListener.put(addressSelector, listener);
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
-		if (packet instanceof OSCBundle) {
-			dispatchBundle((OSCBundle) packet);
-		} else {
-			dispatchMessage((OSCMessage) packet);
-		}
+		dispatchPacket(packet, null);
 	}
 
 	public void dispatchPacket(OSCPacket packet, Date timestamp) {
@@ -57,14 +55,10 @@ public class OSCPacketDispatcher {
 
 	private void dispatchBundle(OSCBundle bundle) {
 		Date timestamp = bundle.getTimestamp();
-		OSCPacket[] packets = bundle.getPackets();
+		List<OSCPacket> packets = bundle.getPackets();
 		for (OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
 		}
-	}
-
-	private void dispatchMessage(OSCMessage message) {
-		dispatchMessage(message, null);
 	}
 
 	private void dispatchMessage(OSCMessage message, Date time) {
