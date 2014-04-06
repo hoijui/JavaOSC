@@ -24,6 +24,5 @@ public interface OSCListener {
 	 *   <code>null</code> means: process immediately
 	 * @param message  The message to process.
 	 */
-	public void acceptMessage(Date time, OSCMessage message);
-
+	void acceptMessage(Date time, OSCMessage message);
 }
