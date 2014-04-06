@@ -11,17 +11,18 @@ package com.illposed.osc;
 import java.util.Date;
 
 /**
- * Interface for things that listen for incoming OSC Messages
+ * Allows to listen to incoming messages that match some selector pattern.
+ * In OSC speak, this is a Method, and it listens to Messages.
  *
  * @author Chandrasekhar Ramakrishnan
  */
 public interface OSCListener {
 
 	/**
-	 * Accept an incoming OSCMessage
+	 * Process a matching, incoming OSC Message.
 	 * @param time     The time this message is to be executed.
-	 *          <code>null</code> means execute now
-	 * @param message  The message to execute.
+	 *   <code>null</code> means: process immediately
+	 * @param message  The message to process.
 	 */
 	public void acceptMessage(Date time, OSCMessage message);
 
