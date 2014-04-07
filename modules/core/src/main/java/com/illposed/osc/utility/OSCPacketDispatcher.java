@@ -25,20 +25,18 @@ import java.util.Map.Entry;
  */
 public class OSCPacketDispatcher {
 
-	private final Map<String, OSCListener> addressToListener;
+	private final Map<AddressSelector, OSCListener> selectorToListener;
 
 	public OSCPacketDispatcher() {
-		this.addressToListener = new HashMap<String, OSCListener>();
+		this.selectorToListener = new HashMap<AddressSelector, OSCListener>();
 	}
 
 	/**
-	 * Adds a listener that will then be notified of incoming messages.
-	 * @param addressSelector addresses of incoming messages are checked
-	 *   against this; you may use Java regular expressions here FIXME see the fix-me of {@link #matches(String, String)}
-	 * @param listener will be notified of incoming packets, if they match
+	 * Adds a listener (<i>Method</i> in OSC speak) that will be notified
+	 * of incoming messages that match the selector.
 	 */
-	public void addListener(String addressSelector, OSCListener listener) {
-		addressToListener.put(addressSelector, listener);
+	public void addListener(AddressSelector addressSelector, OSCListener listener) {
+		selectorToListener.put(addressSelector, listener);
 	}
 
 	public void dispatchPacket(OSCPacket packet) {
@@ -61,21 +59,9 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	/**
-	 * Checks whether a OSC message address matches the given supplier.
-	 * The matching is currently done with Java regexp matching.
-	 * FIXME OSC standard requires wildcard matching (as in shell file-name matching, for example)
-	 * @param messageAddress for example "/sc/mixer/volume"
-	 * @param selector for example "/sc/[^/]+/volume" or "/sc/mixer/volume"
-	 * @return true if the message matches the supplied selector
-	 */
-	private boolean matches(String messageAddress, String selector) {
-		return messageAddress.matches(selector);
-	}
-
 	private void dispatchMessage(OSCMessage message, Date time) {
-		for (Entry<String, OSCListener> addrList : addressToListener.entrySet()) {
-			if (matches(message.getAddress(), addrList.getKey())) {
+		for (Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
+			if (addrList.getKey().matches(message.getAddress())) {
 				addrList.getValue().acceptMessage(time, message);
 			}
 		}

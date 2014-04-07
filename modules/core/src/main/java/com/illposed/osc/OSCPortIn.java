@@ -8,8 +8,10 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.AddressSelector;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
+import com.illposed.osc.utility.OSCPatternAddressSelector;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -137,11 +139,25 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Register the listener for incoming OSCPackets addressed to an Address
-	 * @param anAddress  the address to listen for. The address can be specified as a regex, e.g., "/m.*e/receiving"
-	 * @param listener   the object to invoke when a message comes in
+	 * Registers a listener that will be notified of incoming messages,
+	 * if their address matches the given pattern.
+	 *
+	 * @param addressSelector either a fixed address like "/sc/mixer/volume",
+	 *   or a selector pattern (a mix between wildcards and regex)
+	 *   like "/??/mixer/*", see {@link OSCPatternAddressSelector} for details
+	 * @param listener will be notified of incoming packets, if they match
 	 */
-	public void addListener(String anAddress, OSCListener listener) {
-		dispatcher.addListener(anAddress, listener);
+	public void addListener(String addressSelector, OSCListener listener) {
+		this.addListener(new OSCPatternAddressSelector(addressSelector), listener);
+	}
+
+	/**
+	 * Registers a listener that will be notified of incoming messages,
+	 * if their address matches the given selector.
+	 * @param addressSelector a custom address selector
+	 * @param listener will be notified of incoming packets, if they match
+	 */
+	public void addListener(AddressSelector addressSelector, OSCListener listener) {
+		dispatcher.addListener(addressSelector, listener);
 	}
 }

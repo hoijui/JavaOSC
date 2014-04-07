@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCPacketDispatcher;
+import com.illposed.osc.utility.OSCPatternAddressSelector;
 
 /**
  * @author Chandrasekhar Ramakrishnan
@@ -24,9 +25,9 @@ public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 	protected void setUp() throws Exception {
 		dispatcher = new OSCPacketDispatcher();
 		listener1 = new TestOSCListener();
-		dispatcher.addListener("/listener1", listener1);
+		dispatcher.addListener(new OSCPatternAddressSelector("/listener1"), listener1);
 		listener2 = new TestOSCListener();
-		dispatcher.addListener("/listener2", listener2);
+		dispatcher.addListener(new OSCPatternAddressSelector("/listener2"), listener2);
 	}
 
 	@Override
