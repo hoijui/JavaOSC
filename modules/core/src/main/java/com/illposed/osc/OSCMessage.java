@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * An simple (non-bundle) OSC message.
@@ -25,6 +26,14 @@ import java.util.List;
  * @author Chandrasekhar Ramakrishnan
  */
 public class OSCMessage extends OSCPacket {
+
+	/**
+	 * Java regular expression pattern matching a single invalid character.
+	 * The invalid characters are:
+	 * ' ', '#', '*', ',', '?', '[', ']', '{', '}'
+	 */
+	private static final Pattern ILLEGAL_ADDRESS_CHAR
+			= Pattern.compile("[ \\#\\*\\,\\?\\[\\]\\{\\}]");
 
 	private String address;
 	private List<Object> arguments;
@@ -125,5 +134,17 @@ public class OSCMessage extends OSCPacket {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();
+	}
+
+	/**
+	 * Checks whether a given string is a valid OSC <i>Address Pattern</i>.
+	 * @param address to be checked for validity
+	 * @return true if the supplied string constitutes a valid OSC address
+	 */
+	public static boolean isValidAddress(String address) {
+		return (address != null)
+				&& address.startsWith("/")
+				&& !address.contains("//")
+				&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find();
 	}
 }
