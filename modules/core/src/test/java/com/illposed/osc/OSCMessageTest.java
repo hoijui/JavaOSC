@@ -161,4 +161,45 @@ public class OSCMessageTest extends junit.framework.TestCase {
 			}
 		}
 	}
+
+	public void testAddressValidation() {
+		assertFalse(OSCMessage.isValidAddress(null));
+		assertFalse(OSCMessage.isValidAddress("hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/ hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/#hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/*hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/,hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/?hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/[hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/]hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/{hello/world"));
+		assertFalse(OSCMessage.isValidAddress("/}hello/world"));
+		assertFalse(OSCMessage.isValidAddress("//hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/hello"));
+		assertTrue( OSCMessage.isValidAddress("/hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
+		assertTrue( OSCMessage.isValidAddress("/123/world/two"));
+		assertTrue( OSCMessage.isValidAddress("/!hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/~hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/`hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/@hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/$hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/%hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/€hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/^hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/&hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/(hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/)hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/-hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/_hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/+hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/=hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/.hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/<hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/>hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/;hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/:hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/'hello/world"));
+		assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
+	}
 }
