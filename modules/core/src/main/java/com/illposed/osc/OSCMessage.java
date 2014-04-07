@@ -18,8 +18,9 @@ import java.util.List;
 /**
  * An simple (non-bundle) OSC message.
  *
- * An OSC message is made up of an address (the receiver of the message)
- * and arguments (the content of the message).
+ * An OSC <i>Message</i> is made up of
+ * an </i>Address Pattern</i> (the receiver of the message)
+ * and </i>Arguments</i> (the content of the message).
  *
  * @author Chandrasekhar Ramakrishnan
  */
