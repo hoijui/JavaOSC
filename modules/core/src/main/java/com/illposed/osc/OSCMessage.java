@@ -63,6 +63,7 @@ public class OSCMessage extends OSCPacket {
 	 */
 	public OSCMessage(String address, Collection<Object> arguments) {
 
+		checkAddress(address);
 		this.address = address;
 		if (arguments == null) {
 			this.arguments = new LinkedList<Object>();
@@ -85,6 +86,7 @@ public class OSCMessage extends OSCPacket {
 	 * @param address the receiver of the message
 	 */
 	public void setAddress(String address) {
+		checkAddress(address);
 		this.address = address;
 	}
 
@@ -134,6 +136,21 @@ public class OSCMessage extends OSCPacket {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();
+	}
+
+	/**
+	 * Throws an exception if the given address is invalid.
+	 * We explicitly allow <code>null</code> here,
+	 * because we want to allow to set the address in a lazy fashion.
+	 * @param address to be checked for validity
+	 */
+	private static void checkAddress(String address) {
+		// NOTE We explicitly allow <code>null</code> here,
+		//   because we want to allow to set in a lazy fashion.
+		if ((address != null) && !isValidAddress(address)) {
+			throw new IllegalArgumentException("Not a valid OSC address: "
+					+ address);
+		}
 	}
 
 	/**
