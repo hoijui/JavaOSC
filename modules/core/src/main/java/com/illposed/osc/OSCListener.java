@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  * Allows to listen to incoming messages that match some selector pattern.
- * In OSC speak, this is a Method, and it listens to Messages.
+ * In OSC speak, this is a <i>Method</i>, and it listens to <i>Messages</i>.
  *
  * @author Chandrasekhar Ramakrishnan
  */
