@@ -36,6 +36,28 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 		}
 	}
 
+	public void testReadShortestPacketWithoutArgumentsSeparator() throws Exception {
+		// This pakcet ommits the character (',') that separates address
+		// from parameters. This is supposed legacy practise,
+		// but still not explicitly forbidden by the OSC 1.0 specificiations,
+		// and should therefore be supported.
+		final byte[] bytes = {47, 0, 0, 0};
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		checkAddress("/", packet.getAddress());
+	}
+
+	public void testReadShortPacket1() throws Exception {
+		final byte[] bytes = {47, 0, 0, 0, 44, 0, 0, 0};
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		checkAddress("/", packet.getAddress());
+	}
+
+	public void testReadShortPacket2() throws Exception {
+		final byte[] bytes = {47, 115, 0, 0, 44, 0, 0, 0};
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		checkAddress("/s", packet.getAddress());
+	}
+
 	public void testReadSimplePacket() throws Exception {
 		final byte[] bytes = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
