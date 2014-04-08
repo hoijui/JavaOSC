@@ -44,7 +44,7 @@ import java.nio.charset.Charset;
  */
 public class OSCPortIn extends OSCPort implements Runnable {
 
-	// state for listening
+	/** state for listening */
 	private boolean listening;
 	private final OSCByteArrayToJavaConverter converter;
 	private final OSCPacketDispatcher dispatcher;
