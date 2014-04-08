@@ -30,22 +30,24 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 
 	}
 
-	public void testReadSimplePacket() throws Exception {
-		byte[] bytes = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
-		OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
-		if (!packet.getAddress().equals("/sc/run")) {
-			fail("Address should be /sc/run, but is " + packet.getAddress());
+	private static void checkAddress(final String expectedAddress, final String observedAddress) {
+		if (!observedAddress.equals(expectedAddress)) {
+			fail("Address should be " + expectedAddress + ", but is " + observedAddress);
 		}
 	}
 
-	public void testReadComplexPacket() throws Exception {
-		byte[] bytes = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
+	public void testReadSimplePacket() throws Exception {
+		final byte[] bytes = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		checkAddress("/sc/run", packet.getAddress());
+	}
 
-		OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
-		if (!packet.getAddress().equals("/s_new")) {
-			fail("Address should be /s_new, but is " + packet.getAddress());
-		}
-		List<Object> arguments = packet.getArguments();
+	public void testReadComplexPacket() throws Exception {
+		final byte[] bytes = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
+
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		checkAddress("/s_new", packet.getAddress());
+		final List<Object> arguments = packet.getArguments();
 		if (arguments.size() != 3) {
 			fail("Num arguments should be 3, but is " + arguments.size());
 		}
@@ -61,19 +63,17 @@ public class OSCByteArrayToJavaConverterTest extends junit.framework.TestCase {
 	}
 
 	public void testReadBundle() throws Exception {
-		byte[] bytes = {0x23, 0x62, 0x75, 0x6E, 0x64, 0x6C, 0x65, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0x0C, 0X2F, 0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0x2C, 0, 0, 0};
+		final byte[] bytes = {0x23, 0x62, 0x75, 0x6E, 0x64, 0x6C, 0x65, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0x0C, 0X2F, 0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0x2C, 0, 0, 0};
 
-		OSCBundle bundle = (OSCBundle) converter.convert(bytes, bytes.length);
+		final OSCBundle bundle = (OSCBundle) converter.convert(bytes, bytes.length);
 		if (!bundle.getTimestamp().equals(new Date(0))) {
 			fail("Timestamp should be 0, but is " + bundle.getTimestamp());
 		}
-		List<OSCPacket> packets = bundle.getPackets();
+		final List<OSCPacket> packets = bundle.getPackets();
 		if (packets.size() != 1) {
 			fail("Num packets should be 1, but is " + packets.size());
 		}
-		OSCMessage message = (OSCMessage) packets.get(0);
-		if (!("/test".equals(message.getAddress()))) {
-			fail("Address of message should be /test, but is " + message.getAddress());
-		}
+		final OSCMessage message = (OSCMessage) packets.get(0);
+		checkAddress("/test", message.getAddress());
 	}
 }
