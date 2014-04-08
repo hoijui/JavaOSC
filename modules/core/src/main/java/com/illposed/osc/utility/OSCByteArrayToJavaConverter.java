@@ -27,6 +27,7 @@ import java.util.List;
 public class OSCByteArrayToJavaConverter {
 
 	private static final String BUNDLE_START = "#bundle";
+	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 
 	private byte[] bytes;
 	/** Used to decode message addresses and string parameters. */
@@ -75,14 +76,19 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
-	 * Is my byte array a bundle?
+	 * Checks whether my byte array is a bundle.
+	 * From the OSC 1.0 specifications:
+	 * <quote>
+	 * The contents of an OSC packet must be either an OSC Message
+	 * or an OSC Bundle. The first byte of the packet's contents unambiguously
+	 * distinguishes between these two alternatives.
+	 * </quote>
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle() {
-		// only need the first few chars to check if it is a bundle
-		String bytesAsString
-				= new String(bytes, 0, BUNDLE_START.length(), charset);
-		return bytesAsString.startsWith(BUNDLE_START);
+		// The shortest valid packet may be no shorter then 4 bytes,
+		// thus we may assume to always have a byte at index 0.
+		return bytes[0] == BUNDLE_IDENTIFIER;
 	}
 
 	/**
@@ -154,10 +160,16 @@ public class OSCByteArrayToJavaConverter {
 
 	/**
 	 * Reads the types of the arguments from the byte stream.
-	 * @return a char array with the types of the arguments
+	 * @return a char array with the types of the arguments,
+	 *   or <code>null</code>, in case of no arguments
 	 */
 	private List<Character> readTypes() {
-		// the next byte should be a ','
+		// The next byte should be a ',', but some legacy code may omit it
+		// in case of no arguments, refering to "OSC Messages" in:
+		// http://opensoundcontrol.org/spec-1_0
+		if (bytes.length <= streamPosition) {
+			return null; // no arguments
+		}
 		if (bytes[streamPosition] != ',') {
 			// XXX should we not rather fail-fast -> throw exception?
 			return null;
@@ -166,7 +178,7 @@ public class OSCByteArrayToJavaConverter {
 		// find out how long the list of types is
 		int typesLen = lengthOfCurrentString();
 		if (0 == typesLen) {
-			return null;
+			return null; // no arguments
 		}
 
 		// read in the types
