@@ -6,9 +6,11 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.utility;
 
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 import java.util.Date;
 import java.util.List;
 

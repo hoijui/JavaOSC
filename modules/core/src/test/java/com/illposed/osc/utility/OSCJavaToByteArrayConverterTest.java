@@ -6,9 +6,9 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.utility;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import com.illposed.osc.OSCMessageTest;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;

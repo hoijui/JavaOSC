@@ -6,10 +6,11 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.utility;
 
-import com.illposed.osc.utility.OSCPacketDispatcher;
-import com.illposed.osc.utility.OSCPatternAddressSelector;
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.TestOSCListener;
 
 /**
  * @author Chandrasekhar Ramakrishnan
