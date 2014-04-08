@@ -50,6 +50,17 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCPacketDispatcher dispatcher;
 
 	/**
+	 * Create an OSCPort that listens using a specified socket.
+	 * @param socket DatagramSocket to listen on.
+	 */
+	public OSCPortIn(DatagramSocket socket) {
+		super(socket, socket.getLocalPort());
+
+		this.converter = new OSCByteArrayToJavaConverter();
+		this.dispatcher = new OSCPacketDispatcher();
+	}
+
+	/**
 	 * Create an OSCPort that listens on the specified port.
 	 * Strings will be decoded using the systems default character set.
 	 * @param port UDP port to listen on.
@@ -57,10 +68,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 *   or there is already a socket listening on it
 	 */
 	public OSCPortIn(int port) throws SocketException {
-		super(new DatagramSocket(port), port);
-
-		this.converter = new OSCByteArrayToJavaConverter();
-		this.dispatcher = new OSCPacketDispatcher();
+		this(new DatagramSocket(port));
 	}
 
 	/**

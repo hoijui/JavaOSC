@@ -43,15 +43,23 @@ public class OSCPortOut extends OSCPort {
 	private InetAddress address;
 
 	/**
+	 * Create an OSCPort that sends to address:port using a specified socket.
+	 * @param address the UDP address to send to
+	 * @param port the UDP port to send to
+	 * @param socket the DatagramSocket to send from
+	 */
+	public OSCPortOut(InetAddress address, int port, DatagramSocket socket) {
+		super(socket, port);
+		this.address = address;
+	}
+
+	/**
 	 * Create an OSCPort that sends to address:port.
 	 * @param address the UDP address to send to
 	 * @param port the UDP port to send to
 	 */
-	public OSCPortOut(InetAddress address, int port)
-		throws SocketException
-	{
-		super(new DatagramSocket(), port);
-		this.address = address;
+	public OSCPortOut(InetAddress address, int port) throws SocketException {
+		this(address, port, new DatagramSocket());
 	}
 
 	/**
