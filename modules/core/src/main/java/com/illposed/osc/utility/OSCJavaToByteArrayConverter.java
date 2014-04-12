@@ -224,7 +224,7 @@ public class OSCJavaToByteArrayConverter {
 	public void writeType(Class c) {
 
 		// A big ol' else-if chain -- what's polymorphism mean, again?
-		// I really wish I could extend the base classes!<
+		// I really wish I could extend the base classes!
 		if (Integer.class.equals(c)) {
 			stream.write('i');
 		} else if (java.math.BigInteger.class.equals(c)) {
@@ -267,9 +267,6 @@ public class OSCJavaToByteArrayConverter {
 	 * @param types  the arguments to an OSCMessage
 	 */
 	public void writeTypes(Collection<Object> types) {
-		// A big ol' case statement in a for loop -- what's polymorphism mean,
-		// again?
-		// I really wish I could extend the base classes!
 
 		for (Object type : types) {
 			if (null == type) {
