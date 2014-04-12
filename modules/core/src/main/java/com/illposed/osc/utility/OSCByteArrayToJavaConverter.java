@@ -208,6 +208,8 @@ public class OSCByteArrayToJavaConverter {
 				return readString();
 			case 'c' :
 				return readChar();
+			case 'N' :
+				return null;
 			case 'T' :
 				return Boolean.TRUE;
 			case 'F' :

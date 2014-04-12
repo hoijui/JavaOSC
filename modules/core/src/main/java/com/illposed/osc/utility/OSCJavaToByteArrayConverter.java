@@ -273,7 +273,7 @@ public class OSCJavaToByteArrayConverter {
 
 		for (Object type : types) {
 			if (null == type) {
-				// ignore
+				stream.write('N');
 			} else if (type instanceof Collection) {
 				// If the array at i is a type of array, write a '['.
 				// This is used for nested arguments.
