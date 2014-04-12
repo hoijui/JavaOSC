@@ -217,16 +217,14 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Write the type tag for the type represented by the class
+	 * Write the OSC specification type tag for the type a certain Java type
+	 * converts to.
 	 * @param c Class of a Java object in the arguments
 	 */
 	public void writeType(Class c) {
-		// A big ol' case statement -- what's polymorphism mean, again?
-		// I really wish I could extend the base classes!
 
-		// use the appropriate flags to tell SuperCollider what kind of
-		// thing it is looking at
-
+		// A big ol' else-if chain -- what's polymorphism mean, again?
+		// I really wish I could extend the base classes!<
 		if (Integer.class.equals(c)) {
 			stream.write('i');
 		} else if (java.math.BigInteger.class.equals(c)) {
@@ -275,32 +273,26 @@ public class OSCJavaToByteArrayConverter {
 
 		for (Object type : types) {
 			if (null == type) {
-				continue;
-			}
-			// if the array at i is a type of array write a [
-			// This is used for nested arguments
-			if (type instanceof Collection) {
+				// ignore
+			} else if (type instanceof Collection) {
+				// If the array at i is a type of array, write a '['.
+				// This is used for nested arguments.
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
 				writeTypesArray((Collection<Object>) type);
 				// close the array
 				stream.write(']');
-				continue;
-			}
-			// Create a way to deal with Boolean type objects
-			if (Boolean.TRUE.equals(type)) {
+			} else if (Boolean.TRUE.equals(type)) {
 				stream.write('T');
-				continue;
-			}
-			if (Boolean.FALSE.equals(type)) {
+			} else if (Boolean.FALSE.equals(type)) {
 				stream.write('F');
-				continue;
+			} else {
+				// go through the array and write the superCollider types as shown
+				// in the above method.
+				// The classes derived here are used as the arg to the above method.
+				writeType(type.getClass());
 			}
-			// go through the array and write the superCollider types as shown
-			// in the above method.
-			// The classes derived here are used as the arg to the above method.
-			writeType(type.getClass());
 		}
 		// align the stream with padded bytes
 		appendNullCharToAlignStream();
