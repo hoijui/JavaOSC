@@ -111,6 +111,7 @@ public class OSCBundle extends OSCPacket {
 	 */
 	public void addPacket(OSCPacket packet) {
 		packets.add(packet);
+		contentChanged();
 	}
 
 	/**

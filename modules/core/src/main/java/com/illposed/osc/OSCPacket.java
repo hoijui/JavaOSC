@@ -28,14 +28,13 @@ import java.nio.charset.Charset;
  */
 public abstract class OSCPacket {
 
-	private boolean isByteArrayComputed;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
 	private byte[] byteArray;
 
 	public OSCPacket() {
-		this.isByteArrayComputed = false;
 		this.charset = Charset.defaultCharset();
+		this.byteArray = null;
 	}
 
 	/**
@@ -77,10 +76,14 @@ public abstract class OSCPacket {
 	 * @return byte[]
 	 */
 	public byte[] getByteArray() {
-		if (!isByteArrayComputed) {
+		if (byteArray == null) {
 			byteArray = computeByteArray();
 		}
 		return byteArray;
+	}
+
+	protected void contentChanged() {
+		byteArray = null;
 	}
 
 	/**

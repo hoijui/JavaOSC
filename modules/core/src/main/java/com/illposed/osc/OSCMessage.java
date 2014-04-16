@@ -88,6 +88,7 @@ public class OSCMessage extends OSCPacket {
 	public void setAddress(String address) {
 		checkAddress(address);
 		this.address = address;
+		contentChanged();
 	}
 
 	/**
@@ -97,6 +98,7 @@ public class OSCMessage extends OSCPacket {
 	 */
 	public void addArgument(Object argument) {
 		arguments.add(argument);
+		contentChanged();
 	}
 
 	/**
