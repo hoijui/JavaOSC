@@ -124,6 +124,7 @@ public class OSCBundle extends OSCPacket {
 	/**
 	 * Convert the time-tag (a Java Date) into the OSC byte stream.
 	 * Used Internally.
+	 * @param stream where to write the time-tag to
 	 */
 	protected void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
 		if ((null == timestamp) || (timestamp == TIMESTAMP_IMMEDIATE)) {
@@ -143,11 +144,6 @@ public class OSCBundle extends OSCPacket {
 		stream.write((int) fraction);
 	}
 
-	/**
-	 * Compute the OSC byte stream representation of the bundle.
-	 * Used Internally.
-	 * @param stream OscPacketByteArrayConverter
-	 */
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);

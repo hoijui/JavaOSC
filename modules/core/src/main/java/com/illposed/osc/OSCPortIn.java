@@ -143,6 +143,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Am I listening for packets?
+	 * @return true if this port is in listening mode
 	 */
 	public boolean isListening() {
 		return listening;

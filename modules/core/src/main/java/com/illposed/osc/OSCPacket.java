@@ -65,9 +65,10 @@ public abstract class OSCPacket {
 	}
 
 	/**
-	 * Subclasses should implement this method to product a byte array
-	 * formatted according to the OSC specification.
-	 * @param stream OscPacketByteArrayConverter
+	 * Produces a byte array representation of this packet.
+	 * @param stream where to write the arguments to
+	 * @return the OSC specification conform byte array representation
+	 *   of this packet
 	 */
 	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
 

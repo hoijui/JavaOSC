@@ -33,6 +33,7 @@ public abstract class OSCPort {
 	/**
 	 * The port that the SuperCollider <b>synth</b> engine
 	 * usually listens to.
+	 * @return default SuperCollider <b>synth</b> UDP port
 	 * @see #DEFAULT_SC_OSC_PORT
 	 */
 	public static int defaultSCOSCPort() {
@@ -42,6 +43,7 @@ public abstract class OSCPort {
 	/**
 	 * The port that the SuperCollider <b>language</b> engine
 	 * usually listens to.
+	 * @return default SuperCollider <b>language</b> UDP port
 	 * @see #DEFAULT_SC_LANG_OSC_PORT
 	 */
 	public static int defaultSCLangOSCPort() {

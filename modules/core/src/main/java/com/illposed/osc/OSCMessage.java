@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
  * An simple (non-bundle) OSC message.
  *
  * An OSC <i>Message</i> is made up of
- * an </i>Address Pattern</i> (the receiver of the message)
- * and </i>Arguments</i> (the content of the message).
+ * an <i>Address Pattern</i> (the receiver of the message)
+ * and <i>Arguments</i> (the content of the message).
  *
  * @author Chandrasekhar Ramakrishnan
  */
@@ -110,6 +110,7 @@ public class OSCMessage extends OSCPacket {
 	/**
 	 * Convert the address into a byte array.
 	 * Used internally only.
+	 * @param stream where to write the address to
 	 */
 	protected void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
 		assert(address != null);
@@ -119,6 +120,7 @@ public class OSCMessage extends OSCPacket {
 	/**
 	 * Convert the arguments into a byte array.
 	 * Used internally only.
+	 * @param stream where to write the arguments to
 	 */
 	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
@@ -128,10 +130,6 @@ public class OSCMessage extends OSCPacket {
 		}
 	}
 
-	/**
-	 * Convert the message into a byte array.
-	 * Used internally only.
-	 */
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
