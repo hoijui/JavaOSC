@@ -32,11 +32,11 @@ import java.util.Collection;
  */
 public class OSCJavaToByteArrayConverter {
 
-	private ByteArrayOutputStream stream;
+	private final ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
-	private byte[] intBytes;
-	private byte[] longintBytes;
+	private final byte[] intBytes;
+	private final byte[] longintBytes;
 
 	public OSCJavaToByteArrayConverter() {
 
@@ -124,14 +124,14 @@ public class OSCJavaToByteArrayConverter {
 	 * @param f floating point number to be written
 	 */
 	public void write(Float f) {
-		writeInteger32ToByteArray(Float.floatToIntBits(f.floatValue()));
+		writeInteger32ToByteArray(Float.floatToIntBits(f));
 	}
 
 	/**
 	 * @param i the integer to be written
 	 */
 	public void write(Integer i) {
-		writeInteger32ToByteArray(i.intValue());
+		writeInteger32ToByteArray(i);
 	}
 
 	/**
