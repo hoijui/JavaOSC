@@ -130,6 +130,7 @@ public class OSCMessage extends OSCPacket {
 		}
 	}
 
+	@Override
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);

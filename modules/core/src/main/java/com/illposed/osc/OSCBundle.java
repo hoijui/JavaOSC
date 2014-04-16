@@ -144,6 +144,7 @@ public class OSCBundle extends OSCPacket {
 		stream.write((int) fraction);
 	}
 
+	@Override
 	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
