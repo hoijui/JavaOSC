@@ -106,7 +106,7 @@ public class OSCByteArrayToJavaConverter {
 		myConverter.setCharset(charset);
 		while (streamPosition < bytesLength) {
 			// recursively read through the stream and convert packets you find
-			int packetLength = ((Integer) readInteger()).intValue();
+			int packetLength = readInteger();
 			byte[] packetBytes = new byte[packetLength];
 			for (int i = 0; i < packetLength; i++) {
 				packetBytes[i] = bytes[streamPosition++];
@@ -225,8 +225,8 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a char from the byte stream.
 	 * @return a {@link Character}
 	 */
-	private Object readChar() {
-		return Character.valueOf((char) bytes[streamPosition++]);
+	private Character readChar() {
+		return (char) bytes[streamPosition++];
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a float from the byte stream.
 	 * @return a {@link Float}
 	 */
-	private Object readFloat() {
+	private Float readFloat() {
 		byte[] floatBytes = new byte[4];
 		floatBytes[0] = bytes[streamPosition++];
 		floatBytes[1] = bytes[streamPosition++];
@@ -254,7 +254,7 @@ public class OSCByteArrayToJavaConverter {
 //				| (floatBytes[2] << 8)
 //				| (floatBytes[3]);
 		BigInteger floatBits = new BigInteger(floatBytes);
-		return Float.valueOf(Float.intBitsToFloat(floatBits.intValue()));
+		return Float.intBitsToFloat(floatBits.intValue());
 	}
 
 	/**
@@ -273,13 +273,13 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads an Integer (32 bit integer) from the byte stream.
 	 * @return an {@link Integer}
 	 */
-	private Object readInteger() {
+	private Integer readInteger() {
 		byte[] intBytes = new byte[4];
 		for (int i = 0; i < intBytes.length; i++) {
 			intBytes[i] = bytes[streamPosition++];
 		}
 		BigInteger intBits = new BigInteger(intBytes);
-		return Integer.valueOf(intBits.intValue());
+		return intBits.intValue();
 	}
 
 	/**
