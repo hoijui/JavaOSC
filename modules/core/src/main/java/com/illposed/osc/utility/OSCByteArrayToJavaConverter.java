@@ -9,6 +9,7 @@
 package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import java.math.BigInteger;
@@ -214,6 +215,8 @@ public class OSCByteArrayToJavaConverter {
 				return Boolean.TRUE;
 			case 'F' :
 				return Boolean.FALSE;
+			case 'I' :
+				return OSCImpulse.INSTANCE;
 			case 't' :
 				return readTimeTag();
 			default:

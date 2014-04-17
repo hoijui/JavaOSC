@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCImpulse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -237,6 +238,8 @@ public class OSCJavaToByteArrayConverter {
 			stream.write('s');
 		} else if (Character.class.equals(c)) {
 			stream.write('c');
+		} else if (OSCImpulse.class.equals(c)) {
+			stream.write('I');
 		}
 	}
 
