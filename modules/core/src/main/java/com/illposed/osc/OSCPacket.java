@@ -38,16 +38,17 @@ public abstract class OSCPacket {
 	}
 
 	/**
-	 * Returns the character set used to encode message addresses
-	 * and string parameters.
+	 * Returns the character set used by this packet.
+	 * @return the character set used to encode message addresses and string
+	 *   arguments.
 	 */
 	public Charset getCharset() {
 		return charset;
 	}
 
 	/**
-	 * Sets the character set used to encode message addresses
-	 * and string parameters.
+	 * Sets the character set used by this packet.
+	 * @param charset used to encode message addresses and string arguments.
 	 */
 	public void setCharset(Charset charset) {
 		this.charset = charset;
