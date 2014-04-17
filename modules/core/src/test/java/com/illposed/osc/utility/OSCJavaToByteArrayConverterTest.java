@@ -43,7 +43,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	 */
 	public void testPrintFloat2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(Float.valueOf(0.2f));
+		stream.write(0.2f);
 		byte[] answer = {62, 76, -52, -51};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -51,7 +51,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 
 	public void testPrintFloatOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(Float.valueOf(10.7567f));
+		stream.write(10.7567f);
 		byte[] answer = {65, 44, 27, 113};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -100,14 +100,16 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		}
 
 		try {
-			stream.write((Float) null);
+			Float nullFloat = null;
+			stream.write(nullFloat);
 			fail("No exception thrown on writing (Float)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
 
 		try {
-			stream.write((Integer) null);
+			Integer nullInteger = null;
+			stream.write(nullInteger);
 			fail("No exception thrown on writing (Integer)null");
 		} catch (RuntimeException ex) {
 			// ignore

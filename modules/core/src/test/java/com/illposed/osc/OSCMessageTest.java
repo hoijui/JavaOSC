@@ -51,8 +51,8 @@ public class OSCMessageTest extends junit.framework.TestCase {
 
 	public void testDecreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
-		args.add(Integer.valueOf(1));
-		args.add(Float.valueOf(0.2f));
+		args.add(1);
+		args.add(0.2f);
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
 		byte[] answer = {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111,
@@ -68,8 +68,8 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	 */
 	public void testIncreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
-		args.add(Integer.valueOf(1));
-		args.add(Float.valueOf(1.0f));
+		args.add(1);
+		args.add(1.0f);
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
 		byte[] answer =	{
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111, 108,
@@ -105,9 +105,9 @@ public class OSCMessageTest extends junit.framework.TestCase {
 
 	public void testCreateSynth() {
 		OSCMessage message = new OSCMessage("/s_new");
-		message.addArgument(Integer.valueOf(1001));
+		message.addArgument(1001);
 		message.addArgument("freq");
-		message.addArgument(Float.valueOf(440.0f));
+		message.addArgument(440.0f);
 		byte[] answer = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
 		byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -138,8 +138,8 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	public void testEncodeArray() {
 		OSCMessage message = new OSCMessage("/dummy");
 		List<Float> floats = new ArrayList<Float>(2);
-		floats.add(Float.valueOf(10.0f));
-		floats.add(Float.valueOf(100.0f));
+		floats.add(10.0f);
+		floats.add(100.0f);
 		message.addArgument(floats);
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
