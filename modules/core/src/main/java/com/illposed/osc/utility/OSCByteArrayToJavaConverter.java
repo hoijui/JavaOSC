@@ -220,6 +220,12 @@ public class OSCByteArrayToJavaConverter {
 			case 't' :
 				return readTimeTag();
 			default:
+				// XXX Maybe we should let the user choose what to do in this
+				//   case (we encountered an unknown argument type in an
+				//   incomming message):
+				//   just ignore (return null), or throw an exception?
+//				throw new UnsupportedOperationException(
+//						"Invalid or not yet supported OSC type: '" + type + "'");
 				return null;
 		}
 	}
