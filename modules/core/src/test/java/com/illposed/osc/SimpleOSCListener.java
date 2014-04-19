@@ -9,10 +9,8 @@
 package com.illposed.osc;
 
 import java.util.Date;
-import org.junit.Ignore;
 
-@Ignore
-public class TestOSCListener implements OSCListener {
+public class SimpleOSCListener implements OSCListener {
 
 	private boolean messageReceived = false;
 	private Date receivedTimestamp = null;

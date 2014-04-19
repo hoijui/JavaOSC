@@ -10,7 +10,7 @@ package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
-import com.illposed.osc.TestOSCListener;
+import com.illposed.osc.SimpleOSCListener;
 
 /**
  * @author Chandrasekhar Ramakrishnan
@@ -19,15 +19,15 @@ import com.illposed.osc.TestOSCListener;
 public class OSCPacketDispatcherTest extends junit.framework.TestCase {
 
 	private OSCPacketDispatcher dispatcher;
-	private TestOSCListener listener1;
-	private TestOSCListener listener2;
+	private SimpleOSCListener listener1;
+	private SimpleOSCListener listener2;
 
 	@Override
 	protected void setUp() throws Exception {
 		dispatcher = new OSCPacketDispatcher();
-		listener1 = new TestOSCListener();
+		listener1 = new SimpleOSCListener();
 		dispatcher.addListener(new OSCPatternAddressSelector("/listener1"), listener1);
-		listener2 = new TestOSCListener();
+		listener2 = new SimpleOSCListener();
 		dispatcher.addListener(new OSCPatternAddressSelector("/listener2"), listener2);
 	}
 
