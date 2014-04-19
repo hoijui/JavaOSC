@@ -13,12 +13,14 @@ import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Chandrasekhar Ramakrishnan
  * @see OSCMessage
  */
-public class OSCMessageTest extends junit.framework.TestCase {
+public class OSCMessageTest {
 
 	/**
 	 * @param result received from OSC
@@ -26,7 +28,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	 */
 	public static void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		if (result.length != answer.length) {
-			fail(
+			Assert.fail(
 				"Result and answer aren't the same length "
 					+ result.length + " vs " + answer.length
 					+ " (\"" + new String(result) + "\" vs \"" + new String(answer) + "\")");
@@ -36,11 +38,12 @@ public class OSCMessageTest extends junit.framework.TestCase {
 				String errorString = "Didn't convert correctly: " + i;
 				errorString = errorString + " result: \"" + new String(result) + "\"";
 				errorString = errorString + " answer: \"" + new String(answer) + "\"";
-				fail(errorString);
+				Assert.fail(errorString);
 			}
 		}
 	}
 
+	@Test
 	public void testEmpty() {
 		List<Object> args = new ArrayList<Object>(0);
 		OSCMessage message = new OSCMessage("/empty", args);
@@ -49,6 +52,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testDecreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(1);
@@ -66,6 +70,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 	 * See the comment in
 	 * {@link OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
 	 */
+	@Test
 	public void testIncreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(1);
@@ -79,6 +84,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintStringOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("/example1");
@@ -89,6 +95,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testRun() {
 		OSCMessage message = new OSCMessage("/sc/run");
 		byte[] answer = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
@@ -96,6 +103,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testStop() {
 		OSCMessage message = new OSCMessage("/sc/stop");
 		byte[] answer = {47, 115, 99, 47, 115, 116, 111, 112, 0, 0, 0, 0, 44, 0, 0, 0};
@@ -103,6 +111,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testCreateSynth() {
 		OSCMessage message = new OSCMessage("/s_new");
 		message.addArgument(1001);
@@ -113,6 +122,7 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testEncodeBigInteger() {
 		OSCMessage message = new OSCMessage("/dummy");
 		BigInteger one001 = new BigInteger("1001");
@@ -121,20 +131,21 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
-			fail("Send Big Integer did not receive the correct address");
+			Assert.fail("Send Big Integer did not receive the correct address");
 		}
 		List<Object> arguments = packet.getArguments();
 		if (arguments.size() != 1) {
-			fail("Send Big Integer should have 1 argument, not " + arguments.size());
+			Assert.fail("Send Big Integer should have 1 argument, not " + arguments.size());
 		}
 		if (!(arguments.get(0) instanceof BigInteger)) {
-			fail("arguments.get(0) should be a BigInteger, not " + arguments.get(0));
+			Assert.fail("arguments.get(0) should be a BigInteger, not " + arguments.get(0));
 		}
 		if (!(new BigInteger("1001").equals(arguments.get(0)))) {
-			fail("Instead of BigInteger(1001), received " + arguments.get(0));
+			Assert.fail("Instead of BigInteger(1001), received " + arguments.get(0));
 		}
 	}
 
+	@Test
 	public void testEncodeArray() {
 		OSCMessage message = new OSCMessage("/dummy");
 		List<Float> floats = new ArrayList<Float>(2);
@@ -145,61 +156,62 @@ public class OSCMessageTest extends junit.framework.TestCase {
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
-			fail("Send Array did not receive the correct address");
+			Assert.fail("Send Array did not receive the correct address");
 		}
 		List<Object> arguments = packet.getArguments();
 		if (arguments.size() != 1) {
-			fail("Send Array should have 1 argument, not " + arguments.size());
+			Assert.fail("Send Array should have 1 argument, not " + arguments.size());
 		}
 		if (!(arguments.get(0) instanceof List)) {
-			fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
+			Assert.fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
 		}
 		for (int i = 0; i < 2; ++i) {
 			List<Object> theArray = (List<Object>) arguments.get(0);
 			if (!floats.get(i).equals(theArray.get(i))) {
-				fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
+				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
 			}
 		}
 	}
 
+	@Test
 	public void testAddressValidation() {
-		assertFalse(OSCMessage.isValidAddress(null));
-		assertFalse(OSCMessage.isValidAddress("hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/ hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/#hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/*hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/,hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/?hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/[hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/]hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/{hello/world"));
-		assertFalse(OSCMessage.isValidAddress("/}hello/world"));
-		assertFalse(OSCMessage.isValidAddress("//hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/hello"));
-		assertTrue( OSCMessage.isValidAddress("/hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
-		assertTrue( OSCMessage.isValidAddress("/123/world/two"));
-		assertTrue( OSCMessage.isValidAddress("/!hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/~hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/`hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/@hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/$hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/%hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/€hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/^hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/&hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/(hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/)hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/-hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/_hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/+hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/=hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/.hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/<hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/>hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/;hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/:hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/'hello/world"));
-		assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress(null));
+		Assert.assertFalse(OSCMessage.isValidAddress("hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/ hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/#hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/*hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/,hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/?hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/[hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/]hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/{hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("/}hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("//hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/hello"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/123/world/two"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/!hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/~hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/`hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/@hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/$hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/%hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/€hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/^hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/&hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/(hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/)hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/-hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/_hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/+hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/=hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/.hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/<hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/>hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/;hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/:hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/'hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
 	}
 }

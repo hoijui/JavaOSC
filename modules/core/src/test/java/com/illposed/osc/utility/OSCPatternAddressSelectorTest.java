@@ -8,238 +8,258 @@
 
 package com.illposed.osc.utility;
 
-public class OSCPatternAddressSelectorTest extends junit.framework.TestCase {
+import org.junit.Assert;
+import org.junit.Test;
 
-	public void testNumberOfParts() throws Exception {
+public class OSCPatternAddressSelectorTest {
+
+	@Test
+	public void testNumberOfParts() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/*/*");
 
-		assertFalse(matcher.matches("/hello"));
-		assertTrue( matcher.matches("/hello/world"));
-		assertFalse(matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/world/two"));
 	}
 
-	public void testPartPrefix() throws Exception {
+	@Test
+	public void testPartPrefix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/he*/wo*");
 
-		assertFalse(matcher.matches("/bello/world"));
-		assertTrue( matcher.matches("/hello/world"));
-		assertFalse(matcher.matches("/hello/universe"));
-		assertTrue( matcher.matches("/hells/worlds"));
+		Assert.assertFalse(matcher.matches("/bello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/universe"));
+		Assert.assertTrue( matcher.matches("/hells/worlds"));
 	}
 
-	public void testPartPostfix() throws Exception {
+	@Test
+	public void testPartPostfix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/*o/*rld");
 
-		assertTrue( matcher.matches("/bello/world"));
-		assertTrue( matcher.matches("/hello/world"));
-		assertFalse(matcher.matches("/hello/universe"));
-		assertFalse(matcher.matches("/hells/worlds"));
+		Assert.assertTrue( matcher.matches("/bello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/universe"));
+		Assert.assertFalse(matcher.matches("/hells/worlds"));
 	}
 
-	public void testPartPreAndPostfix() throws Exception {
+	@Test
+	public void testPartPreAndPostfix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h*o/w*rld*");
 
-		assertFalse(matcher.matches("/bello/world"));
-		assertTrue( matcher.matches("/hello/world"));
-		assertFalse(matcher.matches("/hello/universe"));
-		assertTrue( matcher.matches("/heyo/worlds"));
+		Assert.assertFalse(matcher.matches("/bello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/universe"));
+		Assert.assertTrue( matcher.matches("/heyo/worlds"));
 	}
 
-	public void testSingle() throws Exception {
+	@Test
+	public void testSingle() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/?ello/w?rl?");
 
-		assertTrue( matcher.matches("/bello/world"));
-		assertTrue( matcher.matches("/hello/world"));
-		assertFalse(matcher.matches("/hello/universe"));
-		assertFalse(matcher.matches("/hello/worlds"));
+		Assert.assertTrue( matcher.matches("/bello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/universe"));
+		Assert.assertFalse(matcher.matches("/hello/worlds"));
 	}
 
-	public void testGroupForwards() throws Exception {
+	@Test
+	public void testGroupForwards() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[a-z]o");
 
-		assertTrue( matcher.matches("/hello"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testGroupBackwards() throws Exception {
+	@Test
+	public void testGroupBackwards() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[z-a]o");
 
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/helo"));
-		assertFalse(matcher.matches("/helzzzzzo"));
-		assertFalse(matcher.matches("/hello"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/helo"));
+		Assert.assertFalse(matcher.matches("/helzzzzzo"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testGroupList() throws Exception {
+	@Test
+	public void testGroupList() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[aly]o");
 
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/helyo"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/helyo"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testGroupListAndRange() throws Exception {
+	@Test
+	public void testGroupListAndRange() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[lya-c]o");
 
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/helbo"));
-		assertTrue( matcher.matches("/helco"));
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/helyo"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/helbo"));
+		Assert.assertTrue( matcher.matches("/helco"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/helyo"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testGroupHyphenAndRange() throws Exception {
+	@Test
+	public void testGroupHyphenAndRange() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[-a-c]o");
 
-		assertTrue( matcher.matches("/hel-o"));
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/helbo"));
-		assertTrue( matcher.matches("/helco"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hel-o"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/helbo"));
+		Assert.assertTrue( matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testCloseBracketAndRange() throws Exception {
+	@Test
+	public void testCloseBracketAndRange() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[]a-c]o");
 
-		assertTrue( matcher.matches("/hel]o"));
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/helbo"));
-		assertTrue( matcher.matches("/helco"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hel]o"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/helbo"));
+		Assert.assertTrue( matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testRegexNegate() throws Exception {
+	@Test
+	public void testRegexNegate() {
 
 		// '^' is just a character like any other, no special meaning!
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[^a-c]o");
 
-		assertTrue( matcher.matches("/hel^o"));
-		assertTrue( matcher.matches("/helao"));
-		assertTrue( matcher.matches("/helbo"));
-		assertTrue( matcher.matches("/helco"));
-		assertFalse(matcher.matches("/hel-o"));
-		assertFalse(matcher.matches("/hel]o"));
-		assertFalse(matcher.matches("/hello"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hel^o"));
+		Assert.assertTrue( matcher.matches("/helao"));
+		Assert.assertTrue( matcher.matches("/helbo"));
+		Assert.assertTrue( matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/hel-o"));
+		Assert.assertFalse(matcher.matches("/hel]o"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testNegate() throws Exception {
+	@Test
+	public void testNegate() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[!a-c]o");
 
-		assertFalse(matcher.matches("/helao"));
-		assertFalse(matcher.matches("/helbo"));
-		assertFalse(matcher.matches("/helco"));
-		assertTrue( matcher.matches("/hel-o"));
-		assertTrue( matcher.matches("/hel]o"));
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertTrue( matcher.matches("/hel_o"));
-		assertTrue( matcher.matches("/helLo"));
+		Assert.assertFalse(matcher.matches("/helao"));
+		Assert.assertFalse(matcher.matches("/helbo"));
+		Assert.assertFalse(matcher.matches("/helco"));
+		Assert.assertTrue( matcher.matches("/hel-o"));
+		Assert.assertTrue( matcher.matches("/hel]o"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertTrue( matcher.matches("/hel_o"));
+		Assert.assertTrue( matcher.matches("/helLo"));
 	}
 
-	public void testStringGroupSolo() throws Exception {
+	@Test
+	public void testStringGroupSolo() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/{hello,hididelidoo}");
 
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/hididelidoo"));
-		assertFalse(matcher.matches("/helco"));
-		assertFalse(matcher.matches("/hel-o"));
-		assertFalse(matcher.matches("/hel]o"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hididelidoo"));
+		Assert.assertFalse(matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/hel-o"));
+		Assert.assertFalse(matcher.matches("/hel]o"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testStringGroupPrefix() throws Exception {
+	@Test
+	public void testStringGroupPrefix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h{ello,ididelidoo}");
 
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/hididelidoo"));
-		assertFalse(matcher.matches("/helco"));
-		assertFalse(matcher.matches("/hel-o"));
-		assertFalse(matcher.matches("/hel]o"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hididelidoo"));
+		Assert.assertFalse(matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/hel-o"));
+		Assert.assertFalse(matcher.matches("/hel]o"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testStringGroupPostfix() throws Exception {
+	@Test
+	public void testStringGroupPostfix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/{hell,hididelido}o");
 
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/hididelidoo"));
-		assertFalse(matcher.matches("/helco"));
-		assertFalse(matcher.matches("/hel-o"));
-		assertFalse(matcher.matches("/hel]o"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hididelidoo"));
+		Assert.assertFalse(matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/hel-o"));
+		Assert.assertFalse(matcher.matches("/hel]o"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 
-	public void testStringGroupPreAndPostfix() throws Exception {
+	@Test
+	public void testStringGroupPreAndPostfix() {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h{ell,ididelido}o");
 
-		assertTrue( matcher.matches("/hello"));
-		assertTrue( matcher.matches("/hididelidoo"));
-		assertFalse(matcher.matches("/helco"));
-		assertFalse(matcher.matches("/hel-o"));
-		assertFalse(matcher.matches("/hel]o"));
-		assertFalse(matcher.matches("/helzo"));
-		assertFalse(matcher.matches("/hellllo"));
-		assertFalse(matcher.matches("/hellos"));
-		assertFalse(matcher.matches("/hel_o"));
-		assertFalse(matcher.matches("/helLo"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hididelidoo"));
+		Assert.assertFalse(matcher.matches("/helco"));
+		Assert.assertFalse(matcher.matches("/hel-o"));
+		Assert.assertFalse(matcher.matches("/hel]o"));
+		Assert.assertFalse(matcher.matches("/helzo"));
+		Assert.assertFalse(matcher.matches("/hellllo"));
+		Assert.assertFalse(matcher.matches("/hellos"));
+		Assert.assertFalse(matcher.matches("/hel_o"));
+		Assert.assertFalse(matcher.matches("/helLo"));
 	}
 }

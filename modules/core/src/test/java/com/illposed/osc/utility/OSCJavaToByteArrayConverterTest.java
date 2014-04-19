@@ -12,6 +12,8 @@ import com.illposed.osc.OSCMessageTest;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * This implementation is based on Markus Gaelli and
@@ -19,7 +21,7 @@ import java.util.List;
  * http://www.emergent.de/Goodies/
  * @see OSCJavaToByteArrayConverter
  */
-public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
+public class OSCJavaToByteArrayConverterTest {
 
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		OSCMessageTest.checkResultEqualsAnswer(result, answer);
@@ -41,6 +43,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 	 *
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
 	 */
+	@Test
 	public void testPrintFloat2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(0.2f);
@@ -49,6 +52,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintFloatOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(10.7567f);
@@ -57,6 +61,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintIntegerOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(Integer.valueOf(1124));
@@ -65,6 +70,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintString2OnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("abcd");
@@ -73,6 +79,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintStringOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("abc");
@@ -81,6 +88,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testPrintBigIntegerOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write(new java.math.BigInteger("1124"));
@@ -89,12 +97,13 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		checkResultEqualsAnswer(result, answer);
 	}
 
+	@Test
 	public void testIfExceptionOnNullWrite() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 
 		try {
 			stream.write((BigInteger) null);
-			fail("No exception thrown on writing (BigInteger)null");
+			Assert.fail("No exception thrown on writing (BigInteger)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
@@ -102,7 +111,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		try {
 			Float nullFloat = null;
 			stream.write(nullFloat);
-			fail("No exception thrown on writing (Float)null");
+			Assert.fail("No exception thrown on writing (Float)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
@@ -110,28 +119,28 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 		try {
 			Integer nullInteger = null;
 			stream.write(nullInteger);
-			fail("No exception thrown on writing (Integer)null");
+			Assert.fail("No exception thrown on writing (Integer)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
 
 		try {
 			stream.write((Object) null);
-			fail("No exception thrown on writing (Object)null");
+			Assert.fail("No exception thrown on writing (Object)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
 
 		try {
 			stream.write((String) null);
-			fail("No exception thrown on writing (String)null");
+			Assert.fail("No exception thrown on writing (String)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
 
 		try {
 			stream.write((byte[]) null);
-			fail("No exception thrown on writing (byte[])null");
+			Assert.fail("No exception thrown on writing (byte[])null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
@@ -140,7 +149,7 @@ public class OSCJavaToByteArrayConverterTest extends junit.framework.TestCase {
 			List<Float> nullFloats = new ArrayList<Float>(1);
 			nullFloats.add(null);
 			stream.write(nullFloats);
-			fail("No exception thrown on writing Float[] {null}");
+			Assert.fail("No exception thrown on writing Float[] {null}");
 		} catch (RuntimeException ex) {
 			// ignore
 		}

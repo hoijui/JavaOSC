@@ -11,32 +11,37 @@ package com.illposed.osc;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-public class OSCPortTest extends junit.framework.TestCase {
+public class OSCPortTest {
 
 	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
 
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@Before
+	public void setUp() throws Exception {
 		sender = new OSCPortOut();
 		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		receiver.close();
 		sender.close();
 		// wait a bit after closing the receiver,
 		// because (some) operating systems need some time
 		// to actually close the underlying socket
 		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
-		super.tearDown();
 	}
 
+	@Test
 	public void testSocketClose() throws Exception {
 
 		// close the underlying sockets
@@ -54,6 +59,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
 	}
 
+	@Test
 	public void testSocketAutoClose() throws Exception {
 
 		// DANGEROUS! here we forget to close the underlying sockets!
@@ -72,32 +78,35 @@ public class OSCPortTest extends junit.framework.TestCase {
 		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
 	}
 
+	@Test
 	public void testPorts() throws Exception {
 
-		assertEquals("Bad default SuperCollider OSC port",
+		Assert.assertEquals("Bad default SuperCollider OSC port",
 				57110, OSCPort.defaultSCOSCPort());
-		assertEquals("Bad default SuperCollider Language OSC port",
+		Assert.assertEquals("Bad default SuperCollider Language OSC port",
 				57120, OSCPort.defaultSCLangOSCPort());
 
-		assertEquals("Bad default port with ctor()",
+		Assert.assertEquals("Bad default port with ctor()",
 				57110, sender.getPort());
 
 		sender.close();
 		sender = new OSCPortOut(InetAddress.getLocalHost());
-		assertEquals("Bad default port with ctor(address)",
+		Assert.assertEquals("Bad default port with ctor(address)",
 				57110, sender.getPort());
 
 		sender.close();
 		sender = new OSCPortOut(InetAddress.getLocalHost(), 12345);
-		assertEquals("Bad port with ctor(address, port)",
+		Assert.assertEquals("Bad port with ctor(address, port)",
 				12345, sender.getPort());
 	}
 
+	@Test
 	public void testStart() throws Exception {
 		OSCMessage mesg = new OSCMessage("/sc/stop");
 		sender.send(mesg);
 	}
 
+	@Test
 	public void testMessageWithArgs() throws Exception {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(3);
@@ -106,6 +115,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.send(mesg);
 	}
 
+	@Test
 	public void testBundle() throws Exception {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(3);
@@ -116,6 +126,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.send(bundle);
 	}
 
+	@Test
 	public void testBundle2() throws Exception {
 		OSCMessage mesg = new OSCMessage("/foo/bar");
 		mesg.addArgument(3);
@@ -125,6 +136,7 @@ public class OSCPortTest extends junit.framework.TestCase {
 		sender.send(bundle);
 	}
 
+	@Test
 	public void testReceiving() throws Exception {
 		OSCMessage mesg = new OSCMessage("/message/receiving");
 		SimpleOSCListener listener = new SimpleOSCListener();
@@ -134,10 +146,11 @@ public class OSCPortTest extends junit.framework.TestCase {
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
 		if (!listener.isMessageReceived()) {
-			fail("Message was not received");
+			Assert.fail("Message was not received");
 		}
 	}
 
+	@Test
 	public void testBundleReceiving() throws Exception {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
@@ -148,10 +161,10 @@ public class OSCPortTest extends junit.framework.TestCase {
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
 		if (!listener.isMessageReceived()) {
-			fail("Message was not received");
+			Assert.fail("Message was not received");
 		}
 		if (!listener.getReceivedTimestamp().equals(bundle.getTimestamp())) {
-			fail("Message should have timestamp " + bundle.getTimestamp()
+			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
 					+ " but has " + listener.getReceivedTimestamp());
 		}
 	}
