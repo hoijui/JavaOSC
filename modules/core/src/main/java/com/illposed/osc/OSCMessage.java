@@ -115,7 +115,6 @@ public class OSCMessage extends OSCPacket {
 	 * @param stream where to write the address to
 	 */
 	protected void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
-		assert(address != null);
 		stream.write(address);
 	}
 

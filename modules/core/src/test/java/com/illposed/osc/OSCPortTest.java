@@ -22,6 +22,9 @@ public class OSCPortTest {
 
 	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
 
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
+
 	private OSCPortOut sender;
 	private OSCPortIn  receiver;
 
@@ -112,6 +115,13 @@ public class OSCPortTest {
 		args.add(3);
 		args.add("hello");
 		OSCMessage mesg = new OSCMessage("/foo/bar", args);
+		sender.send(mesg);
+	}
+
+	@Test
+	public void testMessageWithNullAddress() throws Exception {
+		OSCMessage mesg = new OSCMessage(null);
+		expectedException.expect(NullPointerException.class);
 		sender.send(mesg);
 	}
 
