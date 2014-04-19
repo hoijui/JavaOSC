@@ -262,4 +262,171 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertFalse(matcher.matches("/hel_o"));
 		Assert.assertFalse(matcher.matches("/helLo"));
 	}
+
+	@Test
+	public void testPathTraversingWildcardNone() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/");
+
+		Assert.assertTrue( matcher.matches("/"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardAll() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//");
+
+		Assert.assertTrue( matcher.matches("/"));
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardPrefix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello//");
+
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardPostfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//two");
+
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertTrue( matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardInfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//world//");
+
+		Assert.assertTrue( matcher.matches("/world"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertTrue( matcher.matches("/bye/world"));
+		Assert.assertTrue( matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardAroundfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello//two");
+
+		Assert.assertFalse(matcher.matches("/world"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertTrue( matcher.matches("/hello/my/sweet/world/two"));
+		Assert.assertTrue( matcher.matches("/hello/universe/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardMultiplePrefix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello////");
+
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardMultiplePostfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("////two");
+
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertTrue( matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardMultipleInfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("////world////");
+
+		Assert.assertTrue( matcher.matches("/world"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertTrue( matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertTrue( matcher.matches("/bye/world"));
+		Assert.assertTrue( matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardMultipleAroundfix() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello////two");
+
+		Assert.assertFalse(matcher.matches("/world"));
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertTrue( matcher.matches("/hello/world/two"));
+		Assert.assertTrue( matcher.matches("/hello/my/sweet/world/two"));
+		Assert.assertTrue( matcher.matches("/hello/universe/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardNoneSingleTrailingSlash() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello/");
+
+		Assert.assertTrue( matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+	}
+
+	@Test
+	public void testPathTraversingWildcardComplex() {
+
+		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/my//hello///two/cents//");
+
+		Assert.assertFalse(matcher.matches("/hello"));
+		Assert.assertFalse(matcher.matches("/hello/world"));
+		Assert.assertFalse(matcher.matches("/hello/world/two"));
+		Assert.assertFalse(matcher.matches("/bye"));
+		Assert.assertFalse(matcher.matches("/bye/world"));
+		Assert.assertFalse(matcher.matches("/bye/world/two"));
+		Assert.assertTrue( matcher.matches("/my/hello/two/cents"));
+		Assert.assertTrue( matcher.matches("/my/few/cents/hello/two/cents"));
+		Assert.assertTrue( matcher.matches("/my/few/cents/hello/thats/two/cents"));
+		Assert.assertTrue( matcher.matches("/my/few/cents/hello/thats/two/cents/too"));
+		Assert.assertTrue( matcher.matches("/my/few/cents/hello/thats/two/or/three/no/two/cents"));
+		Assert.assertTrue( matcher.matches("/my/few/cents/hello/thats/two/or/three/no/two/cents/too"));
+		Assert.assertFalse(matcher.matches("/my/few/cents/hello/thats/two/or/three/no/two/bad/cents/too"));
+	}
 }

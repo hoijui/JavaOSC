@@ -8,7 +8,9 @@
 
 package com.illposed.osc.utility;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,6 +18,7 @@ import java.util.List;
  * as specified in the OSC protocol specification.
  * For details, see "OSC Message Dispatching and Pattern Matching"
  * on {@url http://opensoundcontrol.org/spec-1_0}.
+ * Also supports the path-traversal wildcard "//", as specified in OSC 1.1 (borrowed from XPath).
  *
  * <p>
  * A coarse history of the code in the function
@@ -52,37 +55,91 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	private final List<String> patternParts;
 
 	public OSCPatternAddressSelector(String selector) {
-		this.patternParts = Arrays.asList(selector.split("/"));
+		this.patternParts = splitIntoParts(selector);
 	}
 
 	@Override
 	public boolean matches(String messageAddress) {
 
-		List<String> messageAdressParts
-				= Arrays.asList(messageAddress.split("/"));
-		return matches(patternParts, messageAdressParts);
+		List<String> messageAddressParts = splitIntoParts(messageAddress);
+		return matches(patternParts, 0, messageAddressParts, 0);
+	}
+
+	/**
+	 * Splits an OSC message address or address selector pattern into parts that are convenient
+	 * during the matching process.
+	 * @param addressOrPattern to be split into parts, e.g.: "/hello/", "/hello//world//"
+	 * @return the given address or pattern split into parts: {"hello"}, {"hello, "", "world", ""}
+	 */
+	private static List<String> splitIntoParts(String addressOrPattern) {
+
+		List<String> parts = new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
+		if (addressOrPattern.startsWith("/")) {
+			// as "/hello" gets split into {"", "hello"}, we remove the first empty entry,
+			// so we end up with {"hello"}
+			parts.remove(0);
+		}
+		if (addressOrPattern.endsWith("/")) {
+			// as "hello/" gets split into {"hello", ""}, we also remove the last empty entry,
+			// so we end up with {"hello"}
+			parts.remove(parts.size() - 1);
+		}
+		return Collections.unmodifiableList(parts);
 	}
 
 	/**
 	 * Tries to match an OSC <i>Address Pattern</i> to a selector,
 	 * both already divided into their parts.
-	 * @param patternParts
-	 * @param messageAddressParts
+	 * @param patternParts all the parts of the pattern
+	 * @param ppi index/pointer to the current part of the pattern we are looking at
+	 * @param messageAddressParts all the parts of the address
+	 * @param api index/pointer to the current part of the address we are looking at
 	 * @return true if the address matches, false otherwise
 	 */
-	private static boolean matches(List<String> patternParts, List<String> messageAddressParts) {
+	private boolean matches(List<String> patternParts, int ppi, List<String> messageAddressParts, int api) {
 
-		if (patternParts.size() != messageAddressParts.size()) {
-			return false;
-		}
-
-		for (int pi = 0; pi < patternParts.size(); pi++) {
-			if (!matches(messageAddressParts.get(pi), patternParts.get(pi))) {
-				return false;
+		while (ppi < patternParts.size()) {
+			// There might be some path-traversal wildcards (PTW) "//" in the pattern.
+			// "//" in the pattern translates to an empty String ("") in the pattern parts.
+			// We skip all consecutive "//"s at the current pattern position.
+			boolean pathTraverser = false;
+			while ((ppi < patternParts.size()) && patternParts.get(ppi).isEmpty()) {
+				ppi++;
+				pathTraverser = true;
 			}
+			// ppi is now at the end, or at the first non-PTW part
+			if (pathTraverser) {
+				if (ppi == patternParts.size()) {
+					// trailing PTW matches the whole rest of the address
+					return true;
+				}
+				while (api < messageAddressParts.size()) {
+					if (matches(messageAddressParts.get(api), patternParts.get(ppi))
+							&& matches(patternParts, ppi + 1, messageAddressParts, api + 1))
+					{
+						return true;
+					}
+					api++;
+				}
+				// end of address parts reached, but there are still non-PTW pattern parts
+				// left
+				return false;
+			} else {
+				if ((ppi == patternParts.size()) != (api == messageAddressParts.size())) {
+					// end of pattern, no trailing PTW, but there are still address parts left
+					// OR
+					// end of address, but there are still non-PTW pattern parts left
+					return false;
+				}
+				if (!matches(messageAddressParts.get(api), patternParts.get(ppi))) {
+					return false;
+				}
+				api++;
+			}
+			ppi++;
 		}
 
-		return true;
+		return (api == messageAddressParts.size());
 	}
 
 	/**
