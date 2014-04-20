@@ -33,6 +33,8 @@ import java.util.Collection;
  */
 public class OSCJavaToByteArrayConverter {
 
+	private static final byte[] SINGLE_BYTE_PADDING = new byte[] { 0, 0, 0 };
+
 	private final ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
@@ -191,7 +193,17 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
+	 * Write a char into the byte stream, and ensure it is 4 byte aligned again.
+	 * @param c the character to be written
+	 */
+	public void write(Character c) {
+		stream.write((char) c);
+		writeUnderHandler(SINGLE_BYTE_PADDING);
+	}
+
+	/**
 	 * Write a char into the byte stream.
+	 * CAUTION, this does not ensure 4 byte alignment (it actually breaks it)!
 	 * @param c the character to be written
 	 */
 	public void write(char c) {
@@ -216,6 +228,8 @@ public class OSCJavaToByteArrayConverter {
 			write((Double) anObject);
 		} else if (anObject instanceof String) {
 			write((String) anObject);
+		} else if (anObject instanceof Character) {
+			write((Character) anObject);
 		} else if (anObject instanceof Integer) {
 			write((Integer) anObject);
 		} else if (anObject instanceof BigInteger) {
