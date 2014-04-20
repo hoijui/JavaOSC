@@ -28,7 +28,7 @@ public class OSCMessageTest {
 	public static void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		if (result.length != answer.length) {
 			Assert.fail(
-				"Result and answer aren't the same length "
+				"Result and answer aren't the same length, "
 					+ result.length + " vs " + answer.length
 					+ " (\"" + new String(result) + "\" vs \"" + new String(answer) + "\")");
 		}

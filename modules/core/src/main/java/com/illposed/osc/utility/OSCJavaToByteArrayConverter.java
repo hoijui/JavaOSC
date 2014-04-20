@@ -90,9 +90,9 @@ public class OSCJavaToByteArrayConverter {
 	 * Pad the stream to have a size divisible by 4.
 	 */
 	public void appendNullCharToAlignStream() {
-		int mod = stream.size() % 4;
-		int pad = 4 - mod;
-		for (int i = 0; i < pad; i++) {
+		final int alignmentOverlap = stream.size() % 4;
+		final int padLen = 4 - alignmentOverlap;
+		for (int pci = 0; pci < padLen; pci++) {
 			stream.write(0);
 		}
 	}
@@ -274,7 +274,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Write the types for an array element in the arguments.
 	 * @param array array of base Objects
 	 */
-	public void writeTypesArray(Collection<Object> array) {
+	private void writeTypesArray(Collection<Object> array) {
 		// A big ol' case statement in a for loop -- what's polymorphism mean,
 		// again?
 		// I really wish I could extend the base classes!
@@ -307,6 +307,7 @@ public class OSCJavaToByteArrayConverter {
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
+				// XXX Why not call this function, recursively? The only reason would be, to not allow nested arrays, but the specification does not say anythign about them not being allowed.
 				writeTypesArray((Collection<Object>) type);
 				// close the array
 				stream.write(']');
@@ -328,7 +329,7 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Write bytes to the stream, catching IOExceptions and converting them to
 	 * RuntimeExceptions.
-	 * @param bytes byte[]
+	 * @param bytes to be written to the stream
 	 */
 	private void writeUnderHandler(byte[] bytes) {
 
