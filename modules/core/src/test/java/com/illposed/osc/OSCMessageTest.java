@@ -53,6 +53,132 @@ public class OSCMessageTest {
 	}
 
 	@Test
+	public void testFillerBeforeCommaNone() {
+		final List<Object> args = new ArrayList<Object>(0);
+		final OSCMessage message = new OSCMessage("/abcdef", args);
+		// here we only have the addresses string terminator (0) before the ',' (44),
+		// so the comma is 4 byte aligned
+		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 0, 44, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testFillerBeforeCommaOne() {
+		final List<Object> args = new ArrayList<Object>(0);
+		final OSCMessage message = new OSCMessage("/abcde", args);
+		// here we have one padding 0 after the addresses string terminator (also 0)
+		// and before the ',' (44), so the comma is 4 byte aligned
+		final byte[] answer = { 47, 97, 98, 99, 100, 101, 0, 0, 44, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testFillerBeforeCommaTwo() {
+		final List<Object> args = new ArrayList<Object>(0);
+		final OSCMessage message = new OSCMessage("/abcd", args);
+		// here we have two padding 0's after the addresses string terminator (also 0)
+		// and before the ',' (44), so the comma is 4 byte aligned
+		final byte[] answer = { 47, 97, 98, 99, 100, 0, 0, 0, 44, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testFillerBeforeCommaThree() {
+		final List<Object> args = new ArrayList<Object>(0);
+		final OSCMessage message = new OSCMessage("/abcdefg", args);
+		// here we have three padding 0's after the addresses string terminator (also 0)
+		// and before the ',' (44), so the comma is 4 byte aligned
+		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 103, 0, 0, 0, 0, 44, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentInteger() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(99);
+		final OSCMessage message = new OSCMessage("/int", args);
+		final byte[] answer = { 47, 105, 110, 116, 0, 0, 0, 0, 44, 105, 0, 0, 0, 0, 0, 99 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentFloat() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(999.9f);
+		final OSCMessage message = new OSCMessage("/float", args);
+		final byte[] answer = { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentDouble() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(777777.777);
+		final OSCMessage message = new OSCMessage("/double", args);
+		final byte[] answer = {
+			47, 100, 111, 117, 98, 108, 101, 0, 44, 100, 0, 0, 65, 39, -68, 99, -115, -46, -15, -86
+		};
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentCharacter() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add('x');
+		final OSCMessage message = new OSCMessage("/char", args);
+		final byte[] answer = { 47, 99, 104, 97, 114, 0, 0, 0, 44, 99, 0, 0, 120, 0, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentImpulse() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(OSCImpulse.INSTANCE);
+		final OSCMessage message = new OSCMessage("/impulse", args);
+		final byte[] answer = { 47, 105, 109, 112, 117, 108, 115, 101, 0, 0, 0, 0, 44, 73, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentTrue() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(true);
+		final OSCMessage message = new OSCMessage("/true", args);
+		final byte[] answer = { 47, 116, 114, 117, 101, 0, 0, 0, 44, 84, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentFalse() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(false);
+		final OSCMessage message = new OSCMessage("/false", args);
+		final byte[] answer = { 47, 102, 97, 108, 115, 101, 0, 0, 44, 70, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentNull() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(null);
+		final OSCMessage message = new OSCMessage("/null", args);
+		final byte[] answer = { 47, 110, 117, 108, 108, 0, 0, 0, 44, 78, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
 	public void testDecreaseVolume() {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(1);
