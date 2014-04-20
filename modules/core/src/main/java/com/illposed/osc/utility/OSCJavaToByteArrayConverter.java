@@ -129,6 +129,14 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
+	 * Write a double into the byte stream (8 bytes).
+	 * @param d double precision floating point number to be written
+	 */
+	public void write(Double d) {
+		writeInteger64ToByteArray(Double.doubleToRawLongBits(d));
+	}
+
+	/**
 	 * @param i the integer to be written
 	 */
 	public void write(Integer i) {
@@ -204,6 +212,8 @@ public class OSCJavaToByteArrayConverter {
 			}
 		} else if (anObject instanceof Float) {
 			write((Float) anObject);
+		} else if (anObject instanceof Double) {
+			write((Double) anObject);
 		} else if (anObject instanceof String) {
 			write((String) anObject);
 		} else if (anObject instanceof Integer) {
