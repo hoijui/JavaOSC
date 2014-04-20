@@ -200,7 +200,7 @@ public class OSCByteArrayToJavaConverter {
 			case 'i' :
 				return readInteger();
 			case 'h' :
-				return readBigInteger();
+				return readLong();
 			case 'f' :
 				return readFloat();
 			case 'd' :
@@ -262,20 +262,20 @@ public class OSCByteArrayToJavaConverter {
 //				| (floatBytes[1] << 16)
 //				| (floatBytes[2] << 8)
 //				| (floatBytes[3]);
-		BigInteger floatBits = new BigInteger(floatBytes);
+		final BigInteger floatBits = new BigInteger(floatBytes);
 		return Float.intBitsToFloat(floatBits.intValue());
 	}
 
 	/**
-	 * Reads a Big Integer (64 bit integer) from the byte stream.
-	 * @return a {@link BigInteger}
+	 * Reads a double precision integer (64 bit integer) from the byte stream.
+	 * @return double precision integer (64 bit)
 	 */
-	private Object readBigInteger() {
+	private Long readLong() {
 		byte[] longintBytes = new byte[8];
 		for (int i = 0; i < longintBytes.length; i++) {
 			longintBytes[i] = bytes[streamPosition++];
 		}
-		return new BigInteger(longintBytes);
+		return new BigInteger(longintBytes).longValue();
 	}
 
 	/**
@@ -332,9 +332,8 @@ public class OSCByteArrayToJavaConverter {
 			return OSCBundle.TIMESTAMP_IMMEDIATE;
 		}
 
-		BigInteger secsSince1900 = new BigInteger(secondBytes);
-		long secsSince1970 =  secsSince1900.longValue()
-				- OSCBundle.SECONDS_FROM_1900_TO_1970.longValue();
+		final long secsSince1900 = new BigInteger(secondBytes).longValue();
+		long secsSince1970 =  secsSince1900 - OSCBundle.SECONDS_FROM_1900_TO_1970;
 
 		// no point maintaining times in the distant past
 		if (secsSince1970 < 0) {

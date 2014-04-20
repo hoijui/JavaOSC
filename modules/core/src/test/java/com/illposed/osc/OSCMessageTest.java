@@ -10,7 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -249,9 +248,9 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testEncodeBigInteger() {
+	public void testEncodeLong() {
 		OSCMessage message = new OSCMessage("/dummy");
-		BigInteger one001 = new BigInteger("1001");
+		Long one001 = 1001L;
 		message.addArgument(one001);
 		byte[] byteArray = message.getByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
@@ -263,11 +262,11 @@ public class OSCMessageTest {
 		if (arguments.size() != 1) {
 			Assert.fail("Send Big Integer should have 1 argument, not " + arguments.size());
 		}
-		if (!(arguments.get(0) instanceof BigInteger)) {
-			Assert.fail("arguments.get(0) should be a BigInteger, not " + arguments.get(0));
+		if (!(arguments.get(0) instanceof Long)) {
+			Assert.fail("arguments.get(0) should be a Long, not " + arguments.get(0).getClass());
 		}
-		if (!(new BigInteger("1001").equals(arguments.get(0)))) {
-			Assert.fail("Instead of BigInteger(1001), received " + arguments.get(0));
+		if (!(new Long(1001L).equals(arguments.get(0)))) {
+			Assert.fail("Instead of Long(1001), received " + arguments.get(0));
 		}
 	}
 

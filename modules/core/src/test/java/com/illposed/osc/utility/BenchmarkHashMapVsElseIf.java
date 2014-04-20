@@ -27,7 +27,7 @@ public class BenchmarkHashMapVsElseIf {
 		Map<Class, Character> classToType = new HashMap<Class, Character>(6);
 
 		classToType.put(Integer.class, 'i');
-		classToType.put(java.math.BigInteger.class, 'h');
+		classToType.put(Long.class, 'h');
 		classToType.put(Float.class, 'f');
 		classToType.put(Double.class, 'd');
 		classToType.put(String.class, 's');
@@ -101,7 +101,7 @@ public class BenchmarkHashMapVsElseIf {
 		// I really wish I could extend the base classes!
 		if (Integer.class.equals(cls)) {
 			type = 'i';
-		} else if (java.math.BigInteger.class.equals(cls)) {
+		} else if (Long.class.equals(cls)) {
 			type = 'h';
 		} else if (Float.class.equals(cls)) {
 			type = 'f';

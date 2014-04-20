@@ -93,7 +93,7 @@ public class OSCMessage extends OSCPacket {
 
 	/**
 	 * Add an argument to the list of arguments.
-	 * @param argument a Float, String, Integer, BigInteger, Boolean
+	 * @param argument a Float, Double, String, Character, Integer, Long, Boolean, null
 	 *   or an array of these
 	 */
 	public void addArgument(Object argument) {

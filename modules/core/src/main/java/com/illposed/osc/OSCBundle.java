@@ -9,7 +9,6 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,8 +35,7 @@ public class OSCBundle extends OSCPacket {
 	/**
 	 * 2208988800 seconds -- includes 17 leap years
 	 */
-	public static final BigInteger SECONDS_FROM_1900_TO_1970 =
-		new BigInteger("2208988800");
+	public static final long SECONDS_FROM_1900_TO_1970 = 2208988800L;
 
 	/**
 	 * The Java representation of an OSC timestamp with the semantics of
@@ -136,7 +134,7 @@ public class OSCBundle extends OSCPacket {
 
 		long millisecs = timestamp.getTime();
 		long secsSince1970 = (long) (millisecs / 1000);
-		long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970.longValue();
+		long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
 
 		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
 		long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;

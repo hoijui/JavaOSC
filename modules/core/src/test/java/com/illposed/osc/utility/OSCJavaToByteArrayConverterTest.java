@@ -9,7 +9,6 @@
 package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCMessageTest;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Assert;
@@ -89,9 +88,9 @@ public class OSCJavaToByteArrayConverterTest {
 	}
 
 	@Test
-	public void testPrintBigIntegerOnStream() {
+	public void testPrintLongOnStream() {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write(new java.math.BigInteger("1124"));
+		stream.write(1124L);
 		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
@@ -102,8 +101,9 @@ public class OSCJavaToByteArrayConverterTest {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 
 		try {
-			stream.write((BigInteger) null);
-			Assert.fail("No exception thrown on writing (BigInteger)null");
+			Long nullLong = null;
+			stream.write(nullLong);
+			Assert.fail("No exception thrown on writing (Long)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}

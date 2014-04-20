@@ -11,7 +11,6 @@ package com.illposed.osc.utility;
 import com.illposed.osc.OSCImpulse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Collection;
 
@@ -146,10 +145,10 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * @param i the integer to be written
+	 * @param l the double precision integer to be written
 	 */
-	public void write(BigInteger i) {
-		writeInteger64ToByteArray(i.longValue());
+	public void write(Long l) {
+		writeInteger64ToByteArray(l);
 	}
 
 	/**
@@ -212,8 +211,8 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write an object into the byte stream.
-	 * @param anObject one of Float, String, Integer, BigInteger, or array of
-	 *   these.
+	 * @param anObject one of Float, Double, String, Character, Integer, Long,
+	 *   or array of these.
 	 */
 	public void write(Object anObject) {
 		// Can't do switch on class
@@ -232,8 +231,8 @@ public class OSCJavaToByteArrayConverter {
 			write((Character) anObject);
 		} else if (anObject instanceof Integer) {
 			write((Integer) anObject);
-		} else if (anObject instanceof BigInteger) {
-			write((BigInteger) anObject);
+		} else if (anObject instanceof Long) {
+			write((Long) anObject);
 		} else if (anObject instanceof OSCImpulse) {
 			// Write nothing here, as all the info is already contained in the type ('I').
 		} else if (anObject instanceof Boolean) {
@@ -256,7 +255,7 @@ public class OSCJavaToByteArrayConverter {
 		// I really wish I could extend the base classes!
 		if (Integer.class.equals(c)) {
 			stream.write('i');
-		} else if (java.math.BigInteger.class.equals(c)) {
+		} else if (Long.class.equals(c)) {
 			stream.write('h');
 		} else if (Float.class.equals(c)) {
 			stream.write('f');
