@@ -234,8 +234,12 @@ public class OSCJavaToByteArrayConverter {
 			write((Integer) anObject);
 		} else if (anObject instanceof BigInteger) {
 			write((BigInteger) anObject);
+		} else if (anObject instanceof OSCImpulse) {
+			// Write nothing here, as all the info is already contained in the type ('I').
+		} else if (anObject instanceof Boolean) {
+			// Write nothing here, as all the info is already contained in the type ('T' or 'F').
 		} else if (anObject == null) {
-			throw new RuntimeException("Can not write null");
+			// Write nothing here, as all the info is already contained in the type ('N').
 		} else {
 			throw new RuntimeException("Unknown object type: " + anObject.getClass());
 		}
