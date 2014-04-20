@@ -117,6 +117,14 @@ public class OSCJavaToByteArrayConverterTest {
 		}
 
 		try {
+			Double nullDouble = null;
+			stream.write(nullDouble);
+			Assert.fail("No exception thrown on writing (Double)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
 			Integer nullInteger = null;
 			stream.write(nullInteger);
 			Assert.fail("No exception thrown on writing (Integer)null");
@@ -128,6 +136,14 @@ public class OSCJavaToByteArrayConverterTest {
 			String nullString = null;
 			stream.write(nullString);
 			Assert.fail("No exception thrown on writing (String)null");
+		} catch (RuntimeException ex) {
+			// ignore
+		}
+
+		try {
+			Character nullCharacter = null;
+			stream.write(nullCharacter);
+			Assert.fail("No exception thrown on writing (Character)null");
 		} catch (RuntimeException ex) {
 			// ignore
 		}
