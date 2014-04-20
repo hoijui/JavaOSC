@@ -150,7 +150,6 @@ public class OSCBundle extends OSCPacket {
 		byte[] packetBytes;
 		for (OSCPacket pkg : packets) {
 			packetBytes = pkg.getByteArray();
-			stream.write(packetBytes.length);
 			stream.write(packetBytes);
 		}
 		return stream.toByteArray();

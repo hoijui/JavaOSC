@@ -138,6 +138,16 @@ public class OSCMessageTest {
 	}
 
 	@Test
+	public void testArgumentBlob() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(new byte[] { -1, 0, 1 });
+		final OSCMessage message = new OSCMessage("/blob", args);
+		final byte[] answer = { 47, 98, 108, 111, 98, 0, 0, 0, 44, 98, 0, 0, 0, 0, 0, 3, -1, 0, 1, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
 	public void testArgumentImpulse() {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(OSCImpulse.INSTANCE);

@@ -110,7 +110,9 @@ public class OSCJavaToByteArrayConverter {
 	 * @param bytes  bytes to be written
 	 */
 	public void write(byte[] bytes) {
+		writeInteger32ToByteArray(bytes.length);
 		writeUnderHandler(bytes);
+		appendNullCharToAlignStream();
 	}
 
 	/**
@@ -227,6 +229,8 @@ public class OSCJavaToByteArrayConverter {
 			write((Double) anObject);
 		} else if (anObject instanceof String) {
 			write((String) anObject);
+		} else if (anObject instanceof byte[]) {
+			write((byte[]) anObject);
 		} else if (anObject instanceof Character) {
 			write((Character) anObject);
 		} else if (anObject instanceof Integer) {
@@ -263,6 +267,8 @@ public class OSCJavaToByteArrayConverter {
 			stream.write('d');
 		} else if (String.class.equals(c)) {
 			stream.write('s');
+		} else if (byte[].class.equals(c)) {
+			stream.write('b');
 		} else if (Character.class.equals(c)) {
 			stream.write('c');
 		} else if (OSCImpulse.class.equals(c)) {
@@ -334,7 +340,7 @@ public class OSCJavaToByteArrayConverter {
 	private void writeUnderHandler(byte[] bytes) {
 
 		try {
-			stream.write(alignBigEndToFourByteBoundry(bytes));
+			stream.write(bytes);
 		} catch (IOException e) {
 			throw new RuntimeException("You're screwed:"
 					+ " IOException writing to a ByteArrayOutputStream");

@@ -160,6 +160,19 @@ public class OSCByteArrayToJavaConverter {
 	}
 
 	/**
+	 * Reads a binary blob from the byte stream.
+	 * @return the next blob in the byte stream
+	 */
+	private byte[] readBlob() {
+		final int blobLen = readInteger();
+		final byte[] res = new byte[blobLen];
+		System.arraycopy(bytes, streamPosition, res, 0, blobLen);
+		streamPosition += blobLen;
+		moveToFourByteBoundry();
+		return res;
+	}
+
+	/**
 	 * Reads the types of the arguments from the byte stream.
 	 * @return a char array with the types of the arguments,
 	 *   or <code>null</code>, in case of no arguments
@@ -207,6 +220,8 @@ public class OSCByteArrayToJavaConverter {
 				return readDouble();
 			case 's' :
 				return readString();
+			case 'b' :
+				return readBlob();
 			case 'c' :
 				return readChar();
 			case 'N' :
