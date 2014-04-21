@@ -292,7 +292,8 @@ public class OSCJavaToByteArrayConverter {
 		} else if (anObject == null) {
 			// Write nothing here, as all the info is already contained in the type ('N').
 		} else {
-			throw new RuntimeException("Unknown object type: " + anObject.getClass());
+			throw new RuntimeException("Do not know how to write an object of class: "
+					+ anObject.getClass());
 		}
 	}
 
@@ -323,6 +324,8 @@ public class OSCJavaToByteArrayConverter {
 			stream.write('c');
 		} else if (OSCImpulse.class.equals(c)) {
 			stream.write('I');
+		} else {
+			throw new RuntimeException("Do not know the OSC type for the java class: " + c);
 		}
 	}
 
