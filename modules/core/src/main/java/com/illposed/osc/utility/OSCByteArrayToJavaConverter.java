@@ -252,6 +252,13 @@ public class OSCByteArrayToJavaConverter {
 		return (char) bytes[streamPosition++];
 	}
 
+	private BigInteger readBigInteger(final int numBytes) {
+		final byte[] myBytes = new byte[numBytes];
+		System.arraycopy(bytes, streamPosition, myBytes, 0, numBytes);
+		streamPosition += numBytes;
+		return  new BigInteger(myBytes);
+	}
+
 	/**
 	 * Reads a double from the byte stream.
 	 * This just reads a float.
@@ -263,20 +270,10 @@ public class OSCByteArrayToJavaConverter {
 
 	/**
 	 * Reads a float from the byte stream.
-	 * @return a {@link Float}
+	 * @return a 32bit precision floating point value
 	 */
 	private Float readFloat() {
-		byte[] floatBytes = new byte[4];
-		floatBytes[0] = bytes[streamPosition++];
-		floatBytes[1] = bytes[streamPosition++];
-		floatBytes[2] = bytes[streamPosition++];
-		floatBytes[3] = bytes[streamPosition++];
-//		int floatBits =
-//			(floatBytes[0] << 24)
-//				| (floatBytes[1] << 16)
-//				| (floatBytes[2] << 8)
-//				| (floatBytes[3]);
-		final BigInteger floatBits = new BigInteger(floatBytes);
+		final BigInteger floatBits = readBigInteger(4);
 		return Float.intBitsToFloat(floatBits.intValue());
 	}
 
@@ -285,11 +282,8 @@ public class OSCByteArrayToJavaConverter {
 	 * @return double precision integer (64 bit)
 	 */
 	private Long readLong() {
-		byte[] longintBytes = new byte[8];
-		for (int i = 0; i < longintBytes.length; i++) {
-			longintBytes[i] = bytes[streamPosition++];
-		}
-		return new BigInteger(longintBytes).longValue();
+		final BigInteger longintBytes = readBigInteger(8);
+		return longintBytes.longValue();
 	}
 
 	/**
@@ -297,11 +291,7 @@ public class OSCByteArrayToJavaConverter {
 	 * @return an {@link Integer}
 	 */
 	private Integer readInteger() {
-		byte[] intBytes = new byte[4];
-		for (int i = 0; i < intBytes.length; i++) {
-			intBytes[i] = bytes[streamPosition++];
-		}
-		BigInteger intBits = new BigInteger(intBytes);
+		final BigInteger intBits = readBigInteger(4);
 		return intBits.intValue();
 	}
 
