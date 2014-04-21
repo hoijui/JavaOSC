@@ -158,6 +158,17 @@ public class OSCMessageTest {
 	}
 
 	@Test
+	public void testArgumentLong() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(Long.MAX_VALUE);
+		final OSCMessage message = new OSCMessage("/long", args);
+		final byte[] answer = {
+			47, 108, 111, 110, 103, 0, 0, 0, 44, 104, 0, 0, 127, -1, -1, -1, -1, -1, -1, -1 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
 	public void testArgumentTrue() {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(true);
