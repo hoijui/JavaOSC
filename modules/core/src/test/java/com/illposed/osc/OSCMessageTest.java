@@ -132,7 +132,7 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add('x');
 		final OSCMessage message = new OSCMessage("/char", args);
-		final byte[] answer = { 47, 99, 104, 97, 114, 0, 0, 0, 44, 99, 0, 0, 120, 0, 0, 0, 0 };
+		final byte[] answer = { 47, 99, 104, 97, 114, 0, 0, 0, 44, 99, 0, 0, 120, 0, 0, 0 };
 		final byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
