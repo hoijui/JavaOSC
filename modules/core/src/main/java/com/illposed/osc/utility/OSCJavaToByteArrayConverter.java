@@ -32,8 +32,6 @@ import java.util.Collection;
  */
 public class OSCJavaToByteArrayConverter {
 
-	private static final byte[] SINGLE_BYTE_PADDING = new byte[] { 0, 0, 0 };
-
 	private final ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
@@ -199,7 +197,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(Character c) {
 		stream.write((char) c);
-		writeUnderHandler(SINGLE_BYTE_PADDING);
+		appendNullCharToAlignStream();
 	}
 
 	/**
