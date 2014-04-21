@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.Date;
 
 /**
  * OSCJavaToByteArrayConverter is a helper class that translates
@@ -31,6 +32,15 @@ import java.util.Collection;
  * @author Alex Potsides
  */
 public class OSCJavaToByteArrayConverter {
+
+	/**
+	 * baseline NTP time if bit-0=0 is 7-Feb-2036 @ 06:28:16 UTC
+	 */
+	protected static final long msb0baseTime = 2085978496000L;
+	/**
+	 * baseline NTP time if bit-0=1 is 1-Jan-1900 @ 01:00:00 UTC
+	 */
+	protected static final long msb1baseTime = -2208988800000L;
 
 	private final ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
@@ -152,6 +162,44 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
+	 * @param timestamp the timestamp to be written
+	 */
+	public void write(Date timestamp) {
+		writeInteger64ToByteArray(javaToNtpTimeStamp(timestamp.getTime()));
+	}
+
+	/**
+	 * Converts a Java time-stamp to a 64-bit NTP time representation.
+	 * This code was copied in from the "Apache Jakarta Commons - Net" library,
+	 * which is licensed under the ASF 2.0 license.
+	 * The original file can be found here:
+	 * {@see http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co}
+	 * @param javaTime Java time-stamp, as returned by {@link Date#getTime()}
+	 * @return NTP time-stamp representation of the Java time value.
+	 */
+	protected static long javaToNtpTimeStamp(long javaTime) {
+		final boolean useBase1 = javaTime < msb0baseTime; // time < Feb-2036
+		final long baseTime;
+		if (useBase1) {
+			baseTime = javaTime - msb1baseTime; // dates <= Feb-2036
+		} else {
+			// if base0 needed for dates >= Feb-2036
+			baseTime = javaTime - msb0baseTime;
+		}
+
+		long seconds = baseTime / 1000;
+		final long fraction = ((baseTime % 1000) * 0x100000000L) / 1000;
+
+		if (useBase1) {
+			seconds |= 0x80000000L; // set high-order bit if msb1baseTime 1900 used
+		}
+
+		final long ntpTime = seconds << 32 | fraction;
+
+		return ntpTime;
+	}
+
+	/**
 	 * Write a string into the byte stream.
 	 * @param aString the string to be written
 	 */
@@ -235,6 +283,8 @@ public class OSCJavaToByteArrayConverter {
 			write((Integer) anObject);
 		} else if (anObject instanceof Long) {
 			write((Long) anObject);
+		} else if (anObject instanceof Date) {
+			write((Date) anObject);
 		} else if (anObject instanceof OSCImpulse) {
 			// Write nothing here, as all the info is already contained in the type ('I').
 		} else if (anObject instanceof Boolean) {
@@ -259,6 +309,8 @@ public class OSCJavaToByteArrayConverter {
 			stream.write('i');
 		} else if (Long.class.equals(c)) {
 			stream.write('h');
+		} else if (Date.class.equals(c)) {
+			stream.write('t');
 		} else if (Float.class.equals(c)) {
 			stream.write('f');
 		} else if (Double.class.equals(c)) {
