@@ -11,6 +11,7 @@ package com.illposed.osc;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
@@ -164,6 +165,16 @@ public class OSCMessageTest {
 		final OSCMessage message = new OSCMessage("/long", args);
 		final byte[] answer = {
 			47, 108, 111, 110, 103, 0, 0, 0, 44, 104, 0, 0, 127, -1, -1, -1, -1, -1, -1, -1 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentTimestamp() {
+		final List<Object> args = new ArrayList<Object>(1);
+		args.add(new Date(0L));
+		final OSCMessage message = new OSCMessage("/timestamp", args);
+		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0 };
 		final byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
