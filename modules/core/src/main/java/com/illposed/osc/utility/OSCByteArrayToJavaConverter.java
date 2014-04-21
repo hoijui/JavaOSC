@@ -261,11 +261,11 @@ public class OSCByteArrayToJavaConverter {
 
 	/**
 	 * Reads a double from the byte stream.
-	 * This just reads a float.
-	 * @return a {@link Double}
+	 * @return a 64bit precision floating point value
 	 */
 	private Object readDouble() {
-		return readFloat();
+		final BigInteger doubleBits = readBigInteger(8);
+		return Double.longBitsToDouble(doubleBits.longValue());
 	}
 
 	/**
