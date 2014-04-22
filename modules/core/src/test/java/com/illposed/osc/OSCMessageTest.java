@@ -176,11 +176,37 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testArgumentTimestamp() {
+	public void testArgumentTimestamp0() {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(new Date(0L));
-		final OSCMessage message = new OSCMessage("/timestamp", args);
-		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0 };
+		final OSCMessage message = new OSCMessage("/timestamp0", args);
+		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 48, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentTimestamp2000() {
+		final List<Object> args = new ArrayList<Object>(1);
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(2000, 0, 0);
+		args.add(calendar.getTime());
+		final OSCMessage message = new OSCMessage("/timestamp2000", args);
+		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 50, 48, 48, 48, 0, 0, 44, 116, 0, 0, -68, 22, 98, 112, 0, 0, 0, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentTimestampAfterFeb2036() {
+		final List<Object> args = new ArrayList<Object>(1);
+		Calendar calendar = Calendar.getInstance();
+		calendar.clear();
+		calendar.set(2037, 0, 0);
+		args.add(calendar.getTime());
+		final OSCMessage message = new OSCMessage("/timestampAfterFeb2036", args);
+		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 65, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 44, 116, 0, 0, 1, -80, 2, -16, 0, 0, 0, 0 };
 		final byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
