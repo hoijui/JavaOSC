@@ -209,6 +209,8 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Object readArgument(char type) {
 		switch (type) {
+			case 'u' :
+				return readUnsignedInteger();
 			case 'i' :
 				return readInteger();
 			case 'h' :
@@ -293,6 +295,25 @@ public class OSCByteArrayToJavaConverter {
 	private Integer readInteger() {
 		final BigInteger intBits = readBigInteger(4);
 		return intBits.intValue();
+	}
+
+	/**
+	 * Reads an unsigned integer (32 bit) from the byte stream.
+	 * This code is copied from {@see http://darksleep.com/player/JavaAndUnsignedTypes.html},
+	 * which is licensed under the Public Domain.
+	 * @return single precision, unsigned integer (32 bit) wrapped in a 64 bit integer (long)
+	 */
+	private Long readUnsignedInteger() {
+
+		int firstByte = (0x000000FF & ((int) bytes[streamPosition++]));
+		int secondByte = (0x000000FF & ((int) bytes[streamPosition++]));
+		int thirdByte = (0x000000FF & ((int) bytes[streamPosition++]));
+		int fourthByte = (0x000000FF & ((int) bytes[streamPosition++]));
+		return ((long) (firstByte << 24
+				| secondByte << 16
+				| thirdByte << 8
+				| fourthByte))
+				& 0xFFFFFFFFL;
 	}
 
 	/**
