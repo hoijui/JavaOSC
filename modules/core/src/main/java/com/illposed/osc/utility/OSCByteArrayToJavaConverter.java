@@ -107,11 +107,10 @@ public class OSCByteArrayToJavaConverter {
 		myConverter.setCharset(charset);
 		while (streamPosition < bytesLength) {
 			// recursively read through the stream and convert packets you find
-			int packetLength = readInteger();
-			byte[] packetBytes = new byte[packetLength];
-			for (int i = 0; i < packetLength; i++) {
-				packetBytes[i] = bytes[streamPosition++];
-			}
+			final int packetLength = readInteger();
+			final byte[] packetBytes = new byte[packetLength];
+			System.arraycopy(bytes, streamPosition, packetBytes, 0, packetLength);
+			streamPosition += packetLength;
 			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
 			bundle.addPacket(packet);
 		}
