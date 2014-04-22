@@ -11,16 +11,22 @@ package com.illposed.osc;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Chandrasekhar Ramakrishnan
  * @see OSCMessage
  */
 public class OSCMessageTest {
+
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
 	/**
 	 * @param result received from OSC
@@ -328,6 +334,51 @@ public class OSCMessageTest {
 				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
 			}
 		}
+	}
+
+	@Test
+	public void testAddressValidationFrontendCtorNull() {
+
+		// expect no exception, as we could still set a valid address later on
+		OSCMessage oscMessage = new OSCMessage(null);
+	}
+
+	@Test
+	public void testAddressValidationFrontendSetterNull() {
+
+		OSCMessage oscMessage = new OSCMessage();
+		// expect no exception, as we could still set a valid address later on
+		oscMessage.setAddress(null);
+	}
+
+	@Test
+	public void testAddressValidationFrontendCtorValid() {
+
+		// expect no exception, as the address is valid
+		OSCMessage oscMessage = new OSCMessage("/hello/world");
+	}
+
+	@Test
+	public void testAddressValidationFrontendSetterValid() {
+
+		OSCMessage oscMessage = new OSCMessage();
+		// expect no exception, as the address is valid
+		oscMessage.setAddress("/hello/world");
+	}
+
+	@Test
+	public void testAddressValidationFrontendCtorInvalid() {
+
+		expectedException.expect(IllegalArgumentException.class);
+		OSCMessage oscMessage = new OSCMessage("/ hello/world");
+	}
+
+	@Test
+	public void testAddressValidationFrontendSetterInvalid() {
+
+		OSCMessage oscMessage = new OSCMessage();
+		expectedException.expect(IllegalArgumentException.class);
+		oscMessage.setAddress("/ hello/world");
 	}
 
 	@Test
