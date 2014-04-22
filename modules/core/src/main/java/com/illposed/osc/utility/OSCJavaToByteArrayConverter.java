@@ -91,7 +91,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void appendNullCharToAlignStream() {
 		final int alignmentOverlap = stream.size() % 4;
-		final int padLen = 4 - alignmentOverlap;
+		final int padLen = (4 - alignmentOverlap) % 4;
 		for (int pci = 0; pci < padLen; pci++) {
 			stream.write(0);
 		}
