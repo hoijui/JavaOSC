@@ -69,7 +69,7 @@ public class OSCJavaToByteArrayConverter {
 	 * @return byte[]
 	 * @param bytes byte[]
 	 */
-	private byte[] alignBigEndToFourByteBoundry(byte[] bytes) {
+	public static byte[] alignBigEndToFourByteBoundry(byte[] bytes) {
 		int mod = bytes.length % 4;
 		// if the remainder == 0 then return the bytes otherwise pad the bytes
 		// to lineup correctly
