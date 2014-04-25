@@ -8,10 +8,8 @@
 
 package com.illposed.osc;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.*;
 import java.io.IOException;
-import java.net.SocketException;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
@@ -57,7 +55,18 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		super(new DatagramSocket(port), port);
 	}
 
-	/**
+    /**
+     * Create an OSCPort that listens on the specified port.
+     * @param address UDP socket will bind on.
+     * @param port UDP port to listen on.
+     * @throws SocketException
+     */
+    public OSCPortIn(String address, int port) throws SocketException, UnknownHostException {
+        super(new DatagramSocket(port, InetAddress.getByName(address)), port);
+    }
+
+
+    /**
 	 * Buffers were 1500 bytes in size, but were
 	 * increased to 1536, as this is a common MTU.
 	 */
