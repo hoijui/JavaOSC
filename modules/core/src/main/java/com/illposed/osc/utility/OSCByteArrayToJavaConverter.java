@@ -109,6 +109,12 @@ public class OSCByteArrayToJavaConverter {
 		while (streamPosition < bytesLength) {
 			// recursively read through the stream and convert packets you find
 			final int packetLength = readInteger();
+			if (packetLength == 0) {
+				throw new IllegalArgumentException("Packet length may not be 0");
+			} else if ((packetLength % 4) != 0) {
+				throw new IllegalArgumentException("Packet length has to be a multiple of 4, is:"
+						+ packetLength);
+			}
 			final byte[] packetBytes = new byte[packetLength];
 			System.arraycopy(bytes, streamPosition, packetBytes, 0, packetLength);
 			streamPosition += packetLength;
