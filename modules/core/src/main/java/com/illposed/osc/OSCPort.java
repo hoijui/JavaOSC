@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2006, C. Ramakrishnan / Illposed Software.
+ * Copyright (C) 2003-2014, C. Ramakrishnan / Illposed Software.
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
