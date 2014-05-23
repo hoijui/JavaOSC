@@ -64,9 +64,10 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Converts a byte array into an {@link OSCPacket}
 	 * (either an {@link OSCMessage} or {@link OSCBundle}).
+	 * XXX It is bad design to use instance variables like this. Either create a new instance of the class for each conversion, or pass on the variables to each method call, in turn not having them as member variables.
 	 */
-	public OSCPacket convert(byte[] byteArray, int bytesLength) {
-		this.bytes = byteArray;
+	public OSCPacket convert(byte[] bytes, int bytesLength) {
+		this.bytes = bytes;
 		this.bytesLength = bytesLength;
 		this.streamPosition = 0;
 		if (isBundle()) {
