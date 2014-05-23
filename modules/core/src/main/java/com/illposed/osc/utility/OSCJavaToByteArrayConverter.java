@@ -36,11 +36,11 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * baseline NTP time if bit-0=0 is 7-Feb-2036 @ 06:28:16 UTC
 	 */
-	protected static final long msb0baseTime = 2085978496000L;
+	protected static final long MSB_0_BASE_TIME = 2085978496000L;
 	/**
 	 * baseline NTP time if bit-0=1 is 1-Jan-1900 @ 01:00:00 UTC
 	 */
-	protected static final long msb1baseTime = -2208988800000L;
+	protected static final long MSB_1_BASE_TIME = -2208988800000L;
 
 	private final ByteArrayOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
@@ -178,13 +178,13 @@ public class OSCJavaToByteArrayConverter {
 	 * @return NTP time-stamp representation of the Java time value.
 	 */
 	protected static long javaToNtpTimeStamp(long javaTime) {
-		final boolean useBase1 = javaTime < msb0baseTime; // time < Feb-2036
+		final boolean useBase1 = javaTime < MSB_0_BASE_TIME; // time < Feb-2036
 		final long baseTime;
 		if (useBase1) {
-			baseTime = javaTime - msb1baseTime; // dates <= Feb-2036
+			baseTime = javaTime - MSB_1_BASE_TIME; // dates <= Feb-2036
 		} else {
 			// if base0 needed for dates >= Feb-2036
-			baseTime = javaTime - msb0baseTime;
+			baseTime = javaTime - MSB_0_BASE_TIME;
 		}
 
 		long seconds = baseTime / 1000;
