@@ -1,14 +1,20 @@
 ## Overview
 
-JavaOSC is a library for communicating through the OSC protocol in Java.
+_Open Sound Control_ (OSC) is a _content format_,
+though it is often though of as a protocol for the transmission of data over a network.
+Its main use and origin is that of a _replacement for MIDI_
+as a network-protocol for the exchange of musical control data between soft- and hardware over a UDP-IP network.
+Applications like SuperCollider, Max/MSP, and Reaktor (among others) use OSC for network communication.
+Nowadays it is also used in other fields, for example in robotics.
+
+__JavaOSC__ is a library that gives Java programs the capability of sending and receiving OSC.
 It is not, in itself, a usable program.
-Rather, it is a library designed for building programs that need to communicate
-over OSC (e.g., SuperCollider, Max/MSP, Reaktor, etc.).
 
 The latest release version of the library is available on
 [Maven central](http://mvnrepository.com/artifact/com.illposed.osc/javaosc-core)
 or
 [the project homepage](http://www.illposed.com/software/javaosc.html).
+
 Latest development sources can be found
 [on github](https://github.com/hoijui/JavaOSC).
 
@@ -22,12 +28,14 @@ Latest development sources can be found
 * `modules/*/target/`                               where build files end up
 
 
-## How to run
+## How to
 
-### SuperCollider
+### Run the Demo UI
+
+#### ... with SuperCollider
 
 JavaOSC is not a standalone application, but designed to be used in other applications.
-Though, there is a very basic app, created by John Thompson, for demonstration purposes.
+Though, there is a very basic application, created by John Thompson, for demonstration purposes.
 
 To _run the demo app_, make sure you have all parts packaged and installed:
 
@@ -42,12 +50,12 @@ Next, launch SuperCollider, open the file located in the
 `modules/core/src/main/resources/supercollider/` directory,
 and load the synthdef into SuperCollider.
 Start the SC local server. 
-Click the "All On" button and start moving the sliders.
+In the JavaOSC Demo UI, click the "All On" button and start moving the sliders.
 You should hear the sounds change.
 To see what messages the UI is sending, run either the CNMAT dumpOSC,
 or turn on dumpOSC in SuperCollider.
 
-### PD
+#### ... with PD
 
 There is also a PureData patch created by Alexandre Quessy,
 available [here](http://www.sourcelibre.com/puredata/).
@@ -57,36 +65,30 @@ To try the demo app with PureData, launch PureData and open the file
 Turn down the volume a bit at first, as it might be very loud.
 Click the "All On" button, and start moving the sliders.
 You should hear the sounds change.
-To see what messages the UI is sending, just look in the Pd window or 
+To see what messages the UI is sending, just look in the PD window or
 in the terminal.
 
 
-## Orientation
+### Use the library
 
-Open Sound Control (OSC) is an UDP-based protocol for transmission of musical control data over an IP network. Applications like SuperCollider, Max/MSP, and Reaktor (among others) use OSC for network communication.
+The classes that deal with sending OSC data are located in the `com.illposed.osc` package.
+The core classes are `com.illposed.osc.OSCPort{In,  Out}`,
+`com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
 
-JavaOSC is a class library that gives Java programs the capability of sending and receiving OSC. 
-
-The classes that deal with sending OSC data are located in the `com.illposed.osc` package. The core classes are `com.illposed.osc.OSCPort{In,  Out}`, `com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
-
-There are some associated JUnit tests for the OSC classes. They can be run with `mvn test`.
-
-
-## Use
-
-The way to use the library is to instantiate an `OSCPort`
+The common way to use the library is to instantiate an `OSCPort`
 connected to the receiving machine and then call the `send()` method
 on the port with the packet to send as the argument.
 
-To see examples, look at the tests or the simple UI located in
-`com.illposed.osc.ui.OscUI`.
+There are some associated JUnit tests, which also contain code that may illustrate
+how to use the library.
+They can be run with `mvn test`.
 
 
 ## Release a SNAPSHOT (devs only)
 
-To release a development version to the Sonatype snapshot repository only:
+	mvn clean deploy
 
-		mvn clean deploy
+To release a development version to the Sonatype snapshot repository only.
 
 
 ## Release (devs only)
@@ -96,6 +98,11 @@ To release a development version to the Sonatype snapshot repository only:
 	mvn release:clean
 
 ### Prepare the release
+
+	mvn release:prepare
+
+This does the following:
+
 * asks for the release and new snapshot versions to use (for all modules)
 * packages
 * signs with GPG
@@ -103,44 +110,54 @@ To release a development version to the Sonatype snapshot repository only:
 * tags
 * pushes to origin
 
-		mvn release:prepare
-
 ### Perform the release (main part)
+
+	mvn release:perform
+
+This does the following:
+
 * checks-out the release tag
 * builds
-* deploy into sonatype staging repository
-
-		mvn release:perform
+* deploy into Sonatype staging repository
 
 ### Release the site
-* generates the site, and pushes it to the github gh-pages branch,
-  visible under http://hoijui.github.com/JavaOSC/
 
-		git checkout <release-tag>
-		mvn clean site
-		git checkout master
+	git checkout <release-tag>
+	mvn clean site
+	git checkout master
+
+This does the following:
+
+* generates the site
+* pushes the site to the GitHub `gh-pages` branch,
+  which is visible under `http://hoijui.github.com/JavaOSC/`
 
 ### Promote it on Maven
-Moves it from the sonatype staging to the main sonatype repo
 
-1. using the Nexus staging plugin:
+Use one of these methods:
+
+* _default_: using the Nexus staging plugin
 
 		mvn nexus:staging-close
 		mvn nexus:staging-release
 
-2. ... alternatively, using the web-interface:
-	* firefox https://oss.sonatype.org
-	* login
-	* got to the "Staging Repositories" tab
-	* select "com.illposed..."
-	* "Close" it
-	* select "com.illposed..." again
-	* "Release" it
+* _alternative_: using the web-interface
+	1. firefox https://oss.sonatype.org
+	2. login
+	3. got to the "Staging Repositories" tab
+	4. select "com.illposed..."
+	5. "Close" it
+	6. select "com.illposed..." again
+	7. "Release" it
+
+This moves the artifact from the Sonatype staging to the main Sonatype repository.
+From there, it will automatically be copied to Maven Central,
+which happens at least every four hours.
 
 
 ## Thanks
 
-Thanks to John Thompson for writing the Java demo app,
+Thanks to John Thompson for writing the UI (demo application),
 Alexandre Quessy for the PD demo,
 and to Martin Kaltenbrunner and Alex Potsides for their contributions.
 
