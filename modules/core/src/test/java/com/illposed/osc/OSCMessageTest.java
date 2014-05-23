@@ -49,6 +49,25 @@ public class OSCMessageTest {
 		}
 	}
 
+	/**
+	 * Can be used when creating new test cases.
+	 * @param data to be converted to java code that (re-)creates this same byte array
+	 * @return one line of code that creates the given data in Java
+	 */
+	private static String convertByteArrayToJavaCode(final byte[] data) {
+
+		StringBuilder javaCode = new StringBuilder();
+
+		javaCode.append("final byte[] answer = { ");
+		for (byte b : data) {
+			javaCode.append((int) b).append(", ");
+		}
+		javaCode.delete(javaCode.length() - 2, javaCode.length());
+		javaCode.append(" };");
+
+		return javaCode.toString();
+	}
+
 	@Test
 	public void testEmpty() {
 		List<Object> args = new ArrayList<Object>(0);
