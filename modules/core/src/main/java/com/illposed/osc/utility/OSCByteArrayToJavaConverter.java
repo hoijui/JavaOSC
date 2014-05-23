@@ -48,6 +48,7 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Returns the character set used to decode message addresses
 	 * and string parameters.
+	 * @return the character-encoding-set used by this converter
 	 */
 	public Charset getCharset() {
 		return charset;
@@ -56,6 +57,7 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Sets the character set used to decode message addresses
 	 * and string parameters.
+	 * @param charset the desired character-encoding-set to be used by this converter
 	 */
 	public void setCharset(Charset charset) {
 		this.charset = charset;
@@ -64,6 +66,10 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Converts a byte array into an {@link OSCPacket}
 	 * (either an {@link OSCMessage} or {@link OSCBundle}).
+	 * @param bytes the storage containing the raw OSC packet
+	 * @param bytesLength indicates how many bytes the package consists of (<code>&lt;= bytes.length</code>)
+	 * @return the successfully parsed OSC packet; in case of a problem,
+	 *   a <code>RuntimeException</code> is thrown
 	 * XXX It is bad design to use instance variables like this. Either create a new instance of the class for each conversion, or pass on the variables to each method call, in turn not having them as member variables.
 	 */
 	public OSCPacket convert(byte[] bytes, int bytesLength) {

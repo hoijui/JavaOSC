@@ -21,10 +21,6 @@ import java.nio.charset.Charset;
  * <li>{@link OSCBundle}: OSC messages with timestamps
  *   and/or made up of multiple messages
  * </ul>
- *
- * This implementation is based on
- * <a href="http://www.emergent.de/Goodies/">Markus Gaelli</a> and
- * Iannis Zannos' OSC implementation in Squeak Smalltalk.
  */
 public abstract class OSCPacket {
 

@@ -16,39 +16,43 @@ import java.util.List;
 /**
  * Checks whether an OSC message address matches a given wildcard expression,
  * as specified in the OSC protocol specification.
- * For details, see "OSC Message Dispatching and Pattern Matching"
- * on {@url http://opensoundcontrol.org/spec-1_0}.
+ * For details, see the "OSC Message Dispatching and Pattern Matching" section on
+ * <a href="http://opensoundcontrol.org/spec-1_0">the OSC 1.0 specification</a>.
  * Also supports the path-traversal wildcard "//", as specified in OSC 1.1 (borrowed from XPath).
  *
  * <p>
  * A coarse history of the code in the function
- * {@link OSCPatternAddressSelector#match(String, String)},
+ * {@link OSCPatternAddressSelector#matches(String, String)},
  * from the origin to JavaOSC:
+ * </p>
  * <ol>
  * <li>
- *   <b>robust glob pattern matcher (C)</b>
- *   <br>ozan s. yigit/dec 1994</br>
- *   <br>matching code license: public domain</br>
- *   <br><a href="http://www.cse.yorku.ca/~oz/glob.bun">source location</a></br>
+ *   <b>robust glob pattern matcher</b><br>
+ *   language: <i>C</i><br>
+ *   author: <i>ozan s. yigit/dec 1994</i><br>
+ *   matching code license: <i>public domain</i><br>
+ *   <a href="http://www.cse.yorku.ca/~oz/glob.bun">source location</a><br>
  * </li>
  * <li>
- *   <b>Open SoundControl kit (C++)</b>
- *   <br>matching code license: public domain</br>
- *   <br>library license: LGPL 2.1+</br>
- *   <br><a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/src/OSC-Kit/OSC-pattern-match.c">source location</a></br>
+ *   <b>Open SoundControl kit</b><br>
+ *   language: <i>C++</i><br>
+ *   matching code license: <i>public domain</i><br>
+ *   library license: <i>LGPL 2.1+</i><br>
+ *   <a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/src/OSC-Kit/OSC-pattern-match.c">source location</a><br>
  * </li>
  * <li>
- *   <b>LibLO (C++)</b>
- *   <br>library license: LGPL 2.1+</br>
- *   <br><a href="https://sourceforge.net/p/liblo/git/ci/master/tree/src/pattern_match.c">source location</a></br>
+ *   <b>LibLO</b><br>
+ *   language: <i>C++</i><br>
+ *   library license: <i>LGPL 2.1+</i><br>
+ *   <a href="https://sourceforge.net/p/liblo/git/ci/master/tree/src/pattern_match.c">source location</a><br>
  * </li>
  * <li>
- *   <b>JavaOSC (Java)</b>
- *   <br>matching code license: public domain</br>
- *   <br>library license: BSD 3-Clause</br>
+ *   <b>JavaOSC</b><br>
+ *   language: <i>Java</i><br>
+ *   matching code license: <i>public domain</i><br>
+ *   library license: <i>BSD 3-Clause</i><br>
  * </li>
  * </ol>
- * </p>
  */
 public class OSCPatternAddressSelector implements AddressSelector {
 

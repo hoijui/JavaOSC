@@ -34,6 +34,9 @@ public class OSCPacketDispatcher {
 	/**
 	 * Adds a listener (<i>Method</i> in OSC speak) that will be notified
 	 * of incoming messages that match the selector.
+	 * @param addressSelector selects which messages will be forwarded to the listener,
+	 *   depending on the message address
+	 * @param listener receives messages accepted by the selector
 	 */
 	public void addListener(AddressSelector addressSelector, OSCListener listener) {
 		selectorToListener.put(addressSelector, listener);

@@ -276,7 +276,7 @@ public class OSCMessageTest {
 
 	/**
 	 * See the comment in
-	 * {@link OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
+	 * {@link com.illposed.osc.utility.OSCJavaToByteArrayConverterTest#testPrintFloat2OnStream}.
 	 */
 	@Test
 	public void testIncreaseVolume() {

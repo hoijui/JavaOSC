@@ -15,9 +15,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * This implementation is based on Markus Gaelli and
- * Iannis Zannos' OSC implementation in Squeak:
- * http://www.emergent.de/Goodies/
+ * This implementation is based on Markus Gaelli and Iannis Zannos's
+ * <a href="http://www.emergent.de/Goodies/">OSC implementation in Squeak</a>
  * @see OSCJavaToByteArrayConverter
  */
 public class OSCJavaToByteArrayConverterTest {
@@ -33,10 +32,10 @@ public class OSCJavaToByteArrayConverterTest {
 	 * (i.e. answer= {62, 76, -52, -52})
 	 *
 	 * The source of this discrepancy is Squeak conversion
-	 * routine Float>>asIEEE32BitWord vs. the Java
+	 * routine <code>Float&gt;&gt;asIEEE32BitWord</code> vs. the Java
 	 * {@link Float#floatToIntBits(float)}.
 	 *
-	 * 0.2 asIEEE32BitWord yields: 1045220556
+	 * <code>0.2 asIEEE32BitWord</code> yields: 1045220556
 	 * {@link Float#floatToIntBits(float)} with parameter 0.2f
 	 * yields: (int) 1045220557 (VA Java 3.5)
 	 *

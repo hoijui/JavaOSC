@@ -21,20 +21,18 @@ import java.nio.charset.Charset;
 /**
  * OSCPortIn is the class that listens for OSC messages.
  *
- * An example based on
- * {@link com.illposed.osc.OSCPortTest#testReceiving()}:
- * <pre>
-
-	receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
-	OSCListener listener = new OSCListener() {
-		public void acceptMessage(java.util.Date time, OSCMessage message) {
-			System.out.println("Message received!");
-		}
-	};
-	receiver.addListener("/message/receiving", listener);
-	receiver.startListening();
-
- * </pre>
+ * An example:<br>
+ * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
+ * <blockquote><pre>{@code
+ * receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
+ * OSCListener listener = new OSCListener() {
+ * 	public void acceptMessage(java.util.Date time, OSCMessage message) {
+ * 		System.out.println("Message received!");
+ * 	}
+ * };
+ * receiver.addListener("/message/receiving", listener);
+ * receiver.startListening();
+ * }</pre></blockquote>
  *
  * Then, using a program such as SuperCollider or sendOSC, send a message
  * to this computer, port {@link #DEFAULT_SC_OSC_PORT},

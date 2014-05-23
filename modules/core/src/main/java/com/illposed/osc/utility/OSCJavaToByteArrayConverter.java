@@ -21,8 +21,8 @@ import java.util.Date;
  * the OSC spec.
  *
  * The implementation is based on
- * <a href=" http://www.emergent.de/">Markus Gaelli</a> and
- * Iannis Zannos' OSC implementation in Squeak.
+ * <a href="http://www.emergent.de">Markus Gaelli</a> and
+ * Iannis Zannos's OSC implementation in Squeak (a Smalltalk dialect).
  *
  * This version includes bug fixes and improvements from
  * Martin Kaltenbrunner and Alex Potsides.
@@ -59,6 +59,7 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Returns the character set used to encode message addresses
 	 * and string parameters.
+	 * @return the character-encoding-set used by this converter
 	 */
 	public Charset getCharset() {
 		return charset;
@@ -67,6 +68,7 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Sets the character set used to encode message addresses
 	 * and string parameters.
+	 * @param charset the desired character-encoding-set to be used by this converter
 	 */
 	public void setCharset(Charset charset) {
 		this.charset = charset;
@@ -171,9 +173,10 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Converts a Java time-stamp to a 64-bit NTP time representation.
 	 * This code was copied in from the "Apache Jakarta Commons - Net" library,
-	 * which is licensed under the ASF 2.0 license.
-	 * The original file can be found here:
-	 * {@see http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co}
+	 * which is licensed under the
+	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">ASF 2.0 license</a>.
+	 * The original source file can be found
+	 * <a href="http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co">here</a>.
 	 * @param javaTime Java time-stamp, as returned by {@link Date#getTime()}
 	 * @return NTP time-stamp representation of the Java time value.
 	 */

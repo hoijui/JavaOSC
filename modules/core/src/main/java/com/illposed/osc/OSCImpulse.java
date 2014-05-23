@@ -14,10 +14,10 @@ package com.illposed.osc;
  * No bytes are allocated in the argument data.
  * This type was named "Infinitum" in OSC 1.0.
  * Use like this:
-{@code
-	OSCMessage msg = new OSCMessage("/my/address");
-	msg.addArgument(OSCImpulse.INSTANCE);
-}
+ * <blockquote><pre>{@code
+ * OSCMessage msg = new OSCMessage("/my/address");
+ * msg.addArgument(OSCImpulse.INSTANCE);
+ * }</pre></blockquote>
  */
 public final class OSCImpulse {
 

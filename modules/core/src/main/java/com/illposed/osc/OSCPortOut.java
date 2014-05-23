@@ -19,22 +19,22 @@ import java.net.UnknownHostException;
  * OSCPortOut is the class that sends OSC messages
  * to a specific address and port.
  *
- * To send an OSC message, call send().
+ * To send an OSC message, call {@link #send(OSCPacket)}.
  *
- * An example based on
- * {@link com.illposed.osc.OSCPortTest#testMessageWithArgs()}:
-{@code
-	OSCPort sender = new OSCPort();
-	List<Object> args = new ArrayList<Object>(2);
-	args.add(Integer.valueOf(3));
-	args.add("hello");
-	OSCMessage msg = new OSCMessage("/sayhello", args);
-	try {
-		sender.send(msg);
-	} catch (Exception e) {
-		showError("Couldn't send");
-	}
-}
+ * An example:<br>
+ * (loosely based on {com.illposed.osc.OSCPortTest#testMessageWithArgs()})
+ * <blockquote><pre>{@code
+ * OSCPort sender = new OSCPort();
+ * List<Object> args = new ArrayList<Object>(2);
+ * args.add(3);
+ * args.add("hello");
+ * OSCMessage msg = new OSCMessage("/sayhello", args);
+ * try {
+ * 	sender.send(msg);
+ * } catch (Exception e) {
+ * 	showError("Couldn't send");
+ * }
+ * }</pre></blockquote>
  *
  * @author Chandrasekhar Ramakrishnan
  */
