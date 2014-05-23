@@ -96,7 +96,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 * @param api index/pointer to the current part of the address we are looking at
 	 * @return true if the address matches, false otherwise
 	 */
-	private boolean matches(List<String> patternParts, int ppi, List<String> messageAddressParts, int api) {
+	private static boolean matches(List<String> patternParts, int ppi, List<String> messageAddressParts, int api) {
 
 		while (ppi < patternParts.size()) {
 			// There might be some path-traversal wildcards (PTW) "//" in the pattern.
