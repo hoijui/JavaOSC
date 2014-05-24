@@ -99,23 +99,27 @@ To release a development version to the Sonatype snapshot repository only.
 
 ### Prepare the release
 
-	mvn release:prepare
+	JAVA_HOME=${JAVA6_HOME} mvn -DdryRun=true release:prepare
+	JAVA_HOME=${JAVA6_HOME} mvn -DdryRun=false release:prepare
 
 This does the following:
 
+* _Important for backwards compatibility_:
+use the oldest possible JDK version to compile (currently 1.6)
 * asks for the release and new snapshot versions to use (for all modules)
 * packages
 * signs with GPG
 * commits
 * tags
-* pushes to origin
 
 ### Perform the release (main part)
 
-	mvn release:perform
+	git push origin master
+	JAVA_HOME=${JAVA6_HOME} mvn release:perform
 
 This does the following:
 
+* pushes to origin
 * checks-out the release tag
 * builds
 * deploy into Sonatype staging repository
