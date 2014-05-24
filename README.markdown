@@ -114,7 +114,7 @@ use the oldest possible JDK version to compile (currently 1.6)
 
 ### Perform the release (main part)
 
-	git push origin master
+	git push origin master <release-tag>
 	JAVA_HOME=${JAVA6_HOME} mvn release:perform
 
 This does the following:
