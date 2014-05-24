@@ -125,7 +125,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * Used Internally.
 	 * @param stream where to write the time-tag to
 	 */
-	protected void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
+	private void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
 		if ((null == timestamp) || (timestamp == TIMESTAMP_IMMEDIATE)) {
 			stream.write((int) 0);
 			stream.write((int) 1);
@@ -144,7 +144,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	}
 
 	@Override
-	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
 		byte[] packetBytes;

@@ -114,7 +114,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Used internally only.
 	 * @param stream where to write the address to
 	 */
-	protected void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
+	private void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(address);
 	}
 
@@ -123,7 +123,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Used internally only.
 	 * @param stream where to write the arguments to
 	 */
-	protected void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
+	private void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
 		stream.writeTypes(arguments);
 		for (Object argument : arguments) {
@@ -132,7 +132,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	}
 
 	@Override
-	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();
