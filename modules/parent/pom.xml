@@ -15,7 +15,7 @@
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-parent</artifactId>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -356,10 +356,5 @@
 			</build>
 		</profile>
 	</profiles>
-
-
-  <scm>
-    <tag>javaosc-0.3</tag>
-  </scm>
 </project>
 

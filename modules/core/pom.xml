@@ -9,13 +9,13 @@
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.3</version>
+		<version>0.4-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-core</artifactId>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 
 	<packaging>bundle</packaging>
 
