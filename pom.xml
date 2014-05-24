@@ -10,6 +10,13 @@
 	<name>JavaOSC - Aggregation</name>
 	<description>An OSC library implementation in Java - Aggregation</description>
 
+	<scm>
+		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
+		<developerConnection>scm:git:git@github.com:hoijui/JavaOSC.git</developerConnection>
+		<url>http://github.com/hoijui/JavaOSC</url>
+		<tag>HEAD</tag>
+	</scm>
+
 	<modules>
 		<!-- We also need the parent here, for its SNAPSHOTs to be deployed. -->
 		<module>modules/parent</module>

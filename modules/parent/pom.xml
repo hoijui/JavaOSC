@@ -52,13 +52,6 @@
 		<url>https://github.com/hoijui/JavaOSC/issues/</url>
 	</issueManagement>
 
-	<scm>
-		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
-		<developerConnection>scm:git:git@github.com:hoijui/JavaOSC.git</developerConnection>
-		<url>http://github.com/hoijui/JavaOSC</url>
-		<tag>HEAD</tag>
-	</scm>
-
 	<developers>
 		<developer>
 			<name>Chandrasekhar Ramakrishnan</name>
