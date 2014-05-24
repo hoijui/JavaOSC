@@ -47,10 +47,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>
-							${project.packageName},
-							${project.packageName}.utility
-						</Export-Package>
+						<Export-Package>${project.packageName}</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>
