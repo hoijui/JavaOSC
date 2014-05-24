@@ -60,14 +60,14 @@ or turn on dumpOSC in SuperCollider.
 There is also a PureData patch created by Alexandre Quessy,
 available [here](http://www.sourcelibre.com/puredata/).
 
-To try the demo app with PureData, launch PureData and open the file 
+To try the demo UI with PureData,
+launch (this is important!) _pd-extended_ and open the file
 `modules/core/src/main/resources/puredata/javaosc.pd`.
 Turn down the volume a bit at first, as it might be very loud.
 Click the "All On" button, and start moving the sliders.
 You should hear the sounds change.
 To see what messages the UI is sending, just look in the PD window or
 in the terminal.
-
 
 ### Use the library
 
