@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public class OSCMessage extends OSCPacket {
+public class OSCMessage extends AbstractOSCPacket {
 
 	/**
 	 * Java regular expression pattern matching a single invalid character.

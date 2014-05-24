@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.nio.charset.Charset;
 
 /**
@@ -22,71 +21,24 @@ import java.nio.charset.Charset;
  *   and/or made up of multiple messages
  * </ul>
  */
-public abstract class OSCPacket {
-
-	/** Used to encode message addresses and string parameters. */
-	private Charset charset;
-	private byte[] byteArray;
-
-	public OSCPacket() {
-		this.charset = Charset.defaultCharset();
-		this.byteArray = null;
-	}
+public interface OSCPacket {
 
 	/**
 	 * Returns the character set used by this packet.
 	 * @return the character set used to encode message addresses and string
 	 *   arguments.
 	 */
-	public Charset getCharset() {
-		return charset;
-	}
+	Charset getCharset();
 
 	/**
 	 * Sets the character set used by this packet.
 	 * @param charset used to encode message addresses and string arguments.
 	 */
-	public void setCharset(Charset charset) {
-		this.charset = charset;
-	}
-
-	/**
-	 * Generate a representation of this packet conforming to the
-	 * the OSC byte stream specification. Used Internally.
-	 */
-	private byte[] computeByteArray() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.setCharset(charset);
-		return computeByteArray(stream);
-	}
-
-	/**
-	 * Produces a byte array representation of this packet.
-	 * @param stream where to write the arguments to
-	 * @return the OSC specification conform byte array representation
-	 *   of this packet
-	 */
-	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
+	void setCharset(Charset charset);
 
 	/**
 	 * Return the OSC byte stream for this packet.
 	 * @return byte[]
 	 */
-	public byte[] getByteArray() {
-		if (byteArray == null) {
-			byteArray = computeByteArray();
-		}
-		return byteArray;
-	}
-
-	protected void contentChanged() {
-		byteArray = null;
-	}
-
-	/**
-	 * Run any post construction initialization. (By default, do nothing.)
-	 */
-	protected void init() {
-
-	}
+	byte[] getByteArray();
 }

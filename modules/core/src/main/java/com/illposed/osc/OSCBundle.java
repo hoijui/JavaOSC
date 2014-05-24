@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public class OSCBundle extends OSCPacket {
+public class OSCBundle extends AbstractOSCPacket {
 
 	/**
 	 * 2208988800 seconds -- includes 17 leap years
