@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.AddressSelector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

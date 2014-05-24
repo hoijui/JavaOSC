@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.AddressSelector;
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCPacketDispatcher;
 import com.illposed.osc.utility.OSCPatternAddressSelector;
