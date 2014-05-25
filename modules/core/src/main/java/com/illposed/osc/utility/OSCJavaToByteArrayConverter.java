@@ -75,28 +75,6 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Line up the Big end of the bytes to a 4 byte boundary.
-	 * @return byte[]
-	 * @param bytes byte[]
-	 */
-	public static byte[] alignBigEndToFourByteBoundry(byte[] bytes) {
-		int mod = bytes.length % 4;
-		// if the remainder == 0 then return the bytes otherwise pad the bytes
-		// to lineup correctly
-		if (mod == 0) {
-			return bytes;
-		}
-		int pad = 4 - mod;
-		byte[] newBytes = new byte[pad + bytes.length];
-//		for (int i = 0; i < pad; i++)
-//			newBytes[i] = 0;
-//		for (int i = 0; i < bytes.length; i++)
-//			newBytes[pad + i] = bytes[i];
-		System.arraycopy(bytes, 0, newBytes, pad, bytes.length);
-		return newBytes;
-	}
-
-	/**
 	 * Pad the stream to have a size divisible by 4.
 	 */
 	public void appendNullCharToAlignStream() {
