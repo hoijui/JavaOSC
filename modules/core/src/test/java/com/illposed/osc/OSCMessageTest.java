@@ -256,8 +256,6 @@ public class OSCMessageTest {
         checkResultEqualsAnswer(result, answer);
     }
 
-    // /message/receiving testOSCProxy 123 0.222
-
 	@Test
 	public void testArgumentTrue() {
 		final List<Object> args = new ArrayList<Object>(1);
