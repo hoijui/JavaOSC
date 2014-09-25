@@ -134,7 +134,7 @@ public class OSCMessageTest {
 	@Test
 	public void testArgumentFloat() {
 		final List<Object> args = new ArrayList<Object>(1);
-		args.add(0.2f);
+		args.add(999.9f);
 		final OSCMessage message = new OSCMessage("/float", args);
 		final byte[] answer = { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
 		final byte[] result = message.getByteArray();
