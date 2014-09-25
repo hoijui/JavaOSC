@@ -134,7 +134,7 @@ public class OSCMessageTest {
 	@Test
 	public void testArgumentFloat() {
 		final List<Object> args = new ArrayList<Object>(1);
-		args.add(999.9f);
+		args.add(0.2f);
 		final OSCMessage message = new OSCMessage("/float", args);
 		final byte[] answer = { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
 		final byte[] result = message.getByteArray();
@@ -229,6 +229,34 @@ public class OSCMessageTest {
 		final byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
+
+    @Test
+    public void testMultiArgument() {
+        final List<Object> args = new ArrayList<Object>(5);
+        args.add("hello");
+        args.add(1000);
+        args.add(-1);
+        args.add(1.234f);
+        args.add(5.678f);
+        final OSCMessage message = new OSCMessage("/foo", args);
+        final byte[] answer = {47,102,111,111,0,0,0,0,44,105,105,115,102,102,0,0,0,0,3,-24,-1,-1,-1,-1,104,101,108,108,111,0,0,0,63,-99,-13,-74,64,-75,-78,45};
+        final byte[] result = message.getByteArray();
+        checkResultEqualsAnswer(result, answer);
+    }
+
+    @Test
+    public void testMultiArgumentOnBoundary() {
+        final List<Object> args = new ArrayList<Object>(3);
+        args.add("abc1"); // aligns with 4 byte boundary and would conflict with types if not padded
+        args.add("abc");
+        args.add("ab");
+        final OSCMessage message = new OSCMessage("/foo", args);
+        final byte[] answer = {47,102,111,111,0,0,0,0,44,115,115,115,0,0,0,0,97,98,99,49,0,0,0,0,97,98,99,0,97,98,0,0};
+        final byte[] result = message.getByteArray();
+        checkResultEqualsAnswer(result, answer);
+    }
+
+    // /message/receiving testOSCProxy 123 0.222
 
 	@Test
 	public void testArgumentTrue() {

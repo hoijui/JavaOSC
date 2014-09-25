@@ -96,6 +96,17 @@ public class OSCJavaToByteArrayConverter {
 		return newBytes;
 	}
 
+    /**
+     * Pad the stream to have a size divisible by 4.
+     */
+    public void ensureNullCharToAlignStream() {
+        final int alignmentOverlap = stream.size() % 4;
+        final int padLen = (4 - alignmentOverlap) % 4;
+        for (int pci = 0; pci < padLen || (padLen ==0 && pci < 4); pci++) {
+            stream.write(0);
+        }
+    }
+
 	/**
 	 * Pad the stream to have a size divisible by 4.
 	 */
@@ -384,8 +395,8 @@ public class OSCJavaToByteArrayConverter {
 				writeType(type.getClass());
 			}
 		}
-		// align the stream with padded bytes
-		appendNullCharToAlignStream();
+		// align the stream with padded bytes after the type otherwise we don't know when to stop looking for types
+        ensureNullCharToAlignStream();
 	}
 
 	/**
