@@ -251,7 +251,7 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write an object into the byte stream.
-	 * @param anObject one of Float, Double, String, Character, Integer, Long,
+	 * @param anObject (usually) one of Float, Double, String, Character, Integer, Long,
 	 *   or array of these.
 	 */
 	public void write(Object anObject) {
