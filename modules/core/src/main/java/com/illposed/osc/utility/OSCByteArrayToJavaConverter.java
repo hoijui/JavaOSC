@@ -30,11 +30,42 @@ public class OSCByteArrayToJavaConverter {
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 
-	private byte[] bytes;
+	private static class Input {
+
+		private final byte[] bytes;
+		private final int bytesLength;
+		private int streamPosition;
+
+		Input(final byte[] bytes, final int bytesLength) {
+
+			this.bytes = bytes;
+			this.bytesLength = bytesLength;
+			this.streamPosition = 0;
+		}
+
+		public byte[] getBytes() {
+			return bytes;
+		}
+
+		public int getBytesLength() {
+			return bytesLength;
+		}
+
+		public int getAndIncreaseStreamPositionByOne() {
+			return streamPosition++;
+		}
+
+		public void addToStreamPosition(int toAdd) {
+			streamPosition += toAdd;
+		}
+
+		public int getStreamPosition() {
+			return streamPosition;
+		}
+	}
+
 	/** Used to decode message addresses and string parameters. */
 	private Charset charset;
-	private int bytesLength;
-	private int streamPosition;
 
 	/**
 	 * Creates a helper object for converting from a byte array
@@ -70,16 +101,14 @@ public class OSCByteArrayToJavaConverter {
 	 * @param bytesLength indicates how many bytes the package consists of (<code>&lt;= bytes.length</code>)
 	 * @return the successfully parsed OSC packet; in case of a problem,
 	 *   a <code>RuntimeException</code> is thrown
-	 * XXX It is bad design to use instance variables like this. Either create a new instance of the class for each conversion, or pass on the variables to each method call, in turn not having them as member variables.
 	 */
 	public OSCPacket convert(byte[] bytes, int bytesLength) {
-		this.bytes = bytes;
-		this.bytesLength = bytesLength;
-		this.streamPosition = 0;
-		if (isBundle()) {
-			return convertBundle();
+
+		final Input rawInput = new Input(bytes, bytesLength);
+		if (isBundle(rawInput)) {
+			return convertBundle(rawInput);
 		} else {
-			return convertMessage();
+			return convertMessage(rawInput);
 		}
 	}
 
@@ -93,10 +122,10 @@ public class OSCByteArrayToJavaConverter {
 	 * </quote>
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
-	private boolean isBundle() {
+	private boolean isBundle(final Input rawInput) {
 		// The shortest valid packet may be no shorter then 4 bytes,
 		// thus we may assume to always have a byte at index 0.
-		return bytes[0] == BUNDLE_IDENTIFIER;
+		return rawInput.getBytes()[0] == BUNDLE_IDENTIFIER;
 	}
 
 	/**
@@ -104,17 +133,17 @@ public class OSCByteArrayToJavaConverter {
 	 * Assumes that the byte array is a bundle.
 	 * @return a bundle containing the data specified in the byte stream
 	 */
-	private OSCBundle convertBundle() {
+	private OSCBundle convertBundle(final Input rawInput) {
 		// skip the "#bundle " stuff
-		streamPosition = BUNDLE_START.length() + 1;
-		Date timestamp = readTimeTag();
+		rawInput.addToStreamPosition(BUNDLE_START.length() + 1);
+		Date timestamp = readTimeTag(rawInput);
 		OSCBundle bundle = new OSCBundle(timestamp);
 		OSCByteArrayToJavaConverter myConverter
 				= new OSCByteArrayToJavaConverter();
 		myConverter.setCharset(charset);
-		while (streamPosition < bytesLength) {
+		while (rawInput.getStreamPosition() < rawInput.getBytesLength()) {
 			// recursively read through the stream and convert packets you find
-			final int packetLength = readInteger();
+			final int packetLength = readInteger(rawInput);
 			if (packetLength == 0) {
 				throw new IllegalArgumentException("Packet length may not be 0");
 			} else if ((packetLength % 4) != 0) {
@@ -122,8 +151,8 @@ public class OSCByteArrayToJavaConverter {
 						+ packetLength);
 			}
 			final byte[] packetBytes = new byte[packetLength];
-			System.arraycopy(bytes, streamPosition, packetBytes, 0, packetLength);
-			streamPosition += packetLength;
+			System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), packetBytes, 0, packetLength);
+			rawInput.addToStreamPosition(packetLength);
 			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
 			bundle.addPacket(packet);
 		}
@@ -135,25 +164,25 @@ public class OSCByteArrayToJavaConverter {
 	 * Assumes that the byte array is a message.
 	 * @return a message containing the data specified in the byte stream
 	 */
-	private OSCMessage convertMessage() {
+	private OSCMessage convertMessage(final Input rawInput) {
 		OSCMessage message = new OSCMessage();
-		message.setAddress(readString());
-		List<Character> types = readTypes();
+		message.setAddress(readString(rawInput));
+		List<Character> types = readTypes(rawInput);
 		if (null == types) {
 			// we are done
 			return message;
 		}
-		moveToFourByteBoundry();
+		moveToFourByteBoundry(rawInput);
 		for (int i = 0; i < types.size(); ++i) {
 			if ('[' == types.get(i).charValue()) {
 				// we're looking at an array -- read it in
-				message.addArgument(readArray(types, ++i));
+				message.addArgument(readArray(rawInput, types, ++i));
 				// then increment i to the end of the array
 				while (types.get(i).charValue() != ']') {
 					i++;
 				}
 			} else {
-				message.addArgument(readArgument(types.get(i)));
+				message.addArgument(readArgument(rawInput, types.get(i)));
 			}
 		}
 		return message;
@@ -163,11 +192,11 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a string from the byte stream.
 	 * @return the next string in the byte stream
 	 */
-	private String readString() {
-		int strLen = lengthOfCurrentString();
-		String res = new String(bytes, streamPosition, strLen, charset);
-		streamPosition += strLen;
-		moveToFourByteBoundry();
+	private String readString(final Input rawInput) {
+		int strLen = lengthOfCurrentString(rawInput);
+		String res = new String(rawInput.getBytes(), rawInput.getStreamPosition(), strLen, charset);
+		rawInput.addToStreamPosition(strLen);
+		moveToFourByteBoundry(rawInput);
 		return res;
 	}
 
@@ -175,12 +204,12 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a binary blob from the byte stream.
 	 * @return the next blob in the byte stream
 	 */
-	private byte[] readBlob() {
-		final int blobLen = readInteger();
+	private byte[] readBlob(final Input rawInput) {
+		final int blobLen = readInteger(rawInput);
 		final byte[] res = new byte[blobLen];
-		System.arraycopy(bytes, streamPosition, res, 0, blobLen);
-		streamPosition += blobLen;
-		moveToFourByteBoundry();
+		System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), res, 0, blobLen);
+		rawInput.addToStreamPosition(blobLen);
+		moveToFourByteBoundry(rawInput);
 		return res;
 	}
 
@@ -189,20 +218,20 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a char array with the types of the arguments,
 	 *   or <code>null</code>, in case of no arguments
 	 */
-	private List<Character> readTypes() {
+	private List<Character> readTypes(final Input rawInput) {
 		// The next byte should be a ',', but some legacy code may omit it
 		// in case of no arguments, refering to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
-		if (bytes.length <= streamPosition) {
+		if (rawInput.getBytes().length <= rawInput.getStreamPosition()) {
 			return null; // no arguments
 		}
-		if (bytes[streamPosition] != ',') {
+		if (rawInput.getBytes()[rawInput.getStreamPosition()] != ',') {
 			// XXX should we not rather fail-fast -> throw exception?
 			return null;
 		}
-		streamPosition++;
+		rawInput.getAndIncreaseStreamPositionByOne();
 		// find out how long the list of types is
-		int typesLen = lengthOfCurrentString();
+		int typesLen = lengthOfCurrentString(rawInput);
 		if (0 == typesLen) {
 			return null; // no arguments
 		}
@@ -210,7 +239,7 @@ public class OSCByteArrayToJavaConverter {
 		// read in the types
 		List<Character> typesChars = new ArrayList<Character>(typesLen);
 		for (int i = 0; i < typesLen; i++) {
-			typesChars.add((char) bytes[streamPosition++]);
+			typesChars.add((char) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]);
 		}
 		return typesChars;
 	}
@@ -220,24 +249,24 @@ public class OSCByteArrayToJavaConverter {
 	 * @param type type of the argument to read
 	 * @return a Java representation of the argument
 	 */
-	private Object readArgument(char type) {
+	private Object readArgument(final Input rawInput, final char type) {
 		switch (type) {
 			case 'u' :
-				return readUnsignedInteger();
+				return readUnsignedInteger(rawInput);
 			case 'i' :
-				return readInteger();
+				return readInteger(rawInput);
 			case 'h' :
-				return readLong();
+				return readLong(rawInput);
 			case 'f' :
-				return readFloat();
+				return readFloat(rawInput);
 			case 'd' :
-				return readDouble();
+				return readDouble(rawInput);
 			case 's' :
-				return readString();
+				return readString(rawInput);
 			case 'b' :
-				return readBlob();
+				return readBlob(rawInput);
 			case 'c' :
-				return readChar();
+				return readChar(rawInput);
 			case 'N' :
 				return null;
 			case 'T' :
@@ -247,7 +276,7 @@ public class OSCByteArrayToJavaConverter {
 			case 'I' :
 				return OSCImpulse.INSTANCE;
 			case 't' :
-				return readTimeTag();
+				return readTimeTag(rawInput);
 			default:
 				// XXX Maybe we should let the user choose what to do in this
 				//   case (we encountered an unknown argument type in an
@@ -263,14 +292,14 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a char from the byte stream.
 	 * @return a {@link Character}
 	 */
-	private Character readChar() {
-		return (char) bytes[streamPosition++];
+	private Character readChar(final Input rawInput) {
+		return (char) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
 	}
 
-	private BigInteger readBigInteger(final int numBytes) {
+	private BigInteger readBigInteger(final Input rawInput, final int numBytes) {
 		final byte[] myBytes = new byte[numBytes];
-		System.arraycopy(bytes, streamPosition, myBytes, 0, numBytes);
-		streamPosition += numBytes;
+		System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), myBytes, 0, numBytes);
+		rawInput.addToStreamPosition(numBytes);
 		return  new BigInteger(myBytes);
 	}
 
@@ -278,8 +307,8 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a double from the byte stream.
 	 * @return a 64bit precision floating point value
 	 */
-	private Object readDouble() {
-		final BigInteger doubleBits = readBigInteger(8);
+	private Object readDouble(final Input rawInput) {
+		final BigInteger doubleBits = readBigInteger(rawInput, 8);
 		return Double.longBitsToDouble(doubleBits.longValue());
 	}
 
@@ -287,8 +316,8 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a float from the byte stream.
 	 * @return a 32bit precision floating point value
 	 */
-	private Float readFloat() {
-		final BigInteger floatBits = readBigInteger(4);
+	private Float readFloat(final Input rawInput) {
+		final BigInteger floatBits = readBigInteger(rawInput, 4);
 		return Float.intBitsToFloat(floatBits.intValue());
 	}
 
@@ -296,8 +325,8 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads a double precision integer (64 bit integer) from the byte stream.
 	 * @return double precision integer (64 bit)
 	 */
-	private Long readLong() {
-		final BigInteger longintBytes = readBigInteger(8);
+	private Long readLong(final Input rawInput) {
+		final BigInteger longintBytes = readBigInteger(rawInput, 8);
 		return longintBytes.longValue();
 	}
 
@@ -305,8 +334,8 @@ public class OSCByteArrayToJavaConverter {
 	 * Reads an Integer (32 bit integer) from the byte stream.
 	 * @return an {@link Integer}
 	 */
-	private Integer readInteger() {
-		final BigInteger intBits = readBigInteger(4);
+	private Integer readInteger(final Input rawInput) {
+		final BigInteger intBits = readBigInteger(rawInput, 4);
 		return intBits.intValue();
 	}
 
@@ -316,12 +345,12 @@ public class OSCByteArrayToJavaConverter {
 	 * which is licensed under the Public Domain.
 	 * @return single precision, unsigned integer (32 bit) wrapped in a 64 bit integer (long)
 	 */
-	private Long readUnsignedInteger() {
+	private Long readUnsignedInteger(final Input rawInput) {
 
-		int firstByte = (0x000000FF & ((int) bytes[streamPosition++]));
-		int secondByte = (0x000000FF & ((int) bytes[streamPosition++]));
-		int thirdByte = (0x000000FF & ((int) bytes[streamPosition++]));
-		int fourthByte = (0x000000FF & ((int) bytes[streamPosition++]));
+		int firstByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		int secondByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		int thirdByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		int fourthByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
 		return ((long) (firstByte << 24
 				| secondByte << 16
 				| thirdByte << 8
@@ -336,7 +365,7 @@ public class OSCByteArrayToJavaConverter {
 	 * fractions of a second.
 	 * @return a {@link Date}
 	 */
-	private Date readTimeTag() {
+	private Date readTimeTag(final Input rawInput) {
 		byte[] secondBytes = new byte[8];
 		byte[] fractionBytes = new byte[8];
 		for (int i = 0; i < 4; i++) {
@@ -348,13 +377,13 @@ public class OSCByteArrayToJavaConverter {
 		// this timetag has immediate semantics
 		boolean isImmediate = true;
 		for (int i = 4; i < 8; i++) {
-			secondBytes[i] = bytes[streamPosition++];
+			secondBytes[i] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
 			if (secondBytes[i] > 0) {
 				isImmediate = false;
 			}
 		}
 		for (int i = 4; i < 8; i++) {
-			fractionBytes[i] = bytes[streamPosition++];
+			fractionBytes[i] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
 			if (i < 7) {
 				if (fractionBytes[i] > 0) {
 					isImmediate = false;
@@ -394,14 +423,14 @@ public class OSCByteArrayToJavaConverter {
 	 * @param pos at which position to start reading
 	 * @return the array that was read
 	 */
-	private List<Object> readArray(List<Character> types, int pos) {
+	private List<Object> readArray(final Input rawInput, List<Character> types, int pos) {
 		int arrayLen = 0;
 		while (types.get(pos + arrayLen).charValue() != ']') {
 			arrayLen++;
 		}
 		List<Object> array = new ArrayList<Object>(arrayLen);
 		for (int j = 0; j < arrayLen; j++) {
-			array.add(readArgument(types.get(pos + j)));
+			array.add(readArgument(rawInput, types.get(pos + j)));
 		}
 		return array;
 	}
@@ -409,9 +438,9 @@ public class OSCByteArrayToJavaConverter {
 	/**
 	 * Get the length of the string currently in the byte stream.
 	 */
-	private int lengthOfCurrentString() {
+	private int lengthOfCurrentString(final Input rawInput) {
 		int len = 0;
-		while (bytes[streamPosition + len] != 0) {
+		while (rawInput.getBytes()[rawInput.getStreamPosition() + len] != 0) {
 			len++;
 		}
 		return len;
@@ -421,9 +450,9 @@ public class OSCByteArrayToJavaConverter {
 	 * Move to the next byte with an index in the byte array
 	 * which is dividable by four.
 	 */
-	private void moveToFourByteBoundry() {
+	private void moveToFourByteBoundry(final Input rawInput) {
 		// If i am already at a 4 byte boundry, I need to move to the next one
-		int mod = streamPosition % 4;
-		streamPosition += (4 - mod);
+		int mod = rawInput.getStreamPosition() % 4;
+		rawInput.addToStreamPosition(4 - mod);
 	}
 }
