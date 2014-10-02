@@ -239,6 +239,17 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
+	 * Checks whether the given object is represented by a type that comes without data.
+	 * @param anObject the object to inspect
+	 * @return whether the object to check consists of only its type information
+	 */
+	private boolean isNoDataObject(Object anObject) {
+		return ((anObject instanceof OSCImpulse)
+				|| (anObject instanceof Boolean)
+				|| (anObject == null));
+	}
+
+	/**
 	 * Write an object into the byte stream.
 	 * @param anObject one of Float, Double, String, Character, Integer, Long,
 	 *   or array of these.
@@ -266,13 +277,7 @@ public class OSCJavaToByteArrayConverter {
 			write((Long) anObject);
 		} else if (anObject instanceof Date) {
 			write((Date) anObject);
-		} else if (anObject instanceof OSCImpulse) {
-			// Write nothing here, as all the info is already contained in the type ('I').
-		} else if (anObject instanceof Boolean) {
-			// Write nothing here, as all the info is already contained in the type ('T' or 'F').
-		} else if (anObject == null) {
-			// Write nothing here, as all the info is already contained in the type ('N').
-		} else {
+		} else if (!isNoDataObject(anObject)) {
 			throw new RuntimeException("Do not know how to write an object of class: "
 					+ anObject.getClass());
 		}
