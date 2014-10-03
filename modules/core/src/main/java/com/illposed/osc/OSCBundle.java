@@ -83,8 +83,12 @@ public class OSCBundle extends AbstractOSCPacket {
 		} else {
 			this.packets = new ArrayList<OSCPacket>(packets);
 		}
-		this.timestamp = timestamp;
+		this.timestamp = clone(timestamp);
 		init();
+	}
+
+	private static Date clone(final Date toBeCloned) {
+		return (toBeCloned == null) ? toBeCloned : (Date) toBeCloned.clone();
 	}
 
 	/**
@@ -92,7 +96,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @return a Date
 	 */
 	public Date getTimestamp() {
-		return timestamp;
+		return clone(timestamp);
 	}
 
 	/**
@@ -100,7 +104,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @param timestamp Date
 	 */
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+		this.timestamp = clone(timestamp);
 	}
 
 	/**
