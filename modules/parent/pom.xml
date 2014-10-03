@@ -39,6 +39,18 @@
 		<relativePath />
 	</parent>
 
+	<!--
+		Without this, Maven uses the parents SCM;
+		in our case, the Sonatype SVM repository.
+		Among possibly other issue, this makes `mvn site` fail.
+	-->
+	<scm>
+		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
+		<developerConnection>scm:git:git@github.com:hoijui/JavaOSC.git</developerConnection>
+		<url>http://github.com/hoijui/JavaOSC</url>
+		<tag>HEAD</tag>
+	</scm>
+
 	<licenses>
 		<license>
 			<name>BSD</name>
