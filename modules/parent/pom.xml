@@ -94,15 +94,11 @@
 				</configuration>
 			</plugin>
 
-			<!--
-			NOTE We temporarily disable this plugin, because it currently faisl under Java 8, see:
-			http://stackoverflow.com/questions/18147030/jenkins-fails-build-but-on-local-machine-everething-is-ok/23460334#23460334
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.5.3</version>
+				<version>3.0.0</version>
 			</plugin>
-			-->
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
