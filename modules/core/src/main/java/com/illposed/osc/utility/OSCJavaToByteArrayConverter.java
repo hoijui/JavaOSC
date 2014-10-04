@@ -205,19 +205,14 @@ public class OSCJavaToByteArrayConverter {
 */
 		byte[] stringBytes = aString.getBytes(charset);
 
-		// pad out to align on 4 byte boundry
-		int mod = aString.length() % 4;
-		int pad = 4 - mod;
-
-		byte[] newBytes = new byte[pad + stringBytes.length];
-		System.arraycopy(stringBytes, 0, newBytes, 0, stringBytes.length);
-
 		try {
-			stream.write(newBytes);
+			stream.write(stringBytes);
 		} catch (IOException e) {
 			throw new RuntimeException("You're screwed:"
 					+ " IOException writing to a ByteArrayOutputStream", e);
 		}
+		stream.write(0);
+		appendNullCharToAlignStream();
 	}
 
 	/**
