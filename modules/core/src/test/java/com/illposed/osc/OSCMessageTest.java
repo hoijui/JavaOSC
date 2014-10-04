@@ -234,6 +234,32 @@ public class OSCMessageTest {
 	}
 
 	@Test
+	public void testAtLeastOneZeroAfterAddressAndTypesAndArgumentStrings() {
+		final List<Object> args = new ArrayList<Object>(3);
+		// We add 3 arguments.
+		// Together with the comma before the types,
+		// this creates a 4 byte aligned stream again (",sii").
+		// In order to separate the types from the argument data,
+		// an other four zeros have to appear on the stream.
+		// This is what we check for here.
+		//
+		// We also test for at least one zero after argument strings here (8 % 4 = 0)
+		args.add("iiffsstt"); // This would be interpreted as a continuation of the types if they were not zero terminated.
+		args.add(-2);
+		args.add(-3);
+		// We do the same with the address.
+		final OSCMessage message = new OSCMessage("/ZAT", args);
+		final byte[] answer = {
+			47, 90, 65, 84, 0, 0, 0, 0,
+			44, 115, 105, 105, 0, 0, 0, 0,
+			105, 105, 102, 102, 115, 115, 116, 116, 0, 0, 0, 0,
+			-1, -1, -1, -2,
+			-1, -1, -1, -3 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
 	public void testArgumentTrue() {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(true);
