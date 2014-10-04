@@ -34,19 +34,22 @@ public class OSCMessageTest {
 	 */
 	public static void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		if (result.length != answer.length) {
-			Assert.fail(
-				"Result and answer aren't the same length, "
-					+ result.length + " vs " + answer.length
-					+ " (\"" + new String(result) + "\" vs \"" + new String(answer) + "\")");
+			Assert.fail(createErrorString("Result and answer aren't the same length, "
+					+ result.length + " vs " + answer.length + ".", result, answer));
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] != answer[i]) {
-				String errorString = "Didn't convert correctly: " + i;
-				errorString = errorString + " result: \"" + new String(result) + "\"";
-				errorString = errorString + " answer: \"" + new String(answer) + "\"";
-				Assert.fail(errorString);
+				Assert.fail(createErrorString("Failed to convert correctly at position: " + i, result, answer));
 			}
 		}
+	}
+
+	public static String createErrorString(final String description, final byte[] result, final byte[] answer) {
+		return description
+				+ "\n result (str): \"" + new String(result) + "\""
+				+ "\n answer (str): \"" + new String(answer) + "\""
+				+ "\n result (raw): \"" + convertByteArrayToJavaCode(result) + "\""
+				+ "\n answer (raw): \"" + convertByteArrayToJavaCode(answer) + "\"";
 	}
 
 	/**
@@ -58,7 +61,7 @@ public class OSCMessageTest {
 
 		StringBuilder javaCode = new StringBuilder();
 
-		javaCode.append("final byte[] answer = { ");
+		javaCode.append("{ ");
 		for (byte b : data) {
 			javaCode.append((int) b).append(", ");
 		}
