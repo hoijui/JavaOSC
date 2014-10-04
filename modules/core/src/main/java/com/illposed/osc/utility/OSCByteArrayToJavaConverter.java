@@ -29,6 +29,7 @@ public class OSCByteArrayToJavaConverter {
 
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
+	private static final String NO_ARGUMENT_TYPES = "";
 
 	private static class Input {
 
@@ -167,22 +168,17 @@ public class OSCByteArrayToJavaConverter {
 	private OSCMessage convertMessage(final Input rawInput) {
 		OSCMessage message = new OSCMessage();
 		message.setAddress(readString(rawInput));
-		List<Character> types = readTypes(rawInput);
-		if (null == types) {
-			// we are done
-			return message;
-		}
-		moveToFourByteBoundry(rawInput);
-		for (int i = 0; i < types.size(); ++i) {
-			if ('[' == types.get(i).charValue()) {
+		final CharSequence types = readTypes(rawInput);
+		for (int i = 0; i < types.length(); ++i) {
+			if ('[' == types.charAt(i)) {
 				// we're looking at an array -- read it in
 				message.addArgument(readArray(rawInput, types, ++i));
 				// then increment i to the end of the array
-				while (types.get(i).charValue() != ']') {
+				while (types.charAt(i) != ']') {
 					i++;
 				}
 			} else {
-				message.addArgument(readArgument(rawInput, types.get(i)));
+				message.addArgument(readArgument(rawInput, types.charAt(i)));
 			}
 		}
 		return message;
@@ -218,30 +214,22 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a char array with the types of the arguments,
 	 *   or <code>null</code>, in case of no arguments
 	 */
-	private List<Character> readTypes(final Input rawInput) {
+	private CharSequence readTypes(final Input rawInput) {
 		// The next byte should be a ',', but some legacy code may omit it
 		// in case of no arguments, refering to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.getBytes().length <= rawInput.getStreamPosition()) {
-			return null; // no arguments
+			return NO_ARGUMENT_TYPES;
 		}
 		if (rawInput.getBytes()[rawInput.getStreamPosition()] != ',') {
 			// XXX should we not rather fail-fast -> throw exception?
-			return null;
+			return NO_ARGUMENT_TYPES;
 		}
 		rawInput.getAndIncreaseStreamPositionByOne();
-		// find out how long the list of types is
-		int typesLen = lengthOfCurrentString(rawInput);
-		if (0 == typesLen) {
-			return null; // no arguments
-		}
 
-		// read in the types
-		List<Character> typesChars = new ArrayList<Character>(typesLen);
-		for (int i = 0; i < typesLen; i++) {
-			typesChars.add((char) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]);
-		}
-		return typesChars;
+		final String typesStr = readString(rawInput);
+
+		return typesStr;
 	}
 
 	/**
@@ -423,14 +411,14 @@ public class OSCByteArrayToJavaConverter {
 	 * @param pos at which position to start reading
 	 * @return the array that was read
 	 */
-	private List<Object> readArray(final Input rawInput, List<Character> types, int pos) {
+	private List<Object> readArray(final Input rawInput, final CharSequence types, int pos) {
 		int arrayLen = 0;
-		while (types.get(pos + arrayLen).charValue() != ']') {
+		while (types.charAt(pos + arrayLen) != ']') {
 			arrayLen++;
 		}
 		List<Object> array = new ArrayList<Object>(arrayLen);
 		for (int j = 0; j < arrayLen; j++) {
-			array.add(readArgument(rawInput, types.get(pos + j)));
+			array.add(readArgument(rawInput, types.charAt(pos + j)));
 		}
 		return array;
 	}
