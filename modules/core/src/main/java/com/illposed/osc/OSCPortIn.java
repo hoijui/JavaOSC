@@ -114,8 +114,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 				OSCPacket oscPacket = converter.convert(buffer,
 						packet.getLength());
 				dispatcher.dispatchPacket(oscPacket);
-			} catch (IOException e) {
-				e.printStackTrace(); // XXX This may not be a good idea, as this could easily lead to a never ending series of exceptions thrown (due to the non-exited while loop), and because the user of the lib may want to handle this case himself
+			} catch (IOException ex) {
+				ex.printStackTrace(); // XXX This may not be a good idea, as this could easily lead to a never ending series of exceptions thrown (due to the non-exited while loop), and because the user of the lib may want to handle this case himself
 			}
 		}
 	}

@@ -169,16 +169,16 @@ public class OSCByteArrayToJavaConverter {
 		OSCMessage message = new OSCMessage();
 		message.setAddress(readString(rawInput));
 		final CharSequence types = readTypes(rawInput);
-		for (int i = 0; i < types.length(); ++i) {
-			if ('[' == types.charAt(i)) {
+		for (int ti = 0; ti < types.length(); ++ti) {
+			if ('[' == types.charAt(ti)) {
 				// we're looking at an array -- read it in
-				message.addArgument(readArray(rawInput, types, ++i));
+				message.addArgument(readArray(rawInput, types, ++ti));
 				// then increment i to the end of the array
-				while (types.charAt(i) != ']') {
-					i++;
+				while (types.charAt(ti) != ']') {
+					ti++;
 				}
 			} else {
-				message.addArgument(readArgument(rawInput, types.charAt(i)));
+				message.addArgument(readArgument(rawInput, types.charAt(ti)));
 			}
 		}
 		return message;
@@ -356,28 +356,28 @@ public class OSCByteArrayToJavaConverter {
 	private Date readTimeTag(final Input rawInput) {
 		byte[] secondBytes = new byte[8];
 		byte[] fractionBytes = new byte[8];
-		for (int i = 0; i < 4; i++) {
+		for (int bi = 0; bi < 4; bi++) {
 			// clear the higher order 4 bytes
-			secondBytes[i] = 0;
-			fractionBytes[i] = 0;
+			secondBytes[bi] = 0;
+			fractionBytes[bi] = 0;
 		}
 		// while reading in the seconds & fraction, check if
 		// this timetag has immediate semantics
 		boolean isImmediate = true;
-		for (int i = 4; i < 8; i++) {
-			secondBytes[i] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
-			if (secondBytes[i] > 0) {
+		for (int bi = 4; bi < 8; bi++) {
+			secondBytes[bi] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
+			if (secondBytes[bi] > 0) {
 				isImmediate = false;
 			}
 		}
-		for (int i = 4; i < 8; i++) {
-			fractionBytes[i] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
-			if (i < 7) {
-				if (fractionBytes[i] > 0) {
+		for (int bi = 4; bi < 8; bi++) {
+			fractionBytes[bi] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
+			if (bi < 7) {
+				if (fractionBytes[bi] > 0) {
 					isImmediate = false;
 				}
 			} else {
-				if (fractionBytes[i] > 1) {
+				if (fractionBytes[bi] > 1) {
 					isImmediate = false;
 				}
 			}
@@ -417,8 +417,8 @@ public class OSCByteArrayToJavaConverter {
 			arrayLen++;
 		}
 		List<Object> array = new ArrayList<Object>(arrayLen);
-		for (int j = 0; j < arrayLen; j++) {
-			array.add(readArgument(rawInput, types.charAt(pos + j)));
+		for (int ai = 0; ai < arrayLen; ai++) {
+			array.add(readArgument(rawInput, types.charAt(pos + ai)));
 		}
 		return array;
 	}

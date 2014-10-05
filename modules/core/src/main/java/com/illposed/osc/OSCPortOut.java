@@ -31,7 +31,7 @@ import java.net.UnknownHostException;
  * OSCMessage msg = new OSCMessage("/sayhello", args);
  * try {
  * 	sender.send(msg);
- * } catch (Exception e) {
+ * } catch (Exception ex) {
  * 	showError("Couldn't send");
  * }
  * }</pre></blockquote>

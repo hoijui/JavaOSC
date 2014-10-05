@@ -105,40 +105,40 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write an integer into the byte stream.
-	 * @param i the integer to be written
+	 * @param anInt the integer to be written
 	 */
-	public void write(int i) {
-		writeInteger32ToByteArray(i);
+	public void write(int anInt) {
+		writeInteger32ToByteArray(anInt);
 	}
 
 	/**
 	 * Write a float into the byte stream.
-	 * @param f floating point number to be written
+	 * @param aFloat floating point number to be written
 	 */
-	public void write(Float f) {
-		writeInteger32ToByteArray(Float.floatToIntBits(f));
+	public void write(Float aFloat) {
+		writeInteger32ToByteArray(Float.floatToIntBits(aFloat));
 	}
 
 	/**
 	 * Write a double into the byte stream (8 bytes).
-	 * @param d double precision floating point number to be written
+	 * @param aDouble double precision floating point number to be written
 	 */
-	public void write(Double d) {
-		writeInteger64ToByteArray(Double.doubleToRawLongBits(d));
+	public void write(Double aDouble) {
+		writeInteger64ToByteArray(Double.doubleToRawLongBits(aDouble));
 	}
 
 	/**
-	 * @param i the integer to be written
+	 * @param anInt the integer to be written
 	 */
-	public void write(Integer i) {
-		writeInteger32ToByteArray(i);
+	public void write(Integer anInt) {
+		writeInteger32ToByteArray(anInt);
 	}
 
 	/**
-	 * @param l the double precision integer to be written
+	 * @param aLong the double precision integer to be written
 	 */
-	public void write(Long l) {
-		writeInteger64ToByteArray(l);
+	public void write(Long aLong) {
+		writeInteger64ToByteArray(aLong);
 	}
 
 	/**
@@ -188,9 +188,9 @@ public class OSCJavaToByteArrayConverter {
 		byte[] stringBytes = aString.getBytes(charset);
 		try {
 			stream.write(stringBytes);
-		} catch (IOException e) {
+		} catch (IOException ex) {
 			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream", e);
+					+ " IOException writing to a ByteArrayOutputStream", ex);
 		}
 		stream.write(0);
 		alignStream();
@@ -198,20 +198,20 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write a char into the byte stream, and ensure it is 4 byte aligned again.
-	 * @param c the character to be written
+	 * @param aChar the character to be written
 	 */
-	public void write(Character c) {
-		stream.write((char) c);
+	public void write(Character aChar) {
+		stream.write((char) aChar);
 		alignStream();
 	}
 
 	/**
 	 * Write a char into the byte stream.
 	 * CAUTION, this does not ensure 4 byte alignment (it actually breaks it)!
-	 * @param c the character to be written
+	 * @param aChar the character to be written
 	 */
-	public void write(char c) {
-		stream.write(c);
+	public void write(char aChar) {
+		stream.write(aChar);
 	}
 
 	/**
@@ -262,32 +262,32 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Write the OSC specification type tag for the type a certain Java type
 	 * converts to.
-	 * @param c Class of a Java object in the arguments
+	 * @param typeClass Class of a Java object in the arguments
 	 */
-	public void writeType(Class c) {
+	public void writeType(Class typeClass) {
 
 		// A big ol' else-if chain -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!
-		if (Integer.class.equals(c)) {
+		if (Integer.class.equals(typeClass)) {
 			stream.write('i');
-		} else if (Long.class.equals(c)) {
+		} else if (Long.class.equals(typeClass)) {
 			stream.write('h');
-		} else if (Date.class.equals(c)) {
+		} else if (Date.class.equals(typeClass)) {
 			stream.write('t');
-		} else if (Float.class.equals(c)) {
+		} else if (Float.class.equals(typeClass)) {
 			stream.write('f');
-		} else if (Double.class.equals(c)) {
+		} else if (Double.class.equals(typeClass)) {
 			stream.write('d');
-		} else if (String.class.equals(c)) {
+		} else if (String.class.equals(typeClass)) {
 			stream.write('s');
-		} else if (byte[].class.equals(c)) {
+		} else if (byte[].class.equals(typeClass)) {
 			stream.write('b');
-		} else if (Character.class.equals(c)) {
+		} else if (Character.class.equals(typeClass)) {
 			stream.write('c');
-		} else if (OSCImpulse.class.equals(c)) {
+		} else if (OSCImpulse.class.equals(typeClass)) {
 			stream.write('I');
 		} else {
-			throw new RuntimeException("Do not know the OSC type for the java class: " + c);
+			throw new RuntimeException("Do not know the OSC type for the java class: " + typeClass);
 		}
 	}
 
@@ -356,7 +356,7 @@ public class OSCJavaToByteArrayConverter {
 
 		try {
 			stream.write(bytes);
-		} catch (IOException e) {
+		} catch (IOException ex) {
 			throw new RuntimeException("You're screwed:"
 					+ " IOException writing to a ByteArrayOutputStream");
 		}
