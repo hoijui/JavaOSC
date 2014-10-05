@@ -75,7 +75,7 @@ public class OSCJavaToByteArrayConverter {
 	}
 
 	/**
-	 * Pad the stream to have a size divisible by 4.
+	 * Align the stream by padding it with '0's so it has a size divisible by 4.
 	 */
 	public void appendNullCharToAlignStream() {
 		final int alignmentOverlap = stream.size() % 4;
