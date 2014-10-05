@@ -148,8 +148,7 @@ public class OSCMessage extends AbstractOSCPacket {
 		// NOTE We explicitly allow <code>null</code> here,
 		//   because we want to allow to set in a lazy fashion.
 		if ((address != null) && !isValidAddress(address)) {
-			throw new IllegalArgumentException("Not a valid OSC address: "
-					+ address);
+			throw new IllegalArgumentException("Not a valid OSC address: " + address);
 		}
 	}
 
