@@ -185,26 +185,7 @@ public class OSCJavaToByteArrayConverter {
 	 * @param aString the string to be written
 	 */
 	public void write(String aString) {
-/*
-		XXX to be revised ...
-		int stringLength = aString.length();
-			// this is a deprecated method -- should use get char and convert
-			// the chars to bytes
-//		aString.getBytes(0, stringLength, stringBytes, 0);
-		aString.getChars(0, stringLength, stringChars, 0);
-			// pad out to align on 4 byte boundry
-		int mod = stringLength % 4;
-		int pad = 4 - mod;
-		for (int i = 0; i < pad; i++)
-			stringChars[stringLength++] = 0;
-		// convert the chars into bytes and write them out
-		for (int i = 0; i < stringLength; i++) {
-			stringBytes[i] = (byte) (stringChars[i] & 0x00FF);
-		}
-		stream.write(stringBytes, 0, stringLength);
-*/
 		byte[] stringBytes = aString.getBytes(charset);
-
 		try {
 			stream.write(stringBytes);
 		} catch (IOException e) {
