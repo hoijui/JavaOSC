@@ -77,7 +77,7 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Align the stream by padding it with '0's so it has a size divisible by 4.
 	 */
-	private void appendNullCharToAlignStream() {
+	private void alignStream() {
 		final int alignmentOverlap = stream.size() % 4;
 		final int padLen = (4 - alignmentOverlap) % 4;
 		for (int pci = 0; pci < padLen; pci++) {
@@ -100,7 +100,7 @@ public class OSCJavaToByteArrayConverter {
 	public void write(byte[] bytes) {
 		writeInteger32ToByteArray(bytes.length);
 		writeUnderHandler(bytes);
-		appendNullCharToAlignStream();
+		alignStream();
 	}
 
 	/**
@@ -212,7 +212,7 @@ public class OSCJavaToByteArrayConverter {
 					+ " IOException writing to a ByteArrayOutputStream", e);
 		}
 		stream.write(0);
-		appendNullCharToAlignStream();
+		alignStream();
 	}
 
 	/**
@@ -221,7 +221,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(Character c) {
 		stream.write((char) c);
-		appendNullCharToAlignStream();
+		alignStream();
 	}
 
 	/**
@@ -363,7 +363,7 @@ public class OSCJavaToByteArrayConverter {
 			}
 		}
 		// align the stream with padded bytes
-		appendNullCharToAlignStream();
+		alignStream();
 	}
 
 	/**
