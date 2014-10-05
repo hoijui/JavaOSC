@@ -186,12 +186,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void write(String aString) {
 		byte[] stringBytes = aString.getBytes(charset);
-		try {
-			stream.write(stringBytes);
-		} catch (IOException ex) {
-			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream", ex);
-		}
+		writeUnderHandler(stringBytes);
 		stream.write(0);
 		alignStream();
 	}
@@ -358,7 +353,7 @@ public class OSCJavaToByteArrayConverter {
 			stream.write(bytes);
 		} catch (IOException ex) {
 			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream");
+					+ " IOException writing to a ByteArrayOutputStream", ex);
 		}
 	}
 
@@ -375,12 +370,7 @@ public class OSCJavaToByteArrayConverter {
 		intBytes[1] = (byte)value; value >>>= 8;
 		intBytes[0] = (byte)value;
 
-		try {
-			stream.write(intBytes);
-		} catch (IOException ex) {
-			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream", ex);
-		}
+		writeUnderHandler(intBytes);
 	}
 
 	/**
@@ -397,11 +387,6 @@ public class OSCJavaToByteArrayConverter {
 		longintBytes[1] = (byte)value; value >>>= 8;
 		longintBytes[0] = (byte)value;
 
-		try {
-			stream.write(longintBytes);
-		} catch (IOException ex) {
-			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream", ex);
-		}
+		writeUnderHandler(longintBytes);
 	}
 }
