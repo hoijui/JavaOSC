@@ -338,6 +338,9 @@ public class OSCJavaToByteArrayConverter {
 				writeType(type.getClass());
 			}
 		}
+		// we always need to terminate wiht a zero,
+		// even if (especially when) the stream is already aligned.
+		stream.write(0);
 		// align the stream with padded bytes
 		alignStream();
 	}
