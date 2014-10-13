@@ -4,6 +4,7 @@
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
 		<project.mainClass>com.illposed.osc.ui.Main</project.mainClass>
+		<root.basedir>${project.parent.relativePath}</root.basedir>
 	</properties>
 
 	<parent>
