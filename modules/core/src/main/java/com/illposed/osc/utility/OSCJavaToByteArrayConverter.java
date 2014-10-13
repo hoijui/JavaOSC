@@ -249,7 +249,7 @@ public class OSCJavaToByteArrayConverter {
 		} else if (anObject instanceof Date) {
 			write((Date) anObject);
 		} else if (!isNoDataObject(anObject)) {
-			throw new RuntimeException("Do not know how to write an object of class: "
+			throw new UnsupportedOperationException("Do not know how to write an object of class: "
 					+ anObject.getClass());
 		}
 	}
@@ -282,7 +282,8 @@ public class OSCJavaToByteArrayConverter {
 		} else if (OSCImpulse.class.equals(typeClass)) {
 			stream.write('I');
 		} else {
-			throw new RuntimeException("Do not know the OSC type for the java class: " + typeClass);
+			throw new UnsupportedOperationException("Do not know the OSC type for the java class: "
+					+ typeClass);
 		}
 	}
 
