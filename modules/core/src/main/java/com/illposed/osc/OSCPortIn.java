@@ -95,9 +95,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
-		byte[] buffer = new byte[BUFFER_SIZE];
-		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
-		DatagramSocket socket = getSocket();
+		final byte[] buffer = new byte[BUFFER_SIZE];
+		final DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
+		final DatagramSocket socket = getSocket();
 		while (listening) {
 			try {
 				try {
@@ -111,7 +111,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 						continue;
 					}
 				}
-				OSCPacket oscPacket = converter.convert(buffer,
+				final OSCPacket oscPacket = converter.convert(buffer,
 						packet.getLength());
 				dispatcher.dispatchPacket(oscPacket);
 			} catch (IOException ex) {
@@ -125,7 +125,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void startListening() {
 		listening = true;
-		Thread thread = new Thread(this);
+		final Thread thread = new Thread(this);
 		// The JVM exits when the only threads running are all daemon threads.
 		thread.setDaemon(true);
 		thread.start();

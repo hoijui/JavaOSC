@@ -48,7 +48,7 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	 * the OSC byte stream specification. Used Internally.
 	 */
 	private byte[] computeByteArray() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.setCharset(charset);
 		return computeByteArray(stream);
 	}

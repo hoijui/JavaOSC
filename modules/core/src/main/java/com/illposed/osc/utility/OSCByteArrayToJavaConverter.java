@@ -137,9 +137,9 @@ public class OSCByteArrayToJavaConverter {
 	private OSCBundle convertBundle(final Input rawInput) {
 		// skip the "#bundle " stuff
 		rawInput.addToStreamPosition(BUNDLE_START.length() + 1);
-		Date timestamp = readTimeTag(rawInput);
-		OSCBundle bundle = new OSCBundle(timestamp);
-		OSCByteArrayToJavaConverter myConverter
+		final Date timestamp = readTimeTag(rawInput);
+		final OSCBundle bundle = new OSCBundle(timestamp);
+		final OSCByteArrayToJavaConverter myConverter
 				= new OSCByteArrayToJavaConverter();
 		myConverter.setCharset(charset);
 		while (rawInput.getStreamPosition() < rawInput.getBytesLength()) {
@@ -154,7 +154,7 @@ public class OSCByteArrayToJavaConverter {
 			final byte[] packetBytes = new byte[packetLength];
 			System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), packetBytes, 0, packetLength);
 			rawInput.addToStreamPosition(packetLength);
-			OSCPacket packet = myConverter.convert(packetBytes, packetLength);
+			final OSCPacket packet = myConverter.convert(packetBytes, packetLength);
 			bundle.addPacket(packet);
 		}
 		return bundle;
@@ -166,7 +166,7 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a message containing the data specified in the byte stream
 	 */
 	private OSCMessage convertMessage(final Input rawInput) {
-		OSCMessage message = new OSCMessage();
+		final OSCMessage message = new OSCMessage();
 		message.setAddress(readString(rawInput));
 		final CharSequence types = readTypes(rawInput);
 		for (int ti = 0; ti < types.length(); ++ti) {
@@ -189,8 +189,8 @@ public class OSCByteArrayToJavaConverter {
 	 * @return the next string in the byte stream
 	 */
 	private String readString(final Input rawInput) {
-		int strLen = lengthOfCurrentString(rawInput);
-		String res = new String(rawInput.getBytes(), rawInput.getStreamPosition(), strLen, charset);
+		final int strLen = lengthOfCurrentString(rawInput);
+		final String res = new String(rawInput.getBytes(), rawInput.getStreamPosition(), strLen, charset);
 		rawInput.addToStreamPosition(strLen);
 		moveToFourByteBoundry(rawInput);
 		return res;
@@ -335,10 +335,10 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private Long readUnsignedInteger(final Input rawInput) {
 
-		int firstByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
-		int secondByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
-		int thirdByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
-		int fourthByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		final int firstByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		final int secondByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		final int thirdByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
+		final int fourthByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
 		return ((long) (firstByte << 24
 				| secondByte << 16
 				| thirdByte << 8
@@ -354,8 +354,8 @@ public class OSCByteArrayToJavaConverter {
 	 * @return a {@link Date}
 	 */
 	private Date readTimeTag(final Input rawInput) {
-		byte[] secondBytes = new byte[8];
-		byte[] fractionBytes = new byte[8];
+		final byte[] secondBytes = new byte[8];
+		final byte[] fractionBytes = new byte[8];
 		for (int bi = 0; bi < 4; bi++) {
 			// clear the higher order 4 bytes
 			secondBytes[bi] = 0;
@@ -394,14 +394,14 @@ public class OSCByteArrayToJavaConverter {
 		if (secsSince1970 < 0) {
 			secsSince1970 = 0;
 		}
-		long fraction = (new BigInteger(fractionBytes).longValue());
+		long fraction = new BigInteger(fractionBytes).longValue();
 
 		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
 		fraction = (fraction * 1000) / 0x100000000L;
 
 		// I do not know where, but I'm losing 1ms somewhere...
 		fraction = (fraction > 0) ? fraction + 1 : 0;
-		long millisecs = (secsSince1970 * 1000) + fraction;
+		final long millisecs = (secsSince1970 * 1000) + fraction;
 		return new Date(millisecs);
 	}
 
@@ -416,7 +416,7 @@ public class OSCByteArrayToJavaConverter {
 		while (types.charAt(pos + arrayLen) != ']') {
 			arrayLen++;
 		}
-		List<Object> array = new ArrayList<Object>(arrayLen);
+		final List<Object> array = new ArrayList<Object>(arrayLen);
 		for (int ai = 0; ai < arrayLen; ai++) {
 			array.add(readArgument(rawInput, types.charAt(pos + ai)));
 		}
@@ -440,7 +440,7 @@ public class OSCByteArrayToJavaConverter {
 	 */
 	private void moveToFourByteBoundry(final Input rawInput) {
 		// If i am already at a 4 byte boundry, I need to move to the next one
-		int mod = rawInput.getStreamPosition() % 4;
+		final int mod = rawInput.getStreamPosition() % 4;
 		rawInput.addToStreamPosition(4 - mod);
 	}
 }

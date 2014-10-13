@@ -56,15 +56,15 @@ public class OSCPacketDispatcher {
 	}
 
 	private void dispatchBundle(OSCBundle bundle) {
-		Date timestamp = bundle.getTimestamp();
-		List<OSCPacket> packets = bundle.getPackets();
-		for (OSCPacket packet : packets) {
+		final Date timestamp = bundle.getTimestamp();
+		final List<OSCPacket> packets = bundle.getPackets();
+		for (final OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
 		}
 	}
 
 	private void dispatchMessage(OSCMessage message, Date time) {
-		for (Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
+		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message.getAddress())) {
 				addrList.getValue().acceptMessage(time, message);
 			}

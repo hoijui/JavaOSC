@@ -126,7 +126,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	private void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
 		stream.writeTypes(arguments);
-		for (Object argument : arguments) {
+		for (final Object argument : arguments) {
 			stream.write(argument);
 		}
 	}

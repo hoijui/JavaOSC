@@ -185,7 +185,7 @@ public class OSCJavaToByteArrayConverter {
 	 * @param aString the string to be written
 	 */
 	public void write(String aString) {
-		byte[] stringBytes = aString.getBytes(charset);
+		final byte[] stringBytes = aString.getBytes(charset);
 		writeUnderHandler(stringBytes);
 		stream.write(0);
 		alignStream();
@@ -228,8 +228,8 @@ public class OSCJavaToByteArrayConverter {
 	public void write(Object anObject) {
 		// Can't do switch on class
 		if (anObject instanceof Collection) {
-			Collection<Object> theArray = (Collection<Object>) anObject;
-			for (Object entry : theArray) {
+			final Collection<Object> theArray = (Collection<Object>) anObject;
+			for (final Object entry : theArray) {
 				write(entry);
 			}
 		} else if (anObject instanceof Float) {
@@ -295,7 +295,7 @@ public class OSCJavaToByteArrayConverter {
 		// again?
 		// I really wish I could extend the base classes!
 
-		for (Object element : array) {
+		for (final Object element : array) {
 			if (Boolean.TRUE.equals(element)) {
 				// Create a way to deal with Boolean type objects
 				stream.write('T');
@@ -314,7 +314,7 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	public void writeTypes(Collection<Object> types) {
 
-		for (Object type : types) {
+		for (final Object type : types) {
 			if (null == type) {
 				stream.write('N');
 			} else if (type instanceof Collection) {
