@@ -3,7 +3,6 @@
 
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
-		<project.mainClass>com.illposed.osc.JavaOSCRunnerUtility</project.mainClass>
 	</properties>
 
 	<parent>
