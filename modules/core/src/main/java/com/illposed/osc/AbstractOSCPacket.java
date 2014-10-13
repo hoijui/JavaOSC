@@ -59,7 +59,7 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	 * @return the OSC specification conform byte array representation
 	 *   of this packet
 	 */
-	abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
+	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
 
 	@Override
 	public byte[] getByteArray() {

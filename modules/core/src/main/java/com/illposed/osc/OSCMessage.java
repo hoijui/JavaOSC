@@ -132,7 +132,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	}
 
 	@Override
-	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();

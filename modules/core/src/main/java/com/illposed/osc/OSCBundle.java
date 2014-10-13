@@ -148,7 +148,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	}
 
 	@Override
-	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
 		byte[] packetBytes;
