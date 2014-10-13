@@ -72,11 +72,4 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	protected void contentChanged() {
 		byteArray = null;
 	}
-
-	/**
-	 * Run any post construction initialization. (By default, do nothing.)
-	 */
-	protected void init() {
-
-	}
 }

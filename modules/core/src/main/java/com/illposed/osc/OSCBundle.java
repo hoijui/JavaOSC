@@ -84,7 +84,6 @@ public class OSCBundle extends AbstractOSCPacket {
 			this.packets = new ArrayList<OSCPacket>(packets);
 		}
 		this.timestamp = clone(timestamp);
-		init();
 	}
 
 	private static Date clone(final Date toBeCloned) {

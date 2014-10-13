@@ -70,7 +70,6 @@ public class OSCMessage extends AbstractOSCPacket {
 		} else {
 			this.arguments = new ArrayList<Object>(arguments);
 		}
-		init();
 	}
 
 	/**
