@@ -127,6 +127,13 @@
 		<module name="UnusedImports"/>
 
 
+		<module name="RegexpSinglelineJava">
+			<property name="format" value="^\t* +"/>
+			<property name="message" value="Bad indenting; there should be only TABs."/>
+			<property name="ignoreComments" value="true"/>
+		</module>
+
+
 		<!-- Checks for Size Violations.                    -->
 		<!-- See http://checkstyle.sf.net/config_sizes.html -->
 		<!--<module name="LineLength"/>-->
