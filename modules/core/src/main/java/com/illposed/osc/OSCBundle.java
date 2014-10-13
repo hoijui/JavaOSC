@@ -129,7 +129,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @param stream where to write the time-tag to
 	 */
 	private void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
-		if ((null == timestamp) || (timestamp == TIMESTAMP_IMMEDIATE)) {
+		if ((null == timestamp) || (timestamp.equals(TIMESTAMP_IMMEDIATE))) {
 			stream.write((int) 0);
 			stream.write((int) 1);
 			return;
