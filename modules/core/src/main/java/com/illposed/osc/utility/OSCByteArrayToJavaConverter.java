@@ -106,11 +106,14 @@ public class OSCByteArrayToJavaConverter {
 	public OSCPacket convert(byte[] bytes, int bytesLength) {
 
 		final Input rawInput = new Input(bytes, bytesLength);
+		final OSCPacket packet;
 		if (isBundle(rawInput)) {
-			return convertBundle(rawInput);
+			packet = convertBundle(rawInput);
 		} else {
-			return convertMessage(rawInput);
+			packet = convertMessage(rawInput);
 		}
+
+		return packet;
 	}
 
 	/**
@@ -215,19 +218,20 @@ public class OSCByteArrayToJavaConverter {
 	 *   or <code>null</code>, in case of no arguments
 	 */
 	private CharSequence readTypes(final Input rawInput) {
+		final String typesStr;
+
 		// The next byte should be a ',', but some legacy code may omit it
 		// in case of no arguments, refering to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.getBytes().length <= rawInput.getStreamPosition()) {
-			return NO_ARGUMENT_TYPES;
-		}
-		if (rawInput.getBytes()[rawInput.getStreamPosition()] != ',') {
+			typesStr = NO_ARGUMENT_TYPES;
+		} else if (rawInput.getBytes()[rawInput.getStreamPosition()] != ',') {
 			// XXX should we not rather fail-fast -> throw exception?
-			return NO_ARGUMENT_TYPES;
+			typesStr = NO_ARGUMENT_TYPES;
+		} else {
+			rawInput.getAndIncreaseStreamPositionByOne();
+			typesStr = readString(rawInput);
 		}
-		rawInput.getAndIncreaseStreamPositionByOne();
-
-		final String typesStr = readString(rawInput);
 
 		return typesStr;
 	}
