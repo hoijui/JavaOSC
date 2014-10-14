@@ -158,7 +158,8 @@ public class OSCMessage extends AbstractOSCPacket {
 	 */
 	public static boolean isValidAddress(String address) {
 		return (address != null)
-				&& address.startsWith("/")
+				&& !address.isEmpty()
+				&& address.charAt(0) == '/'
 				&& !address.contains("//")
 				&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find();
 	}
