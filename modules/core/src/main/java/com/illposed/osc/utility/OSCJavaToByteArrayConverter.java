@@ -227,8 +227,8 @@ public class OSCJavaToByteArrayConverter {
 */
 		byte[] stringBytes = aString.getBytes(charset);
 
-		// pad out to align on 4 byte boundry
-		int mod = aString.length() % 4;
+		// pad out to align on 4 byte boundary
+		int mod = stringBytes.length % 4;
 		int pad = 4 - mod;
 
 		byte[] newBytes = new byte[pad + stringBytes.length];
