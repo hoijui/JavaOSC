@@ -322,6 +322,38 @@
 						<propertyExpansion>jave.header.regex.template.file=${root.basedir}/src/main/resources/java_header_regex_template.txt</propertyExpansion>
 					</configuration>
 				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>3.2</version>
+					<configuration>
+						<aggregate>true</aggregate>
+						<linkXref>true</linkXref>
+						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+						<targetJdk>1.${java.old.version}</targetJdk>
+						<rulesets>
+							<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
+						</rulesets>
+						<excludes>
+							<exclude>com/illposed/osc/utility/OSCByteArrayToJavaConverter.java</exclude>
+							<exclude>com/illposed/osc/utility/OSCJavaToByteArrayConverter.java</exclude>
+							<exclude>com/illposed/osc/utility/OSCPatternAddressSelector.java</exclude>
+						</excludes>
+					</configuration>
+					<dependencies>
+						<!--
+							Update PMD to newer version, because of a bug in 5.1.2:
+							http://sourceforge.net/p/pmd/bugs/1156/
+							This will not be required for newer plugin versions.
+						-->
+						<dependency>
+							<groupId>net.sourceforge.pmd</groupId>
+							<artifactId>pmd</artifactId>
+							<version>5.1.3</version>
+						</dependency>
+					</dependencies>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
