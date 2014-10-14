@@ -104,6 +104,9 @@
 					<linkXref>true</linkXref>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<targetJdk>1.${java.old.version}</targetJdk>
+					<rulesets>
+						<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
+					</rulesets>
 				</configuration>
 			</plugin>
 
