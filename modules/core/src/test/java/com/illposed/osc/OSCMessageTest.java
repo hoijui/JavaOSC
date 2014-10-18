@@ -12,7 +12,10 @@ import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -356,6 +359,80 @@ public class OSCMessageTest {
 		message.addArgument(440.0f);
 		byte[] answer = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
 		byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentCollectionsMixed() {
+		final List<Object> args = new ArrayList<Object>(5);
+		final Collection<Integer> singleType = new HashSet<Integer>();
+		singleType.add(-1);
+		singleType.add(0);
+		singleType.add(1);
+		singleType.add(2);
+		singleType.add(-1); // double entry; discarded becasue we have a Set
+		singleType.add(99);
+		final Collection<Object> allTypes = new LinkedList<Object>();
+		allTypes.add(null);
+		allTypes.add(Boolean.TRUE);
+		allTypes.add(Boolean.FALSE);
+		allTypes.add(OSCImpulse.INSTANCE);
+		allTypes.add(1);
+		allTypes.add(1.0f);
+		allTypes.add(1.0);
+		allTypes.add(new byte[] { -99, -1, 0, 1, 99 });
+		allTypes.add(1L);
+		allTypes.add('h');
+		allTypes.add("hello world!");
+		allTypes.add(new Date(0L));
+		args.add("firstArg");
+		args.add(singleType);
+		args.add("middleArg");
+		args.add(allTypes);
+		args.add("lastArg");
+		final OSCMessage message = new OSCMessage("/collectionsMixed", args);
+		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 77, 105, 120, 101, 100, 0, 0, 0, 44, 115, 91, 105, 105, 105, 105, 105, 93, 115, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 115, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 99, 109, 105, 100, 100, 108, 101, 65, 114, 103, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, 108, 97, 115, 116, 65, 114, 103, 0 };
+		final byte[] result = message.getByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testArgumentCollectionsRecursiveMixed() {
+		final List<Object> args = new ArrayList<Object>(5);
+		final Collection<Object> fourthLevel = new LinkedList<Object>();
+		fourthLevel.add(null);
+		fourthLevel.add(Boolean.TRUE);
+		fourthLevel.add(Boolean.FALSE);
+		fourthLevel.add(OSCImpulse.INSTANCE);
+		fourthLevel.add(1);
+		fourthLevel.add(1.0f);
+		fourthLevel.add(1.0);
+		fourthLevel.add(new byte[] { -99, -1, 0, 1, 99 });
+		fourthLevel.add(1L);
+		fourthLevel.add('h');
+		fourthLevel.add("hello world!");
+		fourthLevel.add(new Date(0L));
+		final Collection<Object> thirdLevel = new LinkedList<Object>();
+		thirdLevel.add(fourthLevel);
+		thirdLevel.add(-1);
+		thirdLevel.add('h');
+		thirdLevel.add(9.9);
+		final Collection<Object> secondLevel = new LinkedList<Object>();
+		secondLevel.add(0);
+		secondLevel.add(thirdLevel);
+		secondLevel.add('e');
+		secondLevel.add(8.8);
+		final Collection<Object> firstLevel = new LinkedList<Object>();
+		firstLevel.add(1);
+		firstLevel.add('l');
+		firstLevel.add(secondLevel);
+		firstLevel.add(7.7);
+		args.add("firstArg");
+		args.add(firstLevel);
+		args.add("lastArg");
+		final OSCMessage message = new OSCMessage("/collectionsRecursive", args);
+		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 82, 101, 99, 117, 114, 115, 105, 118, 101, 0, 0, 0, 44, 115, 91, 105, 99, 91, 105, 91, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 105, 99, 100, 93, 99, 100, 93, 100, 93, 115, 0, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, 0, 0, 0, 1, 108, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, -1, -1, -1, -1, 104, 0, 0, 0, 64, 35, -52, -52, -52, -52, -52, -51, 101, 0, 0, 0, 64, 33, -103, -103, -103, -103, -103, -102, 64, 30, -52, -52, -52, -52, -52, -51, 108, 97, 115, 116, 65, 114, 103, 0 };
+		final byte[] result = message.getByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
