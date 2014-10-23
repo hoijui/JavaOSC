@@ -289,51 +289,51 @@ public class OSCJavaToByteArrayConverter {
 
 	/**
 	 * Write the types for an array element in the arguments.
-	 * @param array array of base Objects
+	 * @param arguments array of base Objects
 	 */
-	private void writeTypesArray(Collection<Object> array) {
+	private void writeTypesArray(Collection<Object> arguments) {
 
-		for (final Object element : array) {
-			if (Boolean.TRUE.equals(element)) {
+		for (final Object argument : arguments) {
+			if (Boolean.TRUE.equals(argument)) {
 				// Create a way to deal with Boolean type objects
 				stream.write('T');
-			} else if (Boolean.FALSE.equals(element)) {
+			} else if (Boolean.FALSE.equals(argument)) {
 				stream.write('F');
 			} else {
 				// this is an object -- write the type for the class
-				writeType(element.getClass());
+				writeType(argument.getClass());
 			}
 		}
 	}
 
 	/**
 	 * Write types for the arguments.
-	 * @param types  the arguments to an OSCMessage
+	 * @param arguments  the arguments to an OSCMessage
 	 */
-	public void writeTypes(Collection<Object> types) {
+	public void writeTypes(Collection<Object> arguments) {
 
-		for (final Object type : types) {
-			if (null == type) {
+		for (final Object argument : arguments) {
+			if (null == argument) {
 				stream.write('N');
-			} else if (type instanceof Collection) {
+			} else if (argument instanceof Collection) {
 				// If the array at i is a type of array, write a '['.
 				// This is used for nested arguments.
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
 				// XXX Why not call this function, recursively? The only reason would be, to not allow nested arrays, but the specification does not say anythign about them not being allowed.
-				writeTypesArray((Collection<Object>) type);
+				writeTypesArray((Collection<Object>) argument);
 				// close the array
 				stream.write(']');
-			} else if (Boolean.TRUE.equals(type)) {
+			} else if (Boolean.TRUE.equals(argument)) {
 				stream.write('T');
-			} else if (Boolean.FALSE.equals(type)) {
+			} else if (Boolean.FALSE.equals(argument)) {
 				stream.write('F');
 			} else {
 				// go through the array and write the superCollider types as shown
 				// in the above method.
 				// The classes derived here are used as the arg to the above method.
-				writeType(type.getClass());
+				writeType(argument.getClass());
 			}
 		}
 		// we always need to terminate with a zero,
