@@ -292,9 +292,6 @@ public class OSCJavaToByteArrayConverter {
 	 * @param array array of base Objects
 	 */
 	private void writeTypesArray(Collection<Object> array) {
-		// A big ol' case statement in a for loop -- what's polymorphism mean,
-		// again?
-		// I really wish I could extend the base classes!
 
 		for (final Object element : array) {
 			if (Boolean.TRUE.equals(element)) {
