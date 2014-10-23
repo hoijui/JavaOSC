@@ -294,25 +294,6 @@ public class OSCJavaToByteArrayConverter {
 	private void writeTypesArray(Collection<Object> arguments) {
 
 		for (final Object argument : arguments) {
-			if (Boolean.TRUE.equals(argument)) {
-				// Create a way to deal with Boolean type objects
-				stream.write('T');
-			} else if (Boolean.FALSE.equals(argument)) {
-				stream.write('F');
-			} else {
-				// this is an object -- write the type for the class
-				writeType(argument.getClass());
-			}
-		}
-	}
-
-	/**
-	 * Write types for the arguments.
-	 * @param arguments  the arguments to an OSCMessage
-	 */
-	public void writeTypes(Collection<Object> arguments) {
-
-		for (final Object argument : arguments) {
 			if (null == argument) {
 				stream.write('N');
 			} else if (argument instanceof Collection) {
@@ -336,6 +317,15 @@ public class OSCJavaToByteArrayConverter {
 				writeType(argument.getClass());
 			}
 		}
+	}
+
+	/**
+	 * Write types for the arguments.
+	 * @param arguments  the arguments to an OSCMessage
+	 */
+	public void writeTypes(Collection<Object> arguments) {
+
+		writeTypesArray(arguments);
 		// we always need to terminate with a zero,
 		// even if (especially when) the stream is already aligned.
 		stream.write(0);
