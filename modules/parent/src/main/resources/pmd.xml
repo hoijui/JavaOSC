@@ -34,9 +34,7 @@
 	</rule>
 	<rule ref="rulesets/java/strictexception.xml"/>
 	<rule ref="rulesets/java/strings.xml"/>
-	<rule ref="rulesets/java/sunsecure.xml">
-		<exclude name="MethodReturnsInternalArray"/> <!-- XXX We should use this one day! -->
-	</rule>
+	<rule ref="rulesets/java/sunsecure.xml"/>
 	<rule ref="rulesets/java/typeresolution.xml"/>
 	<rule ref="rulesets/java/unnecessary.xml">
 		<exclude name="UselessParentheses"/>
