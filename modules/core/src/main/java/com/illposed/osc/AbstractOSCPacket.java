@@ -48,7 +48,7 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	 * the OSC byte stream specification. Used Internally.
 	 */
 	private byte[] computeByteArray() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.setCharset(charset);
 		return computeByteArray(stream);
 	}
@@ -59,7 +59,7 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	 * @return the OSC specification conform byte array representation
 	 *   of this packet
 	 */
-	abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
+	protected abstract byte[] computeByteArray(OSCJavaToByteArrayConverter stream);
 
 	@Override
 	public byte[] getByteArray() {
@@ -71,12 +71,5 @@ abstract class AbstractOSCPacket implements OSCPacket {
 
 	protected void contentChanged() {
 		byteArray = null;
-	}
-
-	/**
-	 * Run any post construction initialization. (By default, do nothing.)
-	 */
-	protected void init() {
-
 	}
 }

@@ -1,0 +1,8 @@
+^/\*$
+^ \* Copyright \(C\) \d\d\d\d(-\d\d\d\d)?, C\. Ramakrishnan / (Auracle|Illposed Software)\.$
+^ \* All rights reserved\.$
+^ \*$
+^ \* This code is licensed under the BSD 3-Clause license\.$
+^ \* See file LICENSE \(or LICENSE.html\) for more information\.$
+^ \*/$
+^$

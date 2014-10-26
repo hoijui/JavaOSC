@@ -70,7 +70,6 @@ public class OSCMessage extends AbstractOSCPacket {
 		} else {
 			this.arguments = new ArrayList<Object>(arguments);
 		}
-		init();
 	}
 
 	/**
@@ -126,13 +125,13 @@ public class OSCMessage extends AbstractOSCPacket {
 	private void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
 		stream.writeTypes(arguments);
-		for (Object argument : arguments) {
+		for (final Object argument : arguments) {
 			stream.write(argument);
 		}
 	}
 
 	@Override
-	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();
@@ -148,8 +147,7 @@ public class OSCMessage extends AbstractOSCPacket {
 		// NOTE We explicitly allow <code>null</code> here,
 		//   because we want to allow to set in a lazy fashion.
 		if ((address != null) && !isValidAddress(address)) {
-			throw new IllegalArgumentException("Not a valid OSC address: "
-					+ address);
+			throw new IllegalArgumentException("Not a valid OSC address: " + address);
 		}
 	}
 
@@ -160,7 +158,8 @@ public class OSCMessage extends AbstractOSCPacket {
 	 */
 	public static boolean isValidAddress(String address) {
 		return (address != null)
-				&& address.startsWith("/")
+				&& !address.isEmpty()
+				&& address.charAt(0) == '/'
 				&& !address.contains("//")
 				&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find();
 	}

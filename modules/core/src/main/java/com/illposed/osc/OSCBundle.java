@@ -83,8 +83,11 @@ public class OSCBundle extends AbstractOSCPacket {
 		} else {
 			this.packets = new ArrayList<OSCPacket>(packets);
 		}
-		this.timestamp = timestamp;
-		init();
+		this.timestamp = clone(timestamp);
+	}
+
+	private static Date clone(final Date toBeCloned) {
+		return (toBeCloned == null) ? toBeCloned : (Date) toBeCloned.clone();
 	}
 
 	/**
@@ -92,7 +95,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @return a Date
 	 */
 	public Date getTimestamp() {
-		return timestamp;
+		return clone(timestamp);
 	}
 
 	/**
@@ -100,7 +103,7 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @param timestamp Date
 	 */
 	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+		this.timestamp = clone(timestamp);
 	}
 
 	/**
@@ -126,29 +129,29 @@ public class OSCBundle extends AbstractOSCPacket {
 	 * @param stream where to write the time-tag to
 	 */
 	private void computeTimeTagByteArray(OSCJavaToByteArrayConverter stream) {
-		if ((null == timestamp) || (timestamp == TIMESTAMP_IMMEDIATE)) {
+		if ((null == timestamp) || (timestamp.equals(TIMESTAMP_IMMEDIATE))) {
 			stream.write((int) 0);
 			stream.write((int) 1);
 			return;
 		}
 
-		long millisecs = timestamp.getTime();
-		long secsSince1970 = (long) (millisecs / 1000);
-		long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
+		final long millisecs = timestamp.getTime();
+		final long secsSince1970 = (long) (millisecs / 1000);
+		final long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
 
 		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
-		long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
+		final long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
 
 		stream.write((int) secs);
 		stream.write((int) fraction);
 	}
 
 	@Override
-	byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
 		stream.write("#bundle");
 		computeTimeTagByteArray(stream);
 		byte[] packetBytes;
-		for (OSCPacket pkg : packets) {
+		for (final OSCPacket pkg : packets) {
 			packetBytes = pkg.getByteArray();
 			stream.write(packetBytes);
 		}

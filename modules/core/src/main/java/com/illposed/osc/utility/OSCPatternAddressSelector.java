@@ -66,7 +66,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	@Override
 	public boolean matches(String messageAddress) {
 
-		List<String> messageAddressParts = splitIntoParts(messageAddress);
+		final List<String> messageAddressParts = splitIntoParts(messageAddress);
 		return matches(patternParts, 0, messageAddressParts, 0);
 	}
 
@@ -78,7 +78,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 */
 	private static List<String> splitIntoParts(String addressOrPattern) {
 
-		List<String> parts = new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
+		final List<String> parts = new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
 		if (addressOrPattern.startsWith("/")) {
 			// as "/hello" gets split into {"", "hello"}, we remove the first empty entry,
 			// so we end up with {"hello"}
@@ -268,7 +268,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 				// {astring,bstring,cstring}
 				case '{':
 					// p.charAt(pi) is now first character in the {brace list}
-					int place = si; // to backtrack
+					final int place = si; // to backtrack
 					int remainder = pi; // to forwardtrack
 
 					// find the end of the brace list

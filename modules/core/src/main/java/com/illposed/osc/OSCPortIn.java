@@ -41,6 +41,12 @@ import java.nio.charset.Charset;
  */
 public class OSCPortIn extends OSCPort implements Runnable {
 
+	/**
+	 * Buffers were 1500 bytes in size, but were
+	 * increased to 1536, as this is a common MTU.
+	 */
+	private static final int BUFFER_SIZE = 1536;
+
 	/** state for listening */
 	private boolean listening;
 	private final OSCByteArrayToJavaConverter converter;
@@ -84,20 +90,15 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Buffers were 1500 bytes in size, but were
-	 * increased to 1536, as this is a common MTU.
-	 */
-	private static final int BUFFER_SIZE = 1536;
-
-	/**
 	 * Run the loop that listens for OSC on a socket until
 	 * {@link #isListening()} becomes false.
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run() {
-		byte[] buffer = new byte[BUFFER_SIZE];
-		DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
-		DatagramSocket socket = getSocket();
+		final byte[] buffer = new byte[BUFFER_SIZE];
+		final DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
+		final DatagramSocket socket = getSocket();
 		while (listening) {
 			try {
 				try {
@@ -111,11 +112,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 						continue;
 					}
 				}
-				OSCPacket oscPacket = converter.convert(buffer,
+				final OSCPacket oscPacket = converter.convert(buffer,
 						packet.getLength());
 				dispatcher.dispatchPacket(oscPacket);
-			} catch (IOException e) {
-				e.printStackTrace(); // XXX This may not be a good idea, as this could easily lead to a never ending series of exceptions thrown (due to the non-exited while loop), and because the user of the lib may want to handle this case himself
+			} catch (IOException ex) {
+				ex.printStackTrace(); // XXX This may not be a good idea, as this could easily lead to a never ending series of exceptions thrown (due to the non-exited while loop), and because the user of the lib may want to handle this case himself
 			}
 		}
 	}
@@ -125,7 +126,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void startListening() {
 		listening = true;
-		Thread thread = new Thread(this);
+		final Thread thread = new Thread(this);
 		// The JVM exits when the only threads running are all daemon threads.
 		thread.setDaemon(true);
 		thread.start();

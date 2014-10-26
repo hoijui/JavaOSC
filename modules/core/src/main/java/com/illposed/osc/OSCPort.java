@@ -17,7 +17,7 @@ import java.net.DatagramSocket;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public abstract class OSCPort {
+public class OSCPort {
 
 	private final DatagramSocket socket;
 	private final int port;

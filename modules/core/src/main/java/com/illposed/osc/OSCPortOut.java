@@ -31,7 +31,7 @@ import java.net.UnknownHostException;
  * OSCMessage msg = new OSCMessage("/sayhello", args);
  * try {
  * 	sender.send(msg);
- * } catch (Exception e) {
+ * } catch (Exception ex) {
  * 	showError("Couldn't send");
  * }
  * }</pre></blockquote>
@@ -89,8 +89,8 @@ public class OSCPortOut extends OSCPort {
 	 * @throws IOException if a (UDP) socket I/O error occurs
 	 */
 	public void send(OSCPacket aPacket) throws IOException {
-		byte[] byteArray = aPacket.getByteArray();
-		DatagramPacket packet =
+		final byte[] byteArray = aPacket.getByteArray();
+		final DatagramPacket packet =
 				new DatagramPacket(byteArray, byteArray.length, address, getPort());
 		getSocket().send(packet);
 	}
