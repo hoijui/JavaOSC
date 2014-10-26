@@ -77,15 +77,15 @@ public class OSCJavaToByteArrayConverterTest {
 		checkResultEqualsAnswer(result, answer);
 	}
 
-    @Test
-    public void testPrintString3OnStream() {
-        OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-        stream.setCharset(Charset.forName("UTF-8"));
-        stream.write("\u00e1"); // LATIN SMALL LETTER A WITH ACUTE
-        byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
-        byte[] result = stream.toByteArray();
-        checkResultEqualsAnswer(result, answer);
-    }
+	@Test
+	public void testPrintString3OnStream() {
+		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		stream.setCharset(Charset.forName("UTF-8"));
+		stream.write("\u00e1"); // LATIN SMALL LETTER A WITH ACUTE
+		byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
+		byte[] result = stream.toByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
 
 	@Test
 	public void testPrintStringOnStream() {
