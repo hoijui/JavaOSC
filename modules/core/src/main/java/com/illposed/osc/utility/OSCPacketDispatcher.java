@@ -39,15 +39,15 @@ public class OSCPacketDispatcher {
 	 *   depending on the message address
 	 * @param listener receives messages accepted by the selector
 	 */
-	public void addListener(AddressSelector addressSelector, OSCListener listener) {
+	public void addListener(final AddressSelector addressSelector, final OSCListener listener) {
 		selectorToListener.put(addressSelector, listener);
 	}
 
-	public void dispatchPacket(OSCPacket packet) {
+	public void dispatchPacket(final OSCPacket packet) {
 		dispatchPacket(packet, null);
 	}
 
-	public void dispatchPacket(OSCPacket packet, Date timestamp) {
+	public void dispatchPacket(final OSCPacket packet, final Date timestamp) {
 		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
 		} else {
@@ -55,7 +55,7 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	private void dispatchBundle(OSCBundle bundle) {
+	private void dispatchBundle(final OSCBundle bundle) {
 		final Date timestamp = bundle.getTimestamp();
 		final List<OSCPacket> packets = bundle.getPackets();
 		for (final OSCPacket packet : packets) {
@@ -63,7 +63,7 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	private void dispatchMessage(OSCMessage message, Date time) {
+	private void dispatchMessage(final OSCMessage message, final Date time) {
 		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message.getAddress())) {
 				addrList.getValue().acceptMessage(time, message);

@@ -19,16 +19,16 @@ public class JavaRegexAddressSelector implements AddressSelector {
 
 	private final Pattern selector;
 
-	public JavaRegexAddressSelector(Pattern selector) {
+	public JavaRegexAddressSelector(final Pattern selector) {
 		this.selector = selector;
 	}
 
-	public JavaRegexAddressSelector(String selectorRegex) {
+	public JavaRegexAddressSelector(final String selectorRegex) {
 		this(Pattern.compile(selectorRegex));
 	}
 
 	@Override
-	public boolean matches(String messageAddress) {
+	public boolean matches(final String messageAddress) {
 		return selector.matcher(messageAddress).matches();
 	}
 }

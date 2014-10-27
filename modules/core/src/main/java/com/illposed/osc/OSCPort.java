@@ -25,7 +25,7 @@ public class OSCPort {
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;
 
-	protected OSCPort(DatagramSocket socket, int port) {
+	protected OSCPort(final DatagramSocket socket, final int port) {
 		this.socket = socket;
 		this.port = port;
 	}
