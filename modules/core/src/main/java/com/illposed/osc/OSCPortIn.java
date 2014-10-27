@@ -56,7 +56,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Create an OSCPort that listens using a specified socket.
 	 * @param socket DatagramSocket to listen on.
 	 */
-	public OSCPortIn(DatagramSocket socket) {
+	public OSCPortIn(final DatagramSocket socket) {
 		super(socket, socket.getLocalPort());
 
 		this.converter = new OSCByteArrayToJavaConverter();
@@ -70,7 +70,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @throws SocketException if the port number is invalid,
 	 *   or there is already a socket listening on it
 	 */
-	public OSCPortIn(int port) throws SocketException {
+	public OSCPortIn(final int port) throws SocketException {
 		this(new DatagramSocket(port));
 	}
 
@@ -83,7 +83,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @throws SocketException if the port number is invalid,
 	 *   or there is already a socket listening on it
 	 */
-	public OSCPortIn(int port, Charset charset) throws SocketException {
+	public OSCPortIn(final int port, final Charset charset) throws SocketException {
 		this(port);
 
 		this.converter.setCharset(charset);
@@ -156,7 +156,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 *   like "/??/mixer/*", see {@link OSCPatternAddressSelector} for details
 	 * @param listener will be notified of incoming packets, if they match
 	 */
-	public void addListener(String addressSelector, OSCListener listener) {
+	public void addListener(final String addressSelector, final OSCListener listener) {
 		this.addListener(new OSCPatternAddressSelector(addressSelector), listener);
 	}
 
@@ -166,7 +166,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param addressSelector a custom address selector
 	 * @param listener will be notified of incoming packets, if they match
 	 */
-	public void addListener(AddressSelector addressSelector, OSCListener listener) {
+	public void addListener(final AddressSelector addressSelector, final OSCListener listener) {
 		dispatcher.addListener(addressSelector, listener);
 	}
 }

@@ -48,7 +48,7 @@ public class OSCPortOut extends OSCPort {
 	 * @param port the UDP port to send to
 	 * @param socket the DatagramSocket to send from
 	 */
-	public OSCPortOut(InetAddress address, int port, DatagramSocket socket) {
+	public OSCPortOut(final InetAddress address, final int port, final DatagramSocket socket) {
 		super(socket, port);
 		this.address = address;
 	}
@@ -59,7 +59,7 @@ public class OSCPortOut extends OSCPort {
 	 * @param port the UDP port to send to
 	 * @throws SocketException when failing to create a (UDP) out socket
 	 */
-	public OSCPortOut(InetAddress address, int port) throws SocketException {
+	public OSCPortOut(final InetAddress address, final int port) throws SocketException {
 		this(address, port, new DatagramSocket());
 	}
 
@@ -69,7 +69,7 @@ public class OSCPortOut extends OSCPort {
 	 * @param address the UDP address to send to
 	 * @throws SocketException when failing to create a (UDP) out socket
 	 */
-	public OSCPortOut(InetAddress address) throws SocketException {
+	public OSCPortOut(final InetAddress address) throws SocketException {
 		this(address, DEFAULT_SC_OSC_PORT);
 	}
 
@@ -88,7 +88,7 @@ public class OSCPortOut extends OSCPort {
 	 * @param aPacket the bundle or message to send
 	 * @throws IOException if a (UDP) socket I/O error occurs
 	 */
-	public void send(OSCPacket aPacket) throws IOException {
+	public void send(final OSCPacket aPacket) throws IOException {
 		final byte[] byteArray = aPacket.getByteArray();
 		final DatagramPacket packet =
 				new DatagramPacket(byteArray, byteArray.length, address, getPort());

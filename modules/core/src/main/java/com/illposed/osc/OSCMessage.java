@@ -51,7 +51,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Creates an OSCMessage with an address already initialized.
 	 * @param address  the recipient of this OSC message
 	 */
-	public OSCMessage(String address) {
+	public OSCMessage(final String address) {
 		this(address, null);
 	}
 
@@ -61,7 +61,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * @param address  the recipient of this OSC message
 	 * @param arguments  the data sent to the receiver
 	 */
-	public OSCMessage(String address, Collection<Object> arguments) {
+	public OSCMessage(final String address, final Collection<Object> arguments) {
 
 		checkAddress(address);
 		this.address = address;
@@ -84,7 +84,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Set the address of this message.
 	 * @param address the receiver of the message
 	 */
-	public void setAddress(String address) {
+	public void setAddress(final String address) {
 		checkAddress(address);
 		this.address = address;
 		contentChanged();
@@ -95,7 +95,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * @param argument a Float, Double, String, Character, Integer, Long, Boolean, null
 	 *   or an array of these
 	 */
-	public void addArgument(Object argument) {
+	public void addArgument(final Object argument) {
 		arguments.add(argument);
 		contentChanged();
 	}
@@ -113,7 +113,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Used internally only.
 	 * @param stream where to write the address to
 	 */
-	private void computeAddressByteArray(OSCJavaToByteArrayConverter stream) {
+	private void computeAddressByteArray(final OSCJavaToByteArrayConverter stream) {
 		stream.write(address);
 	}
 
@@ -122,7 +122,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * Used internally only.
 	 * @param stream where to write the arguments to
 	 */
-	private void computeArgumentsByteArray(OSCJavaToByteArrayConverter stream) {
+	private void computeArgumentsByteArray(final OSCJavaToByteArrayConverter stream) {
 		stream.write(',');
 		stream.writeTypes(arguments);
 		for (final Object argument : arguments) {
@@ -131,7 +131,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	}
 
 	@Override
-	protected byte[] computeByteArray(OSCJavaToByteArrayConverter stream) {
+	protected byte[] computeByteArray(final OSCJavaToByteArrayConverter stream) {
 		computeAddressByteArray(stream);
 		computeArgumentsByteArray(stream);
 		return stream.toByteArray();
@@ -143,7 +143,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * because we want to allow to set the address in a lazy fashion.
 	 * @param address to be checked for validity
 	 */
-	private static void checkAddress(String address) {
+	private static void checkAddress(final String address) {
 		// NOTE We explicitly allow <code>null</code> here,
 		//   because we want to allow to set in a lazy fashion.
 		if ((address != null) && !isValidAddress(address)) {
@@ -156,7 +156,7 @@ public class OSCMessage extends AbstractOSCPacket {
 	 * @param address to be checked for validity
 	 * @return true if the supplied string constitutes a valid OSC address
 	 */
-	public static boolean isValidAddress(String address) {
+	public static boolean isValidAddress(final String address) {
 		return (address != null)
 				&& !address.isEmpty()
 				&& address.charAt(0) == '/'

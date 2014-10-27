@@ -39,7 +39,7 @@ abstract class AbstractOSCPacket implements OSCPacket {
 	}
 
 	@Override
-	public void setCharset(Charset charset) {
+	public void setCharset(final Charset charset) {
 		this.charset = charset;
 	}
 
