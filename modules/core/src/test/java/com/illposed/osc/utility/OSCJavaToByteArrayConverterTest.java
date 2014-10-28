@@ -9,6 +9,7 @@
 package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCMessageTest;
+import java.nio.charset.Charset;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -72,6 +73,16 @@ public class OSCJavaToByteArrayConverterTest {
 		stream.write("abcd");
 		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
 		byte[] result = stream.toByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testPrintString3OnStream() {
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		stream.setCharset(Charset.forName("UTF-8"));
+		stream.write("\u00e1"); // latin 'a' with an acute accent
+		final byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
+		final byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
