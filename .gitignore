@@ -5,3 +5,5 @@ pom.xml.next
 pom.xml.releaseBackup
 pom.xml.tag
 /README.html
+# EMMA maven plugin report file
+coverage.ec
