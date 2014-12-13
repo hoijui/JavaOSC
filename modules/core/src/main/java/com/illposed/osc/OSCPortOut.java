@@ -89,6 +89,10 @@ public class OSCPortOut extends OSCPort {
 		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
 	}
 
+	public OSCJavaToByteArrayConverter getEncoder() {
+		return converter;
+	}
+
 	/**
 	 * Send an OSC packet (message or bundle) to the receiver we are bound to.
 	 * @param aPacket the bundle or message to send
