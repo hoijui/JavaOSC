@@ -43,6 +43,8 @@ import java.net.UnknownHostException;
 public class OSCPortOut extends OSCPort {
 
 	private final InetAddress address;
+	private final ByteArrayOutputStream outputBuffer;
+	private final OSCJavaToByteArrayConverter converter;
 
 	/**
 	 * Create an OSCPort that sends to address:port using a specified socket.
@@ -53,6 +55,8 @@ public class OSCPortOut extends OSCPort {
 	public OSCPortOut(final InetAddress address, final int port, final DatagramSocket socket) {
 		super(socket, port);
 		this.address = address;
+		this.outputBuffer = new ByteArrayOutputStream();
+		this.converter = new OSCJavaToByteArrayConverter(outputBuffer);
 	}
 
 	/**
@@ -91,10 +95,9 @@ public class OSCPortOut extends OSCPort {
 	 * @throws IOException if a (UDP) socket I/O error occurs
 	 */
 	public void send(final OSCPacket aPacket) throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter converter = new OSCJavaToByteArrayConverter(buffer);
+		outputBuffer.reset();
 		converter.write(aPacket);
-		final byte[] byteArray = buffer.toByteArray();
+		final byte[] byteArray = outputBuffer.toByteArray();
 		final DatagramPacket packet =
 				new DatagramPacket(byteArray, byteArray.length, address, getPort());
 		getSocket().send(packet);
