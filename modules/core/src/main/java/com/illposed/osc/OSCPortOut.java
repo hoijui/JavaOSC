@@ -40,7 +40,7 @@ import java.net.UnknownHostException;
  */
 public class OSCPortOut extends OSCPort {
 
-	private InetAddress address;
+	private final InetAddress address;
 
 	/**
 	 * Create an OSCPort that sends to address:port using a specified socket.
