@@ -399,7 +399,6 @@ public class OSCJavaToByteArrayConverter {
 				stream.write('[');
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
-				// XXX Why not call this function, recursively? The only reason would be, to not allow nested arrays, but the specification does not say anythign about them not being allowed.
 				@SuppressWarnings("unchecked") Collection<Object> collArg = (Collection<Object>) argument;
 				writeTypesArray(collArg);
 				// close the array
