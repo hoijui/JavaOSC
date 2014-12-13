@@ -9,6 +9,8 @@
 package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCMessageTest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,78 +43,98 @@ public class OSCJavaToByteArrayConverterTest {
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
 	 */
 	@Test
-	public void testPrintFloat2OnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintFloat2OnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write(0.2f);
 		byte[] answer = {62, 76, -52, -51};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintFloatOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintFloatOnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write(10.7567f);
 		byte[] answer = {65, 44, 27, 113};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintIntegerOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintIntegerOnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write(Integer.valueOf(1124));
 		byte[] answer = {0, 0, 4, 100};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintString2OnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintStringAndIntOnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		stream.write("/example1");
+		stream.write(100);
+		byte[] answer =
+			{47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100};
+		byte[] result = buffer.toByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testPrintString2OnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write("abcd");
 		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintString3OnStream() {
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintString3OnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.setCharset(Charset.forName("UTF-8"));
 		stream.write("\u00e1"); // latin 'a' with an acute accent
 		final byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
-		final byte[] result = stream.toByteArray();
+		final byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintStringOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintStringOnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write("abc");
 		byte[] answer = {97, 98, 99, 0};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
-	public void testPrintLongOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+	public void testPrintLongOnStream() throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write(1124L);
 		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
-		byte[] result = stream.toByteArray();
+		byte[] result = buffer.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
 
 	@Test
 	public void testIfExceptionOnNullWrite() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 
 		try {
 			Long nullLong = null;
 			stream.write(nullLong);
 			Assert.fail("No exception thrown on writing (Long)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -120,7 +142,7 @@ public class OSCJavaToByteArrayConverterTest {
 			Float nullFloat = null;
 			stream.write(nullFloat);
 			Assert.fail("No exception thrown on writing (Float)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -128,7 +150,7 @@ public class OSCJavaToByteArrayConverterTest {
 			Double nullDouble = null;
 			stream.write(nullDouble);
 			Assert.fail("No exception thrown on writing (Double)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -136,7 +158,7 @@ public class OSCJavaToByteArrayConverterTest {
 			Integer nullInteger = null;
 			stream.write(nullInteger);
 			Assert.fail("No exception thrown on writing (Integer)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -144,7 +166,7 @@ public class OSCJavaToByteArrayConverterTest {
 			String nullString = null;
 			stream.write(nullString);
 			Assert.fail("No exception thrown on writing (String)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -152,7 +174,7 @@ public class OSCJavaToByteArrayConverterTest {
 			Character nullCharacter = null;
 			stream.write(nullCharacter);
 			Assert.fail("No exception thrown on writing (Character)null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 
@@ -160,7 +182,7 @@ public class OSCJavaToByteArrayConverterTest {
 			byte[] nullByteArray = null;
 			stream.write(nullByteArray);
 			Assert.fail("No exception thrown on writing (byte[])null");
-		} catch (RuntimeException ex) {
+		} catch (Exception ex) {
 			// ignore
 		}
 	}

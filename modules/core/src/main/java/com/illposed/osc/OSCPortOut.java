@@ -8,6 +8,8 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -89,7 +91,10 @@ public class OSCPortOut extends OSCPort {
 	 * @throws IOException if a (UDP) socket I/O error occurs
 	 */
 	public void send(final OSCPacket aPacket) throws IOException {
-		final byte[] byteArray = aPacket.getByteArray();
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter converter = new OSCJavaToByteArrayConverter(buffer);
+		converter.write(aPacket);
+		final byte[] byteArray = buffer.toByteArray();
 		final DatagramPacket packet =
 				new DatagramPacket(byteArray, byteArray.length, address, getPort());
 		getSocket().send(packet);

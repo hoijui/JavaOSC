@@ -10,6 +10,8 @@ package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -74,12 +76,23 @@ public class OSCMessageTest {
 		return javaCode.toString();
 	}
 
+	private byte[] convertMessageToByteArray(final OSCMessage message) {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		try {
+			stream.write(message);
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		return buffer.toByteArray();
+	}
+
 	@Test
 	public void testEmpty() {
 		List<Object> args = new ArrayList<Object>(0);
 		OSCMessage message = new OSCMessage("/empty", args);
 		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
-		byte[] result = message.getByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -90,7 +103,7 @@ public class OSCMessageTest {
 		// here we only have the addresses string terminator (0) before the ',' (44),
 		// so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 0, 44, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -101,7 +114,7 @@ public class OSCMessageTest {
 		// here we have one padding 0 after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 0, 0, 44, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -112,7 +125,7 @@ public class OSCMessageTest {
 		// here we have two padding 0's after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 0, 0, 0, 44, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -123,7 +136,7 @@ public class OSCMessageTest {
 		// here we have three padding 0's after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 103, 0, 0, 0, 0, 44, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -133,7 +146,7 @@ public class OSCMessageTest {
 		args.add(99);
 		final OSCMessage message = new OSCMessage("/int", args);
 		final byte[] answer = { 47, 105, 110, 116, 0, 0, 0, 0, 44, 105, 0, 0, 0, 0, 0, 99 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -143,7 +156,7 @@ public class OSCMessageTest {
 		args.add(999.9f);
 		final OSCMessage message = new OSCMessage("/float", args);
 		final byte[] answer = { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -155,7 +168,7 @@ public class OSCMessageTest {
 		final byte[] answer = {
 			47, 100, 111, 117, 98, 108, 101, 0, 44, 100, 0, 0, 65, 39, -68, 99, -115, -46, -15, -86
 		};
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -165,7 +178,7 @@ public class OSCMessageTest {
 		args.add('x');
 		final OSCMessage message = new OSCMessage("/char", args);
 		final byte[] answer = { 47, 99, 104, 97, 114, 0, 0, 0, 44, 99, 0, 0, 120, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -175,7 +188,7 @@ public class OSCMessageTest {
 		args.add(new byte[] { -1, 0, 1 });
 		final OSCMessage message = new OSCMessage("/blob", args);
 		final byte[] answer = { 47, 98, 108, 111, 98, 0, 0, 0, 44, 98, 0, 0, 0, 0, 0, 3, -1, 0, 1, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -185,7 +198,7 @@ public class OSCMessageTest {
 		args.add(OSCImpulse.INSTANCE);
 		final OSCMessage message = new OSCMessage("/impulse", args);
 		final byte[] answer = { 47, 105, 109, 112, 117, 108, 115, 101, 0, 0, 0, 0, 44, 73, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -196,7 +209,7 @@ public class OSCMessageTest {
 		final OSCMessage message = new OSCMessage("/long", args);
 		final byte[] answer = {
 			47, 108, 111, 110, 103, 0, 0, 0, 44, 104, 0, 0, 127, -1, -1, -1, -1, -1, -1, -1 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -206,7 +219,7 @@ public class OSCMessageTest {
 		args.add(new Date(0L));
 		final OSCMessage message = new OSCMessage("/timestamp0", args);
 		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 48, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -219,7 +232,7 @@ public class OSCMessageTest {
 		args.add(calendar.getTime());
 		final OSCMessage message = new OSCMessage("/timestamp2000", args);
 		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 50, 48, 48, 48, 0, 0, 44, 116, 0, 0, -68, 22, 98, 112, 0, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -232,7 +245,7 @@ public class OSCMessageTest {
 		args.add(calendar.getTime());
 		final OSCMessage message = new OSCMessage("/timestampAfterFeb2036", args);
 		final byte[] answer = { 47, 116, 105, 109, 101, 115, 116, 97, 109, 112, 65, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 44, 116, 0, 0, 1, -80, 2, -16, 0, 0, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -258,7 +271,7 @@ public class OSCMessageTest {
 			105, 105, 102, 102, 115, 115, 116, 116, 0, 0, 0, 0,
 			-1, -1, -1, -2,
 			-1, -1, -1, -3 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -268,7 +281,7 @@ public class OSCMessageTest {
 		args.add(true);
 		final OSCMessage message = new OSCMessage("/true", args);
 		final byte[] answer = { 47, 116, 114, 117, 101, 0, 0, 0, 44, 84, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -278,7 +291,7 @@ public class OSCMessageTest {
 		args.add(false);
 		final OSCMessage message = new OSCMessage("/false", args);
 		final byte[] answer = { 47, 102, 97, 108, 115, 101, 0, 0, 44, 70, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -288,7 +301,7 @@ public class OSCMessageTest {
 		args.add(null);
 		final OSCMessage message = new OSCMessage("/null", args);
 		final byte[] answer = { 47, 110, 117, 108, 108, 0, 0, 0, 44, 78, 0, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -302,7 +315,7 @@ public class OSCMessageTest {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111,
 			108, 117, 109, 101, 0, 0, 0, 0, 44, 105, 102, 0, 0, 0, 0,
 			1, 62, 76, -52, -51 };
-		byte[] result = message.getByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -320,18 +333,7 @@ public class OSCMessageTest {
 			47, 115, 99, 47, 109, 105, 120, 101, 114, 47, 118, 111, 108,
 			117, 109, 101, 0, 0, 0, 0, 44, 105, 102, 0, 0, 0, 0, 1,	63,
 			(byte) 128, 0, 0};
-		byte[] result = message.getByteArray();
-		checkResultEqualsAnswer(result, answer);
-	}
-
-	@Test
-	public void testPrintStringOnStream() {
-		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
-		stream.write("/example1");
-		stream.write(100);
-		byte[] answer =
-			{47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100};
-		byte[] result = stream.toByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -339,7 +341,7 @@ public class OSCMessageTest {
 	public void testRun() {
 		OSCMessage message = new OSCMessage("/sc/run");
 		byte[] answer = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
-		byte[] result = message.getByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -347,7 +349,7 @@ public class OSCMessageTest {
 	public void testStop() {
 		OSCMessage message = new OSCMessage("/sc/stop");
 		byte[] answer = {47, 115, 99, 47, 115, 116, 111, 112, 0, 0, 0, 0, 44, 0, 0, 0};
-		byte[] result = message.getByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -358,7 +360,7 @@ public class OSCMessageTest {
 		message.addArgument("freq");
 		message.addArgument(440.0f);
 		byte[] answer = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
-		byte[] result = message.getByteArray();
+		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -392,7 +394,7 @@ public class OSCMessageTest {
 		args.add("lastArg");
 		final OSCMessage message = new OSCMessage("/collectionsMixed", args);
 		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 77, 105, 120, 101, 100, 0, 0, 0, 44, 115, 91, 105, 105, 105, 105, 105, 93, 115, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 115, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 99, 109, 105, 100, 100, 108, 101, 65, 114, 103, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, 108, 97, 115, 116, 65, 114, 103, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -432,7 +434,7 @@ public class OSCMessageTest {
 		args.add("lastArg");
 		final OSCMessage message = new OSCMessage("/collectionsRecursive", args);
 		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 82, 101, 99, 117, 114, 115, 105, 118, 101, 0, 0, 0, 44, 115, 91, 105, 99, 91, 105, 91, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 105, 99, 100, 93, 99, 100, 93, 100, 93, 115, 0, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, 0, 0, 0, 1, 108, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, -1, -1, -1, -1, 104, 0, 0, 0, 64, 35, -52, -52, -52, -52, -52, -51, 101, 0, 0, 0, 64, 33, -103, -103, -103, -103, -103, -102, 64, 30, -52, -52, -52, -52, -52, -51, 108, 97, 115, 116, 65, 114, 103, 0 };
-		final byte[] result = message.getByteArray();
+		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
 
@@ -441,7 +443,7 @@ public class OSCMessageTest {
 		OSCMessage message = new OSCMessage("/dummy");
 		Long one001 = 1001L;
 		message.addArgument(one001);
-		byte[] byteArray = message.getByteArray();
+		byte[] byteArray = convertMessageToByteArray(message);
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
@@ -466,7 +468,7 @@ public class OSCMessageTest {
 		floats.add(10.0f);
 		floats.add(100.0f);
 		message.addArgument(floats);
-		byte[] byteArray = message.getByteArray();
+		byte[] byteArray = convertMessageToByteArray(message);
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {

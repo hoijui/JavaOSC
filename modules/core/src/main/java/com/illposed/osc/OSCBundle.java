@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,12 +29,7 @@ import java.util.List;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public class OSCBundle extends AbstractOSCPacket {
-
-	/**
-	 * 2208988800 seconds -- includes 17 leap years
-	 */
-	public static final long SECONDS_FROM_1900_TO_1970 = 2208988800L;
+public class OSCBundle implements OSCPacket {
 
 	/**
 	 * The Java representation of an OSC timestamp with the semantics of
@@ -112,7 +106,6 @@ public class OSCBundle extends AbstractOSCPacket {
 	 */
 	public void addPacket(final OSCPacket packet) {
 		packets.add(packet);
-		contentChanged();
 	}
 
 	/**
@@ -121,40 +114,5 @@ public class OSCBundle extends AbstractOSCPacket {
 	 */
 	public List<OSCPacket> getPackets() {
 		return Collections.unmodifiableList(packets);
-	}
-
-	/**
-	 * Convert the time-tag (a Java Date) into the OSC byte stream.
-	 * Used Internally.
-	 * @param stream where to write the time-tag to
-	 */
-	private void computeTimeTagByteArray(final OSCJavaToByteArrayConverter stream) {
-		if ((null == timestamp) || (timestamp.equals(TIMESTAMP_IMMEDIATE))) {
-			stream.write((int) 0);
-			stream.write((int) 1);
-			return;
-		}
-
-		final long millisecs = timestamp.getTime();
-		final long secsSince1970 = (long) (millisecs / 1000);
-		final long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
-
-		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
-		final long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
-
-		stream.write((int) secs);
-		stream.write((int) fraction);
-	}
-
-	@Override
-	protected byte[] computeByteArray(final OSCJavaToByteArrayConverter stream) {
-		stream.write("#bundle");
-		computeTimeTagByteArray(stream);
-		byte[] packetBytes;
-		for (final OSCPacket pkg : packets) {
-			packetBytes = pkg.getByteArray();
-			stream.write(packetBytes);
-		}
-		return stream.toByteArray();
 	}
 }
