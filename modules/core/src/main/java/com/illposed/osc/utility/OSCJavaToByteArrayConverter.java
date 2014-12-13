@@ -157,6 +157,7 @@ public class OSCJavaToByteArrayConverter {
 
 	public void write(final OSCPacket packet) throws IOException {
 
+		stream.reset();
 		if (packet instanceof OSCBundle) {
 			write((OSCBundle) packet);
 		} else if (packet instanceof OSCMessage) {
