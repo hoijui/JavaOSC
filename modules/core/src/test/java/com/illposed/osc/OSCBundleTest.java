@@ -9,7 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCParser;
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import com.illposed.osc.utility.OSCSerializer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class OSCBundleTest {
 
 	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write(bundle);
 		final byte[] byteArray = buffer.toByteArray();
 		OSCParser converter = new OSCParser();

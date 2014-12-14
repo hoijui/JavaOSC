@@ -391,7 +391,7 @@ public class OSCParser {
 		}
 
 		final long secsSince1900 = new BigInteger(secondBytes).longValue();
-		long secsSince1970 = secsSince1900 - OSCJavaToByteArrayConverter.SECONDS_FROM_1900_TO_1970;
+		long secsSince1970 = secsSince1900 - OSCSerializer.SECONDS_FROM_1900_TO_1970;
 
 		// no point maintaining times in the distant past
 		if (secsSince1970 < 0) {

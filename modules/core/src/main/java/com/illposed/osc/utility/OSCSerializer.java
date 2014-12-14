@@ -34,7 +34,7 @@ import java.util.Date;
  * @author Martin Kaltenbrunner
  * @author Alex Potsides
  */
-public class OSCJavaToByteArrayConverter {
+public class OSCSerializer {
 
 	/**
 	 * 2208988800 seconds -- includes 17 leap years
@@ -56,7 +56,7 @@ public class OSCJavaToByteArrayConverter {
 	private final byte[] intBytes;
 	private final byte[] longintBytes;
 
-	public OSCJavaToByteArrayConverter(final OutputStream wrappedStream) {
+	public OSCSerializer(final OutputStream wrappedStream) {
 
 		this.stream = new SizeTrackingOutputStream(wrappedStream);
 		this.charset = Charset.defaultCharset();
@@ -96,7 +96,7 @@ public class OSCJavaToByteArrayConverter {
 	private byte[] convertToByteArray(final OSCPacket packet) throws IOException {
 
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter packetStream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer packetStream = new OSCSerializer(buffer);
 		packetStream.setCharset(getCharset());
 		if (packet instanceof OSCBundle) {
 			packetStream.write((OSCBundle) packet);
