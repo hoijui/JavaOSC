@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.utility.OSCParser;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class OSCBundleTest {
 		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
 		stream.write(bundle);
 		final byte[] byteArray = buffer.toByteArray();
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
+		OSCParser converter = new OSCParser();
 		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
 		if (!packet.getTimestamp().equals(expectedTimestamp)) {
 			Assert.fail("Send Bundle did not receive the correct timestamp " + packet.getTimestamp()

@@ -20,15 +20,15 @@ import org.junit.Test;
 
 /**
  * @author Chandrasekhar Ramakrishnan
- * @see OSCByteArrayToJavaConverter
+ * @see OSCParser
  */
-public class OSCByteArrayToJavaConverterTest {
+public class OSCParserTest {
 
-	private OSCByteArrayToJavaConverter converter;
+	private OSCParser converter;
 
 	@Before
 	public void setUp() {
-		converter = new OSCByteArrayToJavaConverter();
+		converter = new OSCParser();
 	}
 
 	@After
