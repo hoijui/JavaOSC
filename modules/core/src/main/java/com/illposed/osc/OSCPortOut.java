@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import com.illposed.osc.utility.OSCSerializer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -44,7 +44,7 @@ public class OSCPortOut extends OSCPort {
 
 	private final InetAddress address;
 	private final ByteArrayOutputStream outputBuffer;
-	private final OSCJavaToByteArrayConverter converter;
+	private final OSCSerializer converter;
 
 	/**
 	 * Create an OSCPort that sends to address:port using a specified socket.
@@ -56,7 +56,7 @@ public class OSCPortOut extends OSCPort {
 		super(socket, port);
 		this.address = address;
 		this.outputBuffer = new ByteArrayOutputStream();
-		this.converter = new OSCJavaToByteArrayConverter(outputBuffer);
+		this.converter = new OSCSerializer(outputBuffer);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class OSCPortOut extends OSCPort {
 		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
 	}
 
-	public OSCJavaToByteArrayConverter getEncoder() {
+	public OSCSerializer getSerializer() {
 		return converter;
 	}
 

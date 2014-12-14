@@ -18,9 +18,9 @@ import org.junit.Test;
 /**
  * This implementation is based on Markus Gaelli and Iannis Zannos's
  * <a href="http://www.emergent.de/Goodies/">OSC implementation in Squeak</a>
- * @see OSCJavaToByteArrayConverter
+ * @see OSCSerializer
  */
-public class OSCJavaToByteArrayConverterTest {
+public class OSCSerializerTest {
 
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		OSCMessageTest.checkResultEqualsAnswer(result, answer);
@@ -45,7 +45,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintFloat2OnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write(0.2f);
 		byte[] answer = {62, 76, -52, -51};
 		byte[] result = buffer.toByteArray();
@@ -55,7 +55,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintFloatOnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write(10.7567f);
 		byte[] answer = {65, 44, 27, 113};
 		byte[] result = buffer.toByteArray();
@@ -65,7 +65,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintIntegerOnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write(Integer.valueOf(1124));
 		byte[] answer = {0, 0, 4, 100};
 		byte[] result = buffer.toByteArray();
@@ -75,7 +75,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintStringAndIntOnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write("/example1");
 		stream.write(100);
 		byte[] answer =
@@ -87,7 +87,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintString2OnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write("abcd");
 		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
 		byte[] result = buffer.toByteArray();
@@ -97,7 +97,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintString3OnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.setCharset(Charset.forName("UTF-8"));
 		stream.write("\u00e1"); // latin 'a' with an acute accent
 		final byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
@@ -108,7 +108,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintStringOnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write("abc");
 		byte[] answer = {97, 98, 99, 0};
 		byte[] result = buffer.toByteArray();
@@ -118,7 +118,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testPrintLongOnStream() throws IOException {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		stream.write(1124L);
 		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
 		byte[] result = buffer.toByteArray();
@@ -128,7 +128,7 @@ public class OSCJavaToByteArrayConverterTest {
 	@Test
 	public void testIfExceptionOnNullWrite() {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 
 		try {
 			Long nullLong = null;

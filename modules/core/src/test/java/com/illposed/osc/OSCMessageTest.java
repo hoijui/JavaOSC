@@ -9,7 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCParser;
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import com.illposed.osc.utility.OSCSerializer;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class OSCMessageTest {
 
 	private byte[] convertMessageToByteArray(final OSCMessage message) {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		final OSCSerializer stream = new OSCSerializer(buffer);
 		try {
 			stream.write(message);
 		} catch (IOException ex) {
