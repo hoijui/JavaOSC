@@ -20,9 +20,8 @@ import java.util.Collection;
 import java.util.Date;
 
 /**
- * OSCJavaToByteArrayConverter is a helper class that translates
- * from Java types to their byte stream representations according to
- * the OSC spec.
+ * A helper class that translates from Java types to their byte stream representations
+ * according to the OSC spec.
  *
  * The implementation is based on
  * <a href="http://www.emergent.de">Markus Gaelli</a> and
