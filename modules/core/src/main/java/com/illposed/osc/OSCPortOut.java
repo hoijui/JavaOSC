@@ -26,7 +26,7 @@ import java.net.UnknownHostException;
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testMessageWithArgs()})
  * <blockquote><pre>{@code
- * OSCPort sender = new OSCPort();
+ * OSCPortOut sender = new OSCPortOut();
  * List<Object> args = new ArrayList<Object>(2);
  * args.add(3);
  * args.add("hello");
@@ -34,7 +34,7 @@ import java.net.UnknownHostException;
  * try {
  * 	sender.send(msg);
  * } catch (Exception ex) {
- * 	showError("Couldn't send");
+ * 	System.err.println("Couldn't send");
  * }
  * }</pre></blockquote>
  *

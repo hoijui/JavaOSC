@@ -23,9 +23,9 @@ import java.nio.charset.Charset;
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
  * <blockquote><pre>{@code
- * receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT());
+ * OSCPortIn receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT);
  * OSCListener listener = new OSCListener() {
- * 	public void acceptMessage(java.util.Date time, OSCMessage message) {
+ * 	public void acceptMessage(Date time, OSCMessage message) {
  * 		System.out.println("Message received!");
  * 	}
  * };
