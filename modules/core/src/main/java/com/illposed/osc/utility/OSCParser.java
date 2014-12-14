@@ -25,7 +25,7 @@ import java.util.List;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public class OSCByteArrayToJavaConverter {
+public class OSCParser {
 
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
@@ -72,7 +72,7 @@ public class OSCByteArrayToJavaConverter {
 	 * Creates a helper object for converting from a byte array
 	 * to an {@link OSCPacket} object.
 	 */
-	public OSCByteArrayToJavaConverter() {
+	public OSCParser() {
 
 		this.charset = Charset.defaultCharset();
 	}
@@ -142,8 +142,7 @@ public class OSCByteArrayToJavaConverter {
 		rawInput.addToStreamPosition(BUNDLE_START.length() + 1);
 		final Date timestamp = readTimeTag(rawInput);
 		final OSCBundle bundle = new OSCBundle(timestamp);
-		final OSCByteArrayToJavaConverter myConverter
-				= new OSCByteArrayToJavaConverter();
+		final OSCParser myConverter = new OSCParser();
 		myConverter.setCharset(charset);
 		while (rawInput.getStreamPosition() < rawInput.getBytesLength()) {
 			// recursively read through the stream and convert packets you find

@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.utility.OSCParser;
 import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -444,7 +444,7 @@ public class OSCMessageTest {
 		Long one001 = 1001L;
 		message.addArgument(one001);
 		byte[] byteArray = convertMessageToByteArray(message);
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
+		OSCParser converter = new OSCParser();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Big Integer did not receive the correct address");
@@ -469,7 +469,7 @@ public class OSCMessageTest {
 		floats.add(100.0f);
 		message.addArgument(floats);
 		byte[] byteArray = convertMessageToByteArray(message);
-		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
+		OSCParser converter = new OSCParser();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Array did not receive the correct address");

@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.utility.OSCParser;
 import com.illposed.osc.utility.OSCPacketDispatcher;
 import com.illposed.osc.utility.OSCPatternAddressSelector;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/** state for listening */
 	private boolean listening;
-	private final OSCByteArrayToJavaConverter converter;
+	private final OSCParser converter;
 	private final OSCPacketDispatcher dispatcher;
 
 	/**
@@ -58,7 +58,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public OSCPortIn(final DatagramSocket socket) {
 		super(socket, socket.getLocalPort());
 
-		this.converter = new OSCByteArrayToJavaConverter();
+		this.converter = new OSCParser();
 		this.dispatcher = new OSCPacketDispatcher();
 	}
 
@@ -73,7 +73,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this(new DatagramSocket(port));
 	}
 
-	public OSCByteArrayToJavaConverter getParser() {
+	public OSCParser getParser() {
 		return converter;
 	}
 

@@ -336,7 +336,7 @@
 							<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 						</rulesets>
 						<excludes>
-							<exclude>com/illposed/osc/utility/OSCByteArrayToJavaConverter.java</exclude>
+							<exclude>com/illposed/osc/utility/OSCParser.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCJavaToByteArrayConverter.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCPatternAddressSelector.java</exclude>
 						</excludes>
