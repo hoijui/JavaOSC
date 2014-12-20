@@ -56,7 +56,7 @@ public class OSCParser {
 			return streamPosition++;
 		}
 
-		public void addToStreamPosition(int toAdd) {
+		public void addToStreamPosition(final int toAdd) {
 			streamPosition += toAdd;
 		}
 
@@ -91,7 +91,7 @@ public class OSCParser {
 	 * and string parameters.
 	 * @param charset the desired character-encoding-set to be used by this converter
 	 */
-	public void setCharset(Charset charset) {
+	public void setCharset(final Charset charset) {
 		this.charset = charset;
 	}
 
@@ -103,7 +103,7 @@ public class OSCParser {
 	 * @return the successfully parsed OSC packet; in case of a problem,
 	 *   a <code>RuntimeException</code> is thrown
 	 */
-	public OSCPacket convert(byte[] bytes, int bytesLength) {
+	public OSCPacket convert(final byte[] bytes, final int bytesLength) {
 
 		final Input rawInput = new Input(bytes, bytesLength);
 		final OSCPacket packet;
@@ -414,7 +414,7 @@ public class OSCParser {
 	 * @param pos at which position to start reading
 	 * @return the array that was read
 	 */
-	private List<Object> readArray(final Input rawInput, final CharSequence types, int pos) {
+	private List<Object> readArray(final Input rawInput, final CharSequence types, final int pos) {
 		int arrayLen = 0;
 		while (types.charAt(pos + arrayLen) != ']') {
 			arrayLen++;

@@ -86,7 +86,7 @@ public class OSCSerializer {
 	 * and string parameters.
 	 * @param charset the desired character-encoding-set to be used by this converter
 	 */
-	public void setCharset(Charset charset) {
+	public void setCharset(final Charset charset) {
 		this.charset = charset;
 	}
 
@@ -179,7 +179,7 @@ public class OSCSerializer {
 	 * Write bytes into the byte stream.
 	 * @param bytes  bytes to be written
 	 */
-	void write(final byte[] bytes) throws IOException {
+	void write(final byte... bytes) throws IOException {
 		writeInteger32ToByteArray(bytes.length);
 		stream.write(bytes);
 		alignStream();
@@ -263,7 +263,7 @@ public class OSCSerializer {
 	 * @param javaTime Java time-stamp, as returned by {@link Date#getTime()}
 	 * @return NTP time-stamp representation of the Java time value.
 	 */
-	protected static long javaToNtpTimeStamp(long javaTime) {
+	protected static long javaToNtpTimeStamp(final long javaTime) {
 		final boolean useBase1 = javaTime < MSB_0_BASE_TIME; // time < Feb-2036
 		final long baseTime;
 		if (useBase1) {
@@ -319,7 +319,7 @@ public class OSCSerializer {
 	 * @param anObject the object to inspect
 	 * @return whether the object to check consists of only its type information
 	 */
-	private boolean isNoDataObject(Object anObject) {
+	private boolean isNoDataObject(final Object anObject) {
 		return ((anObject instanceof OSCImpulse)
 				|| (anObject instanceof Boolean)
 				|| (anObject == null));
@@ -330,7 +330,7 @@ public class OSCSerializer {
 	 * @param anObject (usually) one of Float, Double, String, Character, Integer, Long,
 	 *   or array of these.
 	 */
-	void write(Object anObject) throws IOException {
+	void write(final Object anObject) throws IOException {
 		// Can't do switch on class
 		if (anObject instanceof Collection) {
 			@SuppressWarnings("unchecked") final Collection<Object> theArray = (Collection<Object>) anObject;
@@ -396,7 +396,7 @@ public class OSCSerializer {
 	 * Write the types for an array element in the arguments.
 	 * @param arguments array of base Objects
 	 */
-	private void writeTypesArray(Collection<Object> arguments) throws IOException {
+	private void writeTypesArray(final Collection<Object> arguments) throws IOException {
 
 		for (final Object argument : arguments) {
 			if (null == argument) {
@@ -428,7 +428,7 @@ public class OSCSerializer {
 	 * Write types for the arguments.
 	 * @param arguments  the arguments to an OSCMessage
 	 */
-	public void writeTypes(Collection<Object> arguments) throws IOException {
+	public void writeTypes(final Collection<Object> arguments) throws IOException {
 
 		writeTypesArray(arguments);
 		// we always need to terminate with a zero,
