@@ -8,9 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCParser;
-import com.illposed.osc.utility.OSCSerializer;
-import java.io.ByteArrayOutputStream;
+import com.illposed.osc.utility.OSCReparserTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,18 +24,13 @@ import org.junit.Test;
 public class OSCBundleTest {
 
 	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write(bundle);
-		final byte[] byteArray = buffer.toByteArray();
-		OSCParser converter = new OSCParser();
-		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
-		if (!packet.getTimestamp().equals(expectedTimestamp)) {
-			Assert.fail("Send Bundle did not receive the correct timestamp " + packet.getTimestamp()
-				+ "(" + packet.getTimestamp().getTime() +
+		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
+		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
+			Assert.fail("Send Bundle did not receive the correct timestamp " + reparsedBundle.getTimestamp()
+				+ "(" + reparsedBundle.getTimestamp().getTime() +
 				") (should be " + expectedTimestamp +"( " + expectedTimestamp.getTime() + ")) ");
 		}
-		List<OSCPacket> packets = packet.getPackets();
+		List<OSCPacket> packets = reparsedBundle.getPackets();
 		OSCMessage msg = (OSCMessage) packets.get(0);
 		if (!msg.getAddress().equals("/dummy")) {
 			Assert.fail("Send Bundle's message did not receive the correct address");
