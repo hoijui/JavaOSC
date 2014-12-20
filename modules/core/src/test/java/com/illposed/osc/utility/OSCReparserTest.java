@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
@@ -15,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -117,6 +119,18 @@ public class OSCReparserTest {
 		reparseSingleArgument('_');
 		reparseSingleArgument('+');
 		// TODO test different charset encodings
+	}
+
+	@Test
+	public void testArgumentDate() throws IOException {
+
+		reparseSingleArgument(OSCBundle.TIMESTAMP_IMMEDIATE);
+		reparseSingleArgument(new Date());
+		reparseSingleArgument(new Date(Long.MIN_VALUE));
+		reparseSingleArgument(new Date(-1L));
+		reparseSingleArgument(new Date(0L));
+		reparseSingleArgument(new Date(1L));
+		reparseSingleArgument(new Date(Long.MAX_VALUE));
 	}
 
 	@Test
