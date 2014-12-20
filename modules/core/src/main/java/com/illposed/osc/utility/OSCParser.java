@@ -224,12 +224,12 @@ public class OSCParser {
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.getBytes().length <= rawInput.getStreamPosition()) {
 			typesStr = NO_ARGUMENT_TYPES;
-		} else if (rawInput.getBytes()[rawInput.getStreamPosition()] != ',') {
-			// XXX should we not rather fail-fast -> throw exception?
-			typesStr = NO_ARGUMENT_TYPES;
-		} else {
+		} else if (rawInput.getBytes()[rawInput.getStreamPosition()] == ',') {
 			rawInput.getAndIncreaseStreamPositionByOne();
 			typesStr = readString(rawInput);
+		} else {
+			// XXX should we not rather fail-fast -> throw exception?
+			typesStr = NO_ARGUMENT_TYPES;
 		}
 
 		return typesStr;
