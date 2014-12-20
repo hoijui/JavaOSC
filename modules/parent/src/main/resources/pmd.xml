@@ -13,12 +13,14 @@
 	<rule ref="rulesets/java/codesize.xml"/>
 	<!--<rule ref="rulesets/java/comments.xml"/>-->
 	<rule ref="rulesets/java/controversial.xml">
+		<exclude name="AvoidFinalLocalVariable"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="CallSuperInConstructor"/>
-		<exclude name="NullAssignment"/>
 	</rule>
 	<!--<rule ref="rulesets/java/coupling.xml"/>-->
-	<rule ref="rulesets/java/design.xml"/>
+	<rule ref="rulesets/java/design.xml">
+		<exclude name="UseVarargs"/>
+	</rule>
 	<rule ref="rulesets/java/empty.xml"/>
 	<rule ref="rulesets/java/finalizers.xml"/>
 	<rule ref="rulesets/java/imports.xml"/>
