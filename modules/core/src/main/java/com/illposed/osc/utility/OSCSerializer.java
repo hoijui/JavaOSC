@@ -441,12 +441,13 @@ public class OSCSerializer {
 	 * Write a 32 bit integer to the byte array without allocating memory.
 	 * @param value a 32 bit integer.
 	 */
-	private void writeInteger32ToByteArray(int value) throws IOException {
+	private void writeInteger32ToByteArray(final int value) throws IOException {
 
-		intBytes[3] = (byte)value; value >>>= 8;
-		intBytes[2] = (byte)value; value >>>= 8;
-		intBytes[1] = (byte)value; value >>>= 8;
-		intBytes[0] = (byte)value;
+		int curValue = value;
+		intBytes[3] = (byte)curValue; curValue >>>= 8;
+		intBytes[2] = (byte)curValue; curValue >>>= 8;
+		intBytes[1] = (byte)curValue; curValue >>>= 8;
+		intBytes[0] = (byte)curValue;
 
 		stream.write(intBytes);
 	}
@@ -455,15 +456,17 @@ public class OSCSerializer {
 	 * Write a 64 bit integer to the byte array without allocating memory.
 	 * @param value a 64 bit integer.
 	 */
-	private void writeInteger64ToByteArray(long value) throws IOException {
-		longintBytes[7] = (byte)value; value >>>= 8;
-		longintBytes[6] = (byte)value; value >>>= 8;
-		longintBytes[5] = (byte)value; value >>>= 8;
-		longintBytes[4] = (byte)value; value >>>= 8;
-		longintBytes[3] = (byte)value; value >>>= 8;
-		longintBytes[2] = (byte)value; value >>>= 8;
-		longintBytes[1] = (byte)value; value >>>= 8;
-		longintBytes[0] = (byte)value;
+	private void writeInteger64ToByteArray(final long value) throws IOException {
+
+		long curValue = value;
+		longintBytes[7] = (byte)curValue; curValue >>>= 8;
+		longintBytes[6] = (byte)curValue; curValue >>>= 8;
+		longintBytes[5] = (byte)curValue; curValue >>>= 8;
+		longintBytes[4] = (byte)curValue; curValue >>>= 8;
+		longintBytes[3] = (byte)curValue; curValue >>>= 8;
+		longintBytes[2] = (byte)curValue; curValue >>>= 8;
+		longintBytes[1] = (byte)curValue; curValue >>>= 8;
+		longintBytes[0] = (byte)curValue;
 
 		stream.write(longintBytes);
 	}
