@@ -41,6 +41,7 @@ public class OSCSerializerTest {
 	 * yields: (int) 1045220557 (VA Java 3.5)
 	 *
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
+	 * @throws IOException because {@link OSCSerializer#write(Float)} may do so
 	 */
 	@Test
 	public void testPrintFloat2OnStream() throws IOException {
