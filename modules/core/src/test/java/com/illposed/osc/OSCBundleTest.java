@@ -73,4 +73,35 @@ public class OSCBundleTest {
 		bundle.setTimestamp(null);
 		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
 	}
+
+	@Test
+	public void testSendMultiLevelBundle() throws IOException {
+
+		// create this structure:
+		// bundle-0
+		//   > message-0
+		//   > bundle-1
+		//     > message-1
+		//     > bundle-2
+		//       > message-2
+		//       > message-3
+
+		final List<OSCPacket> packetsBundle2 = new ArrayList<OSCPacket>(2);
+		packetsBundle2.add(new OSCMessage("/leaf/2"));
+		packetsBundle2.add(new OSCMessage("/leaf/3"));
+		final OSCBundle bundle2 = new OSCBundle(packetsBundle2);
+
+		final List<OSCPacket> packetsBundle1 = new ArrayList<OSCPacket>(2);
+		packetsBundle1.add(new OSCMessage("/leaf/1"));
+		packetsBundle1.add(bundle2);
+		final OSCBundle bundle1 = new OSCBundle(packetsBundle1);
+
+		final List<OSCPacket> packetsBundle0 = new ArrayList<OSCPacket>(2);
+		packetsBundle0.add(new OSCMessage("/leaf/0"));
+		packetsBundle0.add(bundle1);
+		final OSCBundle bundle0 = new OSCBundle(packetsBundle0);
+
+		OSCReparserTest.reparse(bundle0);
+		// TODO make a smarter test, where we serialize, re-parse and then check the whole thing
+	}
 }
