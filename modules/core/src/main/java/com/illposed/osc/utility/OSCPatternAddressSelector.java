@@ -59,12 +59,12 @@ public class OSCPatternAddressSelector implements AddressSelector {
 
 	private final List<String> patternParts;
 
-	public OSCPatternAddressSelector(String selector) {
+	public OSCPatternAddressSelector(final String selector) {
 		this.patternParts = splitIntoParts(selector);
 	}
 
 	@Override
-	public boolean matches(String messageAddress) {
+	public boolean matches(final String messageAddress) {
 
 		final List<String> messageAddressParts = splitIntoParts(messageAddress);
 		return matches(patternParts, 0, messageAddressParts, 0);
@@ -76,7 +76,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 * @param addressOrPattern to be split into parts, e.g.: "/hello/", "/hello//world//"
 	 * @return the given address or pattern split into parts: {"hello"}, {"hello, "", "world", ""}
 	 */
-	private static List<String> splitIntoParts(String addressOrPattern) {
+	private static List<String> splitIntoParts(final String addressOrPattern) {
 
 		final List<String> parts = new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
 		if (addressOrPattern.startsWith("/")) {
@@ -101,7 +101,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 * @param api index/pointer to the current part of the address we are looking at
 	 * @return true if the address matches, false otherwise
 	 */
-	private static boolean matches(List<String> patternParts, int ppi, List<String> messageAddressParts, int api) {
+	private static boolean matches(final List<String> patternParts, int ppi, final List<String> messageAddressParts, int api) {
 
 		while (ppi < patternParts.size()) {
 			// There might be some path-traversal wildcards (PTW) "//" in the pattern.
@@ -157,7 +157,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise
 	 */
-	private static boolean matches(String str, String p) {
+	private static boolean matches(final String str, final String p) {
 
 		boolean negate;
 		boolean match;
