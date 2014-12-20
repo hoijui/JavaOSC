@@ -543,6 +543,7 @@ public class OSCMessageTest {
 	@Test
 	public void testAddressValidation() {
 		Assert.assertFalse(OSCMessage.isValidAddress(null));
+		Assert.assertFalse(OSCMessage.isValidAddress(""));
 		Assert.assertFalse(OSCMessage.isValidAddress("hello/world"));
 		Assert.assertFalse(OSCMessage.isValidAddress("/ hello/world"));
 		Assert.assertFalse(OSCMessage.isValidAddress("/#hello/world"));
