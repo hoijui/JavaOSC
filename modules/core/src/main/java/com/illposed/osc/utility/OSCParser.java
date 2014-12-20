@@ -22,26 +22,12 @@ import java.util.List;
  * Utility class to convert a byte array,
  * conforming to the OSC byte stream format,
  * into Java objects.
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCParser {
 
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
-
-	/** Used to decode message addresses and string parameters. */
-	private Charset charset;
-
-	/**
-	 * Creates a helper object for converting from a byte array
-	 * to an {@link OSCPacket} object.
-	 */
-	public OSCParser() {
-
-		this.charset = Charset.defaultCharset();
-	}
 
 	private static class Input {
 
@@ -75,6 +61,18 @@ public class OSCParser {
 		public int getStreamPosition() {
 			return streamPosition;
 		}
+	}
+
+	/** Used to decode message addresses and string parameters. */
+	private Charset charset;
+
+	/**
+	 * Creates a helper object for converting from a byte array
+	 * to an {@link OSCPacket} object.
+	 */
+	public OSCParser() {
+
+		this.charset = Charset.defaultCharset();
 	}
 
 	/**

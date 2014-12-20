@@ -37,8 +37,6 @@ import java.net.UnknownHostException;
  * 	System.err.println("Couldn't send");
  * }
  * }</pre></blockquote>
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCPortOut extends OSCPort {
 

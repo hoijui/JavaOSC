@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 /**
- * @author Chandrasekhar Ramakrishnan
  * @see OSCMessage
  */
 public class OSCMessageTest {

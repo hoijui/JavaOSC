@@ -26,13 +26,6 @@ import java.util.Date;
  * The implementation is based on
  * <a href="http://www.emergent.de">Markus Gaelli</a> and
  * Iannis Zannos's OSC implementation in Squeak (a Smalltalk dialect).
- *
- * This version includes bug fixes and improvements from
- * Martin Kaltenbrunner and Alex Potsides.
- *
- * @author Chandrasekhar Ramakrishnan
- * @author Martin Kaltenbrunner
- * @author Alex Potsides
  */
 public class OSCSerializer {
 

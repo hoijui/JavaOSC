@@ -18,7 +18,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author Chandrasekhar Ramakrishnan
  * @see OSCBundle
  */
 public class OSCBundleTest {

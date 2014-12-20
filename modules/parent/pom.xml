@@ -63,17 +63,38 @@
 			<name>Chandrasekhar Ramakrishnan</name>
 			<email>cr_web@illposed.com</email>
 			<roles>
-				<role>main developer</role>
+				<role>original main developer</role>
 			</roles>
 		</developer>
 		<developer>
 			<name>Robin Vobruba</name>
 			<email>hoijui.quaero@gmail.com</email>
 			<roles>
-				<role>co-dev</role>
+				<role>current main developer</role>
 			</roles>
 		</developer>
 	</developers>
+
+	<contributors>
+		<contributor>
+			<name>John Thompson</name>
+			<roles>
+				<role>wrote the UI</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Martin Kaltenbrunner</name>
+			<roles>
+				<role>worked on the serializer</role>
+			</roles>
+		</contributor>
+		<contributor>
+			<name>Alex Potsides</name>
+			<roles>
+				<role>worked on the serializer</role>
+			</roles>
+		</contributor>
+	</contributors>
 
 	<reporting>
 		<plugins>

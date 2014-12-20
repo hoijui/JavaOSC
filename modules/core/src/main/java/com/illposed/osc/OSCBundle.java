@@ -26,8 +26,6 @@ import java.util.List;
  * Bundles should be used if you want to send multiple messages to be executed
  * atomically together, or you want to schedule one or more messages to be
  * executed in the future.
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCBundle implements OSCPacket {
 

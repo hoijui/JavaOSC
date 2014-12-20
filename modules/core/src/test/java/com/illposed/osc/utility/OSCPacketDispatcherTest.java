@@ -17,7 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author Chandrasekhar Ramakrishnan
  * @see OSCPacketDispatcher
  */
 public class OSCPacketDispatcherTest {
