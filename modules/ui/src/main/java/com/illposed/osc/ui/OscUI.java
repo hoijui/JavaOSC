@@ -35,9 +35,6 @@ import javax.swing.event.ChangeListener;
 
 /**
  * OscUI is a subClass of JPanel.
- *
- * @author Chandrasekhar Ramakrishnan
- * @author JT
  */
 public class OscUI extends JPanel {
 

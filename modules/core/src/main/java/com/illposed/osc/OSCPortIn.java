@@ -35,8 +35,6 @@ import java.net.SocketException;
  * Then, using a program such as SuperCollider or sendOSC, send a message
  * to this computer, port {@link #DEFAULT_SC_OSC_PORT},
  * with the address "/message/receiving".
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCPortIn extends OSCPort implements Runnable {
 

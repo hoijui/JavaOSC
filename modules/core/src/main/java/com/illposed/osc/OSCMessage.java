@@ -21,8 +21,6 @@ import java.util.regex.Pattern;
  * An OSC <i>Message</i> is made up of
  * an <i>Address Pattern</i> (the receiver of the message)
  * and <i>Arguments</i> (the content of the message).
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCMessage implements OSCPacket {
 

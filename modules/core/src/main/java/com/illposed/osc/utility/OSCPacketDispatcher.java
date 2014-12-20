@@ -21,8 +21,6 @@ import java.util.Map.Entry;
 
 /**
  * Dispatches {@link OSCPacket}s to registered listeners (<i>Method</i>s).
- *
- * @author Chandrasekhar Ramakrishnan
  */
 public class OSCPacketDispatcher {
 

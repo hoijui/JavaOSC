@@ -12,9 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.JFrame;
 
-/**
- * @author Chandrasekhar Ramakrishnan
- */
 public class Main extends JFrame {
 
 	private OscUI myUi;
