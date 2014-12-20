@@ -53,7 +53,15 @@ public class OSCSerializer {
 	private final SizeTrackingOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
+	/**
+	 * A Buffer used to convert an Integer into bytes.
+	 * We allocate it globally, so the GC has less work to do.
+	 */
 	private final byte[] intBytes;
+	/**
+	 * A Buffer used to convert a Long into bytes.
+	 * We allocate it globally, so the GC has less work to do.
+	 */
 	private final byte[] longintBytes;
 
 	public OSCSerializer(final OutputStream wrappedStream) {
@@ -435,8 +443,6 @@ public class OSCSerializer {
 	 * @param value a 32 bit integer.
 	 */
 	private void writeInteger32ToByteArray(int value) throws IOException {
-		//byte[] intBytes = new byte[4];
-		//I allocated the this buffer globally so the GC has less work
 
 		intBytes[3] = (byte)value; value >>>= 8;
 		intBytes[2] = (byte)value; value >>>= 8;
