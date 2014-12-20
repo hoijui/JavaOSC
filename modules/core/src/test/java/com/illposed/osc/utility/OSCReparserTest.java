@@ -58,8 +58,11 @@ public class OSCReparserTest {
 
 		final OSCMessage reparsedMessage = reparse(message);
 
-		if (comparator.compare(argument, reparsedMessage.getArguments().iterator().next()) != 0) {
-			Assert.fail("Failed to reparse argument of type " + argument.getClass());
+		final Object reparsedArgument = reparsedMessage.getArguments().iterator().next();
+		if (comparator.compare(argument, reparsedArgument) != 0) {
+			Assert.fail("Failed to reparse argument of type " + argument.getClass()
+					+ ". The original was:\n" + argument.toString()
+					+ "\nwhile the re-parsed object is:\n" + reparsedArgument.toString());
 		}
 	}
 
