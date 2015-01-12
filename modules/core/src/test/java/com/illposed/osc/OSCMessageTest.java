@@ -34,26 +34,26 @@ public class OSCMessageTest {
 
 	/**
 	 * @param result received from OSC
-	 * @param answer what should have been received
+	 * @param expected what should have been received
 	 */
-	public static void checkResultEqualsAnswer(byte[] result, byte[] answer) {
-		if (result.length != answer.length) {
-			Assert.fail(createErrorString("Result and answer aren't the same length, "
-					+ result.length + " vs " + answer.length + ".", result, answer));
+	public static void checkResultEqualsAnswer(byte[] result, byte[] expected) {
+		if (result.length != expected.length) {
+			Assert.fail(createErrorString("Result and expected answer aren't the same length, "
+					+ result.length + " vs " + expected.length + ".", result, expected));
 		}
 		for (int i = 0; i < result.length; i++) {
-			if (result[i] != answer[i]) {
-				Assert.fail(createErrorString("Failed to convert correctly at position: " + i, result, answer));
+			if (result[i] != expected[i]) {
+				Assert.fail(createErrorString("Failed to convert correctly at position: " + i, result, expected));
 			}
 		}
 	}
 
-	public static String createErrorString(final String description, final byte[] result, final byte[] answer) {
+	public static String createErrorString(final String description, final byte[] result, final byte[] expected) {
 		return description
-				+ "\n result (str): \"" + new String(result) + "\""
-				+ "\n answer (str): \"" + new String(answer) + "\""
-				+ "\n result (raw): \"" + convertByteArrayToJavaCode(result) + "\""
-				+ "\n answer (raw): \"" + convertByteArrayToJavaCode(answer) + "\"";
+				+ "\n result   (str): \"" + new String(result) + "\""
+				+ "\n expected (str): \"" + new String(expected) + "\""
+				+ "\n result   (raw): \"" + convertByteArrayToJavaCode(result) + "\""
+				+ "\n expected (raw): \"" + convertByteArrayToJavaCode(expected) + "\"";
 	}
 
 	/**
