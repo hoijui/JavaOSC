@@ -29,39 +29,6 @@ public class OSCParser {
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
 
-	private static class Input {
-
-		private final byte[] bytes;
-		private final int bytesLength;
-		private int streamPosition;
-
-		Input(final byte[] bytes, final int bytesLength) {
-
-			this.bytes = bytes;
-			this.bytesLength = bytesLength;
-			this.streamPosition = 0;
-		}
-
-		public byte[] getBytes() {
-			return bytes;
-		}
-
-		public int getBytesLength() {
-			return bytesLength;
-		}
-
-		public int getAndIncreaseStreamPositionByOne() {
-			return streamPosition++;
-		}
-
-		public void addToStreamPosition(final int toAdd) {
-			streamPosition += toAdd;
-		}
-
-		public int getStreamPosition() {
-			return streamPosition;
-		}
-	}
 
 	/** Used to decode message addresses and string parameters. */
 	private Charset charset;
@@ -103,7 +70,7 @@ public class OSCParser {
 	 */
 	public OSCPacket convert(final byte[] bytes, final int bytesLength) {
 
-		final Input rawInput = new Input(bytes, bytesLength);
+		final OSCInput rawInput = new OSCInput(bytes, bytesLength);
 		final OSCPacket packet;
 		if (isBundle(rawInput)) {
 			packet = convertBundle(rawInput);
@@ -124,7 +91,7 @@ public class OSCParser {
 	 * </quote>
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
-	private boolean isBundle(final Input rawInput) {
+	private boolean isBundle(final OSCInput rawInput) {
 		// The shortest valid packet may be no shorter then 4 bytes,
 		// thus we may assume to always have a byte at index 0.
 		return rawInput.getBytes()[0] == BUNDLE_IDENTIFIER;
@@ -135,7 +102,7 @@ public class OSCParser {
 	 * Assumes that the byte array is a bundle.
 	 * @return a bundle containing the data specified in the byte stream
 	 */
-	private OSCBundle convertBundle(final Input rawInput) {
+	private OSCBundle convertBundle(final OSCInput rawInput) {
 		// skip the "#bundle " stuff
 		rawInput.addToStreamPosition(BUNDLE_START.length() + 1);
 		final Date timestamp = readTimeTag(rawInput);
@@ -165,7 +132,7 @@ public class OSCParser {
 	 * Assumes that the byte array is a message.
 	 * @return a message containing the data specified in the byte stream
 	 */
-	private OSCMessage convertMessage(final Input rawInput) {
+	private OSCMessage convertMessage(final OSCInput rawInput) {
 		final OSCMessage message = new OSCMessage();
 		message.setAddress(readString(rawInput));
 		final CharSequence types = readTypes(rawInput);
@@ -188,7 +155,7 @@ public class OSCParser {
 	 * Reads a string from the byte stream.
 	 * @return the next string in the byte stream
 	 */
-	private String readString(final Input rawInput) {
+	private String readString(final OSCInput rawInput) {
 		final int strLen = lengthOfCurrentString(rawInput);
 		final String res = new String(rawInput.getBytes(), rawInput.getStreamPosition(), strLen, charset);
 		rawInput.addToStreamPosition(strLen);
@@ -200,7 +167,7 @@ public class OSCParser {
 	 * Reads a binary blob from the byte stream.
 	 * @return the next blob in the byte stream
 	 */
-	private byte[] readBlob(final Input rawInput) {
+	private byte[] readBlob(final OSCInput rawInput) {
 		final int blobLen = readInteger(rawInput);
 		final byte[] res = new byte[blobLen];
 		System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), res, 0, blobLen);
@@ -214,7 +181,7 @@ public class OSCParser {
 	 * @return a char array with the types of the arguments,
 	 *   or <code>null</code>, in case of no arguments
 	 */
-	private CharSequence readTypes(final Input rawInput) {
+	private CharSequence readTypes(final OSCInput rawInput) {
 		final String typesStr;
 
 		// The next byte should be a ',', but some legacy code may omit it
@@ -238,7 +205,7 @@ public class OSCParser {
 	 * @param type type of the argument to read
 	 * @return a Java representation of the argument
 	 */
-	private Object readArgument(final Input rawInput, final char type) {
+	private Object readArgument(final OSCInput rawInput, final char type) {
 		switch (type) {
 			case 'u' :
 				return readUnsignedInteger(rawInput);
@@ -281,11 +248,11 @@ public class OSCParser {
 	 * Reads a char from the byte stream.
 	 * @return a {@link Character}
 	 */
-	private Character readChar(final Input rawInput) {
+	private Character readChar(final OSCInput rawInput) {
 		return (char) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
 	}
 
-	private BigInteger readBigInteger(final Input rawInput, final int numBytes) {
+	private BigInteger readBigInteger(final OSCInput rawInput, final int numBytes) {
 		final byte[] myBytes = new byte[numBytes];
 		System.arraycopy(rawInput.getBytes(), rawInput.getStreamPosition(), myBytes, 0, numBytes);
 		rawInput.addToStreamPosition(numBytes);
@@ -296,7 +263,7 @@ public class OSCParser {
 	 * Reads a double from the byte stream.
 	 * @return a 64bit precision floating point value
 	 */
-	private Object readDouble(final Input rawInput) {
+	private Object readDouble(final OSCInput rawInput) {
 		final BigInteger doubleBits = readBigInteger(rawInput, 8);
 		return Double.longBitsToDouble(doubleBits.longValue());
 	}
@@ -305,7 +272,7 @@ public class OSCParser {
 	 * Reads a float from the byte stream.
 	 * @return a 32bit precision floating point value
 	 */
-	private Float readFloat(final Input rawInput) {
+	private Float readFloat(final OSCInput rawInput) {
 		final BigInteger floatBits = readBigInteger(rawInput, 4);
 		return Float.intBitsToFloat(floatBits.intValue());
 	}
@@ -314,7 +281,7 @@ public class OSCParser {
 	 * Reads a double precision integer (64 bit integer) from the byte stream.
 	 * @return double precision integer (64 bit)
 	 */
-	private Long readLong(final Input rawInput) {
+	private Long readLong(final OSCInput rawInput) {
 		final BigInteger longintBytes = readBigInteger(rawInput, 8);
 		return longintBytes.longValue();
 	}
@@ -323,7 +290,7 @@ public class OSCParser {
 	 * Reads an Integer (32 bit integer) from the byte stream.
 	 * @return an {@link Integer}
 	 */
-	private Integer readInteger(final Input rawInput) {
+	private Integer readInteger(final OSCInput rawInput) {
 		final BigInteger intBits = readBigInteger(rawInput, 4);
 		return intBits.intValue();
 	}
@@ -334,7 +301,7 @@ public class OSCParser {
 	 * which is licensed under the Public Domain.
 	 * @return single precision, unsigned integer (32 bit) wrapped in a 64 bit integer (long)
 	 */
-	private Long readUnsignedInteger(final Input rawInput) {
+	private Long readUnsignedInteger(final OSCInput rawInput) {
 
 		final int firstByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
 		final int secondByte = (0x000000FF & ((int) rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()]));
@@ -354,7 +321,7 @@ public class OSCParser {
 	 * fractions of a second.
 	 * @return a {@link Date}
 	 */
-	private Date readTimeTag(final Input rawInput) {
+	private Date readTimeTag(final OSCInput rawInput) {
 		final byte[] secondBytes = new byte[8];
 		final byte[] fractionBytes = new byte[8];
 		for (int bi = 0; bi < 4; bi++) {
@@ -412,7 +379,7 @@ public class OSCParser {
 	 * @param pos at which position to start reading
 	 * @return the array that was read
 	 */
-	private List<Object> readArray(final Input rawInput, final CharSequence types, final int pos) {
+	private List<Object> readArray(final OSCInput rawInput, final CharSequence types, final int pos) {
 		int arrayLen = 0;
 		while (types.charAt(pos + arrayLen) != ']') {
 			arrayLen++;
@@ -427,7 +394,7 @@ public class OSCParser {
 	/**
 	 * Get the length of the string currently in the byte stream.
 	 */
-	private int lengthOfCurrentString(final Input rawInput) {
+	private int lengthOfCurrentString(final OSCInput rawInput) {
 		int len = 0;
 		while (rawInput.getBytes()[rawInput.getStreamPosition() + len] != 0) {
 			len++;
@@ -439,7 +406,7 @@ public class OSCParser {
 	 * Move to the next byte with an index in the byte array
 	 * which is dividable by four.
 	 */
-	private void moveToFourByteBoundry(final Input rawInput) {
+	private void moveToFourByteBoundry(final OSCInput rawInput) {
 		// If i am already at a 4 byte boundry, I need to move to the next one
 		final int mod = rawInput.getStreamPosition() % 4;
 		rawInput.addToStreamPosition(4 - mod);
