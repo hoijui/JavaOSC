@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCTimeStamp;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
@@ -28,20 +29,6 @@ import java.util.Date;
  * Iannis Zannos's OSC implementation in Squeak (a Smalltalk dialect).
  */
 public class OSCSerializer {
-
-	/**
-	 * 2208988800 seconds -- includes 17 leap years
-	 */
-	public static final long SECONDS_FROM_1900_TO_1970 = 2208988800L;
-
-	/**
-	 * baseline NTP time if bit-0=0 is 7-Feb-2036 @ 06:28:16 UTC
-	 */
-	protected static final long MSB_0_BASE_TIME = 2085978496000L;
-	/**
-	 * baseline NTP time if bit-0=1 is 1-Jan-1900 @ 01:00:00 UTC
-	 */
-	protected static final long MSB_1_BASE_TIME = -2208988800000L;
 
 	private final SizeTrackingOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
@@ -220,62 +207,24 @@ public class OSCSerializer {
 	 * @param timestamp the timestamp to be written
 	 */
 	void write(final Date timestamp) throws IOException {
-		writeInteger64ToByteArray(javaToNtpTimeStamp(timestamp.getTime()));
+		write(OSCTimeStamp.valueOf(timestamp));
 	}
 
 	/**
-	 * Convert the time-tag (a Java Date) into the OSC byte stream.
+	 * @param timeStamp the timestamp to be written
+	 */
+	void write(final OSCTimeStamp timeStamp) throws IOException {
+		writeInteger64ToByteArray(timeStamp.getNtpTime());
+	}
+
+	/**
+	 * Convert the time-tag into the OSC byte stream.
 	 * Used Internally.
 	 * @param stream where to write the time-tag to
+	 * @deprecated use {@link #write(OSCTimeStamp)} instead
 	 */
-	private void writeBundleTimestamp(final Date timestamp) throws IOException {
-		if ((null == timestamp) || (timestamp.equals(OSCBundle.TIMESTAMP_IMMEDIATE))) {
-			write((int) 0);
-			write((int) 1);
-			return;
-		}
-
-		final long millisecs = timestamp.getTime();
-		final long secsSince1970 = (long) (millisecs / 1000);
-		final long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
-
-		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
-		final long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
-
-		write((int) secs);
-		write((int) fraction);
-	}
-
-	/**
-	 * Converts a Java time-stamp to a 64-bit NTP time representation.
-	 * This code was copied in from the "Apache Jakarta Commons - Net" library,
-	 * which is licensed under the
-	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">ASF 2.0 license</a>.
-	 * The original source file can be found
-	 * <a href="http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co">here</a>.
-	 * @param javaTime Java time-stamp, as returned by {@link Date#getTime()}
-	 * @return NTP time-stamp representation of the Java time value.
-	 */
-	protected static long javaToNtpTimeStamp(final long javaTime) {
-		final boolean useBase1 = javaTime < MSB_0_BASE_TIME; // time < Feb-2036
-		final long baseTime;
-		if (useBase1) {
-			baseTime = javaTime - MSB_1_BASE_TIME; // dates <= Feb-2036
-		} else {
-			// if base0 needed for dates >= Feb-2036
-			baseTime = javaTime - MSB_0_BASE_TIME;
-		}
-
-		long seconds = baseTime / 1000;
-		final long fraction = ((baseTime % 1000) * 0x100000000L) / 1000;
-
-		if (useBase1) {
-			seconds |= 0x80000000L; // set high-order bit if msb1baseTime 1900 used
-		}
-
-		final long ntpTime = seconds << 32 | fraction;
-
-		return ntpTime;
+	private void writeBundleTimestamp(final OSCTimeStamp timestamp) throws IOException {
+		write(timestamp == null ? OSCTimeStamp.IMMEDIATE : timestamp);
 	}
 
 	/**
@@ -344,6 +293,8 @@ public class OSCSerializer {
 			write((Integer) anObject);
 		} else if (anObject instanceof Long) {
 			write((Long) anObject);
+		} else if (anObject instanceof OSCTimeStamp) {
+			write((OSCTimeStamp) anObject);
 		} else if (anObject instanceof Date) {
 			write((Date) anObject);
 		} else if (!isNoDataObject(anObject)) {
@@ -365,7 +316,7 @@ public class OSCSerializer {
 			stream.write('i');
 		} else if (Long.class.equals(typeClass)) {
 			stream.write('h');
-		} else if (Date.class.equals(typeClass)) {
+		} else if (Date.class.equals(typeClass) || OSCTimeStamp.class.equals(typeClass)) {
 			stream.write('t');
 		} else if (Float.class.equals(typeClass)) {
 			stream.write('f');

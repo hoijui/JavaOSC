@@ -22,12 +22,12 @@ import org.junit.Test;
  */
 public class OSCBundleTest {
 
-	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) throws IOException {
+	private void sendBundleTimestampTestHelper(final OSCBundle bundle, final OSCTimeStamp expectedTimestamp) throws IOException {
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
-			Assert.fail("Send Bundle did not receive the correct timestamp " + reparsedBundle.getTimestamp()
-				+ "(" + reparsedBundle.getTimestamp().getTime() +
-				") (should be " + expectedTimestamp +"( " + expectedTimestamp.getTime() + ")) ");
+			Assert.fail("Send Bundle did not receive the correct timestamp "
+					+ reparsedBundle.getTimestamp().getNtpTime()
+					+ " (should be " + expectedTimestamp.getNtpTime() + ")");
 		}
 		List<OSCPacket> packets = reparsedBundle.getPackets();
 		OSCMessage msg = (OSCMessage) packets.get(0);
@@ -38,7 +38,8 @@ public class OSCBundleTest {
 
 	@Test
 	public void testSendBundle() throws IOException {
-		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		final Date timeNow = GregorianCalendar.getInstance().getTime();
+		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
@@ -50,27 +51,29 @@ public class OSCBundleTest {
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
-		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
 	}
 
 	@Test
 	public void testSendBundleImmediateExplicit() throws IOException {
-		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		final Date timeNow = GregorianCalendar.getInstance().getTime();
+		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
-		bundle.setTimestamp(OSCBundle.TIMESTAMP_IMMEDIATE);
-		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
+		bundle.setTimestamp(OSCTimeStamp.IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
 	}
 
 	@Test
 	public void testSendBundleImmediateExplicitNull() throws IOException {
-		Date timestampNow = GregorianCalendar.getInstance().getTime();
+		final Date timeNow = GregorianCalendar.getInstance().getTime();
+		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
 		bundle.setTimestamp(null);
-		sendBundleTimestampTestHelper(bundle, OSCBundle.TIMESTAMP_IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
 	}
 
 	@Test

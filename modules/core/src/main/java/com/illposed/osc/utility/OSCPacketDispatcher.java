@@ -13,7 +13,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import java.util.Date;
+import com.illposed.osc.OSCTimeStamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class OSCPacketDispatcher {
 		dispatchPacket(packet, null);
 	}
 
-	public void dispatchPacket(final OSCPacket packet, final Date timestamp) {
+	public void dispatchPacket(final OSCPacket packet, final OSCTimeStamp timestamp) {
 		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
 		} else {
@@ -54,14 +54,14 @@ public class OSCPacketDispatcher {
 	}
 
 	private void dispatchBundle(final OSCBundle bundle) {
-		final Date timestamp = bundle.getTimestamp();
+		final OSCTimeStamp timestamp = bundle.getTimestamp();
 		final List<OSCPacket> packets = bundle.getPackets();
 		for (final OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
 		}
 	}
 
-	private void dispatchMessage(final OSCMessage message, final Date time) {
+	private void dispatchMessage(final OSCMessage message, final OSCTimeStamp time) {
 		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message.getAddress())) {
 				addrList.getValue().acceptMessage(time, message);

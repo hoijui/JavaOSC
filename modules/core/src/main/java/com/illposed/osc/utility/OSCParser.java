@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCTimeStamp;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
@@ -15,7 +16,6 @@ import com.illposed.osc.OSCPacket;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -105,7 +105,7 @@ public class OSCParser {
 	private OSCBundle convertBundle(final OSCInput rawInput) {
 		// skip the "#bundle " stuff
 		rawInput.addToStreamPosition(BUNDLE_START.length() + 1);
-		final Date timestamp = readTimeTag(rawInput);
+		final OSCTimeStamp timestamp = readTimeTag(rawInput);
 		final OSCBundle bundle = new OSCBundle(timestamp);
 		final OSCParser myConverter = new OSCParser();
 		myConverter.setCharset(charset);
@@ -315,62 +315,16 @@ public class OSCParser {
 	}
 
 	/**
-	 * Reads the time tag and convert it to a Java Date object.
+	 * Reads the time tag and convert it to an OSCTimeStamp, which can be converted to
+	 * a Java Date object.
 	 * A timestamp is a 64 bit number representing the time in NTP format.
 	 * The first 32 bits are seconds since 1900, the second 32 bits are
 	 * fractions of a second.
-	 * @return a {@link Date}
+	 * @return
 	 */
-	private Date readTimeTag(final OSCInput rawInput) {
-		final byte[] secondBytes = new byte[8];
-		final byte[] fractionBytes = new byte[8];
-		for (int bi = 0; bi < 4; bi++) {
-			// clear the higher order 4 bytes
-			secondBytes[bi] = 0;
-			fractionBytes[bi] = 0;
-		}
-		// while reading in the seconds & fraction, check if
-		// this timetag has immediate semantics
-		boolean isImmediate = true;
-		for (int bi = 4; bi < 8; bi++) {
-			secondBytes[bi] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
-			if (secondBytes[bi] > 0) {
-				isImmediate = false;
-			}
-		}
-		for (int bi = 4; bi < 8; bi++) {
-			fractionBytes[bi] = rawInput.getBytes()[rawInput.getAndIncreaseStreamPositionByOne()];
-			if (bi < 7) {
-				if (fractionBytes[bi] > 0) {
-					isImmediate = false;
-				}
-			} else {
-				if (fractionBytes[bi] > 1) {
-					isImmediate = false;
-				}
-			}
-		}
-
-		if (isImmediate) {
-			return OSCBundle.TIMESTAMP_IMMEDIATE;
-		}
-
-		final long secsSince1900 = new BigInteger(secondBytes).longValue();
-		long secsSince1970 = secsSince1900 - OSCSerializer.SECONDS_FROM_1900_TO_1970;
-
-		// no point maintaining times in the distant past
-		if (secsSince1970 < 0) {
-			secsSince1970 = 0;
-		}
-		long fraction = new BigInteger(fractionBytes).longValue();
-
-		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
-		fraction = (fraction * 1000) / 0x100000000L;
-
-		// I do not know where, but I'm losing 1ms somewhere...
-		fraction = (fraction > 0) ? fraction + 1 : 0;
-		final long millisecs = (secsSince1970 * 1000) + fraction;
-		return new Date(millisecs);
+	private OSCTimeStamp readTimeTag(final OSCInput rawInput) {
+		final long ntpTime = readLong(rawInput);
+		return OSCTimeStamp.valueOf(ntpTime);
 	}
 
 	/**

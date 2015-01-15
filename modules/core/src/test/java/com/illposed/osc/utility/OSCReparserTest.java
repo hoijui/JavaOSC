@@ -8,7 +8,7 @@
 
 package com.illposed.osc.utility;
 
-import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCTimeStamp;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
@@ -124,13 +124,22 @@ public class OSCReparserTest {
 	@Test
 	public void testArgumentDate() throws IOException {
 
-		reparseSingleArgument(OSCBundle.TIMESTAMP_IMMEDIATE);
-		reparseSingleArgument(new Date());
-		reparseSingleArgument(new Date(Long.MIN_VALUE));
-		reparseSingleArgument(new Date(-1L));
-		reparseSingleArgument(new Date(0L));
-		reparseSingleArgument(new Date(1L));
-		reparseSingleArgument(new Date(Long.MAX_VALUE));
+		reparseSingleArgument(OSCTimeStamp.valueOf(OSCTimeStamp.IMMEDIATE_DATE));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date()));
+//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MIN_VALUE))); // out of NTP time-stamp range
+//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.NTP_RANGE_MIN.getTime() - 1))); // out of NTP time-stamp range
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime())));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 2)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1000000)));
+//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(-1L))); // out of NTP time-stamp range
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(0L)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(1L)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1000000)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1)));
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime())));
+//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.NTP_RANGE_MAX.getTime() + 1))); // out of NTP time-stamp range
+//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MAX_VALUE))); // out of NTP time-stamp range
 	}
 
 	@Test

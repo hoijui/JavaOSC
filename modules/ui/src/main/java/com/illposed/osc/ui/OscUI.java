@@ -14,6 +14,7 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortOut;
+import com.illposed.osc.OSCTimeStamp;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -620,7 +621,7 @@ public class OscUI extends JPanel {
 		time = time + delayTime.longValue();
 		newDate.setTime(time);
 
-		OSCBundle bundle = new OSCBundle(packets, newDate);
+		OSCBundle bundle = new OSCBundle(packets, OSCTimeStamp.valueOf(newDate));
 
 		try {
 			oscPort.send(bundle);
