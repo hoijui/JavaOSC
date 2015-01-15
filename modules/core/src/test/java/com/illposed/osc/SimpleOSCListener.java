@@ -8,14 +8,12 @@
 
 package com.illposed.osc;
 
-import java.util.Date;
-
 public class SimpleOSCListener implements OSCListener {
 
 	private boolean messageReceived = false;
-	private Date receivedTimestamp = null;
+	private OSCTimeStamp receivedTimestamp = null;
 
-	public Date getReceivedTimestamp() {
+	public OSCTimeStamp getReceivedTimestamp() {
 		return receivedTimestamp;
 	}
 
@@ -24,7 +22,7 @@ public class SimpleOSCListener implements OSCListener {
 	}
 
 	@Override
-	public void acceptMessage(Date time, OSCMessage message) {
+	public void acceptMessage(final OSCTimeStamp time, final OSCMessage message) {
 		messageReceived = true;
 		receivedTimestamp = time;
 	}

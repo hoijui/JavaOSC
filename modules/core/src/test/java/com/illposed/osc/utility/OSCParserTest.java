@@ -11,7 +11,7 @@ package com.illposed.osc.utility;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import java.util.Date;
+import com.illposed.osc.OSCTimeStamp;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -99,8 +99,8 @@ public class OSCParserTest {
 		final byte[] bytes = {0x23, 0x62, 0x75, 0x6E, 0x64, 0x6C, 0x65, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0x0C, 0X2F, 0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0x2C, 0, 0, 0};
 
 		final OSCBundle bundle = (OSCBundle) converter.convert(bytes, bytes.length);
-		if (!bundle.getTimestamp().equals(OSCBundle.TIMESTAMP_IMMEDIATE)) {
-			Assert.fail("Timestamp should be TIMESTAMP_IMMEDIATE, but is " + bundle.getTimestamp());
+		if (!bundle.getTimestamp().equals(OSCTimeStamp.IMMEDIATE)) {
+			Assert.fail("Timestamp should be IMMEDIATE, but is " + bundle.getTimestamp());
 		}
 		final List<OSCPacket> packets = bundle.getPackets();
 		if (packets.size() != 1) {

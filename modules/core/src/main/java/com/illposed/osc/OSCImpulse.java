@@ -8,6 +8,8 @@
 
 package com.illposed.osc;
 
+import java.io.Serializable;
+
 /**
  * An OSC 1.0 optional, and OSC 1.1 required argument type.
  * Impulse aka "bang", is used for event triggers.
@@ -19,9 +21,11 @@ package com.illposed.osc;
  * msg.addArgument(OSCImpulse.INSTANCE);
  * }</pre></blockquote>
  */
-public final class OSCImpulse {
+public final class OSCImpulse implements Serializable {
 
 	public static final OSCImpulse INSTANCE = new OSCImpulse();
+
+	private static final long serialVersionUID = 1L;
 
 	private OSCImpulse() {}
 }

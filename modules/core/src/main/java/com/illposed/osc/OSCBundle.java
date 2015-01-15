@@ -11,7 +11,6 @@ package com.illposed.osc;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,13 +27,7 @@ import java.util.List;
  */
 public class OSCBundle implements OSCPacket {
 
-	/**
-	 * The Java representation of an OSC timestamp with the semantics of
-	 * "immediately".
-	 */
-	public static final Date TIMESTAMP_IMMEDIATE = new Date(0);
-
-	private Date timestamp;
+	private OSCTimeStamp timestamp;
 	private List<OSCPacket> packets;
 
 	/**
@@ -42,14 +35,14 @@ public class OSCBundle implements OSCPacket {
 	 * You can add packets to the bundle with addPacket()
 	 */
 	public OSCBundle() {
-		this(TIMESTAMP_IMMEDIATE);
+		this(OSCTimeStamp.IMMEDIATE);
 	}
 
 	/**
 	 * Create an OSCBundle with the specified timestamp.
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final Date timestamp) {
+	public OSCBundle(final OSCTimeStamp timestamp) {
 		this(null, timestamp);
 	}
 
@@ -59,7 +52,7 @@ public class OSCBundle implements OSCPacket {
 	 * @param packets array of OSCPackets to initialize this object with
 	 */
 	public OSCBundle(final Collection<OSCPacket> packets) {
-		this(packets, TIMESTAMP_IMMEDIATE);
+		this(packets, OSCTimeStamp.IMMEDIATE);
 	}
 
 	/**
@@ -67,34 +60,30 @@ public class OSCBundle implements OSCPacket {
 	 * @param packets the packets that make up the bundle
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final Collection<OSCPacket> packets, final Date timestamp) {
+	public OSCBundle(final Collection<OSCPacket> packets, final OSCTimeStamp timestamp) {
 
 		if (null == packets) {
 			this.packets = new LinkedList<OSCPacket>();
 		} else {
 			this.packets = new ArrayList<OSCPacket>(packets);
 		}
-		this.timestamp = clone(timestamp);
-	}
-
-	private static Date clone(final Date toBeCloned) {
-		return (toBeCloned == null) ? toBeCloned : (Date) toBeCloned.clone();
+		this.timestamp = timestamp;
 	}
 
 	/**
 	 * Return the time the bundle will execute.
 	 * @return a Date
 	 */
-	public Date getTimestamp() {
-		return clone(timestamp);
+	public OSCTimeStamp getTimestamp() {
+		return timestamp;
 	}
 
 	/**
 	 * Set the time the bundle will execute.
-	 * @param timestamp Date
+	 * @param timestamp when the bundle should execute, <code>null</code> means IMMEDIATE
 	 */
-	public void setTimestamp(final Date timestamp) {
-		this.timestamp = clone(timestamp);
+	public void setTimestamp(final OSCTimeStamp timestamp) {
+		this.timestamp = timestamp;
 	}
 
 	/**
