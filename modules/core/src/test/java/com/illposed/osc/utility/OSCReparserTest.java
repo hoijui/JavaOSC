@@ -52,7 +52,7 @@ public class OSCReparserTest {
 		return (T) parse(serialize(packet));
 	}
 
-	private void reparseSingleArgument(final Object argument, final Comparator comparator)
+	private <C, I extends C, O extends C> void reparseSingleArgument(final I argument, final Comparator<C> comparator)
 			throws IOException
 	{
 		final OSCMessage message = new OSCMessage("/hello/world");
@@ -60,7 +60,7 @@ public class OSCReparserTest {
 
 		final OSCMessage reparsedMessage = reparse(message);
 
-		final Object reparsedArgument = reparsedMessage.getArguments().iterator().next();
+		final O reparsedArgument = (O) reparsedMessage.getArguments().iterator().next();
 		if (comparator.compare(argument, reparsedArgument) != 0) {
 			Assert.fail("Failed to reparse argument of type " + argument.getClass()
 					+ ". The original was:\n" + argument.toString()
