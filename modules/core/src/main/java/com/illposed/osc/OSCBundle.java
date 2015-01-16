@@ -19,13 +19,12 @@ import java.util.List;
  * A bundle represents a collection of OSC packets
  * (either messages or other bundles)
  * and has a time-tag which can be used by a scheduler to execute
- * a bundle in the future,
- * instead of immediately.
+ * a bundle in the future, instead of immediately.
  * {@link OSCMessage}s are executed immediately.
  *
  * Bundles should be used if you want to send multiple messages to be executed
- * atomically together, or you want to schedule one or more messages to be
- * executed in the future.
+ * as soon as possible and in immediate succession to each other,
+ * or you want to schedule one or more messages to be executed in the future.
  */
 public class OSCBundle implements OSCPacket {
 
