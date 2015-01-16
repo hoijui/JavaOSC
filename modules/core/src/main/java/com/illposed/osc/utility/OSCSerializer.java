@@ -234,7 +234,7 @@ public class OSCSerializer {
 	void write(final String aString) throws IOException {
 		final byte[] stringBytes = aString.getBytes(charset);
 		stream.write(stringBytes);
-		stream.write(0);
+		stream.write((byte) 0);
 		alignStream();
 	}
 
