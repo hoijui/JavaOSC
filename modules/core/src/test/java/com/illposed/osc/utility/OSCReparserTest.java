@@ -89,6 +89,9 @@ public class OSCReparserTest {
 		reparseSingleArgument(new byte[] {0}, byteArrayComparator);
 		reparseSingleArgument(new byte[] {1}, byteArrayComparator);
 		reparseSingleArgument(new byte[] {Byte.MAX_VALUE}, byteArrayComparator);
+		reparseSingleArgument(new byte[] {-1, 1}, byteArrayComparator);
+		reparseSingleArgument(new byte[] {-1, 0, 1}, byteArrayComparator);
+		reparseSingleArgument(new byte[] {-2, -1, 1, 2}, byteArrayComparator);
 		reparseSingleArgument(new byte[] {-2, -1, 0, 1, 2}, byteArrayComparator);
 	}
 
