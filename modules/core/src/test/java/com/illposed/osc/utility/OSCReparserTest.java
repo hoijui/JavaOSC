@@ -193,11 +193,20 @@ public class OSCReparserTest {
 	@Test
 	public void testArgumentString() throws IOException {
 
+		// test the empty string
 		reparseSingleArgument("");
+		// test different "character types"
 		reparseSingleArgument("hello");
 		reparseSingleArgument("HELLO");
 		reparseSingleArgument("12345");
 		reparseSingleArgument("!@#$%");
+		// test different lengths
+		reparseSingleArgument("");
+		reparseSingleArgument("1");
+		reparseSingleArgument("12");
+		reparseSingleArgument("123");
+		reparseSingleArgument("1234");
+		reparseSingleArgument("12345");
 		// TODO test different charset encodings
 	}
 
