@@ -57,8 +57,7 @@ public class OSCParserTest {
 	}
 
 	/**
-	 * We test this here instead of in OSCReparserTest, because we do not yet have
-	 * a way to send unsigned 32bit integers, because Java has no primitive data-type matching it.
+	 * @see OSCReparserTest#testArgumentUnsignedInteger()
 	 */
 	@Test
 	public void testReadUnsignedInteger() {
