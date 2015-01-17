@@ -12,6 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCTimeStamp;
+import com.illposed.osc.OSCUnsigned;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -49,7 +50,8 @@ public class OSCParserTest {
 			(byte) (given32bitUnsigned >>  8 & 0xFFL),
 			(byte) (given32bitUnsigned       & 0xFFL)};
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
-		final long parsed32bitUnsigned = (Long) packet.getArguments().get(0);
+		final OSCUnsigned unsigned = (OSCUnsigned) packet.getArguments().get(0);
+		final long parsed32bitUnsigned = unsigned.toLong();
 		Assert.assertEquals("Failed parsing 32bit unsinged ('u') value",
 				given32bitUnsigned, parsed32bitUnsigned);
 	}

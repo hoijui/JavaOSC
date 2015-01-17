@@ -12,6 +12,7 @@ import com.illposed.osc.OSCTimeStamp;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCUnsigned;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
@@ -181,6 +182,24 @@ public class OSCReparserTest {
 		reparseSingleArgument(0);
 		reparseSingleArgument(1);
 		reparseSingleArgument(Integer.MAX_VALUE);
+	}
+
+	@Test
+	public void testArgumentUnsignedInteger() throws IOException {
+
+		reparseSingleArgument(OSCUnsigned.valueOf(0x0L));
+		reparseSingleArgument(OSCUnsigned.valueOf(0x1L));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFL));
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFL));
+//		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
+//		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
+//		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)); // 36bit -> out of range!
 	}
 
 	@Test
