@@ -184,6 +184,10 @@ public class OSCReparserTest {
 		reparseSingleArgument(Integer.MAX_VALUE);
 	}
 
+	/**
+	 * @see OSCParserTest#testReadUnsignedInteger()
+	 * @throws IOException if something went wrong while serializing or (re-)parsing
+	 */
 	@Test
 	public void testArgumentUnsignedInteger() throws IOException {
 
