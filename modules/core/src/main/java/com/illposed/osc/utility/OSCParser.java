@@ -13,6 +13,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCUnsigned;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
@@ -319,18 +320,12 @@ public class OSCParser {
 	 * which is licensed under the Public Domain.
 	 * @return single precision, unsigned integer (32 bit) wrapped in a 64 bit integer (long)
 	 */
-	private Long readUnsignedInteger(final ByteBuffer rawInput) {
-
-		// TODO here we could probably use short's instead of int's (or even byte's?)
-		final int firstByte = (0x000000FF & ((int) rawInput.get()));
-		final int secondByte = (0x000000FF & ((int) rawInput.get()));
-		final int thirdByte = (0x000000FF & ((int) rawInput.get()));
-		final int fourthByte = (0x000000FF & ((int) rawInput.get()));
-		return ((long) (firstByte << 24
-				| secondByte << 16
-				| thirdByte << 8
-				| fourthByte))
-				& 0xFFFFFFFFL;
+	private OSCUnsigned readUnsignedInteger(final ByteBuffer rawInput) {
+		return OSCUnsigned.valueOf(new byte[] {
+				rawInput.get(),
+				rawInput.get(),
+				rawInput.get(),
+				rawInput.get()});
 	}
 
 	/**

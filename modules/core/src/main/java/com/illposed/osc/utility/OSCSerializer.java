@@ -13,6 +13,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCUnsigned;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -228,6 +229,18 @@ public class OSCSerializer {
 	}
 
 	/**
+	 * @param int32unsigned the unsigned value to be written
+	 */
+	void write(final OSCUnsigned int32unsigned) throws IOException {
+
+		final long asLong = int32unsigned.toLong();
+		stream.write((byte) (asLong >> 24 & 0xFFL));
+		stream.write((byte) (asLong >> 16 & 0xFFL));
+		stream.write((byte) (asLong >>  8 & 0xFFL));
+		stream.write((byte) (asLong       & 0xFFL));
+	}
+
+	/**
 	 * Write a string into the byte stream.
 	 * @param aString the string to be written
 	 */
@@ -295,6 +308,8 @@ public class OSCSerializer {
 			write((Long) anObject);
 		} else if (anObject instanceof OSCTimeStamp) {
 			write((OSCTimeStamp) anObject);
+		} else if (anObject instanceof OSCUnsigned) {
+			write((OSCUnsigned) anObject);
 		} else if (anObject instanceof Date) {
 			write((Date) anObject);
 		} else if (!isNoDataObject(anObject)) {
@@ -330,6 +345,8 @@ public class OSCSerializer {
 			stream.write('c');
 		} else if (OSCImpulse.class.equals(typeClass)) {
 			stream.write('I');
+		} else if (OSCUnsigned.class.equals(typeClass)) {
+			stream.write('u');
 		} else {
 			throw new UnsupportedOperationException("Do not know the OSC type for the java class: "
 					+ typeClass);
