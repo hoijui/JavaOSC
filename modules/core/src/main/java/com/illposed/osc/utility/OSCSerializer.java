@@ -339,6 +339,7 @@ public class OSCSerializer {
 	/**
 	 * Write the types for an array element in the arguments.
 	 * @param arguments array of base Objects
+	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
 	private void writeTypesArray(final Collection<Object> arguments) throws IOException {
 
@@ -370,6 +371,7 @@ public class OSCSerializer {
 	/**
 	 * Write types for the arguments.
 	 * @param arguments  the arguments to an OSCMessage
+	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
 	public void writeTypes(final Collection<Object> arguments) throws IOException {
 
