@@ -290,7 +290,6 @@
 						</rulesets>
 						<excludes>
 							<exclude>com/illposed/osc/OSCTimeStamp.java</exclude>
-							<exclude>com/illposed/osc/utility/OSCInput.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCParser.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCSerializer.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCPatternAddressSelector.java</exclude>
