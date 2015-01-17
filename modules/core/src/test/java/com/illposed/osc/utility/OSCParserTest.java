@@ -41,6 +41,41 @@ public class OSCParserTest {
 		}
 	}
 
+	private void checkReadUnsignedInteger(final long given32bitUnsigned) {
+
+		final byte[] bytes = {47, 0, 0, 0, 44, 117, 0, 0,
+			(byte) (given32bitUnsigned >> 24 & 0xFFL),
+			(byte) (given32bitUnsigned >> 16 & 0xFFL),
+			(byte) (given32bitUnsigned >>  8 & 0xFFL),
+			(byte) (given32bitUnsigned       & 0xFFL)};
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes, bytes.length);
+		final long parsed32bitUnsigned = (Long) packet.getArguments().get(0);
+		Assert.assertEquals("Failed parsing 32bit unsinged ('u') value",
+				given32bitUnsigned, parsed32bitUnsigned);
+	}
+
+	/**
+	 * We test this here instead of in OSCReparserTest, because we do not yet have
+	 * a way to send unsigned 32bit integers, because Java has no primitive data-type matching it.
+	 */
+	@Test
+	public void testReadUnsignedInteger() {
+
+		checkReadUnsignedInteger(0x0L);
+		checkReadUnsignedInteger(0x1L);
+		checkReadUnsignedInteger(0xFL);
+		checkReadUnsignedInteger(0xFFL);
+		checkReadUnsignedInteger(0xFFFL);
+		checkReadUnsignedInteger(0xFFFFL);
+		checkReadUnsignedInteger(0xFFFFFL);
+		checkReadUnsignedInteger(0xFFFFFFL);
+		checkReadUnsignedInteger(0xFFFFFFFL);
+		checkReadUnsignedInteger(0xFFFFFFFFL);
+//		checkReadUnsignedInteger(0x100000000L); // 33bit -> out of range!
+//		checkReadUnsignedInteger(0x1FFFFFFFFL); // 33bit -> out of range!
+//		checkReadUnsignedInteger(0xFFFFFFFFFL); // 36bit -> out of range!
+	}
+
 	@Test
 	public void testReadShortestPacketWithoutArgumentsSeparator() {
 		// This pakcet ommits the character (',') that separates address
