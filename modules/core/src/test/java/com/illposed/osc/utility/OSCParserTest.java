@@ -57,24 +57,71 @@ public class OSCParserTest {
 	}
 
 	/**
-	 * @see OSCReparserTest#testArgumentUnsignedInteger()
+	 * @see OSCReparserTest#testArgumentUnsignedInteger0()
 	 */
 	@Test
-	public void testReadUnsignedInteger() {
-
+	public void testReadUnsignedInteger0() {
 		checkReadUnsignedInteger(0x0L);
+	}
+
+	@Test
+	public void testReadUnsignedInteger1() {
 		checkReadUnsignedInteger(0x1L);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerF() {
 		checkReadUnsignedInteger(0xFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFF() {
 		checkReadUnsignedInteger(0xFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFF() {
 		checkReadUnsignedInteger(0xFFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFFF() {
 		checkReadUnsignedInteger(0xFFFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFFFF() {
 		checkReadUnsignedInteger(0xFFFFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFFFFF() {
 		checkReadUnsignedInteger(0xFFFFFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFFFFFF() {
 		checkReadUnsignedInteger(0xFFFFFFFL);
+	}
+
+	@Test
+	public void testReadUnsignedIntegerFFFFFFFF() {
 		checkReadUnsignedInteger(0xFFFFFFFFL);
-//		checkReadUnsignedInteger(0x100000000L); // 33bit -> out of range!
-//		checkReadUnsignedInteger(0x1FFFFFFFFL); // 33bit -> out of range!
-//		checkReadUnsignedInteger(0xFFFFFFFFFL); // 36bit -> out of range!
+	}
+
+	@Test(expected=AssertionError.class)
+	public void testReadUnsignedInteger100000000() {
+		checkReadUnsignedInteger(0x100000000L); // 33bit -> out of range!
+	}
+
+	@Test(expected=AssertionError.class)
+	public void testReadUnsignedInteger1FFFFFFFF() {
+		checkReadUnsignedInteger(0x1FFFFFFFFL); // 33bit -> out of range!
+	}
+
+	@Test(expected=AssertionError.class)
+	public void testReadUnsignedIntegerFFFFFFFFF() {
+		checkReadUnsignedInteger(0xFFFFFFFFFL); // 36bit -> out of range!
 	}
 
 	@Test
