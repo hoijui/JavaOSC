@@ -175,12 +175,27 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentInteger() throws IOException {
-
+	public void testArgumentIntegerMin() throws IOException {
 		reparseSingleArgument(Integer.MIN_VALUE);
+	}
+
+	@Test
+	public void testArgumentIntegerMinus1() throws IOException {
 		reparseSingleArgument(-1);
+	}
+
+	@Test
+	public void testArgumentInteger0() throws IOException {
 		reparseSingleArgument(0);
+	}
+
+	@Test
+	public void testArgumentInteger1() throws IOException {
 		reparseSingleArgument(1);
+	}
+
+	@Test
+	public void testArgumentIntegerMax() throws IOException {
 		reparseSingleArgument(Integer.MAX_VALUE);
 	}
 
