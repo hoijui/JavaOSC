@@ -189,17 +189,52 @@ public class OSCReparserTest {
 	 * @throws IOException if something went wrong while serializing or (re-)parsing
 	 */
 	@Test
-	public void testArgumentUnsignedInteger() throws IOException {
-
+	public void testArgumentUnsignedInteger0() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x0L));
+	}
+
+	@Test
+	public void testArgumentUnsignedInteger1() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x1L));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFFFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFL));
+	}
+
+	@Test
+	public void testArgumentUnsignedIntegerFFFFFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFL));
 //		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
 //		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
