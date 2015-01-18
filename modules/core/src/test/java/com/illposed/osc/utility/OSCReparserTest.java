@@ -165,24 +165,83 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentDate() throws IOException {
-
+	public void testArgumentDateImmediate() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(OSCTimeStamp.IMMEDIATE_DATE));
+	}
+
+	@Test
+	public void testArgumentDateNow() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date()));
-//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MIN_VALUE))); // out of NTP time-stamp range
-//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.NTP_RANGE_MIN.getTime() - 1))); // out of NTP time-stamp range
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentDateLongMin() throws IOException {
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MIN_VALUE))); // out of NTP time-stamp range
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentDateMinMinus1() throws IOException {
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() - 1))); // out of NTP time-stamp range
+	}
+
+	@Test
+	public void testArgumentDateMin() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime())));
+	}
+
+	@Test
+	public void testArgumentDateMinPlus1() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1)));
+	}
+
+	@Test
+	public void testArgumentDateMinPlus2() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 2)));
+	}
+
+	@Test
+	public void testArgumentDateMinPlus1000000() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1000000)));
-//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(-1L))); // out of NTP time-stamp range
+	}
+
+	@Test
+	public void testArgumentDateLongMinus1() throws IOException {
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(-1L)));
+	}
+
+	@Test
+	public void testArgumentDateLong0() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(0L)));
+	}
+
+	@Test
+	public void testArgumentDateLong1() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(1L)));
+	}
+
+	@Test
+	public void testArgumentDateMaxMinus1000000() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1000000)));
+	}
+
+	@Test
+	public void testArgumentDateMaxMinus1() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1)));
+	}
+
+	@Test
+	public void testArgumentDateMax() throws IOException {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime())));
-//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.NTP_RANGE_MAX.getTime() + 1))); // out of NTP time-stamp range
-//		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MAX_VALUE))); // out of NTP time-stamp range
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentDateMaxPlus1() throws IOException {
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() + 1))); // out of NTP time-stamp range
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentDateLongMax() throws IOException {
+		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MAX_VALUE))); // out of NTP time-stamp range
 	}
 
 	@Test
