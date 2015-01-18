@@ -161,16 +161,47 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentFloat() throws IOException {
-
+	public void testArgumentFloatMin() throws IOException {
 		reparseSingleArgument(Float.MIN_VALUE);
+	}
+
+	@Test
+	public void testArgumentFloatMinus1() throws IOException {
 		reparseSingleArgument(-1.0f);
+	}
+
+	@Test
+	public void testArgumentFloat0() throws IOException {
 		reparseSingleArgument(0.0f);
+	}
+
+	@Test
+	public void testArgumentFloat1() throws IOException {
 		reparseSingleArgument(1.0f);
+	}
+
+	@Test
+	public void testArgumentFloatMax() throws IOException {
 		reparseSingleArgument(Float.MAX_VALUE);
+	}
+
+	@Test
+	public void testArgumentFloatMinNormal() throws IOException {
 		reparseSingleArgument(Float.MIN_NORMAL);
+	}
+
+	@Test
+	public void testArgumentFloatNegativeInfinity() throws IOException {
 		reparseSingleArgument(Float.NEGATIVE_INFINITY);
+	}
+
+	@Test
+	public void testArgumentFloatNan() throws IOException {
 		reparseSingleArgument(Float.NaN);
+	}
+
+	@Test
+	public void testArgumentFloatPositiveInfinity() throws IOException {
 		reparseSingleArgument(Float.POSITIVE_INFINITY);
 	}
 
