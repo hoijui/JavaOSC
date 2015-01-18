@@ -269,12 +269,27 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentLong() throws IOException {
-
+	public void testArgumentLongMin() throws IOException {
 		reparseSingleArgument(Long.MIN_VALUE);
+	}
+
+	@Test
+	public void testArgumentLongMinus1() throws IOException {
 		reparseSingleArgument(-1L);
+	}
+
+	@Test
+	public void testArgumentLong0() throws IOException {
 		reparseSingleArgument(0L);
+	}
+
+	@Test
+	public void testArgumentLong1() throws IOException {
 		reparseSingleArgument(1L);
+	}
+
+	@Test
+	public void testArgumentLongMax() throws IOException {
 		reparseSingleArgument(Long.MAX_VALUE);
 	}
 
