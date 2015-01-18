@@ -360,7 +360,7 @@ public class OSCReparserTest {
 	}
 
 	/**
-	 * @see OSCParserTest#testReadUnsignedInteger()
+	 * @see OSCParserTest#testReadUnsignedInteger0()
 	 * @throws IOException if something went wrong while serializing or (re-)parsing
 	 */
 	@Test
