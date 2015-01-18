@@ -35,7 +35,8 @@ public class BenchmarkHashMapVsElseIf {
 
 		JAVA_CLASS_TO_OSC_TYPE = Collections.unmodifiableMap(classToType);
 	}
-	private static final List<Class> JAVA_CLASSES = new ArrayList<Class>(JAVA_CLASS_TO_OSC_TYPE.keySet());
+	private static final List<Class> JAVA_CLASSES
+			= new ArrayList<Class>(JAVA_CLASS_TO_OSC_TYPE.keySet());
 	private static final Random TYPE_GENERATOR_RND = new Random();
 
 	public static void main(String[] args) {

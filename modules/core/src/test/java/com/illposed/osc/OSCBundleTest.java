@@ -22,7 +22,11 @@ import org.junit.Test;
  */
 public class OSCBundleTest {
 
-	private void sendBundleTimestampTestHelper(final OSCBundle bundle, final OSCTimeStamp expectedTimestamp) throws IOException {
+	private void sendBundleTimestampTestHelper(
+			final OSCBundle bundle,
+			final OSCTimeStamp expectedTimestamp)
+			throws IOException
+	{
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
 			Assert.fail("Send Bundle did not receive the correct timestamp "

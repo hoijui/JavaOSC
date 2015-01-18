@@ -44,12 +44,17 @@ public class OSCMessageTest {
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] != expected[i]) {
-				Assert.fail(createErrorString("Failed to convert correctly at position: " + i, result, expected));
+				Assert.fail(createErrorString("Failed to convert correctly at position: " + i,
+						result, expected));
 			}
 		}
 	}
 
-	public static String createErrorString(final String description, final byte[] result, final byte[] expected) {
+	public static String createErrorString(
+			final String description,
+			final byte[] result,
+			final byte[] expected)
+	{
 		return description
 				+ "\n result   (str): \"" + new String(result) + "\""
 				+ "\n expected (str): \"" + new String(expected) + "\""
@@ -155,7 +160,8 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(999.9f);
 		final OSCMessage message = new OSCMessage("/float", args);
-		final byte[] answer = { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
+		final byte[] answer
+				= { 47, 102, 108, 111, 97, 116, 0, 0, 44, 102, 0, 0, 68, 121, -7, -102 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -187,7 +193,8 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(new byte[] { -1, 0, 1 });
 		final OSCMessage message = new OSCMessage("/blob", args);
-		final byte[] answer = { 47, 98, 108, 111, 98, 0, 0, 0, 44, 98, 0, 0, 0, 0, 0, 3, -1, 0, 1, 0 };
+		final byte[] answer
+				= { 47, 98, 108, 111, 98, 0, 0, 0, 44, 98, 0, 0, 0, 0, 0, 3, -1, 0, 1, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -222,7 +229,9 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<Object>(1);
 		args.add(new Date(0L));
 		final OSCMessage message = new OSCMessage("/ts/0", args);
-		final byte[] answer = { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0 };
+		final byte[] answer
+				= { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0
+				};
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -235,7 +244,9 @@ public class OSCMessageTest {
 		calendar.set(2000, 0, 0);
 		args.add(calendar.getTime());
 		final OSCMessage message = new OSCMessage("/ts/2000", args);
-		final byte[] answer = { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 112, -128, 0, 0, 0, 0 };
+		final byte[] answer
+				= { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 112, -128,
+					0, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -248,7 +259,9 @@ public class OSCMessageTest {
 		calendar.set(2037, 0, 0);
 		args.add(calendar.getTime());
 		final OSCMessage message = new OSCMessage("/ts/afterFeb2036", args);
-		final byte[] answer = { 47, 116, 115, 47, 97, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 0, 0, 44, 116, 0, 0, 1, -80, 17, 0, 0, 0, 0, 0 };
+		final byte[] answer
+				= { 47, 116, 115, 47, 97, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 0,
+					0, 44, 116, 0, 0, 1, -80, 17, 0, 0, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -363,7 +376,10 @@ public class OSCMessageTest {
 		message.addArgument(1001);
 		message.addArgument("freq");
 		message.addArgument(440.0f);
-		byte[] answer = {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0, 0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0, 0};
+		byte[] answer
+				= {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0,
+					0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0,
+					0};
 		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -397,7 +413,16 @@ public class OSCMessageTest {
 		args.add(allTypes);
 		args.add("lastArg");
 		final OSCMessage message = new OSCMessage("/collectionsMixed", args);
-		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 77, 105, 120, 101, 100, 0, 0, 0, 44, 115, 91, 105, 105, 105, 105, 105, 93, 115, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 115, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0, 99, 109, 105, 100, 100, 108, 101, 65, 114, 103, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, 108, 97, 115, 116, 65, 114, 103, 0 };
+		final byte[] answer
+				= { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 77, 105, 120, 101, 100,
+					0, 0, 0, 44, 115, 91, 105, 105, 105, 105, 105, 93, 115, 91, 78, 84, 70, 73, 105,
+					102, 100, 98, 104, 99, 115, 116, 93, 115, 0, 0, 0, 102, 105, 114, 115, 116, 65,
+					114, 103, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0,
+					0, 99, 109, 105, 100, 100, 108, 101, 65, 114, 103, 0, 0, 0, 0, 0, 0, 1, 63,
+					-128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111,
+					114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, 108, 97, 115,
+					116, 65, 114, 103, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -437,7 +462,18 @@ public class OSCMessageTest {
 		args.add(firstLevel);
 		args.add("lastArg");
 		final OSCMessage message = new OSCMessage("/collectionsRecursive", args);
-		final byte[] answer = { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 82, 101, 99, 117, 114, 115, 105, 118, 101, 0, 0, 0, 44, 115, 91, 105, 99, 91, 105, 91, 91, 78, 84, 70, 73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 105, 99, 100, 93, 99, 100, 93, 100, 93, 115, 0, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, 0, 0, 0, 1, 108, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0, 0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, -1, -1, -1, -1, 104, 0, 0, 0, 64, 35, -52, -52, -52, -52, -52, -51, 101, 0, 0, 0, 64, 33, -103, -103, -103, -103, -103, -102, 64, 30, -52, -52, -52, -52, -52, -51, 108, 97, 115, 116, 65, 114, 103, 0 };
+		final byte[] answer
+				= { 47, 99, 111, 108, 108, 101, 99, 116, 105, 111, 110, 115, 82, 101, 99, 117, 114,
+					115, 105, 118, 101, 0, 0, 0, 44, 115, 91, 105, 99, 91, 105, 91, 91, 78, 84, 70,
+					73, 105, 102, 100, 98, 104, 99, 115, 116, 93, 105, 99, 100, 93, 99, 100, 93,
+					100, 93, 115, 0, 0, 0, 0, 102, 105, 114, 115, 116, 65, 114, 103, 0, 0, 0, 0, 0,
+					0, 0, 1, 108, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 104, 0,
+					0, 0, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0,
+					-125, -86, 126, -128, 0, 0, 0, 0, -1, -1, -1, -1, 104, 0, 0, 0, 64, 35, -52,
+					-52, -52, -52, -52, -51, 101, 0, 0, 0, 64, 33, -103, -103, -103, -103, -103,
+					-102, 64, 30, -52, -52, -52, -52, -52, -51, 108, 97, 115, 116, 65, 114, 103,
+					0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -488,7 +524,8 @@ public class OSCMessageTest {
 		for (int i = 0; i < 2; ++i) {
 			List<Object> theArray = (List<Object>) arguments.get(0);
 			if (!floats.get(i).equals(theArray.get(i))) {
-				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
+				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not "
+						+ theArray.get(i));
 			}
 		}
 	}
