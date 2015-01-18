@@ -86,17 +86,52 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentBlob() throws IOException {
-
+	public void testArgumentBlobEmpty() throws IOException {
 		reparseSingleblobArgument(new byte[] {});
+	}
+
+	@Test
+	public void testArgumentBlobMin() throws IOException {
 		reparseSingleblobArgument(new byte[] {Byte.MIN_VALUE});
+	}
+
+	@Test
+	public void testArgumentBlobMinus1() throws IOException {
 		reparseSingleblobArgument(new byte[] {-1});
+	}
+
+	@Test
+	public void testArgumentBlob0() throws IOException {
 		reparseSingleblobArgument(new byte[] {0});
+	}
+
+	@Test
+	public void testArgumentBlob1() throws IOException {
 		reparseSingleblobArgument(new byte[] {1});
+	}
+
+	@Test
+	public void testArgumentBlobMax() throws IOException {
 		reparseSingleblobArgument(new byte[] {Byte.MAX_VALUE});
+	}
+
+	@Test
+	public void testArgumentBlobTwo() throws IOException {
 		reparseSingleblobArgument(new byte[] {-1, 1});
+	}
+
+	@Test
+	public void testArgumentBlobThree() throws IOException {
 		reparseSingleblobArgument(new byte[] {-1, 0, 1});
+	}
+
+	@Test
+	public void testArgumentBlobFour() throws IOException {
 		reparseSingleblobArgument(new byte[] {-2, -1, 1, 2});
+	}
+
+	@Test
+	public void testArgumentBlobFive() throws IOException {
 		reparseSingleblobArgument(new byte[] {-2, -1, 0, 1, 2});
 	}
 
