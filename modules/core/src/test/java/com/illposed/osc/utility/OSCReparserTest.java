@@ -147,16 +147,47 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentDouble() throws IOException {
-
+	public void testArgumentDoubleMin() throws IOException {
 		reparseSingleArgument(Double.MIN_VALUE);
+	}
+
+	@Test
+	public void testArgumentDoubleMinus1() throws IOException {
 		reparseSingleArgument(-1.0);
+	}
+
+	@Test
+	public void testArgumentDouble0() throws IOException {
 		reparseSingleArgument(0.0);
+	}
+
+	@Test
+	public void testArgumentDouble1() throws IOException {
 		reparseSingleArgument(1.0);
+	}
+
+	@Test
+	public void testArgumentDoubleMax() throws IOException {
 		reparseSingleArgument(Double.MAX_VALUE);
+	}
+
+	@Test
+	public void testArgumentDoubleMinNormal() throws IOException {
 		reparseSingleArgument(Double.MIN_NORMAL);
+	}
+
+	@Test
+	public void testArgumentDoubleNegativeInfinity() throws IOException {
 		reparseSingleArgument(Double.NEGATIVE_INFINITY);
+	}
+
+	@Test
+	public void testArgumentDoubleNan() throws IOException {
 		reparseSingleArgument(Double.NaN);
+	}
+
+	@Test
+	public void testArgumentDoublePositiveInfinity() throws IOException {
 		reparseSingleArgument(Double.POSITIVE_INFINITY);
 	}
 
