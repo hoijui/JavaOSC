@@ -81,58 +81,58 @@ public class OSCReparserTest {
 		reparseSingleArgument(argument, EQUALS_COMPARATOR);
 	}
 
-	public void reparseSingleblobArgument(final byte[] blob) throws IOException {
+	private void reparseSingleBlobArgument(final byte[] blob) throws IOException {
 		reparseSingleArgument(blob, BLOB_COMPARATOR);
 	}
 
 	@Test
 	public void testArgumentBlobEmpty() throws IOException {
-		reparseSingleblobArgument(new byte[] {});
+		reparseSingleBlobArgument(new byte[] {});
 	}
 
 	@Test
 	public void testArgumentBlobMin() throws IOException {
-		reparseSingleblobArgument(new byte[] {Byte.MIN_VALUE});
+		reparseSingleBlobArgument(new byte[] {Byte.MIN_VALUE});
 	}
 
 	@Test
 	public void testArgumentBlobMinus1() throws IOException {
-		reparseSingleblobArgument(new byte[] {-1});
+		reparseSingleBlobArgument(new byte[] {-1});
 	}
 
 	@Test
 	public void testArgumentBlob0() throws IOException {
-		reparseSingleblobArgument(new byte[] {0});
+		reparseSingleBlobArgument(new byte[] {0});
 	}
 
 	@Test
 	public void testArgumentBlob1() throws IOException {
-		reparseSingleblobArgument(new byte[] {1});
+		reparseSingleBlobArgument(new byte[] {1});
 	}
 
 	@Test
 	public void testArgumentBlobMax() throws IOException {
-		reparseSingleblobArgument(new byte[] {Byte.MAX_VALUE});
+		reparseSingleBlobArgument(new byte[] {Byte.MAX_VALUE});
 	}
 
 	@Test
 	public void testArgumentBlobTwo() throws IOException {
-		reparseSingleblobArgument(new byte[] {-1, 1});
+		reparseSingleBlobArgument(new byte[] {-1, 1});
 	}
 
 	@Test
 	public void testArgumentBlobThree() throws IOException {
-		reparseSingleblobArgument(new byte[] {-1, 0, 1});
+		reparseSingleBlobArgument(new byte[] {-1, 0, 1});
 	}
 
 	@Test
 	public void testArgumentBlobFour() throws IOException {
-		reparseSingleblobArgument(new byte[] {-2, -1, 1, 2});
+		reparseSingleBlobArgument(new byte[] {-2, -1, 1, 2});
 	}
 
 	@Test
 	public void testArgumentBlobFive() throws IOException {
-		reparseSingleblobArgument(new byte[] {-2, -1, 0, 1, 2});
+		reparseSingleBlobArgument(new byte[] {-2, -1, 0, 1, 2});
 	}
 
 	@Test
