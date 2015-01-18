@@ -12,7 +12,6 @@ import com.illposed.osc.OSCMessageTest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -24,6 +23,37 @@ public class OSCSerializerTest {
 
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		OSCMessageTest.checkResultEqualsAnswer(result, answer);
+	}
+
+	private void checkPrintOnStream(
+			final Charset charset,
+			final byte[] expected,
+			final Object... arguments)
+			throws IOException
+	{
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCSerializer stream = new OSCSerializer(buffer);
+		if (charset != null) {
+			stream.setCharset(charset);
+		}
+		for (final Object argument : arguments) {
+			stream.write(argument);
+		}
+		byte[] result = buffer.toByteArray();
+		checkResultEqualsAnswer(result, expected);
+	}
+
+	private void checkPrintOnStream(
+			final byte[] expected,
+			final Object... arguments)
+			throws IOException
+	{
+		checkPrintOnStream(null, expected, arguments);
+	}
+
+	private OSCSerializer createSimpleTestStream() {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		return new OSCSerializer(buffer);
 	}
 
 	/**
@@ -45,146 +75,101 @@ public class OSCSerializerTest {
 	 */
 	@Test
 	public void testPrintFloat2OnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write(0.2f);
-		byte[] answer = {62, 76, -52, -51};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {62, 76, -52, -51},
+				0.2f);
 	}
 
 	@Test
 	public void testPrintFloatOnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write(10.7567f);
-		byte[] answer = {65, 44, 27, 113};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {65, 44, 27, 113},
+				10.7567f);
 	}
 
 	@Test
 	public void testPrintIntegerOnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write(Integer.valueOf(1124));
-		byte[] answer = {0, 0, 4, 100};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {0, 0, 4, 100},
+				1124);
 	}
 
 	@Test
 	public void testPrintStringAndIntOnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write("/example1");
-		stream.write(100);
-		byte[] answer =
-			{47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100},
+				"/example1",
+				100);
 	}
 
 	@Test
 	public void testPrintString2OnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write("abcd");
-		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {97, 98, 99, 100, 0, 0, 0, 0},
+				"abcd");
 	}
 
 	@Test
 	public void testPrintString3OnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.setCharset(Charset.forName("UTF-8"));
-		stream.write("\u00e1"); // latin 'a' with an acute accent
-		final byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
-		final byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				Charset.forName("UTF-8"),
+				new byte[] {(byte) 0xc3, (byte) 0xa1, 0, 0},
+				"\u00e1"); // latin 'a' with an acute accent
 	}
 
 	@Test
 	public void testPrintStringOnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write("abc");
-		byte[] answer = {97, 98, 99, 0};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {97, 98, 99, 0},
+				"abc");
 	}
 
 	@Test
 	public void testPrintLongOnStream() throws IOException {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
-		stream.write(1124L);
-		byte[] answer = {0, 0, 0, 0, 0, 0, 4, 100};
-		byte[] result = buffer.toByteArray();
-		checkResultEqualsAnswer(result, answer);
+		checkPrintOnStream(
+				new byte[] {0, 0, 0, 0, 0, 0, 4, 100},
+				1124L);
 	}
 
-	@Test
-	public void testIfExceptionOnNullWrite() {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteLong() throws IOException {
+		final Long nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			Long nullLong = null;
-			stream.write(nullLong);
-			Assert.fail("No exception thrown on writing (Long)null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteFloat() throws IOException {
+		final Float nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			Float nullFloat = null;
-			stream.write(nullFloat);
-			Assert.fail("No exception thrown on writing (Float)null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteDouble() throws IOException {
+		final Double nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			Double nullDouble = null;
-			stream.write(nullDouble);
-			Assert.fail("No exception thrown on writing (Double)null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteInteger() throws IOException {
+		final Integer nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			Integer nullInteger = null;
-			stream.write(nullInteger);
-			Assert.fail("No exception thrown on writing (Integer)null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteString() throws IOException {
+		final String nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			String nullString = null;
-			stream.write(nullString);
-			Assert.fail("No exception thrown on writing (String)null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteCharacter() throws IOException {
+		final Character nullValue = null;
+		createSimpleTestStream().write(nullValue);
+	}
 
-		try {
-			Character nullCharacter = null;
-			stream.write(nullCharacter);
-			Assert.fail("No exception thrown on writing (Character)null");
-		} catch (Exception ex) {
-			// ignore
-		}
-
-		try {
-			byte[] nullByteArray = null;
-			stream.write(nullByteArray);
-			Assert.fail("No exception thrown on writing (byte[])null");
-		} catch (Exception ex) {
-			// ignore
-		}
+	@Test(expected=NullPointerException.class)
+	public void testIfExceptionOnNullWriteBlob() throws IOException {
+		final byte[] nullValue = null;
+		createSimpleTestStream().write(nullValue);
 	}
 }
