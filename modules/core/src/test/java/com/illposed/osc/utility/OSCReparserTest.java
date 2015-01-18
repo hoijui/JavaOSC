@@ -236,9 +236,36 @@ public class OSCReparserTest {
 	@Test
 	public void testArgumentUnsignedIntegerFFFFFFFF() throws IOException {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFL));
-//		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
-//		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
-//		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)); // 36bit -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedInteger100000000() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedInteger1FFFFFFFF() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedIntegerFFFFFFFFF() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)); // 36bit -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedIntegerMinus1() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(-1L)); // negative/64bit -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedIntegerMinLong() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(Long.MIN_VALUE)); // negative -> out of range!
+	}
+
+	@Test(expected=IllegalArgumentException.class)
+	public void testArgumentUnsignedIntegerMaxLong() throws IOException {
+		reparseSingleArgument(OSCUnsigned.valueOf(Long.MAX_VALUE)); // 64bit -> out of range!
 	}
 
 	@Test
