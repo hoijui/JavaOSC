@@ -313,10 +313,17 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentBoolean() throws IOException {
+	public void testArgumentBooleanTrue() throws IOException {
 
-		reparseSingleArgument(true);
-		reparseSingleArgument(false);
+		reparseSingleArgument(Boolean.TRUE);
+		reparseSingleArgument(true); // uses auto-boxing
+	}
+
+	@Test
+	public void testArgumentBooleanFalse() throws IOException {
+
+		reparseSingleArgument(Boolean.FALSE);
+		reparseSingleArgument(false); // uses auto-boxing
 	}
 
 	@Test
