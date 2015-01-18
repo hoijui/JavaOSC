@@ -34,6 +34,14 @@ public class OSCReparserTest {
 				}
 			};
 
+	private static final Comparator<byte[]> BLOB_COMPARATOR
+			= new Comparator<byte[]>() {
+				@Override
+				public int compare(final byte[] obj1, final byte[] obj2) {
+					return Arrays.equals(obj1, obj2) ? 0 : 1;
+				}
+			};
+
 	private static byte[] serialize(final OSCPacket packet) throws IOException {
 
 		final ByteArrayOutputStream serializedStream = new ByteArrayOutputStream();
@@ -73,27 +81,23 @@ public class OSCReparserTest {
 		reparseSingleArgument(argument, EQUALS_COMPARATOR);
 	}
 
+	public void reparseSingleblobArgument(final byte[] blob) throws IOException {
+		reparseSingleArgument(blob, BLOB_COMPARATOR);
+	}
+
 	@Test
 	public void testArgumentBlob() throws IOException {
 
-		final Comparator<byte[]> byteArrayComparator
-				= new Comparator<byte[]>() {
-					@Override
-					public int compare(final byte[] obj1, final byte[] obj2) {
-						return Arrays.equals(obj1, obj2) ? 0 : 1;
-					}
-				};
-
-		reparseSingleArgument(new byte[] {}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {Byte.MIN_VALUE}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {-1}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {0}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {1}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {Byte.MAX_VALUE}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {-1, 1}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {-1, 0, 1}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {-2, -1, 1, 2}, byteArrayComparator);
-		reparseSingleArgument(new byte[] {-2, -1, 0, 1, 2}, byteArrayComparator);
+		reparseSingleblobArgument(new byte[] {});
+		reparseSingleblobArgument(new byte[] {Byte.MIN_VALUE});
+		reparseSingleblobArgument(new byte[] {-1});
+		reparseSingleblobArgument(new byte[] {0});
+		reparseSingleblobArgument(new byte[] {1});
+		reparseSingleblobArgument(new byte[] {Byte.MAX_VALUE});
+		reparseSingleblobArgument(new byte[] {-1, 1});
+		reparseSingleblobArgument(new byte[] {-1, 0, 1});
+		reparseSingleblobArgument(new byte[] {-2, -1, 1, 2});
+		reparseSingleblobArgument(new byte[] {-2, -1, 0, 1, 2});
 	}
 
 	@Test
