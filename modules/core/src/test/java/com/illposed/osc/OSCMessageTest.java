@@ -94,8 +94,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testEmpty() {
-		List<Object> args = new ArrayList<Object>(0);
-		OSCMessage message = new OSCMessage("/empty", args);
+		OSCMessage message = new OSCMessage("/empty");
 		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
 		byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
@@ -103,8 +102,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testFillerBeforeCommaNone() {
-		final List<Object> args = new ArrayList<Object>(0);
-		final OSCMessage message = new OSCMessage("/abcdef", args);
+		final OSCMessage message = new OSCMessage("/abcdef");
 		// here we only have the addresses string terminator (0) before the ',' (44),
 		// so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 0, 44, 0, 0, 0 };
@@ -114,8 +112,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testFillerBeforeCommaOne() {
-		final List<Object> args = new ArrayList<Object>(0);
-		final OSCMessage message = new OSCMessage("/abcde", args);
+		final OSCMessage message = new OSCMessage("/abcde");
 		// here we have one padding 0 after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 0, 0, 44, 0, 0, 0 };
@@ -125,8 +122,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testFillerBeforeCommaTwo() {
-		final List<Object> args = new ArrayList<Object>(0);
-		final OSCMessage message = new OSCMessage("/abcd", args);
+		final OSCMessage message = new OSCMessage("/abcd");
 		// here we have two padding 0's after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 0, 0, 0, 44, 0, 0, 0 };
@@ -136,8 +132,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testFillerBeforeCommaThree() {
-		final List<Object> args = new ArrayList<Object>(0);
-		final OSCMessage message = new OSCMessage("/abcdefg", args);
+		final OSCMessage message = new OSCMessage("/abcdefg");
 		// here we have three padding 0's after the addresses string terminator (also 0)
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 103, 0, 0, 0, 0, 44, 0, 0, 0 };
