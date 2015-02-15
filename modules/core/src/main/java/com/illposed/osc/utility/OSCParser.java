@@ -114,7 +114,7 @@ public class OSCParser {
 		final OSCTimeStamp timestamp = readTimeTag(rawInput);
 		final OSCBundle bundle = new OSCBundle(timestamp);
 		final OSCParser myConverter = new OSCParser();
-		myConverter.setCharset(charset);
+		myConverter.setCharset(getCharset());
 		while (rawInput.hasRemaining()) {
 			// recursively read through the stream and convert packets you find
 			final int packetLength = readInteger(rawInput);
