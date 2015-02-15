@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A helper class that translates from Java types to their byte stream representations
- * according to the OSC spec.
+ * A helper class that translates OSC packets from Java to their byte stream representations,
+ * as specified in the OSC spec.
  *
  * The implementation is based on
  * <a href="http://www.emergent.de">Markus Gaelli</a> and
