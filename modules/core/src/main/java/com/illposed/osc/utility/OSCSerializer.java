@@ -141,7 +141,7 @@ public class OSCSerializer {
 	 * @param stream where to write the arguments to
 	 */
 	private void writeArgumentsByteArray(final OSCMessage message) throws IOException {
-		stream.write((char) ',');
+		stream.write(OSCParser.TYPES_VALUES_SEPARATOR);
 		writeTypes(message.getArguments());
 		for (final Object argument : message.getArguments()) {
 			write(argument);
