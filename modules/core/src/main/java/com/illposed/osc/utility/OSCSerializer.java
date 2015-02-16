@@ -206,7 +206,7 @@ public class OSCSerializer {
 	 *   or array of these.
 	 */
 	void write(final Object anObject) throws IOException {
-		// Can't do switch on class
+
 		if (anObject instanceof Collection) {
 			@SuppressWarnings("unchecked") final Collection<Object> theArray = (Collection<Object>) anObject;
 			for (final Object entry : theArray) {
