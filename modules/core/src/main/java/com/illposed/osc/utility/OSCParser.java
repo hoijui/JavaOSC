@@ -31,6 +31,7 @@ public class OSCParser {
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
+	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';
 
 	private final Map<Character, ArgumentHandler> identifierToType;
 
@@ -153,16 +154,20 @@ public class OSCParser {
 	private CharSequence readTypes(final ByteBuffer rawInput) throws OSCParseException {
 		final String typesStr;
 
-		// The next byte should be a ',', but some legacy code may omit it
+		// The next byte should be a TYPES_VALUES_SEPARATOR, but some legacy code may omit it
 		// in case of no arguments, refering to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
-		if (!rawInput.hasRemaining()) {
-			typesStr = NO_ARGUMENT_TYPES;
-		} else if (rawInput.get(rawInput.position()) == ',') {
-			rawInput.get(); // position++
-			typesStr = readString(rawInput);
+		if (rawInput.hasRemaining()) {
+			if (rawInput.get(rawInput.position()) == TYPES_VALUES_SEPARATOR) {
+				rawInput.get(); // position++
+				typesStr = readString(rawInput);
+			} else {
+				// the message format is invalid
+				// XXX should we not rather fail-fast -> throw exception?
+				typesStr = NO_ARGUMENT_TYPES;
+			}
 		} else {
-			// XXX should we not rather fail-fast -> throw exception?
+			// there are no arguments
 			typesStr = NO_ARGUMENT_TYPES;
 		}
 
