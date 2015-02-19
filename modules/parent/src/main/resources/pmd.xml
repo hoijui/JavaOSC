@@ -10,7 +10,9 @@
 	<rule ref="rulesets/java/basic.xml"/>
 	<rule ref="rulesets/java/braces.xml"/>
 	<rule ref="rulesets/java/clone.xml"/>
-	<rule ref="rulesets/java/codesize.xml"/>
+	<rule ref="rulesets/java/codesize.xml">
+		<exclude name="TooManyMethods"/> <!-- NOTE Instead of excluding the rule, set its maxmethods parameter to 25 (default is 10) -->
+	</rule>
 	<!--<rule ref="rulesets/java/comments.xml"/>-->
 	<rule ref="rulesets/java/controversial.xml">
 		<exclude name="AvoidFinalLocalVariable"/>
