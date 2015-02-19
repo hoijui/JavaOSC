@@ -229,7 +229,7 @@ public class OSCSerializer {
 	/**
 	 * Write the OSC specification type tag for the type a certain Java type
 	 * converts to.
-	 * @param typeClass Class of a Java object in the arguments
+	 * @param value of this argument, we need to write the type identifier
 	 */
 	private void writeType(final Object value) throws IOException {
 
@@ -246,19 +246,16 @@ public class OSCSerializer {
 
 		for (final Object argument : arguments) {
 			if (argument instanceof Collection) {
-				// If the array at i is a type of array, write a '['.
 				// This is used for nested arguments.
+				// open the array
 				stream.write(OSCParser.TYPE_ARRAY_BEGIN);
-				// fill the [] with the SuperCollider types corresponding to
-				// the object (e.g., Object of type String needs -s).
+				// fill the [] with the nested argument types
 				@SuppressWarnings("unchecked") Collection<Object> collArg = (Collection<Object>) argument;
 				writeTypesArray(collArg);
 				// close the array
 				stream.write(OSCParser.TYPE_ARRAY_END);
 			} else {
-				// go through the array and write the superCollider types as shown
-				// in the above method.
-				// The classes derived here are used as the arg to the above method.
+				// write a single, simple arguments type
 				writeType(argument);
 			}
 		}
