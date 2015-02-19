@@ -77,11 +77,12 @@ public class OSCParser {
 	}
 	public OSCPacket convert(final ByteBuffer rawInput) {
 
+		final ByteBuffer readOnlyInput = rawInput.asReadOnlyBuffer();
 		final OSCPacket packet;
-		if (isBundle(rawInput)) {
-			packet = convertBundle(rawInput);
+		if (isBundle(readOnlyInput)) {
+			packet = convertBundle(readOnlyInput);
 		} else {
-			packet = convertMessage(rawInput);
+			packet = convertMessage(readOnlyInput);
 		}
 
 		return packet;
