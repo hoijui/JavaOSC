@@ -248,12 +248,12 @@ public class OSCSerializer {
 			if (argument instanceof Collection) {
 				// If the array at i is a type of array, write a '['.
 				// This is used for nested arguments.
-				stream.write('[');
+				stream.write(OSCParser.TYPE_ARRAY_BEGIN);
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
 				writeTypesArray((Collection<Object>) argument);
 				// close the array
-				stream.write(']');
+				stream.write(OSCParser.TYPE_ARRAY_END);
 			} else {
 				// go through the array and write the superCollider types as shown
 				// in the above method.
