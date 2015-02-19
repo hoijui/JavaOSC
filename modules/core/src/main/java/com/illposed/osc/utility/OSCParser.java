@@ -32,6 +32,8 @@ public class OSCParser {
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
 	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';
+	public static final char TYPE_ARRAY_BEGIN = (byte) '[';
+	public static final char TYPE_ARRAY_END = (byte) ']';
 
 	private final Map<Character, ArgumentHandler> identifierToType;
 
@@ -124,11 +126,11 @@ public class OSCParser {
 		message.setAddress(readString(rawInput));
 		final CharSequence typeIdentifiers = readTypes(rawInput);
 		for (int ti = 0; ti < typeIdentifiers.length(); ++ti) {
-			if ('[' == typeIdentifiers.charAt(ti)) {
+			if (TYPE_ARRAY_BEGIN == typeIdentifiers.charAt(ti)) {
 				// we're looking at an array -- read it in
 				message.addArgument(readArray(rawInput, typeIdentifiers, ++ti));
 				// then increment i to the end of the array
-				while (typeIdentifiers.charAt(ti) != ']') {
+				while (typeIdentifiers.charAt(ti) != TYPE_ARRAY_END) {
 					ti++;
 				}
 			} else {
@@ -211,7 +213,7 @@ public class OSCParser {
 			throws OSCParseException
 	{
 		int arrayLen = 0;
-		while (typeIdentifiers.charAt(pos + arrayLen) != ']') {
+		while (typeIdentifiers.charAt(pos + arrayLen) != TYPE_ARRAY_END) {
 			arrayLen++;
 		}
 		final List<Object> array = new ArrayList<Object>(arrayLen);
