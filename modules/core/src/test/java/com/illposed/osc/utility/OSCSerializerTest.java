@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Arrays;
 import org.junit.Test;
 
 /**
@@ -26,6 +28,14 @@ public class OSCSerializerTest {
 
 	private void checkResultEqualsAnswer(byte[] result, byte[] answer) {
 		OSCMessageTest.checkResultEqualsAnswer(result, answer);
+	}
+
+	private static int calcTypeIdentifiersStrLength(final int numArguments) {
+
+		if (numArguments == 0) {
+			return 0;
+		}
+		return ((numArguments + 5) / 4) * 4;
 	}
 
 	private void checkPrintOnStream(
@@ -42,10 +52,14 @@ public class OSCSerializerTest {
 			serializerFactory.setProperties(properties);
 		}
 		final OSCSerializer stream = serializerFactory.create(buffer);
+		final OSCMessage oscMessage = new OSCMessage("/ab");
 		for (final Object argument : arguments) {
-			stream.write(argument);
+			oscMessage.addArgument(argument);
 		}
+		stream.write(oscMessage);
 		byte[] result = buffer.toByteArray();
+		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);
+		result = Arrays.copyOfRange(result, toBeStrippedOffPrefixBytes, result.length);
 		checkResultEqualsAnswer(result, expected);
 	}
 

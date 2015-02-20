@@ -205,7 +205,7 @@ public class OSCSerializer {
 	 * @param anObject (usually) one of Float, Double, String, Character, Integer, Long,
 	 *   or array of these.
 	 */
-	void write(final Object anObject) throws IOException {
+	private void write(final Object anObject) throws IOException {
 
 		if (anObject instanceof Collection) {
 			final Collection<Object> theArray = (Collection<Object>) anObject;
