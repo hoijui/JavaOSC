@@ -57,11 +57,6 @@ public class OSCSerializerTest {
 		checkPrintOnStream(null, expected, arguments);
 	}
 
-	private OSCSerializer createSimpleTestStream() {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		return OSCSerializerFactory.createDefaultFactory().create(buffer);
-	}
-
 	/**
 	 * This is different from the SmallTalk implementation.
 	 * In Squeak, this produces:
