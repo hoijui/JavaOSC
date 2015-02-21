@@ -47,18 +47,12 @@ public class OSCParser {
 	}
 
 	/**
-	 * Converts a byte array into an {@link OSCPacket}
+	 * Converts a byte-buffer into an {@link OSCPacket}
 	 * (either an {@link OSCMessage} or {@link OSCBundle}).
-	 * @param bytes the storage containing the raw OSC packet
-	 * @param bytesLength indicates how many bytes the package consists of (<code>&lt;= bytes.length</code>)
-	 * @return the successfully parsed OSC packet; in case of a problem,
-	 *   a <code>RuntimeException</code> is thrown
-	 * @deprecated use {@link #convert(ByteBuffer)} instead
+	 * @param rawInput the storage containing the raw OSC packet
+	 * @return the successfully parsed OSC packet
 	 * @throws OSCParseException if the input has an invalid format
 	 */
-	public OSCPacket convert(final byte[] bytes, final int bytesLength) throws OSCParseException {
-		return convert(ByteBuffer.wrap(bytes, 0, bytesLength).asReadOnlyBuffer());
-	}
 	public OSCPacket convert(final ByteBuffer rawInput) throws OSCParseException {
 
 		final ByteBuffer readOnlyInput = rawInput.asReadOnlyBuffer();
