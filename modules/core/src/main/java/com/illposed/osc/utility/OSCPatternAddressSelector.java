@@ -59,6 +59,13 @@ public class OSCPatternAddressSelector implements AddressSelector {
 
 	private final List<String> patternParts;
 
+	/**
+	 * Creates a selector that may take a simple address or a wildcard as matching criteria.
+	 *
+	 * @param selector either a fixed address like "/sc/mixer/volume",
+	 *   or a selector pattern (a mix between wildcards and regex)
+	 *   like "/??/mixer/*", see {@link OSCPatternAddressSelector} for details
+	 */
 	public OSCPatternAddressSelector(final String selector) {
 		this.patternParts = splitIntoParts(selector);
 	}

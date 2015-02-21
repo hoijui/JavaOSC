@@ -8,6 +8,7 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.utility.OSCPatternAddressSelector;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +151,8 @@ public class OSCPortTest {
 	public void testReceiving() throws Exception {
 		OSCMessage mesg = new OSCMessage("/message/receiving");
 		SimpleOSCListener listener = new SimpleOSCListener();
-		receiver.addListener("/message/receiving", listener);
+		receiver.getDispatcher().addListener(new OSCPatternAddressSelector("/message/receiving"),
+				listener);
 		receiver.startListening();
 		sender.send(mesg);
 		Thread.sleep(100); // wait a bit
@@ -165,7 +167,8 @@ public class OSCPortTest {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
 		SimpleOSCListener listener = new SimpleOSCListener();
-		receiver.addListener("/bundle/receiving", listener);
+		receiver.getDispatcher().addListener(new OSCPatternAddressSelector("/bundle/receiving"),
+				listener);
 		receiver.startListening();
 		sender.send(bundle);
 		Thread.sleep(100); // wait a bit
