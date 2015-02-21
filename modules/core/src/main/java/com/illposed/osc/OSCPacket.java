@@ -9,8 +9,7 @@
 package com.illposed.osc;
 
 /**
- * OSCPacket is the abstract superclass for the various
- * kinds of OSC Messages.
+ * An abstract superclass for messages and bundles.
  *
  * The actual packets are:
  * <ul>

@@ -19,7 +19,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 /**
- * OSCPortIn is the class that listens for OSC messages.
+ * Listens for OSC packets on a TCP/IP port.
  *
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})

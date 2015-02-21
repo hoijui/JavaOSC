@@ -19,8 +19,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * OSCPortOut is the class that sends OSC messages
- * to a specific address and port.
+ * Sends OSC packets to a specific TCP/IP address and port.
  *
  * To send an OSC message, call {@link #send(OSCPacket)}.
  *
