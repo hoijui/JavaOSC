@@ -11,8 +11,8 @@ package com.illposed.osc;
 import java.net.DatagramSocket;
 
 /**
- * OSCPort is an abstract superclass, to send OSC messages,
- * use {@link OSCPortOut}.
+ * An abstract superclass.
+ * To send OSC messages, use {@link OSCPortOut}.
  * To listen for OSC messages, use {@link OSCPortIn}.
  */
 public class OSCPort {
