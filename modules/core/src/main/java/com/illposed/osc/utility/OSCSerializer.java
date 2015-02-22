@@ -24,10 +24,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A helper class that translates OSC packets from Java to their byte stream representations,
- * as specified in the OSC spec.
+ * Converts OSC packet Java objects to their byte stream representations,
+ * conforming to the OSC specification.
  *
- * The implementation is based on
+ * The implementation was originally based on
  * <a href="http://www.emergent.de">Markus Gaelli</a> and
  * Iannis Zannos's OSC implementation in Squeak (a Smalltalk dialect).
  */
