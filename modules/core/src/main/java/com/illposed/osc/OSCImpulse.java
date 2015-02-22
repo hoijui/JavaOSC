@@ -28,4 +28,9 @@ public final class OSCImpulse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private OSCImpulse() {}
+
+	@Override
+	public String toString() {
+		return "I";
+	}
 }
