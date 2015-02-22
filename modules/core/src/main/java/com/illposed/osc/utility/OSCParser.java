@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Utility class to convert a byte array,
- * conforming to the OSC byte stream format,
- * into Java objects.
+ * Converts a byte array conforming to the OSC byte stream format into Java objects.
  */
 public class OSCParser {
 
