@@ -40,11 +40,16 @@ public class OSCMessageTest {
 	public ExpectedException expectedException = ExpectedException.none();
 
 	/**
+	 * Creates verbose assertion failures if the result does not conform to what is expected.
 	 * @param result received from OSC
 	 * @param expected what should have been received
+	 * @param optBytes number of optional bytes in the expected array,
+	 *   meaning the result may either be {@code expected.length}
+	 *   or {@code expected.length - optBytes} in size
 	 */
-	public static void checkResultEqualsAnswer(byte[] result, byte[] expected) {
-		if (result.length != expected.length) {
+	private static void checkResultEqualsAnswer(byte[] result, byte[] expected, final int optBytes)
+	{
+		if ((result.length != expected.length) && (result.length != (expected.length - optBytes))) {
 			Assert.fail(createErrorString("Result and expected answer aren't the same length, "
 					+ result.length + " vs " + expected.length + ".", result, expected));
 		}
@@ -54,6 +59,24 @@ public class OSCMessageTest {
 						result, expected));
 			}
 		}
+	}
+
+	/**
+	 * Creates verbose assertion failures if the result does not conform to what is expected.
+	 * The OSC 1.0 specification states, that the type tag string should to be present
+	 * for all messages, even the ones without arguments, and thus at least the initial ','
+	 * (plus 3 padding zeros) should always be present.
+	 * Some outdated OSC implementations though, may omit it, which is why for now,
+	 * we accept that as valid too.
+	 * @param result received from OSC
+	 * @param expected what should have been received
+	 */
+	public static void checkResultEqualsAnswerOptionalComma(byte[] result, byte[] expected) {
+		checkResultEqualsAnswer(result, expected, 4);
+	}
+
+	public static void checkResultEqualsAnswer(byte[] result, byte[] expected) {
+		checkResultEqualsAnswer(result, expected, 0);
 	}
 
 	public static String createErrorString(
@@ -103,7 +126,7 @@ public class OSCMessageTest {
 		OSCMessage message = new OSCMessage("/empty");
 		byte[] answer = { 47, 101, 109, 112, 116, 121, 0, 0, 44, 0, 0, 0 };
 		byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -113,7 +136,7 @@ public class OSCMessageTest {
 		// so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 0, 44, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -123,7 +146,7 @@ public class OSCMessageTest {
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 0, 0, 44, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -133,7 +156,7 @@ public class OSCMessageTest {
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 0, 0, 0, 44, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -143,7 +166,7 @@ public class OSCMessageTest {
 		// and before the ',' (44), so the comma is 4 byte aligned
 		final byte[] answer = { 47, 97, 98, 99, 100, 101, 102, 103, 0, 0, 0, 0, 44, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -360,7 +383,7 @@ public class OSCMessageTest {
 		OSCMessage message = new OSCMessage("/sc/run");
 		byte[] answer = {47, 115, 99, 47, 114, 117, 110, 0, 44, 0, 0, 0};
 		byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test
@@ -368,7 +391,7 @@ public class OSCMessageTest {
 		OSCMessage message = new OSCMessage("/sc/stop");
 		byte[] answer = {47, 115, 99, 47, 115, 116, 111, 112, 0, 0, 0, 0, 44, 0, 0, 0};
 		byte[] result = convertMessageToByteArray(message);
-		checkResultEqualsAnswer(result, answer);
+		checkResultEqualsAnswerOptionalComma(result, answer);
 	}
 
 	@Test

@@ -141,6 +141,9 @@ public class OSCSerializer {
 	 * @param message the arguments of this message will be serialized
 	 */
 	private void writeArguments(final OSCMessage message) throws IOException {
+
+		// NOTE According to OSC spec. 1.0, this separator should always be written,
+		//   even if there are no arguments, though some older implementations may not do it.
 		stream.write(OSCParser.TYPES_VALUES_SEPARATOR);
 		writeTypes(message.getArguments());
 		for (final Object argument : message.getArguments()) {
