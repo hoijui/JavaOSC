@@ -68,22 +68,34 @@ public class OSCBundle implements OSCPacket {
 		} else {
 			this.packets = new ArrayList<OSCPacket>(packets);
 		}
+		checkNonNullTimestamp(timestamp);
 		this.timestamp = timestamp;
 	}
 
+	private static void checkNonNullTimestamp(final OSCTimeStamp timestamp) {
+
+		if (timestamp == null) {
+			throw new IllegalArgumentException("Bundle time-stamp may not be null; you may want to "
+					+ "use OSCTimeStamp.IMMEDIATE.");
+		}
+	}
+
 	/**
-	 * Return the time the bundle will execute.
-	 * @return a Date
+	 * Returns the time the bundle will execute.
+	 * @return will never be {@code null}
 	 */
 	public OSCTimeStamp getTimestamp() {
 		return timestamp;
 	}
 
 	/**
-	 * Set the time the bundle will execute.
-	 * @param timestamp when the bundle should execute, <code>null</code> means IMMEDIATE
+	 * Sets the time the bundle will execute.
+	 * @param timestamp when the bundle should execute, can not be {@code null},
+	 *   but {@code OSCTimeStamp.IMMEDIATE}
 	 */
 	public void setTimestamp(final OSCTimeStamp timestamp) {
+
+		checkNonNullTimestamp(timestamp);
 		this.timestamp = timestamp;
 	}
 
