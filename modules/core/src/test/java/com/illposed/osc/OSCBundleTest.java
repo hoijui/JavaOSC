@@ -70,14 +70,14 @@ public class OSCBundleTest {
 		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
 	}
 
-	@Test
+	@Test(expected=IllegalArgumentException.class)
 	public void testSendBundleImmediateExplicitNull() throws IOException {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
-		bundle.setTimestamp(null);
+		bundle.setTimestamp(null); // should throw IllegalArgumentException
 		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
 	}
 
