@@ -123,11 +123,10 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Convert the address into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the address to
+	 * Serializes a messages address.
+	 * @param message the address of this message will be serialized
 	 */
-	private void writeAddressByteArray(final OSCMessage message) throws IOException {
+	private void writeAddress(final OSCMessage message) throws IOException {
 
 		final String address = message.getAddress();
 		if (!OSCMessage.isValidAddress(address)) {
@@ -138,11 +137,10 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Convert the arguments into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the arguments to
+	 * Serializes the arguments of a message.
+	 * @param message the arguments of this message will be serialized
 	 */
-	private void writeArgumentsByteArray(final OSCMessage message) throws IOException {
+	private void writeArguments(final OSCMessage message) throws IOException {
 		stream.write(OSCParser.TYPES_VALUES_SEPARATOR);
 		writeTypes(message.getArguments());
 		for (final Object argument : message.getArguments()) {
@@ -151,8 +149,8 @@ public class OSCSerializer {
 	}
 
 	private void write(final OSCMessage message) throws IOException {
-		writeAddressByteArray(message);
-		writeArgumentsByteArray(message);
+		writeAddress(message);
+		writeArguments(message);
 	}
 
 	private void writeInternal(final OSCPacket packet) throws IOException {
