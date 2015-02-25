@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This class represents an OSC compliant time-stamp.
+ * This represents an OSC compliant time-stamp.
  * It uses the NTP (Network Time Protocol) time format,
  * and supports a different time range (smaller) and resolution (more precise)
  * then the Java <code>Date</code> class.
