@@ -9,6 +9,10 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.handler.StringArgumentHandler;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,19 +26,38 @@ import java.util.concurrent.TimeUnit;
  */
 public class OSCPacketDispatcher {
 
+	private final ByteArrayOutputStream argumentTypesBuffer;
+	private final OSCSerializer serializer;
+	private final Charset typeTagsCharset;
 	private final Map<AddressSelector, OSCListener> selectorToListener;
+	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
 	 */
 	private boolean alwaysDispatchingImmediatly;
-
 	private final ScheduledExecutorService dispatchScheduler;
 
-	public OSCPacketDispatcher() {
+	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
 
+		if (serializerFactory == null) {
+			this.argumentTypesBuffer = null;
+			this.serializer = null;
+			this.typeTagsCharset = null;
+		} else {
+			this.argumentTypesBuffer = new ByteArrayOutputStream();
+			this.serializer = serializerFactory.create(argumentTypesBuffer);
+			final Map<String, Object> serializationProperties = serializerFactory.getProperties();
+			final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
+			this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
+		}
 		this.selectorToListener = new HashMap<AddressSelector, OSCListener>();
+		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
 		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
+	}
+
+	public OSCPacketDispatcher() {
+		this(null);
 	}
 
 	/**
@@ -55,6 +78,14 @@ public class OSCPacketDispatcher {
 	}
 
 	/**
+	 * Indicates whether we need outgoing messages to have meta-info attached.
+	 * @return {@code true}, if at least one of the registered listeners requires message meta-info
+	 */
+	public boolean isMetaInfoRequired() {
+		return metaInfoRequired;
+	}
+
+	/**
 	 * Adds a listener (<i>Method</i> in OSC speak) that will be notified
 	 * of incoming messages that match the selector.
 	 * @param addressSelector selects which messages will be forwarded to the listener,
@@ -62,7 +93,11 @@ public class OSCPacketDispatcher {
 	 * @param listener receives messages accepted by the selector
 	 */
 	public void addListener(final AddressSelector addressSelector, final OSCListener listener) {
+
 		selectorToListener.put(addressSelector, listener);
+		if (addressSelector.isInfoRequired()) {
+			metaInfoRequired = true;
+		}
 	}
 
 	public void dispatchPacket(final OSCPacket packet) {
@@ -116,7 +151,40 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	private CharSequence generateTypeTagsString(final List<?> arguments) {
+
+		final CharSequence typeTagsStr;
+		if (serializer == null) {
+			throw new IllegalStateException(
+					"You need to either dispatch only packets containing meta-info, "
+							+ "or supply a serialization factory to the dispatcher");
+		} else {
+			try {
+				serializer.writeOnlyTypeTags(arguments);
+			} catch (final IOException ex) {
+				throw new IllegalStateException("This should only happen with full memory", ex);
+			}
+			final byte[] typeTags = argumentTypesBuffer.toByteArray();
+			typeTagsStr = new String(typeTags, typeTagsCharset);
+		}
+
+		return typeTagsStr;
+	}
+
+	private void ensureMetaInfo(final OSCMessage message) {
+
+		if (isMetaInfoRequired() && !message.isInfoSet()) {
+			final CharSequence generateTypeTagsString
+					= generateTypeTagsString(message.getArguments());
+			final OSCMessageInfo messageInfo = new OSCMessageInfo(generateTypeTagsString);
+			message.setInfo(messageInfo);
+		}
+	}
+
 	private void dispatchMessageNow(final OSCMessage message, final OSCTimeStamp time) {
+
+		ensureMetaInfo(message);
+
 		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message)) {
 				addrList.getValue().acceptMessage(time, message);
