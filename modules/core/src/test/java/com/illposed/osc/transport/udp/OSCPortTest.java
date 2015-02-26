@@ -12,7 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.SimpleOSCListener;
-import com.illposed.osc.addressselector.OSCPatternAddressMessageSelector;
+import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;

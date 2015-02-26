@@ -9,4 +9,4 @@
 /**
  * Provides {@link com.illposed.osc.MessageSelector} implementations.
  */
-package com.illposed.osc.addressselector;
+package com.illposed.osc.messageselector;
