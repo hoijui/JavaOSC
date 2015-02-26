@@ -177,6 +177,8 @@ public class OSCParser {
 	private Object readArgument(final ByteBuffer rawInput, final char typeIdentifier)
 			throws OSCParseException
 	{
+		final Object argumentValue;
+
 		final ArgumentHandler type = identifierToType.get(typeIdentifier);
 		if (type == null) {
 			// XXX Maybe we should let the user choose what to do in this
@@ -185,10 +187,12 @@ public class OSCParser {
 			//   just ignore (return null), or throw an exception?
 //			throw new UnsupportedOperationException(
 //					"Invalid or not yet supported OSC type: '" + type + "'");
-			return null;
+			argumentValue = null;
 		} else {
-			return type.parse(rawInput);
+			argumentValue = type.parse(rawInput);
 		}
+
+		return argumentValue;
 	}
 
 	/**
