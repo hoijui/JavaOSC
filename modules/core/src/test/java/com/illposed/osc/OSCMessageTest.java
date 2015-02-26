@@ -416,7 +416,8 @@ public class OSCMessageTest {
 		singleType.add(2);
 		singleType.add(-1); // double entry; discarded becasue we have a Set
 		singleType.add(99);
-		final Collection<Object> allTypes = new LinkedList<Object>();
+		final List<Integer> singleTypeList = new ArrayList<Integer>(singleType);
+		final List<Object> allTypes = new LinkedList<Object>();
 		allTypes.add(null);
 		allTypes.add(Boolean.TRUE);
 		allTypes.add(Boolean.FALSE);
@@ -430,7 +431,7 @@ public class OSCMessageTest {
 		allTypes.add("hello world!");
 		allTypes.add(OSCTimeStamp.valueOf(new Date(0L)));
 		args.add("firstArg");
-		args.add(singleType);
+		args.add(singleTypeList);
 		args.add("middleArg");
 		args.add(allTypes);
 		args.add("lastArg");
