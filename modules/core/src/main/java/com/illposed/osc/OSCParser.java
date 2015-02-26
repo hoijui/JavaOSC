@@ -148,26 +148,26 @@ public class OSCParser {
 	 *   or <code>null</code>, in case of no arguments
 	 */
 	private CharSequence readTypes(final ByteBuffer rawInput) throws OSCParseException {
-		final String typesStr;
 
+		final String typeTags;
 		// The next byte should be a TYPES_VALUES_SEPARATOR, but some legacy code may omit it
 		// in case of no arguments, according to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.hasRemaining()) {
 			if (rawInput.get(rawInput.position()) == TYPES_VALUES_SEPARATOR) {
-				rawInput.get(); // position++
-				typesStr = readString(rawInput);
+				rawInput.get(); // position++ to skip the TYPES_VALUES_SEPARATOR
+				typeTags = readString(rawInput);
 			} else {
 				// the message format is invalid
 				// XXX should we not rather fail-fast -> throw exception?
-				typesStr = NO_ARGUMENT_TYPES;
+				typeTags = NO_ARGUMENT_TYPES;
 			}
 		} else {
 			// there are no arguments
-			typesStr = NO_ARGUMENT_TYPES;
+			typeTags = NO_ARGUMENT_TYPES;
 		}
 
-		return typesStr;
+		return typeTags;
 	}
 
 	/**
