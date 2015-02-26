@@ -34,7 +34,7 @@ public class OSCPacketDispatcher {
 
 		this.selectorToListener = new HashMap<AddressSelector, OSCListener>();
 		this.alwaysDispatchingImmediatly = false;
-		dispatchScheduler = Executors.newScheduledThreadPool(3);
+		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
 	}
 
 	public void setAlwaysDispatchingImmediatly(final boolean alwaysDispatchingImmediatly) {
