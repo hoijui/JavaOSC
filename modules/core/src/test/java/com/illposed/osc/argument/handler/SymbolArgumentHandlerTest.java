@@ -9,8 +9,8 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.OSCSymbol;
-import com.illposed.osc.utility.OSCParseException;
-import com.illposed.osc.utility.OSCSerializeException;
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
 import org.junit.Assert;
 import org.junit.Test;
 

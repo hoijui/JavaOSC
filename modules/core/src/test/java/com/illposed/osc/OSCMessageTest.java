@@ -10,11 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCTimeStamp;
-import com.illposed.osc.utility.OSCParseException;
-import com.illposed.osc.utility.OSCParser;
-import com.illposed.osc.utility.OSCParserFactory;
-import com.illposed.osc.utility.OSCSerializer;
-import com.illposed.osc.utility.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -362,7 +357,7 @@ public class OSCMessageTest {
 
 	/**
 	 * See the comment in
-	 * {@link com.illposed.osc.utility.OSCSerializerTest#testPrintFloat2OnStream}.
+	 * {@link OSCSerializerTest#testPrintFloat2OnStream}.
 	 */
 	@Test
 	public void testIncreaseVolume() {

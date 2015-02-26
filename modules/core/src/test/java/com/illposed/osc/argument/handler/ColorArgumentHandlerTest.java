@@ -9,9 +9,9 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.utility.OSCParseException;
-import com.illposed.osc.utility.OSCSerializeException;
-import com.illposed.osc.utility.SizeTrackingOutputStream;
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.SizeTrackingOutputStream;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;

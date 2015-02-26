@@ -8,9 +8,9 @@
 
 package com.illposed.osc.argument;
 
-import com.illposed.osc.utility.OSCParseException;
-import com.illposed.osc.utility.OSCSerializeException;
-import com.illposed.osc.utility.SizeTrackingOutputStream;
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.SizeTrackingOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 

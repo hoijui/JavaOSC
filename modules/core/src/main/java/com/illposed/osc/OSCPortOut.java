@@ -8,8 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCSerializer;
-import com.illposed.osc.utility.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;

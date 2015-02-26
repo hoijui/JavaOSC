@@ -6,11 +6,8 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.utility;
+package com.illposed.osc;
 
-import com.illposed.osc.OSCBundle;
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCPacket;
 import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.nio.ByteBuffer;
