@@ -37,10 +37,19 @@ public class OSCPacketDispatcher {
 		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
 	}
 
+	/**
+	 * Set whether to disregard bundle time-stamps for dispatch-scheduling.
+	 * @param alwaysDispatchingImmediatly if {@code true}, all bundles will be
+	 *   dispatched immediately
+	 */
 	public void setAlwaysDispatchingImmediatly(final boolean alwaysDispatchingImmediatly) {
 		this.alwaysDispatchingImmediatly = alwaysDispatchingImmediatly;
 	}
 
+	/**
+	 * Indicates whether we disregard bundle time-stamps for dispatch-scheduling.
+	 * @return {@code true}, if all bundles are dispatched immediately
+	 */
 	public boolean isAlwaysDispatchingImmediatly() {
 		return alwaysDispatchingImmediatly;
 	}
