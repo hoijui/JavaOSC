@@ -81,6 +81,12 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludes>
+						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
+						<exclude>com/illposed/osc/addressselector/OSCPatternAddressSelector.java</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 			<plugin>
