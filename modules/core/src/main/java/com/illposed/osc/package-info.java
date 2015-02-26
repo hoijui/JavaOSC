@@ -7,6 +7,10 @@
  */
 
 /**
- * Provides the Java OSC API, which should be everything users of this library need.
+ * Provides the main part of the Java OSC API.
+ * The main part of which is serialization
+ * (conversion <i>from <b>Java objects</b> to <b>OSC byte-stream</b></i>)
+ * and parsing
+ * (conversion <i>from <b>OSC byte-stream</b> to <b>Java objects</b></i>).
  */
 package com.illposed.osc;
