@@ -85,7 +85,7 @@
 					<excludes>
 						<exclude>com/illposed/osc/OSCPacketDispatcher.java</exclude>
 						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
-						<exclude>com/illposed/osc/addressselector/OSCPatternAddressSelector.java</exclude>
+						<exclude>com/illposed/osc/addressselector/OSCPatternAddressMessageSelector.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

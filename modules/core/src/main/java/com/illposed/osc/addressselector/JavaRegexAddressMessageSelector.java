@@ -8,7 +8,7 @@
 
 package com.illposed.osc.addressselector;
 
-import com.illposed.osc.AddressSelector;
+import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
 import java.util.regex.Pattern;
 
@@ -16,15 +16,15 @@ import java.util.regex.Pattern;
  * Checks whether an OSC <i>Address Pattern</i> matches a given
  * Java regular expression.
  */
-public class JavaRegexAddressSelector implements AddressSelector {
+public class JavaRegexAddressMessageSelector implements MessageSelector {
 
 	private final Pattern selector;
 
-	public JavaRegexAddressSelector(final Pattern selector) {
+	public JavaRegexAddressMessageSelector(final Pattern selector) {
 		this.selector = selector;
 	}
 
-	public JavaRegexAddressSelector(final String selectorRegex) {
+	public JavaRegexAddressMessageSelector(final String selectorRegex) {
 		this(Pattern.compile(selectorRegex));
 	}
 
