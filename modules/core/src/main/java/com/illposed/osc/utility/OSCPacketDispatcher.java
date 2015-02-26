@@ -62,10 +62,10 @@ public class OSCPacketDispatcher {
 	}
 
 	public void dispatchPacket(final OSCPacket packet) {
-		dispatchPacket(packet, null);
+		dispatchPacket(packet, OSCTimeStamp.IMMEDIATE);
 	}
 
-	public void dispatchPacket(final OSCPacket packet, final OSCTimeStamp timestamp) {
+	private void dispatchPacket(final OSCPacket packet, final OSCTimeStamp timestamp) {
 		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
 		} else {
