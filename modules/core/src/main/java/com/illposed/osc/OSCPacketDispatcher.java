@@ -24,7 +24,7 @@ public class OSCPacketDispatcher {
 
 	private final Map<AddressSelector, OSCListener> selectorToListener;
 	/**
-	 * Whether to disregard bundle time-stamps for dispatch scheduling.
+	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
 	 */
 	private boolean alwaysDispatchingImmediatly;
 
