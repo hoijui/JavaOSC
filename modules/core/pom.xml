@@ -4,6 +4,7 @@
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
 		<supported.osc.version>1.0</supported.osc.version>
+		<project.mainClass>${project.packageName}.LibraryInfo</project.mainClass>
 	</properties>
 
 	<parent>
@@ -87,6 +88,7 @@
 				</executions>
 				<configuration>
 					<excludes>
+						<exclude>com/illposed/osc/LibraryInfo.java</exclude>
 						<exclude>com/illposed/osc/OSCPacketDispatcher.java</exclude>
 						<exclude>com/illposed/osc/OSCSerializer.java</exclude>
 						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
