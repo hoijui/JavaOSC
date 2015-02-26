@@ -12,5 +12,6 @@
  * like {@code Integer}, {@code Double} and {@code String}.
  * For the OSC argument types that do not have a suitable representative in standard Java,
  * we added new classes here.
+ * In addition, it also contains the API class {@link ArgumentHandler}.
  */
 package com.illposed.osc.argument;

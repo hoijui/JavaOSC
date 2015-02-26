@@ -9,8 +9,12 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCImpulse;
+import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.utility.OSCParseException;
 import com.illposed.osc.utility.OSCParser;
+import com.illposed.osc.utility.OSCParserFactory;
 import com.illposed.osc.utility.OSCSerializer;
+import com.illposed.osc.utility.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,7 +88,7 @@ public class OSCMessageTest {
 
 	private byte[] convertMessageToByteArray(final OSCMessage message) {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
+		final OSCSerializer stream = OSCSerializerFactory.createDefaultFactory().create(buffer);
 		try {
 			stream.write(message);
 		} catch (IOException ex) {
@@ -223,7 +227,7 @@ public class OSCMessageTest {
 	@Test
 	public void testArgumentTimestamp0() {
 		final List<Object> args = new ArrayList<Object>(1);
-		args.add(new Date(0L));
+		args.add(OSCTimeStamp.valueOf(new Date(0L)));
 		final OSCMessage message = new OSCMessage("/ts/0", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0
@@ -238,7 +242,7 @@ public class OSCMessageTest {
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2000, 0, 0);
-		args.add(calendar.getTime());
+		args.add(OSCTimeStamp.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/2000", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 112, -128,
@@ -253,7 +257,7 @@ public class OSCMessageTest {
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2037, 0, 0);
-		args.add(calendar.getTime());
+		args.add(OSCTimeStamp.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/afterFeb2036", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 97, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 0,
@@ -402,7 +406,7 @@ public class OSCMessageTest {
 		allTypes.add(1L);
 		allTypes.add('h');
 		allTypes.add("hello world!");
-		allTypes.add(new Date(0L));
+		allTypes.add(OSCTimeStamp.valueOf(new Date(0L)));
 		args.add("firstArg");
 		args.add(singleType);
 		args.add("middleArg");
@@ -438,7 +442,7 @@ public class OSCMessageTest {
 		fourthLevel.add(1L);
 		fourthLevel.add('h');
 		fourthLevel.add("hello world!");
-		fourthLevel.add(new Date(0L));
+		fourthLevel.add(OSCTimeStamp.valueOf(new Date(0L)));
 		final Collection<Object> thirdLevel = new LinkedList<Object>();
 		thirdLevel.add(fourthLevel);
 		thirdLevel.add(-1);
@@ -475,12 +479,12 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testEncodeLong() {
+	public void testEncodeLong() throws OSCParseException {
 		OSCMessage message = new OSCMessage("/dummy");
 		Long one001 = 1001L;
 		message.addArgument(one001);
 		byte[] byteArray = convertMessageToByteArray(message);
-		OSCParser converter = new OSCParser();
+		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Big Integer did not receive the correct address");
@@ -498,14 +502,14 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testEncodeArray() {
+	public void testEncodeArray() throws OSCParseException {
 		OSCMessage message = new OSCMessage("/dummy");
 		List<Float> floats = new ArrayList<Float>(2);
 		floats.add(10.0f);
 		floats.add(100.0f);
 		message.addArgument(floats);
 		byte[] byteArray = convertMessageToByteArray(message);
-		OSCParser converter = new OSCParser();
+		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
 		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Array did not receive the correct address");

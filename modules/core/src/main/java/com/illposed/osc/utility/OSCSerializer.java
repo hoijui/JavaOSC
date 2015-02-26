@@ -10,16 +10,18 @@ package com.illposed.osc.utility;
 
 import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.OSCBundle;
-import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.argument.OSCUnsigned;
+import com.illposed.osc.argument.ArgumentHandler;
+import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Collection;
-import java.util.Date;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A helper class that translates from Java types to their byte stream representations
@@ -32,43 +34,61 @@ import java.util.Date;
 public class OSCSerializer {
 
 	private final SizeTrackingOutputStream stream;
-	/** Used to encode message addresses and string parameters. */
-	private Charset charset;
-	/**
-	 * A Buffer used to convert an Integer into bytes.
-	 * We allocate it globally, so the GC has less work to do.
-	 */
-	private final byte[] intBytes;
-	/**
-	 * A Buffer used to convert a Long into bytes.
-	 * We allocate it globally, so the GC has less work to do.
-	 */
-	private final byte[] longintBytes;
 
-	public OSCSerializer(final OutputStream wrappedStream) {
+	private final Map<Class, Boolean> classToMarker;
+	private final Map<Class, ArgumentHandler> classToType;
+	private final Map<Object, ArgumentHandler> markerValueToType;
+	private final StringArgumentHandler stringOSCType;
 
+	public OSCSerializer(final List<ArgumentHandler> types, final OutputStream wrappedStream) {
+
+		final Map<Class, Boolean> classToMarkerTmp = new HashMap<Class, Boolean>(types.size());
+		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<Class, ArgumentHandler>();
+		final Map<Object, ArgumentHandler> markerValueToTypeTmp = new HashMap<Object, ArgumentHandler>();
+		for (final ArgumentHandler type : types) {
+			final Class typeJava = type.getJavaClass();
+			final Boolean registeredIsMarker = classToMarkerTmp.get(typeJava);
+			if ((registeredIsMarker != null) && (registeredIsMarker != type.isMarkerOnly())) {
+				throw new IllegalStateException(ArgumentHandler.class.getSimpleName()
+						+ " implementations disagree on the marker nature of their class: "
+						+ typeJava);
+			}
+			classToMarkerTmp.put(typeJava, type.isMarkerOnly());
+
+			if (type.isMarkerOnly()) {
+				try {
+					final Object markerValue = type.parse(null);
+					final ArgumentHandler previousType = markerValueToTypeTmp.get(markerValue);
+					if (previousType != null) {
+						throw new IllegalStateException("Marker value \"" + markerValue
+								+ "\" is already used for type "
+								+ previousType.getClass().getCanonicalName());
+					}
+					markerValueToTypeTmp.put(markerValue, type);
+				} catch (final OSCParseException ex) {
+					throw new IllegalStateException("Developper error; this should never happen",
+							ex);
+				}
+			} else {
+				final ArgumentHandler previousType = classToTypeTmp.get(typeJava);
+				if (previousType != null) {
+					throw new IllegalStateException("Java argument type "
+							+ typeJava.getCanonicalName() + " is already used for type "
+							+ previousType.getClass().getCanonicalName());
+				}
+				classToTypeTmp.put(typeJava, type);
+			}
+		}
+
+		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
+		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
+		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
 		this.stream = new SizeTrackingOutputStream(wrappedStream);
-		this.charset = Charset.defaultCharset();
-		this.intBytes = new byte[4];
-		this.longintBytes = new byte[8];
+		this.stringOSCType = (StringArgumentHandler) classToType.get(String.class);
 	}
 
-	/**
-	 * Returns the character set used to encode message addresses
-	 * and string parameters.
-	 * @return the character-encoding-set used by this converter
-	 */
-	public Charset getCharset() {
-		return charset;
-	}
-
-	/**
-	 * Sets the character set used to encode message addresses
-	 * and string parameters.
-	 * @param charset the desired character-encoding-set to be used by this converter
-	 */
-	public void setCharset(final Charset charset) {
-		this.charset = charset;
+	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
+		return classToType;
 	}
 
 	/**
@@ -85,8 +105,8 @@ public class OSCSerializer {
 	private byte[] convertToByteArray(final OSCPacket packet) throws IOException {
 
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer packetStream = new OSCSerializer(buffer);
-		packetStream.setCharset(getCharset());
+		final OSCSerializer packetStream = OSCSerializerFactory.createDefaultFactory().create(buffer); // HACK this should not use the default one, but the one that created us! but in the end, this part should be externalized anyway, as it is not part of the core serialization, but rather a requirement for the TCP transport convention (see OSC spec. 1.1)
+//		packetStream.setCharset(getCharset()); // see HACK of the previous line
 		if (packet instanceof OSCBundle) {
 			packetStream.write((OSCBundle) packet);
 		} else if (packet instanceof OSCMessage) {
@@ -112,7 +132,7 @@ public class OSCSerializer {
 	 * @param stream where to write the address to
 	 */
 	private void writeAddressByteArray(final OSCMessage message) throws IOException {
-		write(message.getAddress());
+		stringOSCType.serialize(stream, message.getAddress());
 	}
 
 	/**
@@ -121,7 +141,7 @@ public class OSCSerializer {
 	 * @param stream where to write the arguments to
 	 */
 	private void writeArgumentsByteArray(final OSCMessage message) throws IOException {
-		write(',');
+		stream.write((char) ',');
 		writeTypes(message.getArguments());
 		for (final Object argument : message.getArguments()) {
 			write(argument);
@@ -157,68 +177,6 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Write bytes into the byte stream.
-	 * @param bytes  bytes to be written
-	 */
-	void write(final byte... bytes) throws IOException {
-		writeInteger32ToByteArray(bytes.length);
-		stream.write(bytes);
-		alignStream();
-	}
-
-	/**
-	 * Write an integer into the byte stream.
-	 * @param anInt the integer to be written
-	 */
-	void write(final int anInt) throws IOException {
-		writeInteger32ToByteArray(anInt);
-	}
-
-	/**
-	 * Write a float into the byte stream.
-	 * @param aFloat floating point number to be written
-	 */
-	void write(final Float aFloat) throws IOException {
-		writeInteger32ToByteArray(Float.floatToIntBits(aFloat));
-	}
-
-	/**
-	 * Write a double into the byte stream (8 bytes).
-	 * @param aDouble double precision floating point number to be written
-	 */
-	void write(final Double aDouble) throws IOException {
-		writeInteger64ToByteArray(Double.doubleToRawLongBits(aDouble));
-	}
-
-	/**
-	 * @param anInt the integer to be written
-	 */
-	void write(final Integer anInt) throws IOException {
-		writeInteger32ToByteArray(anInt);
-	}
-
-	/**
-	 * @param aLong the double precision integer to be written
-	 */
-	void write(final Long aLong) throws IOException {
-		writeInteger64ToByteArray(aLong);
-	}
-
-	/**
-	 * @param timestamp the timestamp to be written
-	 */
-	void write(final Date timestamp) throws IOException {
-		write(OSCTimeStamp.valueOf(timestamp));
-	}
-
-	/**
-	 * @param timeStamp the timestamp to be written
-	 */
-	void write(final OSCTimeStamp timeStamp) throws IOException {
-		writeInteger64ToByteArray(timeStamp.getNtpTime());
-	}
-
-	/**
 	 * Convert the time-tag into the OSC byte stream.
 	 * Used Internally.
 	 * @param stream where to write the time-tag to
@@ -228,56 +186,18 @@ public class OSCSerializer {
 		write(timestamp == null ? OSCTimeStamp.IMMEDIATE : timestamp);
 	}
 
-	/**
-	 * @param int32unsigned the unsigned value to be written
-	 */
-	void write(final OSCUnsigned int32unsigned) throws IOException {
+	private ArgumentHandler findType(final Object argumentValue) {
 
-		final long asLong = int32unsigned.toLong();
-		stream.write((byte) (asLong >> 24 & 0xFFL));
-		stream.write((byte) (asLong >> 16 & 0xFFL));
-		stream.write((byte) (asLong >>  8 & 0xFFL));
-		stream.write((byte) (asLong       & 0xFFL));
-	}
+		final ArgumentHandler type;
+		final Class argumentClass = extractTypeClass(argumentValue);
+		final Boolean isMarkerType = classToMarker.get(argumentClass);
+		if (isMarkerType) {
+			type = markerValueToType.get(argumentValue);
+		} else {
+			type = classToType.get(argumentClass);
+		}
 
-	/**
-	 * Write a string into the byte stream.
-	 * @param aString the string to be written
-	 */
-	void write(final String aString) throws IOException {
-		final byte[] stringBytes = aString.getBytes(charset);
-		stream.write(stringBytes);
-		stream.write((byte) 0);
-		alignStream();
-	}
-
-	/**
-	 * Write a char into the byte stream, and ensure it is 4 byte aligned again.
-	 * @param aChar the character to be written
-	 */
-	void write(final Character aChar) throws IOException {
-		stream.write((char) aChar);
-		alignStream();
-	}
-
-	/**
-	 * Write a char into the byte stream.
-	 * CAUTION, this does not ensure 4 byte alignment (it actually breaks it)!
-	 * @param aChar the character to be written
-	 */
-	void write(final char aChar) throws IOException {
-		stream.write(aChar);
-	}
-
-	/**
-	 * Checks whether the given object is represented by a type that comes without data.
-	 * @param anObject the object to inspect
-	 * @return whether the object to check consists of only its type information
-	 */
-	private boolean isNoDataObject(final Object anObject) {
-		return ((anObject instanceof OSCImpulse)
-				|| (anObject instanceof Boolean)
-				|| (anObject == null));
+		return type;
 	}
 
 	/**
@@ -292,30 +212,18 @@ public class OSCSerializer {
 			for (final Object entry : theArray) {
 				write(entry);
 			}
-		} else if (anObject instanceof Float) {
-			write((Float) anObject);
-		} else if (anObject instanceof Double) {
-			write((Double) anObject);
-		} else if (anObject instanceof String) {
-			write((String) anObject);
-		} else if (anObject instanceof byte[]) {
-			write((byte[]) anObject);
-		} else if (anObject instanceof Character) {
-			write((Character) anObject);
-		} else if (anObject instanceof Integer) {
-			write((Integer) anObject);
-		} else if (anObject instanceof Long) {
-			write((Long) anObject);
-		} else if (anObject instanceof OSCTimeStamp) {
-			write((OSCTimeStamp) anObject);
-		} else if (anObject instanceof OSCUnsigned) {
-			write((OSCUnsigned) anObject);
-		} else if (anObject instanceof Date) {
-			write((Date) anObject);
-		} else if (!isNoDataObject(anObject)) {
-			throw new UnsupportedOperationException("Do not know how to write an object of class: "
-					+ anObject.getClass());
+		} else {
+			final ArgumentHandler type = findType(anObject);
+			if (type == null) {
+				throw new UnsupportedOperationException(
+						"Do not know how to write an object of class: " + anObject.getClass());
+			}
+			type.serialize(stream, anObject);
 		}
+	}
+
+	private static Class extractTypeClass(final Object value) {
+		return (value == null) ? Object.class : value.getClass();
 	}
 
 	/**
@@ -323,34 +231,10 @@ public class OSCSerializer {
 	 * converts to.
 	 * @param typeClass Class of a Java object in the arguments
 	 */
-	private void writeType(final Class typeClass) throws IOException {
+	private void writeType(final Object value) throws IOException {
 
-		// A big ol' else-if chain -- what's polymorphism mean, again?
-		// I really wish I could extend the base classes!
-		if (Integer.class.equals(typeClass)) {
-			stream.write('i');
-		} else if (Long.class.equals(typeClass)) {
-			stream.write('h');
-		} else if (Date.class.equals(typeClass) || OSCTimeStamp.class.equals(typeClass)) {
-			stream.write('t');
-		} else if (Float.class.equals(typeClass)) {
-			stream.write('f');
-		} else if (Double.class.equals(typeClass)) {
-			stream.write('d');
-		} else if (String.class.equals(typeClass)) {
-			stream.write('s');
-		} else if (byte[].class.equals(typeClass)) {
-			stream.write('b');
-		} else if (Character.class.equals(typeClass)) {
-			stream.write('c');
-		} else if (OSCImpulse.class.equals(typeClass)) {
-			stream.write('I');
-		} else if (OSCUnsigned.class.equals(typeClass)) {
-			stream.write('u');
-		} else {
-			throw new UnsupportedOperationException("Do not know the OSC type for the java class: "
-					+ typeClass);
-		}
+		final ArgumentHandler type = findType(value);
+		stream.write(type.getDefaultIdentifier());
 	}
 
 	/**
@@ -361,9 +245,7 @@ public class OSCSerializer {
 	private void writeTypesArray(final Collection<Object> arguments) throws IOException {
 
 		for (final Object argument : arguments) {
-			if (null == argument) {
-				stream.write('N');
-			} else if (argument instanceof Collection) {
+			if (argument instanceof Collection) {
 				// If the array at i is a type of array, write a '['.
 				// This is used for nested arguments.
 				stream.write('[');
@@ -373,15 +255,11 @@ public class OSCSerializer {
 				writeTypesArray(collArg);
 				// close the array
 				stream.write(']');
-			} else if (Boolean.TRUE.equals(argument)) {
-				stream.write('T');
-			} else if (Boolean.FALSE.equals(argument)) {
-				stream.write('F');
 			} else {
 				// go through the array and write the superCollider types as shown
 				// in the above method.
 				// The classes derived here are used as the arg to the above method.
-				writeType(argument.getClass());
+				writeType(argument);
 			}
 		}
 	}
@@ -399,39 +277,5 @@ public class OSCSerializer {
 		stream.write((byte) 0);
 		// align the stream with padded bytes
 		alignStream();
-	}
-
-	/**
-	 * Write a 32 bit integer to the byte array without allocating memory.
-	 * @param value a 32 bit integer.
-	 */
-	private void writeInteger32ToByteArray(final int value) throws IOException {
-
-		int curValue = value;
-		intBytes[3] = (byte)curValue; curValue >>>= 8;
-		intBytes[2] = (byte)curValue; curValue >>>= 8;
-		intBytes[1] = (byte)curValue; curValue >>>= 8;
-		intBytes[0] = (byte)curValue;
-
-		stream.write(intBytes);
-	}
-
-	/**
-	 * Write a 64 bit integer to the byte array without allocating memory.
-	 * @param value a 64 bit integer.
-	 */
-	private void writeInteger64ToByteArray(final long value) throws IOException {
-
-		long curValue = value;
-		longintBytes[7] = (byte)curValue; curValue >>>= 8;
-		longintBytes[6] = (byte)curValue; curValue >>>= 8;
-		longintBytes[5] = (byte)curValue; curValue >>>= 8;
-		longintBytes[4] = (byte)curValue; curValue >>>= 8;
-		longintBytes[3] = (byte)curValue; curValue >>>= 8;
-		longintBytes[2] = (byte)curValue; curValue >>>= 8;
-		longintBytes[1] = (byte)curValue; curValue >>>= 8;
-		longintBytes[0] = (byte)curValue;
-
-		stream.write(longintBytes);
 	}
 }

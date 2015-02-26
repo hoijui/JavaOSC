@@ -1,0 +1,13 @@
+/*
+ * Copyright (C) 2015, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
+/**
+ * Provides {@link com.illposed.osc.argument.ArgumentHandler} implementations.
+ * Most, if not all of them can be found in the OSC specification (1.0 and 1.1).
+ */
+package com.illposed.osc.argument.handler;

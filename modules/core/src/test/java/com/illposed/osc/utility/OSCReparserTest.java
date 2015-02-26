@@ -45,14 +45,15 @@ public class OSCReparserTest {
 	private static byte[] serialize(final OSCPacket packet) throws IOException {
 
 		final ByteArrayOutputStream serializedStream = new ByteArrayOutputStream();
-		final OSCSerializer serializer = new OSCSerializer(serializedStream);
+		final OSCSerializer serializer
+				= OSCSerializerFactory.createDefaultFactory().create(serializedStream);
 		serializer.write(packet);
 		return serializedStream.toByteArray();
 	}
 
 	private static OSCPacket parse(final byte[] packetBytes) throws IOException {
 
-		final OSCParser parser = new OSCParser();
+		final OSCParser parser = OSCParserFactory.createDefaultFactory().create();
 		return parser.convert(packetBytes, packetBytes.length);
 	}
 
