@@ -15,6 +15,7 @@ import com.illposed.osc.OSCPacket;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -42,19 +43,19 @@ public class OSCReparserTest {
 				}
 			};
 
-	private static byte[] serialize(final OSCPacket packet) throws IOException {
+	private static ByteBuffer serialize(final OSCPacket packet) throws IOException {
 
 		final ByteArrayOutputStream serializedStream = new ByteArrayOutputStream();
 		final OSCSerializer serializer
 				= OSCSerializerFactory.createDefaultFactory().create(serializedStream);
 		serializer.write(packet);
-		return serializedStream.toByteArray();
+		return ByteBuffer.wrap(serializedStream.toByteArray()).asReadOnlyBuffer();
 	}
 
-	private static OSCPacket parse(final byte[] packetBytes) throws IOException {
+	private static OSCPacket parse(final ByteBuffer packetBytes) throws IOException {
 
 		final OSCParser parser = OSCParserFactory.createDefaultFactory().create();
-		return parser.convert(packetBytes, packetBytes.length);
+		return parser.convert(packetBytes);
 	}
 
 	public static <T extends OSCPacket> T reparse(final T packet) throws IOException {

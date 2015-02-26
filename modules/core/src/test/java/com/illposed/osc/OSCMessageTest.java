@@ -17,6 +17,7 @@ import com.illposed.osc.utility.OSCSerializer;
 import com.illposed.osc.utility.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -485,7 +486,8 @@ public class OSCMessageTest {
 		message.addArgument(one001);
 		byte[] byteArray = convertMessageToByteArray(message);
 		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
-		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
+		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Big Integer did not receive the correct address");
 		}
@@ -510,7 +512,8 @@ public class OSCMessageTest {
 		message.addArgument(floats);
 		byte[] byteArray = convertMessageToByteArray(message);
 		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
-		OSCMessage packet = (OSCMessage) converter.convert(byteArray, byteArray.length);
+		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
+		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Array did not receive the correct address");
 		}
