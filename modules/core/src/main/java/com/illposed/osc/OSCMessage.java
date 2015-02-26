@@ -58,7 +58,7 @@ public class OSCMessage implements OSCPacket {
 	 * @param address  the recipient of this OSC message
 	 * @param arguments  the data sent to the receiver
 	 */
-	public OSCMessage(final String address, final Collection<Object> arguments) {
+	public OSCMessage(final String address, final List<?> arguments) {
 
 		checkAddress(address);
 		this.address = address;

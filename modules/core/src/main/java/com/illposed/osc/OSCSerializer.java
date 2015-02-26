@@ -229,15 +229,15 @@ public class OSCSerializer {
 	 * @param arguments array of base Objects
 	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
-	private void writeTypesArray(final Collection<Object> arguments) throws IOException {
+	private void writeTypesArray(final List<?> arguments) throws IOException {
 
 		for (final Object argument : arguments) {
-			if (argument instanceof Collection) {
+			if (argument instanceof List) {
 				// This is used for nested arguments.
 				// open the array
 				stream.write(OSCParser.TYPE_ARRAY_BEGIN);
 				// fill the [] with the nested argument types
-				writeTypesArray((Collection<Object>) argument);
+				writeTypesArray((List<Object>) argument);
 				// close the array
 				stream.write(OSCParser.TYPE_ARRAY_END);
 			} else {
@@ -252,7 +252,7 @@ public class OSCSerializer {
 	 * @param arguments  the arguments to an OSCMessage
 	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
-	public void writeTypes(final Collection<Object> arguments) throws IOException {
+	public void writeTypes(final List<?> arguments) throws IOException {
 
 		writeTypesArray(arguments);
 		// we always need to terminate with a zero,

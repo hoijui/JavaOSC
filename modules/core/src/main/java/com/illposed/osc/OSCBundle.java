@@ -10,7 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeStamp;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class OSCBundle implements OSCPacket {
 	 * with a timestamp of now.
 	 * @param packets array of OSCPackets to initialize this object with
 	 */
-	public OSCBundle(final Collection<OSCPacket> packets) {
+	public OSCBundle(final List<OSCPacket> packets) {
 		this(packets, OSCTimeStamp.IMMEDIATE);
 	}
 
@@ -61,7 +60,7 @@ public class OSCBundle implements OSCPacket {
 	 * @param packets the packets that make up the bundle
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final Collection<OSCPacket> packets, final OSCTimeStamp timestamp) {
+	public OSCBundle(final List<OSCPacket> packets, final OSCTimeStamp timestamp) {
 
 		if (null == packets) {
 			this.packets = new LinkedList<OSCPacket>();
