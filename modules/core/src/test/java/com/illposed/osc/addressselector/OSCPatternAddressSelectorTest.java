@@ -151,7 +151,7 @@ public class OSCPatternAddressSelectorTest {
 
 		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[]a-c]o");
 
-		Assert.assertTrue( matches(matcher, "/hel]o"));
+//		Assert.assertTrue( matches(matcher, "/hel]o")); // not a valid OSC address
 		Assert.assertTrue( matches(matcher, "/helao"));
 		Assert.assertTrue( matches(matcher, "/helbo"));
 		Assert.assertTrue( matches(matcher, "/helco"));
@@ -173,7 +173,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertTrue( matches(matcher, "/helbo"));
 		Assert.assertTrue( matches(matcher, "/helco"));
 		Assert.assertFalse(matches(matcher, "/hel-o"));
-		Assert.assertFalse(matches(matcher, "/hel]o"));
 		Assert.assertFalse(matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
@@ -191,7 +190,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertFalse(matches(matcher, "/helbo"));
 		Assert.assertFalse(matches(matcher, "/helco"));
 		Assert.assertTrue( matches(matcher, "/hel-o"));
-		Assert.assertTrue( matches(matcher, "/hel]o"));
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
@@ -209,7 +207,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
 		Assert.assertFalse(matches(matcher, "/helco"));
 		Assert.assertFalse(matches(matcher, "/hel-o"));
-		Assert.assertFalse(matches(matcher, "/hel]o"));
 		Assert.assertFalse(matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
@@ -226,7 +223,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
 		Assert.assertFalse(matches(matcher, "/helco"));
 		Assert.assertFalse(matches(matcher, "/hel-o"));
-		Assert.assertFalse(matches(matcher, "/hel]o"));
 		Assert.assertFalse(matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
@@ -243,7 +239,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
 		Assert.assertFalse(matches(matcher, "/helco"));
 		Assert.assertFalse(matches(matcher, "/hel-o"));
-		Assert.assertFalse(matches(matcher, "/hel]o"));
 		Assert.assertFalse(matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
@@ -260,7 +255,6 @@ public class OSCPatternAddressSelectorTest {
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
 		Assert.assertFalse(matches(matcher, "/helco"));
 		Assert.assertFalse(matches(matcher, "/hel-o"));
-		Assert.assertFalse(matches(matcher, "/hel]o"));
 		Assert.assertFalse(matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellllo"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
