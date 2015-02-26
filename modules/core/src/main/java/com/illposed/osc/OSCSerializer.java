@@ -252,7 +252,7 @@ public class OSCSerializer {
 	 * @param arguments  the arguments to an OSCMessage
 	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
-	public void writeTypeTags(final List<?> arguments) throws IOException {
+	private void writeTypeTags(final List<?> arguments) throws IOException {
 
 		writeTypeTagsRaw(arguments);
 		// we always need to terminate with a zero,
