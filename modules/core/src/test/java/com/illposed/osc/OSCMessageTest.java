@@ -16,6 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -391,10 +392,12 @@ public class OSCMessageTest {
 
 	@Test
 	public void testCreateSynth() {
-		OSCMessage message = new OSCMessage("/s_new");
-		message.addArgument(1001);
-		message.addArgument("freq");
-		message.addArgument(440.0f);
+
+		final List<Object> origArguments = new ArrayList<Object>(3);
+		origArguments.add(1001);
+		origArguments.add("freq");
+		origArguments.add(440.0f);
+		OSCMessage message = new OSCMessage("/s_new", origArguments);
 		byte[] answer
 				= {0x2F, 0x73, 0x5F, 0x6E, 0x65, 0x77, 0, 0, 0x2C, 0x69, 0x73, 0x66, 0, 0, 0, 0, 0,
 					0, 0x3, (byte) 0xE9, 0x66, 0x72, 0x65, 0x71, 0, 0, 0, 0, 0x43, (byte) 0xDC, 0,
@@ -499,9 +502,9 @@ public class OSCMessageTest {
 
 	@Test
 	public void testEncodeLong() throws OSCParseException {
-		OSCMessage message = new OSCMessage("/dummy");
 		Long one001 = 1001L;
-		message.addArgument(one001);
+		final List<?> origArguments = Collections.singletonList(one001);
+		OSCMessage message = new OSCMessage("/dummy", origArguments);
 		byte[] byteArray = convertMessageToByteArray(message);
 		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
@@ -509,7 +512,7 @@ public class OSCMessageTest {
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Big Integer did not receive the correct address");
 		}
-		List<Object> arguments = packet.getArguments();
+		List<?> arguments = packet.getArguments();
 		if (arguments.size() != 1) {
 			Assert.fail("Send Big Integer should have 1 argument, not " + arguments.size());
 		}
@@ -523,11 +526,11 @@ public class OSCMessageTest {
 
 	@Test
 	public void testEncodeArray() throws OSCParseException {
-		OSCMessage message = new OSCMessage("/dummy");
 		List<Float> floats = new ArrayList<Float>(2);
 		floats.add(10.0f);
 		floats.add(100.0f);
-		message.addArgument(floats);
+		final List<?> origArguments = Collections.singletonList(floats);
+		final OSCMessage message = new OSCMessage("/dummy", origArguments);
 		byte[] byteArray = convertMessageToByteArray(message);
 		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
@@ -535,7 +538,7 @@ public class OSCMessageTest {
 		if (!packet.getAddress().equals("/dummy")) {
 			Assert.fail("Send Array did not receive the correct address");
 		}
-		List<Object> arguments = packet.getArguments();
+		final List<?> arguments = packet.getArguments();
 		if (arguments.size() != 1) {
 			Assert.fail("Send Array should have 1 argument, not " + arguments.size());
 		}
@@ -556,15 +559,8 @@ public class OSCMessageTest {
 	public void testAddressValidationFrontendCtorNull() {
 
 		// expect no exception, as we could still set a valid address later on
+		expectedException.expect(IllegalArgumentException.class);
 		OSCMessage oscMessage = new OSCMessage(null);
-	}
-
-	@Test
-	public void testAddressValidationFrontendSetterNull() {
-
-		OSCMessage oscMessage = new OSCMessage();
-		// expect no exception, as we could still set a valid address later on
-		oscMessage.setAddress(null);
 	}
 
 	@Test
@@ -575,26 +571,10 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testAddressValidationFrontendSetterValid() {
-
-		OSCMessage oscMessage = new OSCMessage();
-		// expect no exception, as the address is valid
-		oscMessage.setAddress("/hello/world");
-	}
-
-	@Test
 	public void testAddressValidationFrontendCtorInvalid() {
 
 		expectedException.expect(IllegalArgumentException.class);
 		OSCMessage oscMessage = new OSCMessage("/ hello/world");
-	}
-
-	@Test
-	public void testAddressValidationFrontendSetterInvalid() {
-
-		OSCMessage oscMessage = new OSCMessage();
-		expectedException.expect(IllegalArgumentException.class);
-		oscMessage.setAddress("/ hello/world");
 	}
 
 	@Test

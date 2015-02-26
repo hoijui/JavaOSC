@@ -50,10 +50,7 @@ public class OSCSerializerTest {
 			serializerFactory.setProperties(properties);
 		}
 		final OSCSerializer stream = serializerFactory.create(buffer);
-		final OSCMessage oscMessage = new OSCMessage("/ab");
-		for (final Object argument : arguments) {
-			oscMessage.addArgument(argument);
-		}
+		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
 		stream.write(oscMessage);
 		byte[] result = buffer.toByteArray();
 		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);

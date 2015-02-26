@@ -176,7 +176,7 @@ public class OSCParserTest {
 
 		final OSCMessage packet = convertToMessage(bytes);
 		checkAddress("/s_new", packet.getAddress());
-		final List<Object> arguments = packet.getArguments();
+		final List<?> arguments = packet.getArguments();
 		if (arguments.size() != 3) {
 			Assert.fail("Num arguments should be 3, but is " + arguments.size());
 		}

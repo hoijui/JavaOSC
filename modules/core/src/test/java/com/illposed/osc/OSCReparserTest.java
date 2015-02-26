@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import org.junit.Assert;
@@ -64,8 +65,8 @@ public class OSCReparserTest {
 	private <C, I extends C, O extends C> void reparseSingleArgument(final I argument, final Comparator<C> comparator)
 			throws IOException
 	{
-		final OSCMessage message = new OSCMessage("/hello/world");
-		message.addArgument(argument);
+		final OSCMessage message = new OSCMessage("/hello/world",
+				Collections.singletonList(argument));
 
 		final OSCMessage reparsedMessage = reparse(message);
 
