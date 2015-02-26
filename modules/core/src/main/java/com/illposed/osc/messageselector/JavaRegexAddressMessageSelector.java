@@ -13,8 +13,7 @@ import com.illposed.osc.OSCMessage;
 import java.util.regex.Pattern;
 
 /**
- * Checks whether an OSC <i>Address Pattern</i> matches a given
- * Java regular expression.
+ * Checks whether an OSC <i>Address Pattern</i> matches a given Java regular expression.
  */
 public class JavaRegexAddressMessageSelector implements MessageSelector {
 
