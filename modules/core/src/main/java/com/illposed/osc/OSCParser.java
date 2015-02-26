@@ -182,7 +182,15 @@ public class OSCParser {
 				typeTags = NO_ARGUMENT_TYPES;
 			}
 		} else {
-			// there are no arguments
+			// NOTE Stricty speaking, it is invalid for a message to omit the "OSC Type Tag String",
+			//   even if that message has no arguments.
+			//   See these two excerpts from the OSC 1.0 specification:
+			//   1. "An OSC message consists of an OSC Address Pattern followed by
+			//       an OSC Type Tag String followed by zero or more OSC Arguments."
+			//   2. "An OSC Type Tag String is an OSC-string beginning with the character ','"
+			//   But to be compatible with older OSC implementations,
+			//   and because it should cause no troubles,
+			//   we accept this as a valid message anyway.
 			typeTags = NO_ARGUMENT_TYPES;
 		}
 
