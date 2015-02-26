@@ -8,10 +8,7 @@
 
 package com.illposed.osc;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -32,24 +29,15 @@ public class OSCMessage implements OSCPacket {
 	private static final Pattern ILLEGAL_ADDRESS_CHAR
 			= Pattern.compile("[ \\#\\*\\,\\?\\[\\]\\{\\}]");
 
-	private String address;
-	private List<Object> arguments;
-
-	/**
-	 * Creates an empty OSC Message.
-	 * In order to send this OSC message,
-	 * you need to set the address and optionally some arguments.
-	 */
-	public OSCMessage() {
-		this(null);
-	}
+	private final String address;
+	private final List<Object> arguments;
 
 	/**
 	 * Creates an OSCMessage with an address already initialized.
 	 * @param address  the recipient of this OSC message
 	 */
 	public OSCMessage(final String address) {
-		this(address, null);
+		this(address, Collections.EMPTY_LIST);
 	}
 
 	/**
@@ -62,11 +50,7 @@ public class OSCMessage implements OSCPacket {
 
 		checkAddress(address);
 		this.address = address;
-		if (arguments == null) {
-			this.arguments = new LinkedList<Object>();
-		} else {
-			this.arguments = new ArrayList<Object>(arguments);
-		}
+		this.arguments = Collections.unmodifiableList(arguments);
 	}
 
 	/**
@@ -78,41 +62,19 @@ public class OSCMessage implements OSCPacket {
 	}
 
 	/**
-	 * Set the address of this message.
-	 * @param address the receiver of the message
-	 */
-	public void setAddress(final String address) {
-		checkAddress(address);
-		this.address = address;
-	}
-
-	/**
-	 * Add an argument to the list of arguments.
-	 * @param argument a Float, Double, String, Character, Integer, Long, Boolean, null
-	 *   or an array of these
-	 */
-	public void addArgument(final Object argument) {
-		arguments.add(argument);
-	}
-
-	/**
 	 * The arguments of this message.
 	 * @return the arguments to this message
 	 */
 	public List<Object> getArguments() {
-		return Collections.unmodifiableList(arguments);
+		return arguments;
 	}
 
 	/**
 	 * Throws an exception if the given address is invalid.
-	 * We explicitly allow <code>null</code> here,
-	 * because we want to allow to set the address in a lazy fashion.
 	 * @param address to be checked for validity
 	 */
 	private static void checkAddress(final String address) {
-		// NOTE We explicitly allow <code>null</code> here,
-		//   because we want to allow to set in a lazy fashion.
-		if ((address != null) && !isValidAddress(address)) {
+		if (!isValidAddress(address)) {
 			throw new IllegalArgumentException("Not a valid OSC address: " + address);
 		}
 	}
