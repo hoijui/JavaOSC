@@ -330,12 +330,9 @@
 							<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 						</rulesets>
 						<excludes>
-							<exclude>com/illposed/osc/argument/OSCTimeStamp.java</exclude>
 							<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
 							<exclude>com/illposed/osc/argument/handler/Activator.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCParserFactory.java</exclude>
-							<exclude>com/illposed/osc/utility/OSCParser.java</exclude>
-							<exclude>com/illposed/osc/utility/OSCSerializer.java</exclude>
 							<exclude>com/illposed/osc/utility/OSCPatternAddressSelector.java</exclude>
 						</excludes>
 					</configuration>
