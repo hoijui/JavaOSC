@@ -171,7 +171,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise
 	 */
-	private static boolean matches(final String str, final String p) {
+	public static boolean matches(final String str, final String p) {
 
 		boolean negate;
 		boolean match;
