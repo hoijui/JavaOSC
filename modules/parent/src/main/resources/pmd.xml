@@ -18,6 +18,7 @@
 		<exclude name="AvoidFinalLocalVariable"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="CallSuperInConstructor"/>
+		<exclude name="UseConcurrentHashMap"/>
 	</rule>
 	<!--<rule ref="rulesets/java/coupling.xml"/>-->
 	<rule ref="rulesets/java/design.xml">
