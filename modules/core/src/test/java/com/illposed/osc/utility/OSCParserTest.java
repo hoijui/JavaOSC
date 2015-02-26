@@ -13,6 +13,7 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.argument.OSCUnsigned;
+import java.nio.ByteBuffer;
 import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
@@ -46,7 +47,8 @@ public class OSCParserTest {
 
 		final OSCPacket packet;
 		try {
-			packet = converter.convert(bytes, bytes.length);
+			final ByteBuffer readOnlyBytes = ByteBuffer.wrap(bytes).asReadOnlyBuffer();
+			packet = converter.convert(readOnlyBytes);
 		} catch (final OSCParseException ex) {
 			throw new RuntimeException(ex);
 		}

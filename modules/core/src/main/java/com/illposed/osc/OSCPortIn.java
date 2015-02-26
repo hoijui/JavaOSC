@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 
 /**
  * OSCPortIn is the class that listens for OSC messages.
@@ -111,8 +112,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 						continue;
 					}
 				}
-				final OSCPacket oscPacket = converter.convert(buffer,
-						packet.getLength());
+				final ByteBuffer packetBytes
+						= ByteBuffer.wrap(buffer, 0, packet.getLength()).asReadOnlyBuffer();
+				final OSCPacket oscPacket = converter.convert(packetBytes);
 				dispatcher.dispatchPacket(oscPacket);
 			} catch (IOException ex) {
 				ex.printStackTrace(); // XXX This may not be a good idea, as this could easily lead to a never ending series of exceptions thrown (due to the non-exited while loop), and because the user of the lib may want to handle this case himself
