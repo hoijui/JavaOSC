@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.addressselector.OSCPatternAddressSelector;
+import com.illposed.osc.addressselector.OSCPatternAddressMessageSelector;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,9 +27,9 @@ public class OSCPacketDispatcherTest {
 	public void setUp() {
 		dispatcher = new OSCPacketDispatcher(OSCSerializerFactory.createDefaultFactory());
 		listener1 = new SimpleOSCListener();
-		dispatcher.addListener(new OSCPatternAddressSelector("/listener1"), listener1);
+		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
 		listener2 = new SimpleOSCListener();
-		dispatcher.addListener(new OSCPatternAddressSelector("/listener2"), listener2);
+		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener2"), listener2);
 	}
 
 	@After

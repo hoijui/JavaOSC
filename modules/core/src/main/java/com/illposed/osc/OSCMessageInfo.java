@@ -10,7 +10,7 @@ package com.illposed.osc;
 
 /**
  * Holds (meta-)info about a message.
- * This might be used by some implementations of {@link AddressSelector}, for example.
+ * This might be used by some implementations of {@link MessageSelector}, for example.
  */
 public class OSCMessageInfo {
 

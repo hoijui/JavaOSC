@@ -7,6 +7,6 @@
  */
 
 /**
- * Provides {@link com.illposed.osc.AddressSelector} implementations.
+ * Provides {@link com.illposed.osc.MessageSelector} implementations.
  */
 package com.illposed.osc.addressselector;

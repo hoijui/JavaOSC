@@ -8,7 +8,7 @@
 
 package com.illposed.osc.addressselector;
 
-import com.illposed.osc.AddressSelector;
+import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * <p>
  * A coarse history of the code in the function
- * {@link OSCPatternAddressSelector#matches(String, String)},
+ * {@link OSCPatternAddressMessageSelector#matches(String, String)},
  * from the origin to JavaOSC:
  * </p>
  * <ol>
@@ -56,7 +56,7 @@ import java.util.List;
  * </li>
  * </ol>
  */
-public class OSCPatternAddressSelector implements AddressSelector {
+public class OSCPatternAddressMessageSelector implements MessageSelector {
 
 	private final List<String> patternParts;
 
@@ -65,9 +65,10 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 *
 	 * @param selector either a fixed address like "/sc/mixer/volume",
 	 *   or a selector pattern (a mix between wildcards and regex)
-	 *   like "/??/mixer/*", see {@link OSCPatternAddressSelector} for details
+	 *   like "/??/mixer/*", see {@link OSCPatternAddressMessageSelector the class comment}
+	 *   for more details
 	 */
-	public OSCPatternAddressSelector(final String selector) {
+	public OSCPatternAddressMessageSelector(final String selector) {
 		this.patternParts = splitIntoParts(selector);
 	}
 
@@ -165,7 +166,7 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	 * a selector.
 	 * This code was copied and adapted from LibLo,
 	 * and is licensed under the Public Domain.
-	 * For more details see: {@link OSCPatternAddressSelector}.
+	 * For more details see: {@link OSCPatternAddressMessageSelector}.
 	 * @param str address part
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise

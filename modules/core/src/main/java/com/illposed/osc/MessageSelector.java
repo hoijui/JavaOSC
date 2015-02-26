@@ -11,7 +11,7 @@ package com.illposed.osc;
 /**
  * Checks whether an OSC <i>Message</i> fulfills certain criteria.
  */
-public interface AddressSelector {
+public interface MessageSelector {
 
 	/**
 	 * Returns whether this selector requires meta-info to be present for messages

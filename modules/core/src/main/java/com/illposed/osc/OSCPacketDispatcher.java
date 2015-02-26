@@ -29,7 +29,7 @@ public class OSCPacketDispatcher {
 	private final ByteArrayOutputStream argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
-	private final Map<AddressSelector, OSCListener> selectorToListener;
+	private final Map<MessageSelector, OSCListener> selectorToListener;
 	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
@@ -50,7 +50,7 @@ public class OSCPacketDispatcher {
 			final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
 			this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
 		}
-		this.selectorToListener = new HashMap<AddressSelector, OSCListener>();
+		this.selectorToListener = new HashMap<MessageSelector, OSCListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
 		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
@@ -88,14 +88,13 @@ public class OSCPacketDispatcher {
 	/**
 	 * Adds a listener (<i>Method</i> in OSC speak) that will be notified
 	 * of incoming messages that match the selector.
-	 * @param addressSelector selects which messages will be forwarded to the listener,
-	 *   depending on the message address
+	 * @param messageSelector selects which messages will be forwarded to the listener
 	 * @param listener receives messages accepted by the selector
 	 */
-	public void addListener(final AddressSelector addressSelector, final OSCListener listener) {
+	public void addListener(final MessageSelector messageSelector, final OSCListener listener) {
 
-		selectorToListener.put(addressSelector, listener);
-		if (addressSelector.isInfoRequired()) {
+		selectorToListener.put(messageSelector, listener);
+		if (messageSelector.isInfoRequired()) {
 			metaInfoRequired = true;
 		}
 	}
@@ -185,7 +184,7 @@ public class OSCPacketDispatcher {
 
 		ensureMetaInfo(message);
 
-		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
+		for (final Entry<MessageSelector, OSCListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message)) {
 				addrList.getValue().acceptMessage(time, message);
 			}

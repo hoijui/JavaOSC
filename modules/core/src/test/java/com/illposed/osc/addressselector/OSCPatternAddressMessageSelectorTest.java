@@ -8,21 +8,21 @@
 
 package com.illposed.osc.addressselector;
 
-import com.illposed.osc.AddressSelector;
+import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class OSCPatternAddressSelectorTest {
+public class OSCPatternAddressMessageSelectorTest {
 
-	private static boolean matches(final AddressSelector matcher, final String address) {
+	private static boolean matches(final MessageSelector matcher, final String address) {
 		return matcher.matches(new OSCMessage(address));
 	}
 
 	@Test
 	public void testNumberOfParts() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/*/*");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/*/*");
 
 		Assert.assertFalse(matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -32,7 +32,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPartPrefix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/he*/wo*");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/he*/wo*");
 
 		Assert.assertFalse(matches(matcher, "/bello/world"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -43,7 +43,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPartPostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/*o/*rld");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/*o/*rld");
 
 		Assert.assertTrue( matches(matcher, "/bello/world"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -54,7 +54,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPartPreAndPostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h*o/w*rld*");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h*o/w*rld*");
 
 		Assert.assertFalse(matches(matcher, "/bello/world"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -65,7 +65,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testSingle() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/?ello/w?rl?");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/?ello/w?rl?");
 
 		Assert.assertTrue( matches(matcher, "/bello/world"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -76,7 +76,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testGroupForwards() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[a-z]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[a-z]o");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
@@ -87,7 +87,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testGroupBackwards() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[z-a]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[z-a]o");
 
 		Assert.assertTrue( matches(matcher, "/helao"));
 		Assert.assertTrue( matches(matcher, "/helzo"));
@@ -102,7 +102,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testGroupList() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[aly]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[aly]o");
 
 		Assert.assertTrue( matches(matcher, "/helao"));
 		Assert.assertTrue( matches(matcher, "/hello"));
@@ -117,7 +117,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testGroupListAndRange() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[lya-c]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[lya-c]o");
 
 		Assert.assertTrue( matches(matcher, "/helao"));
 		Assert.assertTrue( matches(matcher, "/helbo"));
@@ -134,7 +134,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testGroupHyphenAndRange() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[-a-c]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[-a-c]o");
 
 		Assert.assertTrue( matches(matcher, "/hel-o"));
 		Assert.assertTrue( matches(matcher, "/helao"));
@@ -150,7 +150,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testCloseBracketAndRange() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[]a-c]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[]a-c]o");
 
 //		Assert.assertTrue( matches(matcher, "/hel]o")); // not a valid OSC address
 		Assert.assertTrue( matches(matcher, "/helao"));
@@ -167,7 +167,7 @@ public class OSCPatternAddressSelectorTest {
 	public void testRegexNegate() {
 
 		// '^' is just a character like any other, no special meaning!
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[^a-c]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[^a-c]o");
 
 		Assert.assertTrue( matches(matcher, "/hel^o"));
 		Assert.assertTrue( matches(matcher, "/helao"));
@@ -185,7 +185,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testNegate() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hel[!a-c]o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[!a-c]o");
 
 		Assert.assertFalse(matches(matcher, "/helao"));
 		Assert.assertFalse(matches(matcher, "/helbo"));
@@ -202,7 +202,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testStringGroupSolo() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/{hello,hididelidoo}");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/{hello,hididelidoo}");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
@@ -218,7 +218,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testStringGroupPrefix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h{ello,ididelidoo}");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h{ello,ididelidoo}");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
@@ -234,7 +234,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testStringGroupPostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/{hell,hididelido}o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/{hell,hididelido}o");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
@@ -250,7 +250,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testStringGroupPreAndPostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/h{ell,ididelido}o");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h{ell,ididelido}o");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hididelidoo"));
@@ -266,7 +266,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardNone() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/");
 
 		Assert.assertTrue( matches(matcher, "/"));
 		Assert.assertFalse(matches(matcher, "/hello"));
@@ -277,7 +277,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardAll() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("//");
 
 		Assert.assertTrue( matches(matcher, "/"));
 		Assert.assertTrue( matches(matcher, "/hello"));
@@ -288,7 +288,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardPrefix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello//");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello//");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -301,7 +301,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardPostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//two");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("//two");
 
 		Assert.assertFalse(matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/hello/world"));
@@ -314,7 +314,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardInfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("//world//");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("//world//");
 
 		Assert.assertTrue( matches(matcher, "/world"));
 		Assert.assertFalse(matches(matcher, "/hello"));
@@ -328,7 +328,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardAroundfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello//two");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello//two");
 
 		Assert.assertFalse(matches(matcher, "/world"));
 		Assert.assertFalse(matches(matcher, "/hello"));
@@ -344,7 +344,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardMultiplePrefix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello////");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello////");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertTrue( matches(matcher, "/hello/world"));
@@ -357,7 +357,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardMultiplePostfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("////two");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("////two");
 
 		Assert.assertFalse(matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/hello/world"));
@@ -370,7 +370,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardMultipleInfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("////world////");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("////world////");
 
 		Assert.assertTrue( matches(matcher, "/world"));
 		Assert.assertFalse(matches(matcher, "/hello"));
@@ -384,7 +384,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardMultipleAroundfix() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello////two");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello////two");
 
 		Assert.assertFalse(matches(matcher, "/world"));
 		Assert.assertFalse(matches(matcher, "/hello"));
@@ -400,7 +400,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardNoneSingleTrailingSlash() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/hello/");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello/");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/hello/world"));
@@ -413,7 +413,7 @@ public class OSCPatternAddressSelectorTest {
 	@Test
 	public void testPathTraversingWildcardComplex() {
 
-		OSCPatternAddressSelector matcher = new OSCPatternAddressSelector("/my//hello///two/cents//");
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/my//hello///two/cents//");
 
 		Assert.assertFalse(matches(matcher, "/hello"));
 		Assert.assertFalse(matches(matcher, "/hello/world"));
