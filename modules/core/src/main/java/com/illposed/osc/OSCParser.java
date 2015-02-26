@@ -151,7 +151,7 @@ public class OSCParser {
 		final String typesStr;
 
 		// The next byte should be a TYPES_VALUES_SEPARATOR, but some legacy code may omit it
-		// in case of no arguments, refering to "OSC Messages" in:
+		// in case of no arguments, according to "OSC Messages" in:
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.hasRemaining()) {
 			if (rawInput.get(rawInput.position()) == TYPES_VALUES_SEPARATOR) {
