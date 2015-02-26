@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.addressselector.OSCPatternAddressMessageSelector;
+import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

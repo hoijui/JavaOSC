@@ -6,7 +6,7 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.addressselector;
+package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;

@@ -48,7 +48,7 @@
 					<instructions>
 						<Export-Package>
 							${project.packageName},
-							${project.packageName}.addressselector,
+							${project.packageName}.messageselector,
 							${project.packageName}.argument,
 							${project.packageName}.transport,
 							${project.packageName}.transport.udp
@@ -86,7 +86,7 @@
 					<excludes>
 						<exclude>com/illposed/osc/OSCPacketDispatcher.java</exclude>
 						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
-						<exclude>com/illposed/osc/addressselector/OSCPatternAddressMessageSelector.java</exclude>
+						<exclude>com/illposed/osc/messageselector/OSCPatternAddressMessageSelector.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
