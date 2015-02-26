@@ -6,8 +6,12 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.OSCBundle;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
+import com.illposed.osc.SimpleOSCListener;
 import com.illposed.osc.addressselector.OSCPatternAddressSelector;
 import java.net.InetAddress;
 import java.util.ArrayList;
