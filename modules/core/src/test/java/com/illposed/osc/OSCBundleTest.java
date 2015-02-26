@@ -8,6 +8,7 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.utility.OSCReparserTest;
 import java.io.IOException;
 import java.util.ArrayList;

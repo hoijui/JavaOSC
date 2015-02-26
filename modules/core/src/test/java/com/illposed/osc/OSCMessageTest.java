@@ -8,6 +8,7 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.utility.OSCParser;
 import com.illposed.osc.utility.OSCSerializer;
 import java.io.ByteArrayOutputStream;

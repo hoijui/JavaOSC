@@ -14,7 +14,7 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPort;
 import com.illposed.osc.OSCPortOut;
-import com.illposed.osc.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeStamp;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
