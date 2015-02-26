@@ -6,8 +6,12 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCPacketDispatcher;
+import com.illposed.osc.OSCParser;
+import com.illposed.osc.OSCParserFactory;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
