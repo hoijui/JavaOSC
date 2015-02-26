@@ -118,4 +118,21 @@ public class OSCPortOut extends OSCPort {
 				new DatagramPacket(byteArray, byteArray.length, address, getPort());
 		getSocket().send(packet);
 	}
+
+	@Override
+	public String toString() {
+
+		final StringBuilder rep = new StringBuilder(64);
+
+		rep
+				.append('[')
+				.append(getClass().getSimpleName())
+				.append(": sending to \"")
+				.append(address.getHostName())
+				.append(':')
+				.append(getPort())
+				.append("\"]");
+
+		return rep.toString();
+	}
 }
