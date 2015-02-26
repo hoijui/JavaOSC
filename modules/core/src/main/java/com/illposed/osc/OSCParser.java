@@ -111,22 +111,27 @@ public class OSCParser {
 	 * @return a message containing the data specified in the byte stream
 	 */
 	private OSCMessage convertMessage(final ByteBuffer rawInput) throws OSCParseException {
-		final OSCMessage message = new OSCMessage();
-		message.setAddress(readString(rawInput));
+
+		final String address = readString(rawInput);
 		final CharSequence typeIdentifiers = readTypes(rawInput);
+		// typeIdentifiers.length() gives us an upper bound for the number of arguments
+		// and a good approximation in general.
+		// It is equal to the number of arguments if there are no arrays.
+		final List<Object> arguments = new ArrayList<Object>(typeIdentifiers.length());
 		for (int ti = 0; ti < typeIdentifiers.length(); ++ti) {
 			if (TYPE_ARRAY_BEGIN == typeIdentifiers.charAt(ti)) {
 				// we're looking at an array -- read it in
-				message.addArgument(readArray(rawInput, typeIdentifiers, ++ti));
+				arguments.add(readArray(rawInput, typeIdentifiers, ++ti));
 				// then increment i to the end of the array
 				while (typeIdentifiers.charAt(ti) != TYPE_ARRAY_END) {
 					ti++;
 				}
 			} else {
-				message.addArgument(readArgument(rawInput, typeIdentifiers.charAt(ti)));
+				arguments.add(readArgument(rawInput, typeIdentifiers.charAt(ti)));
 			}
 		}
-		return message;
+
+		return new OSCMessage(address, arguments);
 	}
 
 	/**
