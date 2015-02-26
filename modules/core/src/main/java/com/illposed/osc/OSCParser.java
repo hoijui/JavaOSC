@@ -32,6 +32,14 @@ public class OSCParser {
 
 	private final Map<Character, ArgumentHandler> identifierToType;
 
+	private static class UnknownArgumentTypeParseException extends OSCParseException {
+
+		UnknownArgumentTypeParseException(final char argumentType) {
+			super("No " + ArgumentHandler.class.getSimpleName() + " registered for type '"
+					+ argumentType + "'");
+		}
+	}
+
 	public OSCParser(final Map<Character, ArgumentHandler> identifierToType) {
 
 		this.identifierToType = Collections.unmodifiableMap(identifierToType);
@@ -55,7 +63,18 @@ public class OSCParser {
 		if (isBundle(readOnlyInput)) {
 			packet = convertBundle(readOnlyInput);
 		} else {
-			packet = convertMessage(readOnlyInput);
+			OSCPacket tmpPacket = null;
+			try {
+				tmpPacket = convertMessage(readOnlyInput);
+			} catch (final UnknownArgumentTypeParseException ex) {
+				// NOTE Some OSC applications communicate among instances of themselves
+				//   with additional, nonstandard argument types beyond those specified
+				//   in the OSC specification. OSC applications are not required to recognize
+				//   these types; an OSC application should discard any message whose
+				//   OSC Type Tag string contains any unrecognized OSC Type Tags.
+				System.err.println("Package ignored because: " + ex.getMessage());
+			}
+			packet = tmpPacket;
 		}
 
 		return packet;
@@ -182,13 +201,7 @@ public class OSCParser {
 
 		final ArgumentHandler type = identifierToType.get(typeIdentifier);
 		if (type == null) {
-			// XXX Maybe we should let the user choose what to do in this
-			//   case (we encountered an unknown argument type in an
-			//   incomming message):
-			//   just ignore (return null), or throw an exception?
-//			throw new UnsupportedOperationException(
-//					"Invalid or not yet supported OSC type: '" + type + "'");
-			argumentValue = null;
+			throw new UnknownArgumentTypeParseException(typeIdentifier);
 		} else {
 			argumentValue = type.parse(rawInput);
 		}
