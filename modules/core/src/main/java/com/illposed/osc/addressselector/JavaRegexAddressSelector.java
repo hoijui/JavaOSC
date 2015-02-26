@@ -29,6 +29,11 @@ public class JavaRegexAddressSelector implements AddressSelector {
 	}
 
 	@Override
+	public boolean isInfoRequired() {
+		return false;
+	}
+
+	@Override
 	public boolean matches(final OSCMessage message) {
 		return selector.matcher(message.getAddress()).matches();
 	}

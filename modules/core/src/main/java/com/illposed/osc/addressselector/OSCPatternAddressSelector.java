@@ -72,6 +72,11 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	}
 
 	@Override
+	public boolean isInfoRequired() {
+		return false;
+	}
+
+	@Override
 	public boolean matches(final OSCMessage message) {
 
 		final List<String> messageAddressParts = splitIntoParts(message.getAddress());
