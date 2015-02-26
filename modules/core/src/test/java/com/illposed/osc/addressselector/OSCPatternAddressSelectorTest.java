@@ -6,7 +6,7 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.utility;
+package com.illposed.osc.addressselector;
 
 import org.junit.Assert;
 import org.junit.Test;
