@@ -139,7 +139,7 @@ public class OSCSerializer {
 	 */
 	private void writeArguments(final OSCMessage message) throws IOException {
 		stream.write(OSCParser.TYPES_VALUES_SEPARATOR);
-		writeTypes(message.getArguments());
+		writeTypeTags(message.getArguments());
 		for (final Object argument : message.getArguments()) {
 			write(argument);
 		}
@@ -224,11 +224,11 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Write the types for an array element in the arguments.
+	 * Write the type tags for a given list of arguments.
 	 * @param arguments array of base Objects
 	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
-	private void writeTypesArray(final List<?> arguments) throws IOException {
+	private void writeTypeTagsRaw(final List<?> arguments) throws IOException {
 
 		for (final Object argument : arguments) {
 			if (argument instanceof List) {
@@ -236,7 +236,7 @@ public class OSCSerializer {
 				// open the array
 				stream.write(OSCParser.TYPE_ARRAY_BEGIN);
 				// fill the [] with the nested argument types
-				writeTypesArray((List<Object>) argument);
+				writeTypeTagsRaw((List<Object>) argument);
 				// close the array
 				stream.write(OSCParser.TYPE_ARRAY_END);
 			} else {
@@ -247,13 +247,13 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Write types for the arguments.
+	 * Write the type tags for a given list of arguments, and cleanup the stream.
 	 * @param arguments  the arguments to an OSCMessage
 	 * @throws IOException if the underlying stream produces an exception when written to
 	 */
-	public void writeTypes(final List<?> arguments) throws IOException {
+	public void writeTypeTags(final List<?> arguments) throws IOException {
 
-		writeTypesArray(arguments);
+		writeTypeTagsRaw(arguments);
 		// we always need to terminate with a zero,
 		// even if (especially when) the stream is already aligned.
 		stream.write((byte) 0);
