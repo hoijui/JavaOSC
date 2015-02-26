@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * Keeps track of the number of bytes already written to the stream.
+ * Wraps an other stream, while keeping track of the number of bytes already written to the stream.
  */
 public class SizeTrackingOutputStream extends OutputStream {
 

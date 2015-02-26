@@ -10,6 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCParser;
 import com.illposed.osc.utility.OSCPacketDispatcher;
+import com.illposed.osc.utility.OSCParserFactory;
 import com.illposed.osc.utility.OSCPatternAddressSelector;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -50,14 +51,24 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCPacketDispatcher dispatcher;
 
 	/**
+	 * Create an OSCPort that listens using a specified socket,
+	 * using a parser for the specified factory.
+	 * @param parserFactory to create the internal parser from
+	 * @param socket DatagramSocket to listen on.
+	 */
+	public OSCPortIn(final OSCParserFactory parserFactory, final DatagramSocket socket) {
+		super(socket, socket.getLocalPort());
+
+		this.converter = parserFactory.create();
+		this.dispatcher = new OSCPacketDispatcher();
+	}
+
+	/**
 	 * Create an OSCPort that listens using a specified socket.
 	 * @param socket DatagramSocket to listen on.
 	 */
 	public OSCPortIn(final DatagramSocket socket) {
-		super(socket, socket.getLocalPort());
-
-		this.converter = new OSCParser();
-		this.dispatcher = new OSCPacketDispatcher();
+		this(OSCParserFactory.createDefaultFactory(), socket);
 	}
 
 	/**

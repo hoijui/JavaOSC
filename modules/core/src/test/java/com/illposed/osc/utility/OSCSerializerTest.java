@@ -9,9 +9,12 @@
 package com.illposed.osc.utility;
 
 import com.illposed.osc.OSCMessageTest;
+import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 
 /**
@@ -32,10 +35,13 @@ public class OSCSerializerTest {
 			throws IOException
 	{
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer stream = new OSCSerializer(buffer);
+		final OSCSerializerFactory serializerFactory = OSCSerializerFactory.createDefaultFactory();
 		if (charset != null) {
-			stream.setCharset(charset);
+			final Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
+			serializerFactory.setProperties(properties);
 		}
+		final OSCSerializer stream = serializerFactory.create(buffer);
 		for (final Object argument : arguments) {
 			stream.write(argument);
 		}
@@ -53,7 +59,7 @@ public class OSCSerializerTest {
 
 	private OSCSerializer createSimpleTestStream() {
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		return new OSCSerializer(buffer);
+		return OSCSerializerFactory.createDefaultFactory().create(buffer);
 	}
 
 	/**
@@ -71,7 +77,7 @@ public class OSCSerializerTest {
 	 * yields: (int) 1045220557 (VA Java 3.5)
 	 *
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
-	 * @throws IOException because {@link OSCSerializer#write(Float)} may do so
+	 * @throws IOException because {@link OSCSerializer#write(Object)} may do so
 	 */
 	@Test
 	public void testPrintFloat2OnStream() throws IOException {
@@ -129,47 +135,5 @@ public class OSCSerializerTest {
 		checkPrintOnStream(
 				new byte[] {0, 0, 0, 0, 0, 0, 4, 100},
 				1124L);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteLong() throws IOException {
-		final Long nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteFloat() throws IOException {
-		final Float nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteDouble() throws IOException {
-		final Double nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteInteger() throws IOException {
-		final Integer nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteString() throws IOException {
-		final String nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteCharacter() throws IOException {
-		final Character nullValue = null;
-		createSimpleTestStream().write(nullValue);
-	}
-
-	@Test(expected=NullPointerException.class)
-	public void testIfExceptionOnNullWriteBlob() throws IOException {
-		final byte[] nullValue = null;
-		createSimpleTestStream().write(nullValue);
 	}
 }

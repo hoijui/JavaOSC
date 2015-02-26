@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCSerializer;
+import com.illposed.osc.utility.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -45,16 +46,33 @@ public class OSCPortOut extends OSCPort {
 	private final OSCSerializer converter;
 
 	/**
+	 * Create an OSCPort that sends to address:port using a specified socket
+	 * and a specified serializer.
+	 * @param serializerFactory the UDP address to send to
+	 * @param address the UDP address to send to
+	 * @param port the UDP port to send to
+	 * @param socket the DatagramSocket to send from
+	 */
+	public OSCPortOut(
+			final OSCSerializerFactory serializerFactory,
+			final InetAddress address,
+			final int port,
+			final DatagramSocket socket)
+	{
+		super(socket, port);
+		this.address = address;
+		this.outputBuffer = new ByteArrayOutputStream();
+		this.converter = serializerFactory.create(outputBuffer);
+	}
+
+	/**
 	 * Create an OSCPort that sends to address:port using a specified socket.
 	 * @param address the UDP address to send to
 	 * @param port the UDP port to send to
 	 * @param socket the DatagramSocket to send from
 	 */
 	public OSCPortOut(final InetAddress address, final int port, final DatagramSocket socket) {
-		super(socket, port);
-		this.address = address;
-		this.outputBuffer = new ByteArrayOutputStream();
-		this.converter = new OSCSerializer(outputBuffer);
+		this(OSCSerializerFactory.createDefaultFactory(), address, port, socket);
 	}
 
 	/**
