@@ -31,6 +31,7 @@ public class OSCMessage implements OSCPacket {
 
 	private final String address;
 	private final List<Object> arguments;
+	private OSCMessageInfo info;
 
 	/**
 	 * Creates an OSCMessage with an address already initialized.
@@ -47,10 +48,22 @@ public class OSCMessage implements OSCPacket {
 	 * @param arguments  the data sent to the receiver
 	 */
 	public OSCMessage(final String address, final List<?> arguments) {
+		this(address, arguments, null);
+	}
+
+	/**
+	 * Creates an OSCMessage with an address
+	 * and arguments already initialized.
+	 * @param address  the recipient of this OSC message
+	 * @param arguments  the data sent to the receiver
+	 * @param info  meta-info about the message, or {@code null}, if not yet available
+	 */
+	public OSCMessage(final String address, final List<?> arguments, final OSCMessageInfo info) {
 
 		checkAddress(address);
 		this.address = address;
 		this.arguments = Collections.unmodifiableList(arguments);
+		this.info = info;
 	}
 
 	/**
@@ -67,6 +80,31 @@ public class OSCMessage implements OSCPacket {
 	 */
 	public List<Object> getArguments() {
 		return arguments;
+	}
+
+	/**
+	 * Returns meta-info about this message.
+	 * @return the meta-info, or {@code null}, if none are set yet.
+	 */
+	public OSCMessageInfo getInfo() {
+		return info;
+	}
+
+	public boolean isInfoSet() {
+		return (info != null);
+	}
+
+	/**
+	 * Sets meta-info about this message.
+	 * This method may only be called if the meta-info has not yet been set.
+	 * @param info the meta-info for this message, may not be {@code null}
+	 */
+	public void setInfo(final OSCMessageInfo info) {
+
+		if (this.info != null) {
+			throw new IllegalStateException("The meta-info of a message may only be set once");
+		}
+		this.info = info;
 	}
 
 	/**
