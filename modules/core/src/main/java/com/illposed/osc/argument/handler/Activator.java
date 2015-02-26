@@ -33,6 +33,7 @@ public final class Activator {
 		types.add(ImpulseArgumentHandler.INSTANCE);
 		types.add(IntegerArgumentHandler.INSTANCE);
 		types.add(LongArgumentHandler.INSTANCE);
+		types.add(MidiMessageArgumentHandler.INSTANCE);
 		types.add(NullArgumentHandler.INSTANCE);
 		types.add(TimeStampArgumentHandler.INSTANCE);
 		types.add(UnsignedIntegerArgumentHandler.INSTANCE);
