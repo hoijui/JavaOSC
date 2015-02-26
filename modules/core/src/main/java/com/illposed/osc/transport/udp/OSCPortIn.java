@@ -87,10 +87,6 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this(new DatagramSocket(port));
 	}
 
-	public OSCParser getParser() {
-		return converter;
-	}
-
 	/**
 	 * Run the loop that listens for OSC on a socket until
 	 * {@link #isListening()} becomes false.
