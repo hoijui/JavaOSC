@@ -11,16 +11,17 @@ package com.illposed.osc;
 import com.illposed.osc.argument.OSCTimeStamp;
 
 /**
- * Allows to listen to incoming messages that match some selector pattern.
+ * Allows to listen to incoming messages.
  * In OSC speak, this is a <i>Method</i>, and it listens to <i>Messages</i>.
  */
 public interface OSCListener {
 
 	/**
 	 * Process a matching, incoming OSC Message.
-	 * @param time     The time this message is to be executed.
-	 *   <code>null</code> means: process immediately
-	 * @param message  The message to process.
+	 * @param time when the message is to be processed.
+	 *   This should be the time this method is called, or {@code OSCTimeStamp.IMMEDIATE}.
+	 *   It may never be {@code null}.
+	 * @param message to be processed
 	 */
 	void acceptMessage(OSCTimeStamp time, OSCMessage message);
 }
