@@ -177,9 +177,10 @@ public class OSCParser {
 				rawInput.get(); // position++ to skip the TYPES_VALUES_SEPARATOR
 				typeTags = readString(rawInput);
 			} else {
-				// the message format is invalid
-				// XXX should we not rather fail-fast -> throw exception?
-				typeTags = NO_ARGUMENT_TYPES;
+				// data format is invalid
+				throw new OSCParseException(
+						"No '" + TYPES_VALUES_SEPARATOR + "' present after the address, "
+								+ "but there is still more data left in the message");
 			}
 		} else {
 			// NOTE Stricty speaking, it is invalid for a message to omit the "OSC Type Tag String",
