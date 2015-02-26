@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCPatternAddressSelector;
+import com.illposed.osc.addressselector.OSCPatternAddressSelector;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;

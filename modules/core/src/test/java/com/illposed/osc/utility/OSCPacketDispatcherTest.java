@@ -8,6 +8,7 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.addressselector.OSCPatternAddressSelector;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.SimpleOSCListener;
