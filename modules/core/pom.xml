@@ -45,7 +45,13 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>${project.packageName}</Export-Package>
+						<Export-Package>
+							${project.packageName},
+							${project.packageName}.addressselector,
+							${project.packageName}.argument,
+							${project.packageName}.transport,
+							${project.packageName}.transport.udp
+						</Export-Package>
 						<Supported-OSC-Version>${supported.osc.version}</Supported-OSC-Version>
 					</instructions>
 				</configuration>
