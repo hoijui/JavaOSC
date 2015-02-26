@@ -1,0 +1,66 @@
+/*
+ * Copyright (C) 2015, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
+package com.illposed.osc.argument;
+
+import java.io.Serializable;
+
+/**
+ * Represents an OSC compliant symbol.
+ * Technically, this is not different from a {@code String}, but some systems may differentiate
+ * between "strings" and "symbols".
+ */
+public class OSCSymbol implements Cloneable, Serializable, Comparable<OSCSymbol> {
+
+	private static final long serialVersionUID = 1L;
+
+	private final String value;
+
+	public OSCSymbol(final String value) {
+		this.value = value;
+	}
+
+	@Override
+	public boolean equals(final Object other) {
+
+		final boolean equal;
+		if (other instanceof OSCSymbol) {
+			equal = toString().equals(((OSCSymbol) other).toString());
+		} else {
+			equal = false;
+		}
+
+		return equal;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 37 * hash + (this.value == null ? 0 : this.value.hashCode());
+		return hash;
+	}
+
+	@Override
+	public int compareTo(final OSCSymbol other) {
+		return toString().compareTo(other.toString());
+	}
+
+	@Override
+	public OSCSymbol clone() throws CloneNotSupportedException {
+		return (OSCSymbol) super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+
+	public static OSCSymbol valueOf(final String str) {
+		return new OSCSymbol(str);
+	}
+}
