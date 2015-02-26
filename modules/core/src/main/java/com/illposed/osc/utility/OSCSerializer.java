@@ -8,7 +8,6 @@
 
 package com.illposed.osc.utility;
 
-import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
@@ -120,7 +119,7 @@ public class OSCSerializer {
 
 	private void write(final OSCBundle bundle) throws IOException {
 		write("#bundle");
-		writeBundleTimestamp(bundle.getTimestamp());
+		write(bundle.getTimestamp());
 		for (final OSCPacket pkg : bundle.getPackets()) {
 			writeInternal(pkg);
 		}
@@ -174,16 +173,6 @@ public class OSCSerializer {
 			throw new UnsupportedOperationException("We do not support writing packets of type: "
 					+ packet.getClass());
 		}
-	}
-
-	/**
-	 * Convert the time-tag into the OSC byte stream.
-	 * Used Internally.
-	 * @param stream where to write the time-tag to
-	 * @deprecated use {@link #write(OSCTimeStamp)} instead
-	 */
-	private void writeBundleTimestamp(final OSCTimeStamp timestamp) throws IOException {
-		write(timestamp == null ? OSCTimeStamp.IMMEDIATE : timestamp);
 	}
 
 	private ArgumentHandler findType(final Object argumentValue) {
