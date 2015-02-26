@@ -173,6 +173,18 @@ public class OSCSerializer {
 		}
 	}
 
+	/**
+	 * Write only the type tags for a given list of arguments.
+	 * This is primarily used by the packet dispatcher.
+	 * @param arguments to write the type tags from
+	 * @throws IOException if the underlying stream produces an exception when written to
+	 */
+	public void writeOnlyTypeTags(final List<?> arguments) throws IOException {
+
+		stream.reset();
+		writeTypeTagsRaw(arguments);
+	}
+
 	private ArgumentHandler findType(final Object argumentValue) {
 
 		final ArgumentHandler type;
