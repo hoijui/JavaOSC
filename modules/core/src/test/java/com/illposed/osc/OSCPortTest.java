@@ -122,7 +122,7 @@ public class OSCPortTest {
 	@Test
 	public void testMessageWithNullAddress() throws Exception {
 		OSCMessage mesg = new OSCMessage(null);
-		expectedException.expect(NullPointerException.class);
+		expectedException.expect(IllegalStateException.class);
 		sender.send(mesg);
 	}
 
