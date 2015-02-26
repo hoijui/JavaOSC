@@ -6,25 +6,25 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.utility;
+package com.illposed.osc;
 
 import java.io.IOException;
 
-public class OSCParseException extends IOException {
+public class OSCSerializeException extends IOException {
 
-	public OSCParseException() {
+	public OSCSerializeException() {
 		super();
 	}
 
-	public OSCParseException(final String message) {
+	public OSCSerializeException(final String message) {
 		super(message);
 	}
 
-	public OSCParseException(final String message, final Throwable cause) {
+	public OSCSerializeException(final String message, final Throwable cause) {
 		super(message, cause);
 	}
 
-	public OSCParseException(final Throwable cause) {
+	public OSCSerializeException(final Throwable cause) {
 		super(cause);
 	}
 }

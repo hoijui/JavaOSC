@@ -6,10 +6,8 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.utility;
+package com.illposed.osc;
 
-import com.illposed.osc.OSCMessage;
-import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -10,9 +10,9 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.utility.OSCParseException;
-import com.illposed.osc.utility.OSCSerializeException;
-import com.illposed.osc.utility.SizeTrackingOutputStream;
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.SizeTrackingOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;

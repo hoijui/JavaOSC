@@ -8,9 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCParser;
-import com.illposed.osc.utility.OSCPacketDispatcher;
-import com.illposed.osc.utility.OSCParserFactory;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

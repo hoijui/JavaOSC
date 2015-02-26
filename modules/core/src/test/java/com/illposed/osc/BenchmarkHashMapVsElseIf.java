@@ -6,7 +6,7 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.utility;
+package com.illposed.osc;
 
 import java.util.ArrayList;
 import java.util.Collections;
