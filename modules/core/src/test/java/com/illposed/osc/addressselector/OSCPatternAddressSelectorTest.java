@@ -9,13 +9,14 @@
 package com.illposed.osc.addressselector;
 
 import com.illposed.osc.AddressSelector;
+import com.illposed.osc.OSCMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class OSCPatternAddressSelectorTest {
 
 	private static boolean matches(final AddressSelector matcher, final String address) {
-		return matcher.matches("/hello");
+		return matcher.matches(new OSCMessage(address));
 	}
 
 	@Test

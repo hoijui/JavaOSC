@@ -9,6 +9,7 @@
 package com.illposed.osc.addressselector;
 
 import com.illposed.osc.AddressSelector;
+import com.illposed.osc.OSCMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -71,9 +72,9 @@ public class OSCPatternAddressSelector implements AddressSelector {
 	}
 
 	@Override
-	public boolean matches(final String messageAddress) {
+	public boolean matches(final OSCMessage message) {
 
-		final List<String> messageAddressParts = splitIntoParts(messageAddress);
+		final List<String> messageAddressParts = splitIntoParts(message.getAddress());
 		return matches(patternParts, 0, messageAddressParts, 0);
 	}
 
