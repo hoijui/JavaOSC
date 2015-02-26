@@ -9,15 +9,14 @@
 package com.illposed.osc;
 
 /**
- * Checks whether an OSC <i>Address Pattern</i> fulfills certain criteria.
+ * Checks whether an OSC <i>Message</i> fulfills certain criteria.
  */
 public interface AddressSelector {
 
 	/**
-	 * Checks whether the OSC <i>Address Pattern</i> in question
-	 * matches this selector.
-	 * @param messageAddress for example "/sc/mixer/volume"
-	 * @return true if this matcher selects the message in question.
+	 * Checks whether the OSC <i>Message</i> in question matches this selector.
+	 * @param message to be checked if it matches
+	 * @return {@code true} if this matcher selects the message in question
 	 */
-	boolean matches(String messageAddress);
+	boolean matches(OSCMessage message);
 }

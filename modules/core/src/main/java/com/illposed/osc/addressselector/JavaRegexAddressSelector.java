@@ -9,6 +9,7 @@
 package com.illposed.osc.addressselector;
 
 import com.illposed.osc.AddressSelector;
+import com.illposed.osc.OSCMessage;
 import java.util.regex.Pattern;
 
 /**
@@ -28,7 +29,7 @@ public class JavaRegexAddressSelector implements AddressSelector {
 	}
 
 	@Override
-	public boolean matches(final String messageAddress) {
-		return selector.matcher(messageAddress).matches();
+	public boolean matches(final OSCMessage message) {
+		return selector.matcher(message.getAddress()).matches();
 	}
 }

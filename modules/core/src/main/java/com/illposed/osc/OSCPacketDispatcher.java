@@ -109,7 +109,7 @@ public class OSCPacketDispatcher {
 
 	private void dispatchMessageNow(final OSCMessage message, final OSCTimeStamp time) {
 		for (final Entry<AddressSelector, OSCListener> addrList : selectorToListener.entrySet()) {
-			if (addrList.getKey().matches(message.getAddress())) {
+			if (addrList.getKey().matches(message)) {
 				addrList.getValue().acceptMessage(time, message);
 			}
 		}
