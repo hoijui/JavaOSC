@@ -8,6 +8,8 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.argument.OSCTimeStamp;
+
 public class SimpleOSCListener implements OSCListener {
 
 	private boolean messageReceived = false;

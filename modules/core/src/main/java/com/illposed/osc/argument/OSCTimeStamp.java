@@ -6,7 +6,7 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc;
+package com.illposed.osc.argument;
 
 import java.io.Serializable;
 import java.util.Date;

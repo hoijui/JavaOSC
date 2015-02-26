@@ -13,7 +13,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeStamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

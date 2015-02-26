@@ -8,6 +8,7 @@
 
 package com.illposed.osc;
 
+import com.illposed.osc.argument.OSCTimeStamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

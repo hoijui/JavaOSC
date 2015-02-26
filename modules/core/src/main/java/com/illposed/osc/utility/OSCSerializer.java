@@ -8,12 +8,12 @@
 
 package com.illposed.osc.utility;
 
-import com.illposed.osc.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.OSCBundle;
-import com.illposed.osc.OSCImpulse;
+import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.OSCUnsigned;
+import com.illposed.osc.argument.OSCUnsigned;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
