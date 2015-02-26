@@ -14,6 +14,13 @@ package com.illposed.osc;
 public interface AddressSelector {
 
 	/**
+	 * Returns whether this selector requires meta-info to be present for messages
+	 * that are checked for matching.
+	 * @return {@code true} if this matcher requires meta-info
+	 */
+	boolean isInfoRequired();
+
+	/**
 	 * Checks whether the OSC <i>Message</i> in question matches this selector.
 	 * @param message to be checked if it matches
 	 * @return {@code true} if this matcher selects the message in question
