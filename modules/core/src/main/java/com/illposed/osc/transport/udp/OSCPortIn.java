@@ -156,6 +156,30 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		return listening;
 	}
 
+	@Override
+	public String toString() {
+
+		final StringBuilder rep = new StringBuilder(32);
+
+		rep
+				.append('[')
+				.append(getClass().getSimpleName())
+				.append(": ");
+		if (isListening()) {
+			rep
+					.append("listening on \"")
+					.append(getSocket().getLocalAddress().getHostName())
+					.append(':')
+					.append(getPort())
+					.append('\"');
+		} else {
+			rep.append("stopped");
+		}
+		rep.append(']');
+
+		return rep.toString();
+	}
+
 	public OSCPacketDispatcher getDispatcher() {
 		return dispatcher;
 	}
