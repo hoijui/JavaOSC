@@ -131,7 +131,7 @@ public class OSCParser {
 			}
 		}
 
-		return new OSCMessage(address, arguments);
+		return new OSCMessage(address, arguments, new OSCMessageInfo(typeIdentifiers));
 	}
 
 	/**
