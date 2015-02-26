@@ -53,6 +53,9 @@ public final class Activator {
 		final StringArgumentHandler stringArgumentHandler = new StringArgumentHandler();
 		parserTypes.put(stringArgumentHandler.getDefaultIdentifier(), stringArgumentHandler);
 
+		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
+		parserTypes.put(symbolArgumentHandler.getDefaultIdentifier(), symbolArgumentHandler);
+
 		// NOTE We do not register DateTimeStampArgumentHandler here,
 		//   because type 't' already converts to OSCTimeStamp.
 
@@ -67,6 +70,9 @@ public final class Activator {
 
 		final StringArgumentHandler stringArgumentHandler = new StringArgumentHandler();
 		serializerTypes.add(stringArgumentHandler);
+
+		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
+		serializerTypes.add(symbolArgumentHandler);
 
 		// NOTE We add this for legacy suppport, though it is recommended
 		//   to use OSCTimeStamp over Date, to not loose precission and range during conversions.
