@@ -124,13 +124,6 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testMessageWithNullAddress() throws Exception {
-		OSCMessage mesg = new OSCMessage(null);
-		expectedException.expect(IllegalStateException.class);
-		sender.send(mesg);
-	}
-
-	@Test
 	public void testBundle() throws Exception {
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(3);
@@ -143,9 +136,10 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle2() throws Exception {
-		OSCMessage mesg = new OSCMessage("/foo/bar");
-		mesg.addArgument(3);
-		mesg.addArgument("hello");
+		final List<Object> arguments = new ArrayList<Object>(2);
+		arguments.add(3);
+		arguments.add("hello");
+		final OSCMessage mesg = new OSCMessage("/foo/bar", arguments);
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(mesg);
 		sender.send(bundle);
