@@ -12,7 +12,6 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,7 +36,6 @@ public class OSCSerializer {
 	private final Map<Class, Boolean> classToMarker;
 	private final Map<Class, ArgumentHandler> classToType;
 	private final Map<Object, ArgumentHandler> markerValueToType;
-	private final StringArgumentHandler stringOSCType;
 
 	public OSCSerializer(final List<ArgumentHandler> types, final OutputStream wrappedStream) {
 
@@ -83,7 +81,6 @@ public class OSCSerializer {
 		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
 		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
 		this.stream = new SizeTrackingOutputStream(wrappedStream);
-		this.stringOSCType = (StringArgumentHandler) classToType.get(String.class);
 	}
 
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
@@ -131,7 +128,13 @@ public class OSCSerializer {
 	 * @param stream where to write the address to
 	 */
 	private void writeAddressByteArray(final OSCMessage message) throws IOException {
-		stringOSCType.serialize(stream, message.getAddress());
+
+		final String address = message.getAddress();
+		if (!OSCMessage.isValidAddress(address)) {
+			throw new IllegalStateException("Can not serialize a message with invalid address: \""
+					+ address + "\"");
+		}
+		write(address);
 	}
 
 	/**
