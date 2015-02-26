@@ -178,7 +178,10 @@ public class OSCSerializer {
 		final ArgumentHandler type;
 		final Class argumentClass = extractTypeClass(argumentValue);
 		final Boolean isMarkerType = classToMarker.get(argumentClass);
-		if (isMarkerType) {
+		if (isMarkerType == null) {
+			throw new IllegalArgumentException("No type handler registered for serializing class "
+					+ argumentClass.getCanonicalName());
+		} else if (isMarkerType) {
 			type = markerValueToType.get(argumentValue);
 		} else {
 			type = classToType.get(argumentClass);
@@ -201,10 +204,6 @@ public class OSCSerializer {
 			}
 		} else {
 			final ArgumentHandler type = findType(anObject);
-			if (type == null) {
-				throw new UnsupportedOperationException(
-						"Do not know how to write an object of class: " + anObject.getClass());
-			}
 			type.serialize(stream, anObject);
 		}
 	}
