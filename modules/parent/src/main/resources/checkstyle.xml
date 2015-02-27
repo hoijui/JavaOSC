@@ -203,6 +203,8 @@
 		<!-- See http://checkstyle.sf.net/config_misc.html -->
 		<module name="ArrayTypeStyle"/>
 		<module name="FinalParameters"/>
+		<!-- Rather use the taglist-maven-plugin for this purpose -->
+		<!--
 		<module name="TodoComment">
 			<property name="format" value="FIXME"/>
 		</module>
@@ -214,6 +216,7 @@
 			<property name="format" value="XXX"/>
 			<property name="severity" value="warning"/>
 		</module>
+		-->
 		<module name="UpperEll"/>
 
 	</module>
