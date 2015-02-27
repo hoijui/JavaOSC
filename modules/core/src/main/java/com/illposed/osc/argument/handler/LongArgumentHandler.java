@@ -55,17 +55,9 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 		return (LongArgumentHandler) super.clone();
 	}
 
-	public static BigInteger readBigInteger(final ByteBuffer rawInput, final int numBytes) {
-//		final byte[] myBytes = new byte[numBytes];
-//		System.arraycopy(rawInput.array(), rawInput.position(), myBytes, 0, numBytes);
-//		rawInput.position(rawInput.position() + numBytes);
-//		return  new BigInteger(myBytes);
-		return BlobArgumentHandler.readBigInteger(rawInput, numBytes);
-	}
-
 	@Override
 	public Long parse(final ByteBuffer input) throws OSCParseException {
-		final BigInteger longIntBytes = readBigInteger(input, 8);
+		final BigInteger longIntBytes = BlobArgumentHandler.readBigInteger(input, 8);
 		return longIntBytes.longValue();
 	}
 
