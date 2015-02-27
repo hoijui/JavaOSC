@@ -234,10 +234,6 @@ public class OSCSerializer {
 
 	private void writeSizeAndData(final OSCPacket packet) throws IOException, OSCSerializeException {
 
-		// HACK NOTE We have to do it in this ugly way,
-		//   because we have to know the packets size in bytes
-		//   and write it to the stream,
-		//   before we can write the packets content to the stream.
 		final byte[] packetBytes = writeToBuffer(packet);
 		// this first writes the size (packetBytes.length),
 		// followed by the actual data (packetBytes)
