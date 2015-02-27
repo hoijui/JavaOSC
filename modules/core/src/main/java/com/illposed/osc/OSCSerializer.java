@@ -129,15 +129,15 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Align the stream by padding it with '0's so it has a size divisible by 4.
+	 * Align a stream by padding it with {@code (byte) '0'}s so it has a size divisible by 4.
+	 * @param stream to be aligned
+	 * @throws IOException if there is a problem writing the padding zeros
 	 */
-	private void alignStream() throws IOException {
-
-		final SizeTrackingOutputStream stream = getStream();
+	public static void align(final SizeTrackingOutputStream stream) throws IOException {
 		final int alignmentOverlap = stream.size() % 4;
 		final int padLen = (4 - alignmentOverlap) % 4;
 		for (int pci = 0; pci < padLen; pci++) {
-			stream.write(0);
+			stream.write(0); // this int is interpreted as and written as a single byte
 		}
 	}
 
@@ -335,6 +335,6 @@ public class OSCSerializer {
 		// even if (especially when) the stream is already aligned.
 		getStream().write((byte) 0);
 		// align the stream with padded bytes
-		alignStream();
+		align(stream);
 	}
 }

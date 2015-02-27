@@ -10,6 +10,7 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.SizeTrackingOutputStream;
 import java.io.IOException;
@@ -66,19 +67,6 @@ public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
 		rawInput.position(rawInput.position() + padding);
 	}
 
-	/**
-	 * Align a stream by padding it with '0's so it has a size divisible by 4.
-	 * @param stream to be aligned
-	 * @throws IOException if there is a problem writing the padding zeros
-	 */
-	public static void align(final SizeTrackingOutputStream stream) throws IOException {
-		final int alignmentOverlap = stream.size() % 4;
-		final int padLen = (4 - alignmentOverlap) % 4;
-		for (int pci = 0; pci < padLen; pci++) {
-			stream.write(0);
-		}
-	}
-
 	/** NOTE Might be used in other places too! */
 	private static byte[] readByteArray(final ByteBuffer rawInput, final int numBytes) {
 		final byte[] res = new byte[numBytes];
@@ -106,6 +94,6 @@ public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
 	{
 		IntegerArgumentHandler.INSTANCE.serialize(stream, value.length);
 		stream.write(value);
-		align(stream);
+		OSCSerializer.align(stream);
 	}
 }
