@@ -120,7 +120,6 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	{
 		final byte[] stringBytes = value.getBytes(charset);
 		stream.write(stringBytes);
-		stream.write((byte) 0);
-		OSCSerializer.align(stream);
+		OSCSerializer.terminateAndAlign(stream);
 	}
 }
