@@ -175,7 +175,7 @@ public class OSCSerializer {
 	 * @throws IOException in case of not enough free memory for the buffer
 	 * @throws OSCSerializeException if the packet failed to serialize
 	 */
-	private byte[] convertToByteArray(final OSCPacket packet)
+	private byte[] writeToBuffer(final OSCPacket packet)
 			throws IOException, OSCSerializeException
 	{
 		// create the temporary buffer where our packet will be written to
@@ -238,7 +238,7 @@ public class OSCSerializer {
 		//   because we have to know the packets size in bytes
 		//   and write it to the stream,
 		//   before we can write the packets content to the stream.
-		final byte[] packetBytes = convertToByteArray(packet);
+		final byte[] packetBytes = writeToBuffer(packet);
 		// this first writes the size (packetBytes.length),
 		// followed by the actual data (packetBytes)
 		write(packetBytes);
