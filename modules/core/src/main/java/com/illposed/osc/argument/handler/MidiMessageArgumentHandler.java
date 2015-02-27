@@ -66,12 +66,8 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final OSCMidiMessage value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
-		try {
-			stream.write(value.toContentArray());
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(value.toContentArray());
 	}
 }

@@ -11,6 +11,7 @@ package com.illposed.osc.argument;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.SizeTrackingOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -80,9 +81,10 @@ public interface ArgumentHandler<T> extends Cloneable {
 	 * Converts from a Java objects to the OSC byte representation.
 	 * @param stream where the OSC byte representation of value has to be written to
 	 * @param value the Java value to be serialized into its OSC byte representation
+	 * @throws IOException if the stream produced it while written to
 	 * @throws OSCSerializeException if anything went wrong while serializing,
-	 *   for example an invalid value was given, or an <code>IOException</code> occurred
-	 *   while writing
+	 *   for example an invalid value was given
 	 */
-	void serialize(SizeTrackingOutputStream stream, T value) throws OSCSerializeException;
+	void serialize(SizeTrackingOutputStream stream, T value)
+			throws IOException, OSCSerializeException;
 }

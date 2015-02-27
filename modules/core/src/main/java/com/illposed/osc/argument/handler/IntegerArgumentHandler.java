@@ -63,7 +63,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final Integer value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
 		int curValue = value;
 		final byte[] intBytes = new byte[4];
@@ -72,10 +72,6 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 		intBytes[1] = (byte)curValue; curValue >>>= 8;
 		intBytes[0] = (byte)curValue;
 
-		try {
-			stream.write(intBytes);
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(intBytes);
 	}
 }

@@ -102,14 +102,10 @@ public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final byte[] value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
 		IntegerArgumentHandler.INSTANCE.serialize(stream, value.length);
-		try {
-			stream.write(value);
-			align(stream);
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(value);
+		align(stream);
 	}
 }

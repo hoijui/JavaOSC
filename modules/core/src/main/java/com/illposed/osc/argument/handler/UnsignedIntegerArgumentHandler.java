@@ -72,16 +72,12 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final OSCUnsigned value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
 		final long asLong = value.toLong();
-		try {
-			stream.write((byte) (asLong >> 24 & 0xFFL));
-			stream.write((byte) (asLong >> 16 & 0xFFL));
-			stream.write((byte) (asLong >>  8 & 0xFFL));
-			stream.write((byte) (asLong       & 0xFFL));
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write((byte) (asLong >> 24 & 0xFFL));
+		stream.write((byte) (asLong >> 16 & 0xFFL));
+		stream.write((byte) (asLong >>  8 & 0xFFL));
+		stream.write((byte) (asLong       & 0xFFL));
 	}
 }

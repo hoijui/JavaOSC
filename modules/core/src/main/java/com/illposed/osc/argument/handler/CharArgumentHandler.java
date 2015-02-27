@@ -61,13 +61,9 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final Character value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
-		try {
-			stream.write((char) value);
-			BlobArgumentHandler.align(stream);
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write((char) value);
+		BlobArgumentHandler.align(stream);
 	}
 }
