@@ -10,6 +10,7 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.SizeTrackingOutputStream;
 import java.io.IOException;
@@ -120,6 +121,6 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 		final byte[] stringBytes = value.getBytes(charset);
 		stream.write(stringBytes);
 		stream.write((byte) 0);
-		BlobArgumentHandler.align(stream);
+		OSCSerializer.align(stream);
 	}
 }
