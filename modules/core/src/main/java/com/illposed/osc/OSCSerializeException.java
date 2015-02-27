@@ -8,9 +8,7 @@
 
 package com.illposed.osc;
 
-import java.io.IOException;
-
-public class OSCSerializeException extends IOException {
+public class OSCSerializeException extends Exception {
 
 	public OSCSerializeException() {
 		super();

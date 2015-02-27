@@ -113,6 +113,8 @@ public class OSCMessageTest {
 			stream.write(message);
 		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
+		} catch (final OSCSerializeException ex) {
+			throw new RuntimeException(ex);
 		}
 		return buffer.toByteArray();
 	}
