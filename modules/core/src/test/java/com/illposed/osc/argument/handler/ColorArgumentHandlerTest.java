@@ -14,6 +14,7 @@ import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.SizeTrackingOutputStream;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
@@ -38,7 +39,7 @@ public class ColorArgumentHandlerTest {
 		Color.YELLOW};
 
 	public static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
-			throws OSCSerializeException, OSCParseException
+			throws IOException, OSCSerializeException, OSCParseException
 	{
 		// serialize
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream(bufferSize);
@@ -53,7 +54,9 @@ public class ColorArgumentHandlerTest {
 		return reparsed;
 	}
 
-	private static Color reparse(final Color orig) throws OSCSerializeException, OSCParseException {
+	private static Color reparse(final Color orig)
+			throws IOException, OSCSerializeException, OSCParseException
+	{
 		return reparse(ColorArgumentHandler.INSTANCE, 4, orig);
 	}
 
@@ -88,7 +91,7 @@ public class ColorArgumentHandlerTest {
 	}
 
 	@Test
-	public void testReparseDefaultColors() throws OSCSerializeException, OSCParseException {
+	public void testReparseDefaultColors() throws Exception {
 
 		for (final Color orig : DEFAULT_COLORS) {
 			Assert.assertEquals(orig, reparse(orig));
@@ -98,11 +101,10 @@ public class ColorArgumentHandlerTest {
 	/**
 	 * Adds random alpha values between 0 and 255 to the default colors,
 	 * and then tries to re-parse them.
-	 * @throws OSCSerializeException on re-parse failure
-	 * @throws OSCParseException on re-parse failure
+	 * @throws Exception on re-parse failure
 	 */
 	@Test
-	public void testReparseDefaultColorsAlphaed() throws OSCSerializeException, OSCParseException {
+	public void testReparseDefaultColorsAlphaed() throws Exception {
 
 		final long alphaRandomSeed = new Random().nextLong();
 		System.out.println(ColorArgumentHandlerTest.class.getSimpleName()
