@@ -20,6 +20,9 @@ import java.util.Map;
 
 /**
  * Converts a byte array conforming to the OSC byte stream format into Java objects.
+ * This class is NOT thread-save, and will produce invalid results and errors
+ * if used by multiple threads simultaneously.
+ * Please use a separate instance per thread.
  */
 public class OSCParser {
 

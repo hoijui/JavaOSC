@@ -23,6 +23,9 @@ import java.util.Map;
 /**
  * Converts OSC packet Java objects to their byte stream representations,
  * conforming to the OSC specification.
+ * This class is NOT thread-save, and will produce invalid results and errors
+ * if used by multiple threads simultaneously.
+ * Please use a separate instance per thread.
  *
  * The implementation was originally based on
  * <a href="http://www.emergent.de">Markus Gaelli</a> and
