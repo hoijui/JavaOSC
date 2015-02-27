@@ -57,7 +57,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 
 	@Override
 	public Integer parse(final ByteBuffer input) throws OSCParseException {
-		final BigInteger intBits = LongArgumentHandler.readBigInteger(input, 4);
+		final BigInteger intBits = BlobArgumentHandler.readBigInteger(input, 4);
 		return intBits.intValue();
 	}
 
