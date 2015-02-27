@@ -11,7 +11,7 @@ package com.illposed.osc.transport.udp;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.SimpleOSCListener;
+import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -148,7 +148,7 @@ public class OSCPortTest {
 	@Test
 	public void testReceiving() throws Exception {
 		OSCMessage mesg = new OSCMessage("/message/receiving");
-		SimpleOSCListener listener = new SimpleOSCListener();
+		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/message/receiving"),
 				listener);
 		receiver.startListening();
@@ -164,7 +164,7 @@ public class OSCPortTest {
 	public void testBundleReceiving() throws Exception {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
-		SimpleOSCListener listener = new SimpleOSCListener();
+		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/bundle/receiving"),
 				listener);
 		receiver.startListening();
