@@ -87,15 +87,11 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final Color value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
-		try {
-			stream.write(toSignedByte(value.getRed()));
-			stream.write(toSignedByte(value.getGreen()));
-			stream.write(toSignedByte(value.getBlue()));
-			stream.write(toSignedByte(value.getAlpha()));
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(toSignedByte(value.getRed()));
+		stream.write(toSignedByte(value.getGreen()));
+		stream.write(toSignedByte(value.getBlue()));
+		stream.write(toSignedByte(value.getAlpha()));
 	}
 }

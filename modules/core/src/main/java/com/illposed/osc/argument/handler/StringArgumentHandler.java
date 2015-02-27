@@ -103,7 +103,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 		try {
 			res = charset.newDecoder().decode(strBuffer).toString();
 		} catch (final CharacterCodingException ex) {
-			throw new IllegalStateException(ex);
+			throw new OSCParseException(ex);
 		}
 		input.position(input.position() + strLen);
 		// because strings are always padded with at least one zero,
@@ -115,15 +115,11 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 
 	@Override
 	public void serialize(final SizeTrackingOutputStream stream, final String value)
-			throws OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
 		final byte[] stringBytes = value.getBytes(charset);
-		try {
-			stream.write(stringBytes);
-			stream.write((byte) 0);
-			BlobArgumentHandler.align(stream);
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(stringBytes);
+		stream.write((byte) 0);
+		BlobArgumentHandler.align(stream);
 	}
 }

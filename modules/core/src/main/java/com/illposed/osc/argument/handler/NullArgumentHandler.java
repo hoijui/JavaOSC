@@ -9,7 +9,6 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.SizeTrackingOutputStream;
 import java.nio.ByteBuffer;
@@ -59,9 +58,8 @@ public class NullArgumentHandler implements ArgumentHandler<Object>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Object value)
-			throws OSCSerializeException
-	{
+	public void serialize(final SizeTrackingOutputStream stream, final Object value) {
+
 //		if (value != null) {
 //			throw new OSCSerializeException();
 //		}

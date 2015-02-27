@@ -70,8 +70,9 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Long value) throws OSCSerializeException {
-
+	public void serialize(final SizeTrackingOutputStream stream, final Long value)
+			throws IOException, OSCSerializeException
+	{
 		long curValue = value;
 		final byte[] longintBytes = new byte[8];
 		longintBytes[7] = (byte)curValue; curValue >>>= 8;
@@ -83,10 +84,6 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 		longintBytes[1] = (byte)curValue; curValue >>>= 8;
 		longintBytes[0] = (byte)curValue;
 
-		try {
-			stream.write(longintBytes);
-		} catch (final IOException ex) {
-			throw new OSCSerializeException(ex);
-		}
+		stream.write(longintBytes);
 	}
 }
