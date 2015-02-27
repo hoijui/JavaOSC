@@ -8,9 +8,7 @@
 
 package com.illposed.osc;
 
-import java.io.IOException;
-
-public class OSCParseException extends IOException {
+public class OSCParseException extends Exception {
 
 	public OSCParseException() {
 		super();
