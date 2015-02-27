@@ -232,6 +232,14 @@ public class OSCSerializer {
 		writeArguments(message);
 	}
 
+	/**
+	 * Converts the packet into its OSC compliant byte array representation,
+	 * then writes the number of bytes to the stream, followed by the actual data bytes.
+	 * @param packet to be converted and written to the stream
+	 * @throws IOException if there is a problem with the currently used stream,
+	 *   or the one used as buffer for conversion
+	 * @throws OSCSerializeException if the packet failed to serialize
+	 */
 	private void writeSizeAndData(final OSCPacket packet) throws IOException, OSCSerializeException {
 
 		final byte[] packetBytes = writeToBuffer(packet);
