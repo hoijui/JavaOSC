@@ -20,15 +20,15 @@ import org.junit.Test;
 public class OSCPacketDispatcherTest {
 
 	private OSCPacketDispatcher dispatcher;
-	private SimpleOSCListener listener1;
-	private SimpleOSCListener listener2;
+	private SimpleOSCMessageListener listener1;
+	private SimpleOSCMessageListener listener2;
 
 	@Before
 	public void setUp() {
 		dispatcher = new OSCPacketDispatcher(OSCSerializerFactory.createDefaultFactory());
-		listener1 = new SimpleOSCListener();
+		listener1 = new SimpleOSCMessageListener();
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
-		listener2 = new SimpleOSCListener();
+		listener2 = new SimpleOSCMessageListener();
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener2"), listener2);
 	}
 

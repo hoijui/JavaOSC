@@ -14,7 +14,7 @@ import com.illposed.osc.argument.OSCTimeStamp;
  * Allows to listen to incoming messages.
  * In OSC speak, this is a <i>Method</i>, and it listens to <i>Messages</i>.
  */
-public interface OSCListener {
+public interface OSCMessageListener {
 
 	/**
 	 * Process a matching, incoming OSC Message.

@@ -10,7 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeStamp;
 
-public class SimpleOSCListener implements OSCListener {
+public class SimpleOSCMessageListener implements OSCMessageListener {
 
 	private boolean messageReceived = false;
 	private OSCTimeStamp receivedTimestamp = null;

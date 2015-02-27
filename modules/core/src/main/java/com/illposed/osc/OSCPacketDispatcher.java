@@ -29,7 +29,7 @@ public class OSCPacketDispatcher {
 	private final ByteArrayOutputStream argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
-	private final Map<MessageSelector, OSCListener> selectorToListener;
+	private final Map<MessageSelector, OSCMessageListener> selectorToListener;
 	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
@@ -50,7 +50,7 @@ public class OSCPacketDispatcher {
 			final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
 			this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
 		}
-		this.selectorToListener = new HashMap<MessageSelector, OSCListener>();
+		this.selectorToListener = new HashMap<MessageSelector, OSCMessageListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
 		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
@@ -91,7 +91,7 @@ public class OSCPacketDispatcher {
 	 * @param messageSelector selects which messages will be forwarded to the listener
 	 * @param listener receives messages accepted by the selector
 	 */
-	public void addListener(final MessageSelector messageSelector, final OSCListener listener) {
+	public void addListener(final MessageSelector messageSelector, final OSCMessageListener listener) {
 
 		selectorToListener.put(messageSelector, listener);
 		if (messageSelector.isInfoRequired()) {
@@ -187,7 +187,7 @@ public class OSCPacketDispatcher {
 
 		ensureMetaInfo(message);
 
-		for (final Entry<MessageSelector, OSCListener> addrList : selectorToListener.entrySet()) {
+		for (final Entry<MessageSelector, OSCMessageListener> addrList : selectorToListener.entrySet()) {
 			if (addrList.getKey().matches(message)) {
 				addrList.getValue().acceptMessage(time, message);
 			}
