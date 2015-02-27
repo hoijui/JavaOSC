@@ -118,8 +118,14 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * @param api index/pointer to the current part of the address we are looking at
 	 * @return true if the address matches, false otherwise
 	 */
-	private static boolean matches(final List<String> patternParts, int ppi, final List<String> messageAddressParts, int api) {
-
+	private static boolean matches(
+			final List<String> patternParts,
+			final int patternPartIndex,
+			final List<String> messageAddressParts,
+			final int addressPartIndex)
+	{
+		int ppi = patternPartIndex;
+		int api = addressPartIndex;
 		while (ppi < patternParts.size()) {
 			// There might be some path-traversal wildcards (PTW) "//" in the pattern.
 			// "//" in the pattern translates to an empty String ("") in the pattern parts.
