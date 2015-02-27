@@ -10,6 +10,7 @@ package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
+import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCParserFactory;
 import java.io.IOException;
@@ -115,11 +116,17 @@ public class OSCPortIn extends OSCPort implements Runnable {
 				final OSCPacket oscPacket = converter.convert(packetBytes);
 				dispatcher.dispatchPacket(oscPacket);
 			} catch (final IOException ex) {
-				System.err.println("Error while listening on " + toString() + ": "
-						+ ex.getMessage());
-				stopListening();
+				stopListening(ex);
+			} catch (final OSCParseException ex) {
+				stopListening(ex);
 			}
 		}
+	}
+
+	private void stopListening(final Exception exception) {
+
+		System.err.println("Error while listening on " + toString() + ": "+ exception.getMessage());
+		stopListening();
 	}
 
 	/**
