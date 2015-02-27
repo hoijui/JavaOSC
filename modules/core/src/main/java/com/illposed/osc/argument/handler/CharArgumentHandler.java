@@ -64,7 +64,7 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	public void serialize(final SizeTrackingOutputStream stream, final Character value)
 			throws IOException, OSCSerializeException
 	{
-		stream.write((char) value);
+		stream.write((int) (char) value); // this int is interpreted as and written as a single byte
 		OSCSerializer.align(stream);
 	}
 }
