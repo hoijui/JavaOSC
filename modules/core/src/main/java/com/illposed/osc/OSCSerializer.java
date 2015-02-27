@@ -12,8 +12,10 @@ import com.illposed.osc.argument.ArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +30,16 @@ import java.util.Map;
  */
 public class OSCSerializer {
 
-	private final SizeTrackingOutputStream stream;
-
+	/**
+	 * Our stack (LIFO) of streams.
+	 * The last entry is always used as the current stream to write to.
+	 */
+	private final Deque<SizeTrackingOutputStream> streams;
 	private final Map<Class, Boolean> classToMarker;
 	private final Map<Class, ArgumentHandler> classToType;
 	private final Map<Object, ArgumentHandler> markerValueToType;
 
-	public OSCSerializer(final List<ArgumentHandler> types, final OutputStream wrappedStream) {
+	public OSCSerializer(final List<ArgumentHandler> types, final OutputStream mainStream) {
 
 		final Map<Class, Boolean> classToMarkerTmp = new HashMap<Class, Boolean>(types.size());
 		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<Class, ArgumentHandler>();
@@ -74,10 +79,12 @@ public class OSCSerializer {
 			}
 		}
 
+		// usually, we should not need a stack size of 16, which is the default initial size
+		this.streams = new ArrayDeque<SizeTrackingOutputStream>(4);
 		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
 		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
 		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
-		this.stream = new SizeTrackingOutputStream(wrappedStream);
+		pushStream(mainStream);
 	}
 
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
@@ -85,9 +92,48 @@ public class OSCSerializer {
 	}
 
 	/**
+	 * Adds a stream on top of the stack (LIFO), and thus sets it as the one that will be used
+	 * for writing from now on, until it is popped or a new one is added.
+	 * @param stream the stream to be added on top of the stack (LIFO) of streams
+	 *   for this serializer.
+	 */
+	private void pushStream(final OutputStream stream) {
+
+		// wrap the stream, if necessary
+		final SizeTrackingOutputStream sizeTrackingStream;
+		if (stream instanceof SizeTrackingOutputStream) {
+			sizeTrackingStream = (SizeTrackingOutputStream) stream;
+		} else {
+			sizeTrackingStream = new SizeTrackingOutputStream(stream);
+		}
+
+		// push it on the stack
+		streams.addLast(sizeTrackingStream);
+	}
+
+	/**
+	 * Removes the stream currently in use for writing.
+	 * @return the removed stream, which is the last entry on the stack (LIFO) of streams
+	 *   for this serializer.
+	 */
+	private SizeTrackingOutputStream popStream() {
+		return streams.removeLast();
+	}
+
+	/**
+	 * Returns the stream currently in use for writing.
+	 * @return the last entry on the stack (LIFO) of streams for this serializer.
+	 */
+	private SizeTrackingOutputStream getStream() {
+		return streams.peekLast();
+	}
+
+	/**
 	 * Align the stream by padding it with '0's so it has a size divisible by 4.
 	 */
 	private void alignStream() throws IOException {
+
+		final SizeTrackingOutputStream stream = getStream();
 		final int alignmentOverlap = stream.size() % 4;
 		final int padLen = (4 - alignmentOverlap) % 4;
 		for (int pci = 0; pci < padLen; pci++) {
@@ -138,7 +184,8 @@ public class OSCSerializer {
 	 * @param message the arguments of this message will be serialized
 	 */
 	private void writeArguments(final OSCMessage message) throws IOException {
-		stream.write(OSCParser.TYPES_VALUES_SEPARATOR);
+
+		getStream().write(OSCParser.TYPES_VALUES_SEPARATOR);
 		writeTypeTags(message.getArguments());
 		for (final Object argument : message.getArguments()) {
 			write(argument);
@@ -162,7 +209,7 @@ public class OSCSerializer {
 
 	public void write(final OSCPacket packet) throws IOException {
 
-		stream.reset();
+		getStream().reset();
 		if (packet instanceof OSCBundle) {
 			write((OSCBundle) packet);
 		} else if (packet instanceof OSCMessage) {
@@ -181,7 +228,7 @@ public class OSCSerializer {
 	 */
 	public void writeOnlyTypeTags(final List<?> arguments) throws IOException {
 
-		stream.reset();
+		getStream().reset();
 		writeTypeTagsRaw(arguments);
 	}
 
@@ -216,7 +263,7 @@ public class OSCSerializer {
 			}
 		} else {
 			final ArgumentHandler type = findType(anObject);
-			type.serialize(stream, anObject);
+			type.serialize(getStream(), anObject);
 		}
 	}
 
@@ -232,7 +279,7 @@ public class OSCSerializer {
 	private void writeType(final Object value) throws IOException {
 
 		final ArgumentHandler type = findType(value);
-		stream.write(type.getDefaultIdentifier());
+		getStream().write(type.getDefaultIdentifier());
 	}
 
 	/**
@@ -244,6 +291,7 @@ public class OSCSerializer {
 
 		for (final Object argument : arguments) {
 			if (argument instanceof List) {
+				final SizeTrackingOutputStream stream = getStream();
 				// This is used for nested arguments.
 				// open the array
 				stream.write(OSCParser.TYPE_ARRAY_BEGIN);
@@ -269,7 +317,7 @@ public class OSCSerializer {
 		writeTypeTagsRaw(arguments);
 		// we always need to terminate with a zero,
 		// even if (especially when) the stream is already aligned.
-		stream.write((byte) 0);
+		getStream().write((byte) 0);
 		// align the stream with padded bytes
 		alignStream();
 	}
