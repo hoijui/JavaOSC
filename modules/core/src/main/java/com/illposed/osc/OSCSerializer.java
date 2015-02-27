@@ -192,7 +192,7 @@ public class OSCSerializer {
 		write("#bundle");
 		write(bundle.getTimestamp());
 		for (final OSCPacket pkg : bundle.getPackets()) {
-			writeInternal(pkg);
+			writeSizeAndData(pkg);
 		}
 	}
 
@@ -232,7 +232,7 @@ public class OSCSerializer {
 		writeArguments(message);
 	}
 
-	private void writeInternal(final OSCPacket packet) throws IOException, OSCSerializeException {
+	private void writeSizeAndData(final OSCPacket packet) throws IOException, OSCSerializeException {
 
 		// HACK NOTE We have to do it in this ugly way,
 		//   because we have to know the packets size in bytes
