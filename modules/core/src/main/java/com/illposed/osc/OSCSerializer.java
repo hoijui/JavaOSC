@@ -129,6 +129,16 @@ public class OSCSerializer {
 	}
 
 	/**
+	 * Terminates the previously written piece of data with a single {@code (byte) '0'}.
+	 * We always need to terminate with a zero, especially when the stream is already aligned.
+	 * @param stream to receive the data-piece termination
+	 * @throws IOException if there is a problem writing the termination zero
+	 */
+	public static void terminate(final SizeTrackingOutputStream stream) throws IOException {
+		stream.write(0); // this int is interpreted as and written as a single byte
+	}
+
+	/**
 	 * Align a stream by padding it with {@code (byte) '0'}s so it has a size divisible by 4.
 	 * @param stream to be aligned
 	 * @throws IOException if there is a problem writing the padding zeros
@@ -139,6 +149,19 @@ public class OSCSerializer {
 		for (int pci = 0; pci < padLen; pci++) {
 			stream.write(0); // this int is interpreted as and written as a single byte
 		}
+	}
+
+	/**
+	 * Terminates the previously written piece of data with a single {@code (byte) '0'},
+	 * and then aligns the stream by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by 4.
+	 * We always need to terminate with a zero, especially when the stream is already aligned.
+	 * @param stream to receive the data-piece termination and alignment
+	 * @throws IOException if there is a problem writing the termination and padding zeros
+	 */
+	public static void terminateAndAlign(final SizeTrackingOutputStream stream) throws IOException {
+		terminate(stream);
+		align(stream);
 	}
 
 	/**
@@ -331,10 +354,6 @@ public class OSCSerializer {
 	private void writeTypeTags(final List<?> arguments) throws IOException, OSCSerializeException {
 
 		writeTypeTagsRaw(arguments);
-		// we always need to terminate with a zero,
-		// even if (especially when) the stream is already aligned.
-		getStream().write((byte) 0);
-		// align the stream with padded bytes
-		align(stream);
+		terminateAndAlign(getStream());
 	}
 }
