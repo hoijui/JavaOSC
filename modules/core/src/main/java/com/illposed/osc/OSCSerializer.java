@@ -239,7 +239,9 @@ public class OSCSerializer {
 		//   and write it to the stream,
 		//   before we can write the packets content to the stream.
 		final byte[] packetBytes = convertToByteArray(packet);
-		write(packetBytes); // this first writes the #bytes, before the actual bytes
+		// this first writes the size (packetBytes.length),
+		// followed by the actual data (packetBytes)
+		write(packetBytes);
 	}
 
 	public void write(final OSCPacket packet) throws IOException, OSCSerializeException {
