@@ -141,19 +141,22 @@ public class OSCSerializer {
 		}
 	}
 
+	/**
+	 * Converts a packet into an OSC compliant byte array,
+	 * leaving the current stream untouched.
+	 * @param packet to be converted into an OSC compliant byte array
+	 * @return the content of the supplied packet as OSC compliant byte array
+	 * @throws IOException in case of not enough free memory for the buffer
+	 */
 	private byte[] convertToByteArray(final OSCPacket packet) throws IOException {
 
+		// create the temporary buffer where our packet will be written to
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-		final OSCSerializer packetStream = OSCSerializerFactory.createDefaultFactory().create(buffer); // HACK this should not use the default one, but the one that created us! but in the end, this part should be externalized anyway, as it is not part of the core serialization, but rather a requirement for the TCP transport convention (see OSC spec. 1.1)
-//		packetStream.setCharset(getCharset()); // see HACK of the previous line
-		if (packet instanceof OSCBundle) {
-			packetStream.write((OSCBundle) packet);
-		} else if (packet instanceof OSCMessage) {
-			packetStream.write((OSCMessage) packet);
-		} else {
-			throw new UnsupportedOperationException("We do not support writing packets of type: "
-					+ packet.getClass());
-		}
+
+		pushStream(buffer);
+		write(packet);
+		popStream();
+
 		return buffer.toByteArray();
 	}
 
