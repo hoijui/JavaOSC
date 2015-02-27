@@ -20,7 +20,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 
 /**
- * Listens for OSC packets on a TCP/IP port.
+ * Listens for OSC packets on a UDP/IP port.
  *
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
