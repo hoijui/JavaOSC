@@ -40,7 +40,7 @@ public class OSCSerializerTest {
 			final Charset charset,
 			final byte[] expected,
 			final Object... arguments)
-			throws IOException
+			throws IOException, OSCSerializeException
 	{
 		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		final OSCSerializerFactory serializerFactory = OSCSerializerFactory.createDefaultFactory();
@@ -61,7 +61,7 @@ public class OSCSerializerTest {
 	private void checkPrintOnStream(
 			final byte[] expected,
 			final Object... arguments)
-			throws IOException
+			throws IOException, OSCSerializeException
 	{
 		checkPrintOnStream(null, expected, arguments);
 	}
@@ -81,31 +81,31 @@ public class OSCSerializerTest {
 	 * yields: (int) 1045220557 (VA Java 3.5)
 	 *
 	 * Looks like there is an OBO bug somewhere -- either Java or Squeak.
-	 * @throws IOException because {@link OSCSerializer#write(Object)} may do so
+	 * @throws Exception because {@link OSCSerializer#write(Object)} may throw something
 	 */
 	@Test
-	public void testPrintFloat2OnStream() throws IOException {
+	public void testPrintFloat2OnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {62, 76, -52, -51},
 				0.2f);
 	}
 
 	@Test
-	public void testPrintFloatOnStream() throws IOException {
+	public void testPrintFloatOnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {65, 44, 27, 113},
 				10.7567f);
 	}
 
 	@Test
-	public void testPrintIntegerOnStream() throws IOException {
+	public void testPrintIntegerOnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {0, 0, 4, 100},
 				1124);
 	}
 
 	@Test
-	public void testPrintStringAndIntOnStream() throws IOException {
+	public void testPrintStringAndIntOnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100},
 				"/example1",
@@ -113,14 +113,14 @@ public class OSCSerializerTest {
 	}
 
 	@Test
-	public void testPrintString2OnStream() throws IOException {
+	public void testPrintString2OnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {97, 98, 99, 100, 0, 0, 0, 0},
 				"abcd");
 	}
 
 	@Test
-	public void testPrintString3OnStream() throws IOException {
+	public void testPrintString3OnStream() throws Exception {
 		checkPrintOnStream(
 				Charset.forName("UTF-8"),
 				new byte[] {(byte) 0xc3, (byte) 0xa1, 0, 0},
@@ -128,14 +128,14 @@ public class OSCSerializerTest {
 	}
 
 	@Test
-	public void testPrintStringOnStream() throws IOException {
+	public void testPrintStringOnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {97, 98, 99, 0},
 				"abc");
 	}
 
 	@Test
-	public void testPrintLongOnStream() throws IOException {
+	public void testPrintLongOnStream() throws Exception {
 		checkPrintOnStream(
 				new byte[] {0, 0, 0, 0, 0, 0, 4, 100},
 				1124L);

@@ -25,7 +25,7 @@ public class OSCBundleTest {
 	private void sendBundleTimestampTestHelper(
 			final OSCBundle bundle,
 			final OSCTimeStamp expectedTimestamp)
-			throws IOException
+			throws IOException, OSCSerializeException
 	{
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
@@ -41,7 +41,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundle() throws IOException {
+	public void testSendBundle() throws IOException, OSCSerializeException {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
@@ -51,7 +51,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundleImmediate() throws IOException {
+	public void testSendBundleImmediate() throws IOException, OSCSerializeException {
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
@@ -59,7 +59,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundleImmediateExplicit() throws IOException {
+	public void testSendBundleImmediateExplicit() throws IOException, OSCSerializeException {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
@@ -70,7 +70,7 @@ public class OSCBundleTest {
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testSendBundleImmediateExplicitNull() throws IOException {
+	public void testSendBundleImmediateExplicitNull() throws IOException, OSCSerializeException {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
@@ -81,7 +81,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendMultiLevelBundle() throws IOException {
+	public void testSendMultiLevelBundle() throws IOException, OSCSerializeException {
 
 		// create this structure:
 		// bundle-0

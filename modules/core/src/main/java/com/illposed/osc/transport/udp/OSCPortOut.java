@@ -9,6 +9,7 @@
 package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerFactory;
 import java.io.ByteArrayOutputStream;
@@ -109,8 +110,9 @@ public class OSCPortOut extends OSCPort {
 	 * Send an OSC packet (message or bundle) to the receiver we are bound to.
 	 * @param aPacket the bundle or message to send
 	 * @throws IOException if a (UDP) socket I/O error occurs
+	 * @throws OSCSerializeException if the packet fails to serialize
 	 */
-	public void send(final OSCPacket aPacket) throws IOException {
+	public void send(final OSCPacket aPacket) throws IOException, OSCSerializeException {
 		outputBuffer.reset();
 		converter.write(aPacket);
 		final byte[] byteArray = outputBuffer.toByteArray();

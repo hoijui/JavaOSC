@@ -162,6 +162,9 @@ public class OSCPacketDispatcher {
 				serializer.writeOnlyTypeTags(arguments);
 			} catch (final IOException ex) {
 				throw new IllegalStateException("This should only happen with full memory", ex);
+			} catch (final OSCSerializeException ex) {
+				throw new IllegalArgumentException(
+						"Failed generating Arguments Type Tag string while dispatching", ex);
 			}
 			final byte[] typeTags = argumentTypesBuffer.toByteArray();
 			typeTagsStr = new String(typeTags, typeTagsCharset);
