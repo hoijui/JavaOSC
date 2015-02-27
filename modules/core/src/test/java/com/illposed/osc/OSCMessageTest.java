@@ -111,7 +111,7 @@ public class OSCMessageTest {
 		final OSCSerializer stream = OSCSerializerFactory.createDefaultFactory().create(buffer);
 		try {
 			stream.write(message);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new RuntimeException(ex);
 		}
 		return buffer.toByteArray();
