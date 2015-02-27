@@ -52,14 +52,15 @@ public class OSCReparserTest {
 		return ByteBuffer.wrap(serializedStream.toByteArray()).asReadOnlyBuffer();
 	}
 
-	private static OSCPacket parse(final ByteBuffer packetBytes) throws IOException {
-
+	private static OSCPacket parse(final ByteBuffer packetBytes)
+			throws IOException, OSCParseException
+	{
 		final OSCParser parser = OSCParserFactory.createDefaultFactory().create();
 		return parser.convert(packetBytes);
 	}
 
 	public static <T extends OSCPacket> T reparse(final T packet)
-			throws IOException, OSCSerializeException
+			throws IOException, OSCParseException, OSCSerializeException
 	{
 		return (T) parse(serialize(packet));
 	}
@@ -67,7 +68,7 @@ public class OSCReparserTest {
 	private <C, I extends C, O extends C> void reparseSingleArgument(
 			final I argument,
 			final Comparator<C> comparator)
-			throws IOException, OSCSerializeException
+			throws IOException, OSCParseException, OSCSerializeException
 	{
 		final OSCMessage message = new OSCMessage("/hello/world",
 				Collections.singletonList(argument));
@@ -83,69 +84,69 @@ public class OSCReparserTest {
 	}
 
 	private void reparseSingleArgument(final Object argument)
-			throws IOException, OSCSerializeException
+			throws IOException, OSCParseException, OSCSerializeException
 	{
 		reparseSingleArgument(argument, EQUALS_COMPARATOR);
 	}
 
 	private void reparseSingleBlobArgument(final byte[] blob)
-			throws IOException, OSCSerializeException
+			throws IOException, OSCParseException, OSCSerializeException
 	{
 		reparseSingleArgument(blob, BLOB_COMPARATOR);
 	}
 
 	@Test
-	public void testArgumentBlobEmpty() throws IOException, OSCSerializeException {
+	public void testArgumentBlobEmpty() throws Exception {
 		reparseSingleBlobArgument(new byte[] {});
 	}
 
 	@Test
-	public void testArgumentBlobMin() throws IOException, OSCSerializeException {
+	public void testArgumentBlobMin() throws Exception {
 		reparseSingleBlobArgument(new byte[] {Byte.MIN_VALUE});
 	}
 
 	@Test
-	public void testArgumentBlobMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentBlobMinus1() throws Exception {
 		reparseSingleBlobArgument(new byte[] {-1});
 	}
 
 	@Test
-	public void testArgumentBlob0() throws IOException, OSCSerializeException {
+	public void testArgumentBlob0() throws Exception {
 		reparseSingleBlobArgument(new byte[] {0});
 	}
 
 	@Test
-	public void testArgumentBlob1() throws IOException, OSCSerializeException {
+	public void testArgumentBlob1() throws Exception {
 		reparseSingleBlobArgument(new byte[] {1});
 	}
 
 	@Test
-	public void testArgumentBlobMax() throws IOException, OSCSerializeException {
+	public void testArgumentBlobMax() throws Exception {
 		reparseSingleBlobArgument(new byte[] {Byte.MAX_VALUE});
 	}
 
 	@Test
-	public void testArgumentBlobTwo() throws IOException, OSCSerializeException {
+	public void testArgumentBlobTwo() throws Exception {
 		reparseSingleBlobArgument(new byte[] {-1, 1});
 	}
 
 	@Test
-	public void testArgumentBlobThree() throws IOException, OSCSerializeException {
+	public void testArgumentBlobThree() throws Exception {
 		reparseSingleBlobArgument(new byte[] {-1, 0, 1});
 	}
 
 	@Test
-	public void testArgumentBlobFour() throws IOException, OSCSerializeException {
+	public void testArgumentBlobFour() throws Exception {
 		reparseSingleBlobArgument(new byte[] {-2, -1, 1, 2});
 	}
 
 	@Test
-	public void testArgumentBlobFive() throws IOException, OSCSerializeException {
+	public void testArgumentBlobFive() throws Exception {
 		reparseSingleBlobArgument(new byte[] {-2, -1, 0, 1, 2});
 	}
 
 	@Test
-	public void testArgumentChar() throws IOException, OSCSerializeException {
+	public void testArgumentChar() throws Exception {
 
 		reparseSingleArgument('0');
 		reparseSingleArgument('1');
@@ -174,197 +175,197 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentDateImmediate() throws IOException, OSCSerializeException {
+	public void testArgumentDateImmediate() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(OSCTimeStamp.IMMEDIATE_DATE));
 	}
 
 	@Test
-	public void testArgumentDateNow() throws IOException, OSCSerializeException {
+	public void testArgumentDateNow() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date()));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentDateLongMin() throws IOException, OSCSerializeException {
+	public void testArgumentDateLongMin() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MIN_VALUE))); // out of NTP time-stamp range
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentDateMinMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentDateMinMinus1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() - 1))); // out of NTP time-stamp range
 	}
 
 	@Test
-	public void testArgumentDateMin() throws IOException, OSCSerializeException {
+	public void testArgumentDateMin() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime())));
 	}
 
 	@Test
-	public void testArgumentDateMinPlus1() throws IOException, OSCSerializeException {
+	public void testArgumentDateMinPlus1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1)));
 	}
 
 	@Test
-	public void testArgumentDateMinPlus2() throws IOException, OSCSerializeException {
+	public void testArgumentDateMinPlus2() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 2)));
 	}
 
 	@Test
-	public void testArgumentDateMinPlus1000000() throws IOException, OSCSerializeException {
+	public void testArgumentDateMinPlus1000000() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MIN.getTime() + 1000000)));
 	}
 
 	@Test
-	public void testArgumentDateLongMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentDateLongMinus1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(-1L)));
 	}
 
 	@Test
-	public void testArgumentDateLong0() throws IOException, OSCSerializeException {
+	public void testArgumentDateLong0() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(0L)));
 	}
 
 	@Test
-	public void testArgumentDateLong1() throws IOException, OSCSerializeException {
+	public void testArgumentDateLong1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(1L)));
 	}
 
 	@Test
-	public void testArgumentDateMaxMinus1000000() throws IOException, OSCSerializeException {
+	public void testArgumentDateMaxMinus1000000() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1000000)));
 	}
 
 	@Test
-	public void testArgumentDateMaxMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentDateMaxMinus1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() - 1)));
 	}
 
 	@Test
-	public void testArgumentDateMax() throws IOException, OSCSerializeException {
+	public void testArgumentDateMax() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime())));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentDateMaxPlus1() throws IOException, OSCSerializeException {
+	public void testArgumentDateMaxPlus1() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.OSC_RANGE_DATE_MAX.getTime() + 1))); // out of NTP time-stamp range
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentDateLongMax() throws IOException, OSCSerializeException {
+	public void testArgumentDateLongMax() throws Exception {
 		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MAX_VALUE))); // out of NTP time-stamp range
 	}
 
 	@Test
-	public void testArgumentDoubleMin() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleMin() throws Exception {
 		reparseSingleArgument(Double.MIN_VALUE);
 	}
 
 	@Test
-	public void testArgumentDoubleMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleMinus1() throws Exception {
 		reparseSingleArgument(-1.0);
 	}
 
 	@Test
-	public void testArgumentDouble0() throws IOException, OSCSerializeException {
+	public void testArgumentDouble0() throws Exception {
 		reparseSingleArgument(0.0);
 	}
 
 	@Test
-	public void testArgumentDouble1() throws IOException, OSCSerializeException {
+	public void testArgumentDouble1() throws Exception {
 		reparseSingleArgument(1.0);
 	}
 
 	@Test
-	public void testArgumentDoubleMax() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleMax() throws Exception {
 		reparseSingleArgument(Double.MAX_VALUE);
 	}
 
 	@Test
-	public void testArgumentDoubleMinNormal() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleMinNormal() throws Exception {
 		reparseSingleArgument(Double.MIN_NORMAL);
 	}
 
 	@Test
-	public void testArgumentDoubleNegativeInfinity() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleNegativeInfinity() throws Exception {
 		reparseSingleArgument(Double.NEGATIVE_INFINITY);
 	}
 
 	@Test
-	public void testArgumentDoubleNan() throws IOException, OSCSerializeException {
+	public void testArgumentDoubleNan() throws Exception {
 		reparseSingleArgument(Double.NaN);
 	}
 
 	@Test
-	public void testArgumentDoublePositiveInfinity() throws IOException, OSCSerializeException {
+	public void testArgumentDoublePositiveInfinity() throws Exception {
 		reparseSingleArgument(Double.POSITIVE_INFINITY);
 	}
 
 	@Test
-	public void testArgumentFloatMin() throws IOException, OSCSerializeException {
+	public void testArgumentFloatMin() throws Exception {
 		reparseSingleArgument(Float.MIN_VALUE);
 	}
 
 	@Test
-	public void testArgumentFloatMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentFloatMinus1() throws Exception {
 		reparseSingleArgument(-1.0f);
 	}
 
 	@Test
-	public void testArgumentFloat0() throws IOException, OSCSerializeException {
+	public void testArgumentFloat0() throws Exception {
 		reparseSingleArgument(0.0f);
 	}
 
 	@Test
-	public void testArgumentFloat1() throws IOException, OSCSerializeException {
+	public void testArgumentFloat1() throws Exception {
 		reparseSingleArgument(1.0f);
 	}
 
 	@Test
-	public void testArgumentFloatMax() throws IOException, OSCSerializeException {
+	public void testArgumentFloatMax() throws Exception {
 		reparseSingleArgument(Float.MAX_VALUE);
 	}
 
 	@Test
-	public void testArgumentFloatMinNormal() throws IOException, OSCSerializeException {
+	public void testArgumentFloatMinNormal() throws Exception {
 		reparseSingleArgument(Float.MIN_NORMAL);
 	}
 
 	@Test
-	public void testArgumentFloatNegativeInfinity() throws IOException, OSCSerializeException {
+	public void testArgumentFloatNegativeInfinity() throws Exception {
 		reparseSingleArgument(Float.NEGATIVE_INFINITY);
 	}
 
 	@Test
-	public void testArgumentFloatNan() throws IOException, OSCSerializeException {
+	public void testArgumentFloatNan() throws Exception {
 		reparseSingleArgument(Float.NaN);
 	}
 
 	@Test
-	public void testArgumentFloatPositiveInfinity() throws IOException, OSCSerializeException {
+	public void testArgumentFloatPositiveInfinity() throws Exception {
 		reparseSingleArgument(Float.POSITIVE_INFINITY);
 	}
 
 	@Test
-	public void testArgumentIntegerMin() throws IOException, OSCSerializeException {
+	public void testArgumentIntegerMin() throws Exception {
 		reparseSingleArgument(Integer.MIN_VALUE);
 	}
 
 	@Test
-	public void testArgumentIntegerMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentIntegerMinus1() throws Exception {
 		reparseSingleArgument(-1);
 	}
 
 	@Test
-	public void testArgumentInteger0() throws IOException, OSCSerializeException {
+	public void testArgumentInteger0() throws Exception {
 		reparseSingleArgument(0);
 	}
 
 	@Test
-	public void testArgumentInteger1() throws IOException, OSCSerializeException {
+	public void testArgumentInteger1() throws Exception {
 		reparseSingleArgument(1);
 	}
 
 	@Test
-	public void testArgumentIntegerMax() throws IOException, OSCSerializeException {
+	public void testArgumentIntegerMax() throws Exception {
 		reparseSingleArgument(Integer.MAX_VALUE);
 	}
 
@@ -373,112 +374,112 @@ public class OSCReparserTest {
 	 * @throws IOException if something went wrong while serializing or (re-)parsing
 	 */
 	@Test
-	public void testArgumentUnsignedInteger0() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedInteger0() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x0L));
 	}
 
 	@Test
-	public void testArgumentUnsignedInteger1() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedInteger1() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x1L));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFL));
 	}
 
 	@Test
-	public void testArgumentUnsignedIntegerFFFFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFL));
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedInteger100000000() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedInteger100000000() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedInteger1FFFFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedInteger1FFFFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedIntegerFFFFFFFFF() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerFFFFFFFFF() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)); // 36bit -> out of range!
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedIntegerMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerMinus1() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(-1L)); // negative/64bit -> out of range!
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedIntegerMinLong() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerMinLong() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(Long.MIN_VALUE)); // negative -> out of range!
 	}
 
 	@Test(expected=IllegalArgumentException.class)
-	public void testArgumentUnsignedIntegerMaxLong() throws IOException, OSCSerializeException {
+	public void testArgumentUnsignedIntegerMaxLong() throws Exception {
 		reparseSingleArgument(OSCUnsigned.valueOf(Long.MAX_VALUE)); // 64bit -> out of range!
 	}
 
 	@Test
-	public void testArgumentLongMin() throws IOException, OSCSerializeException {
+	public void testArgumentLongMin() throws Exception {
 		reparseSingleArgument(Long.MIN_VALUE);
 	}
 
 	@Test
-	public void testArgumentLongMinus1() throws IOException, OSCSerializeException {
+	public void testArgumentLongMinus1() throws Exception {
 		reparseSingleArgument(-1L);
 	}
 
 	@Test
-	public void testArgumentLong0() throws IOException, OSCSerializeException {
+	public void testArgumentLong0() throws Exception {
 		reparseSingleArgument(0L);
 	}
 
 	@Test
-	public void testArgumentLong1() throws IOException, OSCSerializeException {
+	public void testArgumentLong1() throws Exception {
 		reparseSingleArgument(1L);
 	}
 
 	@Test
-	public void testArgumentLongMax() throws IOException, OSCSerializeException {
+	public void testArgumentLongMax() throws Exception {
 		reparseSingleArgument(Long.MAX_VALUE);
 	}
 
 	@Test
-	public void testArgumentString() throws IOException, OSCSerializeException {
+	public void testArgumentString() throws Exception {
 
 		// test the empty string
 		reparseSingleArgument("");
@@ -498,7 +499,7 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentNull() throws IOException, OSCSerializeException {
+	public void testArgumentNull() throws Exception {
 
 		final Comparator<byte[]> nullComparator
 				= new Comparator<byte[]>() {
@@ -512,21 +513,21 @@ public class OSCReparserTest {
 	}
 
 	@Test
-	public void testArgumentBooleanTrue() throws IOException, OSCSerializeException {
+	public void testArgumentBooleanTrue() throws Exception {
 
 		reparseSingleArgument(Boolean.TRUE);
 		reparseSingleArgument(true); // uses auto-boxing
 	}
 
 	@Test
-	public void testArgumentBooleanFalse() throws IOException, OSCSerializeException {
+	public void testArgumentBooleanFalse() throws Exception {
 
 		reparseSingleArgument(Boolean.FALSE);
 		reparseSingleArgument(false); // uses auto-boxing
 	}
 
 	@Test
-	public void testArgumentImpulse() throws IOException, OSCSerializeException {
+	public void testArgumentImpulse() throws Exception {
 
 		reparseSingleArgument(OSCImpulse.INSTANCE);
 	}
