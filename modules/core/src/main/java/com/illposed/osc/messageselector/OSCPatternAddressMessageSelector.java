@@ -40,13 +40,15 @@ import java.util.List;
  *   language: <i>C++</i><br>
  *   matching code license: <i>public domain</i><br>
  *   library license: <i>LGPL 2.1+</i><br>
- *   <a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/src/OSC-Kit/OSC-pattern-match.c">source location</a><br>
+ *   <a href="http://archive.cnmat.berkeley.edu/OpenSoundControl/src/OSC-Kit/OSC-pattern-match.c">
+ *   source location</a><br>
  * </li>
  * <li>
  *   <b>LibLO</b><br>
  *   language: <i>C++</i><br>
  *   library license: <i>LGPL 2.1+</i><br>
- *   <a href="https://sourceforge.net/p/liblo/git/ci/master/tree/src/pattern_match.c">source location</a><br>
+ *   <a href="https://sourceforge.net/p/liblo/git/ci/master/tree/src/pattern_match.c">
+ *   source location</a><br>
  * </li>
  * <li>
  *   <b>JavaOSC</b><br>
@@ -92,7 +94,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 */
 	private static List<String> splitIntoParts(final String addressOrPattern) {
 
-		final List<String> parts = new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
+		final List<String> parts
+				= new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
 		if (addressOrPattern.startsWith("/")) {
 			// as "/hello" gets split into {"", "hello"}, we remove the first empty entry,
 			// so we end up with {"hello"}
@@ -322,7 +325,9 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 							}
 						} else { // skip to next comma
 							si = place;
-							while ((pi < p.length()) && (p.charAt(pi) != ',') && (p.charAt(pi) != '}')) {
+							while ((pi < p.length()) && (p.charAt(pi) != ',')
+									&& (p.charAt(pi) != '}'))
+							{
 								pi++;
 							}
 							if (pi < p.length()) {
