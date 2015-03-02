@@ -17,8 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Converts OSC packet Java objects to their byte stream representations,
@@ -38,6 +40,18 @@ public class OSCSerializer {
 	 * The last entry is always used as the current stream to write to.
 	 */
 	private final Deque<SizeTrackingOutputStream> streams;
+	/**
+	 * Cache for Java classes of which we know, that we have no argument handler
+	 * that supports serializing them.
+	 */
+	private final Set<Class> unsupportedTypes;
+	/**
+	 * Cache for Java classes that are sub-classes of a supported argument handlers Java class,
+	 * mapped to that base class.
+	 * This does not include base classes
+	 * (Java classes directly supported by one of our argument handlers).
+	 */
+	private final Map<Class, Class> subToSuperTypes;
 	/**
 	 * For each base-class, indicates whether it is a marker-only type.
 	 * @see ArgumentHandler#isMarkerOnly()
@@ -96,6 +110,8 @@ public class OSCSerializer {
 
 		// usually, we should not need a stack size of 16, which is the default initial size
 		this.streams = new ArrayDeque<SizeTrackingOutputStream>(4);
+		this.unsupportedTypes = new HashSet<Class>(4);
+		this.subToSuperTypes = new HashMap<Class, Class>(4);
 		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
 		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
 		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
@@ -286,14 +302,83 @@ public class OSCSerializer {
 		writeTypeTagsRaw(arguments);
 	}
 
-	private ArgumentHandler findType(final Object argumentValue) throws OSCSerializeException {
+	private Set<ArgumentHandler> findSuperTypes(final Class argumentClass) {
 
-		final ArgumentHandler type;
-		final Class argumentClass = extractTypeClass(argumentValue);
-		final Boolean markerType = classToMarker.get(argumentClass);
-		if (markerType == null) {
+		final Set<ArgumentHandler> matchingSuperTypes = new HashSet<ArgumentHandler>();
+
+		// check all base-classes, for whether our argument-class is a sub-class
+		// of any of them
+		for (final Map.Entry<Class, ArgumentHandler> baseClassAndType
+				: classToType.entrySet())
+		{
+			final Class baseClass = baseClassAndType.getKey();
+			if ((baseClass != Object.class)
+					&& baseClass.isAssignableFrom(argumentClass))
+			{
+				matchingSuperTypes.add(baseClassAndType.getValue());
+			}
+		}
+
+		return matchingSuperTypes;
+	}
+
+	private Class findSuperType(final Class argumentClass) throws OSCSerializeException {
+
+		Class superType;
+
+		// check if we already found the base-class for this argument-class before
+		superType = subToSuperTypes.get(argumentClass);
+		// ... if we did not, ...
+		if ((superType == null)
+				// check if we already know this argument-class to not be supported
+				&& !unsupportedTypes.contains(argumentClass))
+		{
+			final Set<ArgumentHandler> matchingSuperTypes = findSuperTypes(argumentClass);
+			if (matchingSuperTypes.isEmpty()) {
+				unsupportedTypes.add(argumentClass);
+			} else {
+				if (matchingSuperTypes.size() > 1) {
+					System.out.println("WARNING: Java class "
+							+ argumentClass.getCanonicalName()
+							+ " is a sub-class of multiple supported argument types:");
+					for (final ArgumentHandler matchingSuperType : matchingSuperTypes) {
+						System.out.println('\t'
+								+ matchingSuperType.getJavaClass().getCanonicalName()
+								+ " (supported by "
+								+ matchingSuperType.getClass().getCanonicalName()
+								+ ')');
+					}
+				}
+				final ArgumentHandler matchingSuperType = matchingSuperTypes.iterator().next();
+				System.out.println("INFO: Java class "
+						+ argumentClass.getCanonicalName()
+						+ " will be mapped to "
+						+ matchingSuperType.getJavaClass().getCanonicalName()
+						+ " (supported by "
+						+ matchingSuperType.getClass().getCanonicalName()
+						+ ')');
+				final Class matchingSuperClass = matchingSuperType.getJavaClass();
+				subToSuperTypes.put(argumentClass, matchingSuperClass);
+				superType = matchingSuperClass;
+			}
+		}
+
+		if (superType == null) {
 			throw new OSCSerializeException("No type handler registered for serializing class "
 					+ argumentClass.getCanonicalName());
+		}
+
+		return superType;
+	}
+
+	private ArgumentHandler findType(final Object argumentValue, final Class argumentClass)
+			throws OSCSerializeException
+	{
+		final ArgumentHandler type;
+
+		final Boolean markerType = classToMarker.get(argumentClass);
+		if (markerType == null) {
+			type = findType(argumentValue, findSuperType(argumentClass));
 		} else if (markerType) {
 			type = markerValueToType.get(argumentValue);
 		} else {
@@ -301,6 +386,10 @@ public class OSCSerializer {
 		}
 
 		return type;
+	}
+
+	private ArgumentHandler findType(final Object argumentValue) throws OSCSerializeException {
+		return findType(argumentValue, extractTypeClass(argumentValue));
 	}
 
 	/**
