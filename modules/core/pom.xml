@@ -84,6 +84,7 @@
 				<configuration>
 					<excludes>
 						<exclude>com/illposed/osc/OSCPacketDispatcher.java</exclude>
+						<exclude>com/illposed/osc/OSCSerializer.java</exclude>
 						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
 						<exclude>com/illposed/osc/messageselector/OSCPatternAddressMessageSelector.java</exclude>
 					</excludes>
