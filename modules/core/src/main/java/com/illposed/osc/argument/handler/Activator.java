@@ -57,6 +57,9 @@ public final class Activator {
 		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
 		parserTypes.put(symbolArgumentHandler.getDefaultIdentifier(), symbolArgumentHandler);
 
+		// NOTE We do not register ByteArrayBlobArgumentHandler (byte[]) here,
+		//   because type 'b' already converts to byteArray.
+
 		// NOTE We do not register DateTimeStampArgumentHandler (Date) here,
 		//   because type 't' already converts to OSCTimeStamp.
 
@@ -74,6 +77,11 @@ public final class Activator {
 
 		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
 		serializerTypes.add(symbolArgumentHandler);
+
+		// NOTE We add this for legacy suppport, though it is recommended
+		//   to use ByteBuffer over byte[], as it may be handled more efficiently by some code.
+		final ArgumentHandler byteArrayBlobArgumentHandler = ByteArrayBlobArgumentHandler.INSTANCE;
+		serializerTypes.add(byteArrayBlobArgumentHandler);
 
 		// NOTE We add this for legacy suppport, though it is recommended
 		//   to use OSCTimeStamp over Date, to not loose precission and range during conversions.

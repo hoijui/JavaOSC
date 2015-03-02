@@ -34,11 +34,19 @@ public class OSCReparserTest {
 				}
 			};
 
-	private static final Comparator<byte[]> BLOB_COMPARATOR
+	private static final Comparator<byte[]> BYTE_ARRAY_BLOB_COMPARATOR
 			= new Comparator<byte[]>() {
 				@Override
 				public int compare(final byte[] obj1, final byte[] obj2) {
 					return Arrays.equals(obj1, obj2) ? 0 : 1;
+				}
+			};
+
+	private static final Comparator<ByteBuffer> BLOB_COMPARATOR
+			= new Comparator<ByteBuffer>() {
+				@Override
+				public int compare(final ByteBuffer obj1, final ByteBuffer obj2) {
+					return obj1.compareTo(obj2);
 				}
 			};
 
@@ -92,7 +100,7 @@ public class OSCReparserTest {
 	private void reparseSingleBlobArgument(final byte[] blob)
 			throws IOException, OSCParseException, OSCSerializeException
 	{
-		reparseSingleArgument(blob, BLOB_COMPARATOR);
+		reparseSingleArgument(ByteBuffer.wrap(blob), BLOB_COMPARATOR);
 	}
 
 	@Test
