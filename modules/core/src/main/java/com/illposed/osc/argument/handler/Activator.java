@@ -57,7 +57,7 @@ public final class Activator {
 		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
 		parserTypes.put(symbolArgumentHandler.getDefaultIdentifier(), symbolArgumentHandler);
 
-		// NOTE We do not register DateTimeStampArgumentHandler here,
+		// NOTE We do not register DateTimeStampArgumentHandler (Date) here,
 		//   because type 't' already converts to OSCTimeStamp.
 
 		return parserTypes;
