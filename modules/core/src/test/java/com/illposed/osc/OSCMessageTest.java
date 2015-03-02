@@ -10,6 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.handler.BlobArgumentHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -106,17 +107,21 @@ public class OSCMessageTest {
 		return javaCode.toString();
 	}
 
-	private byte[] convertMessageToByteArray(final OSCMessage message) {
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+	private ByteBuffer convertMessageToBytes(final OSCMessage message) {
+
+		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		final OSCSerializer stream = OSCSerializerFactory.createDefaultFactory().create(buffer);
 		try {
 			stream.write(message);
-		} catch (final IOException ex) {
-			throw new RuntimeException(ex);
 		} catch (final OSCSerializeException ex) {
 			throw new RuntimeException(ex);
 		}
-		return buffer.toByteArray();
+		buffer.flip();
+		return buffer;
+	}
+
+	private byte[] convertMessageToByteArray(final OSCMessage message) {
+		return OSCSerializer.toByteArray(convertMessageToBytes(message));
 	}
 
 	@Test

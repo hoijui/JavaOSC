@@ -12,8 +12,6 @@ import com.illposed.osc.argument.OSCUnsigned;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -71,13 +69,13 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final OSCUnsigned value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final OSCUnsigned value)
+			throws OSCSerializeException
 	{
 		final long asLong = value.toLong();
-		stream.write((byte) (asLong >> 24 & 0xFFL));
-		stream.write((byte) (asLong >> 16 & 0xFFL));
-		stream.write((byte) (asLong >>  8 & 0xFFL));
-		stream.write((byte) (asLong       & 0xFFL));
+		output.put((byte) (asLong >> 24 & 0xFFL));
+		output.put((byte) (asLong >> 16 & 0xFFL));
+		output.put((byte) (asLong >>  8 & 0xFFL));
+		output.put((byte) (asLong       & 0xFFL));
 	}
 }

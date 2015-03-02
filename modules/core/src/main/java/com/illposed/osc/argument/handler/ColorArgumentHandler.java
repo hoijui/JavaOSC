@@ -11,9 +11,7 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.SizeTrackingOutputStream;
 import java.awt.Color;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -86,12 +84,11 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Color value)
-			throws IOException, OSCSerializeException
-	{
-		stream.write(toSignedByte(value.getRed()));
-		stream.write(toSignedByte(value.getGreen()));
-		stream.write(toSignedByte(value.getBlue()));
-		stream.write(toSignedByte(value.getAlpha()));
+	public void serialize(final ByteBuffer output, final Color value) throws OSCSerializeException {
+
+		output.put(toSignedByte(value.getRed()));
+		output.put(toSignedByte(value.getGreen()));
+		output.put(toSignedByte(value.getBlue()));
+		output.put(toSignedByte(value.getAlpha()));
 	}
 }

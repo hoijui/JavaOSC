@@ -11,7 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final OSCImpulse value) {
+	public void serialize(final ByteBuffer output, final OSCImpulse value) {
 
 //		if (value != OSCImpulse.INSTANCE) {
 //			throw new OSCSerializeException();

@@ -12,8 +12,6 @@ import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCSymbol;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -66,9 +64,9 @@ public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Clonea
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final OSCSymbol value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final OSCSymbol value)
+			throws OSCSerializeException
 	{
-		stringArgumentHandler.serialize(stream, value.toString());
+		stringArgumentHandler.serialize(output, value.toString());
 	}
 }

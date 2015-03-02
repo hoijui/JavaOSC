@@ -10,8 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OSCPacketDispatcher {
 
-	private final ByteArrayOutputStream argumentTypesBuffer;
+	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
 	private final Map<MessageSelector, OSCMessageListener> selectorToListener;
@@ -44,7 +43,7 @@ public class OSCPacketDispatcher {
 			this.serializer = null;
 			this.typeTagsCharset = null;
 		} else {
-			this.argumentTypesBuffer = new ByteArrayOutputStream();
+			this.argumentTypesBuffer = ByteBuffer.allocate(64);
 			this.serializer = serializerFactory.create(argumentTypesBuffer);
 			final Map<String, Object> serializationProperties = serializerFactory.getProperties();
 			final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
@@ -160,14 +159,13 @@ public class OSCPacketDispatcher {
 		} else {
 			try {
 				serializer.writeOnlyTypeTags(arguments);
-			} catch (final IOException ex) {
-				throw new IllegalStateException("This should only happen with full memory", ex);
 			} catch (final OSCSerializeException ex) {
 				throw new IllegalArgumentException(
 						"Failed generating Arguments Type Tag string while dispatching", ex);
 			}
-			final byte[] typeTags = argumentTypesBuffer.toByteArray();
-			typeTagsStr = new String(typeTags, typeTagsCharset);
+			argumentTypesBuffer.flip();
+			typeTagsStr
+					= new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
 		}
 
 		return typeTagsStr;

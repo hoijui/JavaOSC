@@ -11,9 +11,7 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.SizeTrackingOutputStream;
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -42,11 +40,9 @@ public class ColorArgumentHandlerTest {
 			throws IOException, OSCSerializeException, OSCParseException
 	{
 		// serialize
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream(bufferSize);
-		final SizeTrackingOutputStream trackedBuffer = new SizeTrackingOutputStream(buffer);
-		type.serialize(trackedBuffer, orig);
-		final ByteBuffer reparsableBuffer
-				= ByteBuffer.wrap(buffer.toByteArray()).asReadOnlyBuffer();
+		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+		type.serialize(buffer, orig);
+		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
 
 		// re-parse
 		final T reparsed = type.parse(reparsableBuffer);

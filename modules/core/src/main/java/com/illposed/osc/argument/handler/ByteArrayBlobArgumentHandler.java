@@ -10,10 +10,7 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -65,16 +62,9 @@ public class ByteArrayBlobArgumentHandler implements ArgumentHandler<byte[]>, Cl
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final byte[] value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final byte[] value) throws OSCSerializeException
 	{
-		// NOTE This would be cleaner, code wise, but it (currently) creates performance overhead:
-		//   byte[] -> ByteBuffer -> byte[] -> OutputStream
-//		final ByteBuffer bufferValue = ByteBuffer.wrap(value);
-//		BlobArgumentHandler.INSTANCE.serialize(stream, bufferValue);
-
-		IntegerArgumentHandler.INSTANCE.serialize(stream, value.length);
-		stream.write(value);
-		OSCSerializer.align(stream);
+		final ByteBuffer bufferValue = ByteBuffer.wrap(value).asReadOnlyBuffer();
+		BlobArgumentHandler.INSTANCE.serialize(output, bufferValue);
 	}
 }

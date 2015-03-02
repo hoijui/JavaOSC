@@ -12,8 +12,6 @@ import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Map;
@@ -63,9 +61,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Date value)
-			throws IOException, OSCSerializeException
-	{
-		TimeStampArgumentHandler.INSTANCE.serialize(stream, OSCTimeStamp.valueOf(value));
+	public void serialize(final ByteBuffer output, final Date value) throws OSCSerializeException {
+		TimeStampArgumentHandler.INSTANCE.serialize(output, OSCTimeStamp.valueOf(value));
 	}
 }

@@ -10,7 +10,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.Activator;
-import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public final class OSCSerializerFactory {
 		return factory;
 	}
 
-	public OSCSerializer create(final OutputStream wrappedStream) {
+	public OSCSerializer create(final ByteBuffer output) {
 
 		final Map<String, Object> currentProperties = getProperties();
 		final List<ArgumentHandler> typeClopies
@@ -69,7 +69,7 @@ public final class OSCSerializerFactory {
 			typeClopies.add(typeClone);
 		}
 
-		return new OSCSerializer(typeClopies, wrappedStream);
+		return new OSCSerializer(typeClopies, output);
 	}
 
 	/**

@@ -11,8 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -62,9 +60,8 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Long value)
-			throws IOException, OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final Long value) throws OSCSerializeException {
+
 		long curValue = value;
 		final byte[] longintBytes = new byte[8];
 		longintBytes[7] = (byte)curValue; curValue >>>= 8;
@@ -76,6 +73,6 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 		longintBytes[1] = (byte)curValue; curValue >>>= 8;
 		longintBytes[0] = (byte)curValue;
 
-		stream.write(longintBytes);
+		output.put(longintBytes);
 	}
 }
