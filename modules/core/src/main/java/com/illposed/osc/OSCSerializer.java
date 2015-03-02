@@ -38,8 +38,20 @@ public class OSCSerializer {
 	 * The last entry is always used as the current stream to write to.
 	 */
 	private final Deque<SizeTrackingOutputStream> streams;
+	/**
+	 * For each base-class, indicates whether it is a marker-only type.
+	 * @see ArgumentHandler#isMarkerOnly()
+	 */
 	private final Map<Class, Boolean> classToMarker;
+	/**
+	 * Maps supported Java class to argument-handlers for all our non-marker-only base-classes.
+	 * @see ArgumentHandler#isMarkerOnly()
+	 */
 	private final Map<Class, ArgumentHandler> classToType;
+	/**
+	 * Maps values to argument-handlers for all our marker-only base-classes.
+	 * @see ArgumentHandler#isMarkerOnly()
+	 */
 	private final Map<Object, ArgumentHandler> markerValueToType;
 
 	public OSCSerializer(final List<ArgumentHandler> types, final OutputStream mainStream) {
