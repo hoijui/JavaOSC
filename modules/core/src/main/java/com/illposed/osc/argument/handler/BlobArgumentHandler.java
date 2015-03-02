@@ -10,7 +10,6 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.SizeTrackingOutputStream;
 import java.io.IOException;
@@ -21,9 +20,9 @@ import java.util.Map;
 /**
  * Parses and serializes an OSC binary-blob type.
  */
-public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
+public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneable {
 
-	public static final ArgumentHandler<byte[]> INSTANCE = new BlobArgumentHandler();
+	public static final ArgumentHandler<ByteBuffer> INSTANCE = new BlobArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
 	protected BlobArgumentHandler() {
@@ -36,8 +35,8 @@ public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
 	}
 
 	@Override
-	public Class<byte[]> getJavaClass() {
-		return byte[].class;
+	public Class<ByteBuffer> getJavaClass() {
+		return ByteBuffer.class;
 	}
 
 	@Override
@@ -81,19 +80,23 @@ public class BlobArgumentHandler implements ArgumentHandler<byte[]>, Cloneable {
 	}
 
 	@Override
-	public byte[] parse(final ByteBuffer input) throws OSCParseException {
+	public ByteBuffer parse(final ByteBuffer input) throws OSCParseException {
 		final int blobLen = IntegerArgumentHandler.INSTANCE.parse(input);
-		final byte[] res = readByteArray(input, blobLen);
-		moveToFourByteBoundry(input);
-		return res;
+		final int previousLimit = input.limit();
+		input.limit(input.position() + blobLen);
+		final ByteBuffer value = input.slice();
+		input.limit(previousLimit);
+		return value;
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final byte[] value)
+	public void serialize(final SizeTrackingOutputStream stream, final ByteBuffer value)
 			throws IOException, OSCSerializeException
 	{
-		IntegerArgumentHandler.INSTANCE.serialize(stream, value.length);
-		stream.write(value);
-		OSCSerializer.align(stream);
+		final int numBytes = value.remaining();
+		final byte[] arrayValue = new byte[numBytes];
+		value.get(arrayValue);
+		ByteArrayBlobArgumentHandler.INSTANCE.serialize(stream, arrayValue);
+		value.flip();
 	}
 }
