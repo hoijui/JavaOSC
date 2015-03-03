@@ -55,7 +55,7 @@ public final class OSCSerializerFactory {
 	public OSCSerializer create(final ByteBuffer output) {
 
 		final Map<String, Object> currentProperties = getProperties();
-		final List<ArgumentHandler> typeClopies
+		final List<ArgumentHandler> typeCopies
 				= new ArrayList<ArgumentHandler>(argumentHandlers.size());
 		for (final ArgumentHandler<?> type : argumentHandlers) {
 			final ArgumentHandler<?> typeClone;
@@ -66,10 +66,10 @@ public final class OSCSerializerFactory {
 			}
 			typeClone.setProperties(currentProperties);
 
-			typeClopies.add(typeClone);
+			typeCopies.add(typeClone);
 		}
 
-		return new OSCSerializer(typeClopies, output);
+		return new OSCSerializer(typeCopies, output);
 	}
 
 	/**
