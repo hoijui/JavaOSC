@@ -69,7 +69,7 @@ public final class OSCSerializerFactory {
 			typeCopies.add(typeClone);
 		}
 
-		return new OSCSerializer(typeCopies, output);
+		return new OSCSerializer(typeCopies, currentProperties, output);
 	}
 
 	/**
