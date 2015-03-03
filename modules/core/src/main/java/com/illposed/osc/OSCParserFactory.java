@@ -68,7 +68,7 @@ public final class OSCParserFactory {
 			typeClone.setProperties(currentProperties);
 		}
 
-		return new OSCParser(identifierToTypeCopy);
+		return new OSCParser(identifierToTypeCopy, currentProperties);
 	}
 
 	/**

@@ -34,6 +34,7 @@ public class OSCParser {
 	public static final char TYPE_ARRAY_END = (byte) ']';
 
 	private final Map<Character, ArgumentHandler> identifierToType;
+	private final Map<String, Object> properties;
 
 	private static class UnknownArgumentTypeParseException extends OSCParseException {
 
@@ -43,9 +44,12 @@ public class OSCParser {
 		}
 	}
 
-	public OSCParser(final Map<Character, ArgumentHandler> identifierToType) {
-
+	public OSCParser(
+			final Map<Character, ArgumentHandler> identifierToType,
+			final Map<String, Object> properties)
+	{
 		this.identifierToType = Collections.unmodifiableMap(identifierToType);
+		this.properties = Collections.unmodifiableMap(properties);
 	}
 
 	/**
@@ -60,6 +64,14 @@ public class OSCParser {
 
 	public Map<Character, ArgumentHandler> getIdentifierToTypeMapping() {
 		return identifierToType;
+	}
+
+	/**
+	 * Returns the set of properties this parser was created with.
+	 * @return the set of properties to adhere to
+	 */
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
 	/**

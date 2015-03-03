@@ -59,9 +59,13 @@ public class OSCSerializer {
 	 * @see ArgumentHandler#isMarkerOnly()
 	 */
 	private final Map<Object, ArgumentHandler> markerValueToType;
+	private final Map<String, Object> properties;
 
-	public OSCSerializer(final List<ArgumentHandler> types, final ByteBuffer output) {
-
+	public OSCSerializer(
+			final List<ArgumentHandler> types,
+			final Map<String, Object> properties,
+			final ByteBuffer output)
+	{
 		final Map<Class, Boolean> classToMarkerTmp = new HashMap<Class, Boolean>(types.size());
 		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<Class, ArgumentHandler>();
 		final Map<Object, ArgumentHandler> markerValueToTypeTmp = new HashMap<Object, ArgumentHandler>();
@@ -107,10 +111,19 @@ public class OSCSerializer {
 		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
 		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
 		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
+		this.properties = Collections.unmodifiableMap(properties);
 	}
 
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
 		return classToType;
+	}
+
+	/**
+	 * Returns the set of properties this parser was created with.
+	 * @return the set of properties to adhere to
+	 */
+	public Map<String, Object> getProperties() {
+		return properties;
 	}
 
 	public static byte[] toByteArray(final ByteBuffer buffer) {
