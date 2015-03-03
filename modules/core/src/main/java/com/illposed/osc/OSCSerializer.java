@@ -252,7 +252,7 @@ public class OSCSerializer {
 		for (final Map.Entry<Class, ArgumentHandler> baseClassAndType
 				: classToType.entrySet())
 		{
-			final Class baseClass = baseClassAndType.getKey();
+			final Class<?> baseClass = baseClassAndType.getKey();
 			if ((baseClass != Object.class)
 					&& baseClass.isAssignableFrom(argumentClass))
 			{
@@ -378,12 +378,12 @@ public class OSCSerializer {
 	{
 		for (final Object argument : arguments) {
 			if (argument instanceof List) {
+				@SuppressWarnings("unchecked") final List<?> argumentsArray = (List<?>) argument;
 				// This is used for nested arguments.
 				// open the array
 				output.put((byte) OSCParser.TYPE_ARRAY_BEGIN);
 				// fill the [] with the nested argument types
-				@SuppressWarnings("unchecked") List<Object> collArg = (List<Object>) argument;
-				writeTypeTagsRaw(collArg);
+				writeTypeTagsRaw(argumentsArray);
 				// close the array
 				output.put((byte) OSCParser.TYPE_ARRAY_END);
 			} else {
