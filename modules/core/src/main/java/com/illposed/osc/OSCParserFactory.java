@@ -72,9 +72,9 @@ public final class OSCParserFactory {
 	}
 
 	/**
-	 * Returns the character set used to decode message addresses
-	 * and string parameters.
-	 * @return the character-encoding-set used by this converter
+	 * Returns the current set of properties.
+	 * These will be propagated to created parsers and to the argument-handlers.
+	 * @return the set of properties to adhere to
 	 */
 	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(properties);
@@ -82,6 +82,7 @@ public final class OSCParserFactory {
 
 	/**
 	 * Sets a new set of properties, possibly overriding, but not clearing the old ones.
+	 * These will be propagated to created parsers and to the argument-handlers.
 	 * @param properties the new set of properties to adhere to
 	 */
 	public void setProperties(final Map<String, Object> properties) {
