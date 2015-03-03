@@ -54,17 +54,6 @@ public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneab
 		return (BlobArgumentHandler) super.clone();
 	}
 
-	/**
-	 * If not yet aligned, move to the next byte with an index in the byte array
-	 * which is dividable by four.
-	 * @param rawInput to be aligned
-	 */
-	public static void moveToFourByteBoundry(final ByteBuffer rawInput) {
-		final int mod = rawInput.position() % 4;
-		final int padding = (4 - mod) % 4;
-		rawInput.position(rawInput.position() + padding);
-	}
-
 	/** NOTE Might be used in other places too! */
 	private static byte[] readByteArray(final ByteBuffer rawInput, final int numBytes) {
 		final byte[] res = new byte[numBytes];

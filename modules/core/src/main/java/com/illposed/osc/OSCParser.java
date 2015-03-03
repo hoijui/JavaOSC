@@ -48,6 +48,16 @@ public class OSCParser {
 		this.identifierToType = Collections.unmodifiableMap(identifierToType);
 	}
 
+	/**
+	 * If not yet aligned, move the position to the next index dividable by 4.
+	 * @param input to be aligned
+	 */
+	public static void align(final ByteBuffer input) {
+		final int mod = input.position() % 4;
+		final int padding = (4 - mod) % 4;
+		input.position(input.position() + padding);
+	}
+
 	public Map<Character, ArgumentHandler> getIdentifierToTypeMapping() {
 		return identifierToType;
 	}

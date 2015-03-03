@@ -9,6 +9,7 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -108,7 +109,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 		// because strings are always padded with at least one zero,
 		// as their length is not given in advance, as is the case with blobs
 		input.get(); // position++
-		BlobArgumentHandler.moveToFourByteBoundry(input);
+		OSCParser.align(input);
 		return res;
 	}
 
