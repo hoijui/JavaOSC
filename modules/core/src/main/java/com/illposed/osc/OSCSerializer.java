@@ -340,6 +340,7 @@ public class OSCSerializer {
 	 *   See {@link #getClassToTypeMapping()} for a complete list of which classes may be used here.
 	 * @throws OSCSerializeException if the argument object failed to serialize
 	 */
+	@SuppressWarnings("unchecked")
 	private void write(final Object anObject) throws OSCSerializeException {
 
 		if (anObject instanceof Collection) {
