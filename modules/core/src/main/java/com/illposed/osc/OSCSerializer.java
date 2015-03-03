@@ -108,6 +108,7 @@ public class OSCSerializer {
 		// usually, we should not need a stack size of 16, which is the default initial size
 		this.unsupportedTypes = new HashSet<Class>(4);
 		this.subToSuperTypes = new HashMap<Class, Class>(4);
+		// TODO create at least a shallow copy of these maps
 		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
 		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
 		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);

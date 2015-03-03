@@ -48,6 +48,7 @@ public class OSCParser {
 			final Map<Character, ArgumentHandler> identifierToType,
 			final Map<String, Object> properties)
 	{
+		// TODO create at least a shallow copy of these maps
 		this.identifierToType = Collections.unmodifiableMap(identifierToType);
 		this.properties = Collections.unmodifiableMap(properties);
 	}
