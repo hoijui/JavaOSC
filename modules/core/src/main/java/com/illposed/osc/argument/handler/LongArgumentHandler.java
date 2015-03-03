@@ -11,7 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -20,6 +19,10 @@ import java.util.Map;
  */
 public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 
+	/**
+	 * The number of bytes used to represent this type in an OSC byte array (8).
+	 */
+	public static final int BYTES = Long.SIZE / Byte.SIZE;
 	public static final ArgumentHandler<Long> INSTANCE = new LongArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
@@ -55,8 +58,10 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 
 	@Override
 	public Long parse(final ByteBuffer input) throws OSCParseException {
-		final BigInteger longIntBytes = BlobArgumentHandler.readBigInteger(input, 8);
-		return longIntBytes.longValue();
+
+		final Long value = input.asLongBuffer().get();
+		input.position(input.position() + BYTES);
+		return value;
 	}
 
 	@Override

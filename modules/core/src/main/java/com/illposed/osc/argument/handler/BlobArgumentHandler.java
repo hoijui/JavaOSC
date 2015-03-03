@@ -12,7 +12,6 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -52,19 +51,6 @@ public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneab
 	@SuppressWarnings("unchecked")
 	public BlobArgumentHandler clone() throws CloneNotSupportedException {
 		return (BlobArgumentHandler) super.clone();
-	}
-
-	/** NOTE Might be used in other places too! */
-	private static byte[] readByteArray(final ByteBuffer rawInput, final int numBytes) {
-		final byte[] res = new byte[numBytes];
-		// XXX Crude copying from the buffer to the array. This can only be avoided if we change the return type to ByteBuffer.
-		rawInput.get(res);
-		return res;
-	}
-
-	public static BigInteger readBigInteger(final ByteBuffer rawInput, final int numBytes) {
-		final byte[] myBytes = readByteArray(rawInput, numBytes);
-		return new BigInteger(myBytes);
 	}
 
 	@Override
