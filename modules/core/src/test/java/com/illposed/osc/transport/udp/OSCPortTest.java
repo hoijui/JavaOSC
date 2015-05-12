@@ -41,8 +41,10 @@ public class OSCPortTest {
 
 	@After
 	public void tearDown() throws Exception {
+
 		receiver.close();
 		sender.close();
+
 		// wait a bit after closing the receiver,
 		// because (some) operating systems need some time
 		// to actually close the underlying socket
@@ -110,12 +112,14 @@ public class OSCPortTest {
 
 	@Test
 	public void testStart() throws Exception {
+
 		OSCMessage mesg = new OSCMessage("/sc/stop");
 		sender.send(mesg);
 	}
 
 	@Test
 	public void testMessageWithArgs() throws Exception {
+
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(3);
 		args.add("hello");
@@ -125,6 +129,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle() throws Exception {
+
 		List<Object> args = new ArrayList<Object>(2);
 		args.add(3);
 		args.add("hello");
@@ -136,6 +141,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle2() throws Exception {
+
 		final List<Object> arguments = new ArrayList<Object>(2);
 		arguments.add(3);
 		arguments.add("hello");
@@ -147,6 +153,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testReceiving() throws Exception {
+
 		OSCMessage mesg = new OSCMessage("/message/receiving");
 		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/message/receiving"),
@@ -162,6 +169,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceiving() throws Exception {
+
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
 		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
