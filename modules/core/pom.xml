@@ -47,8 +47,8 @@
 					<instructions>
 						<Export-Package>
 							${project.packageName},
-							${project.packageName}.messageselector,
 							${project.packageName}.argument,
+							${project.packageName}.messageselector,
 							${project.packageName}.transport,
 							${project.packageName}.transport.udp
 						</Export-Package>
