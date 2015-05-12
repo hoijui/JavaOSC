@@ -26,12 +26,14 @@ import java.nio.ByteBuffer;
  * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
  * <blockquote><pre>{@code
  * OSCPortIn receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT);
- * OSCListener listener = new OSCListener() {
- * 	public void acceptMessage(Date time, OSCMessage message) {
- * 		System.out.println("Message received!");
- * 	}
+ * OSCMessageListener listener = new OSCMessageListener() {
+ *   public void acceptMessage(OSCTimeStamp time, OSCMessage message) {
+ *     System.out.println("Message received!");
+ *   }
  * };
- * receiver.addListener("/message/receiving", listener);
+ * MessageSelector selector = new OSCPatternAddressMessageSelector(
+ *     "/message/receiving");
+ * receiver.getDispatcher().addListener(selector, listener);
  * receiver.startListening();
  * }</pre></blockquote>
  *
