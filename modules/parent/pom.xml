@@ -314,7 +314,7 @@
 						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 						<linkXref>true</linkXref>
 						<configLocation>src/main/resources/checkstyle.xml</configLocation>
-						<propertyExpansion>jave.header.regex.template.file=${root.basedir}/src/main/resources/java_header_regex_template.txt</propertyExpansion>
+						<propertyExpansion>java.header.regex.template.file=${root.basedir}/src/main/resources/java_header_regex_template.txt</propertyExpansion>
 					</configuration>
 				</plugin>
 
