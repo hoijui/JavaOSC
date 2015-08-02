@@ -3,7 +3,6 @@
 
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
-		<root.basedir>${project.parent.relativePath}</root.basedir>
 		<supported.osc.version>1.0</supported.osc.version>
 	</properties>
 

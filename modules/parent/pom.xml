@@ -11,7 +11,8 @@
 		<project.build.resourceEncoding>${project.build.encoding}</project.build.resourceEncoding>
 		<java.old.version>6</java.old.version>
 		<java.old.home>${env.JAVA6_HOME}</java.old.home>
-		<root.basedir>${project.basedir}</root.basedir>
+		<!-- NOTE This works for reactor/aggregation & child module builds. -->
+		<root.basedir>${project.basedir}/../parent</root.basedir>
 	</properties>
 
 	<groupId>com.illposed.osc</groupId>
