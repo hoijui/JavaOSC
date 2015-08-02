@@ -75,7 +75,7 @@
 	<!-- Following interprets the header file as regular expressions. -->
 	<!-- NOTE the used variable is supplied by the invocation in maven! -->
 	<module name="RegexpHeader">
-		<property name="headerFile" value="${jave.header.regex.template.file}"/>
+		<property name="headerFile" value="${java.header.regex.template.file}"/>
 	</module>
 
 	<module name="TreeWalker">
