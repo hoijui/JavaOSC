@@ -111,7 +111,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.13</version>
+				<version>2.15</version>
 				<configuration>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<linkXref>true</linkXref>
@@ -122,7 +122,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.3</version>
+				<version>3.5</version>
 				<configuration>
 					<aggregate>true</aggregate>
 					<linkXref>true</linkXref>
@@ -137,7 +137,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.0.1</version>
 			</plugin>
 
 			<plugin>
@@ -192,7 +192,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.18</version>
+				<version>2.18.1</version>
 			</plugin>
 
 			<plugin>
@@ -204,7 +204,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.7</version>
+				<version>2.8</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -215,7 +215,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.2</version>
+					<version>3.3</version>
 					<configuration>
 						<source>1.${java.old.version}</source>
 						<target>1.${java.old.version}</target>
@@ -237,7 +237,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.9.1</version> <!-- NOTE 2.10 and 2.10.1 both have bugs; test with "mvn javadoc:test-javadoc") -->
+					<version>2.10.3</version>
 				</plugin>
 
 				<plugin>
@@ -261,7 +261,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5.1</version>
+					<version>2.5.2</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<!--
@@ -275,19 +275,19 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.6</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.5.2</version>
+					<version>2.5.5</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.3.2</version>
+					<version>1.4.0</version>
 					<executions>
 						<execution>
 							<goals>
@@ -303,13 +303,13 @@
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.5.3</version>
+					<version>2.5.4</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.13</version>
+					<version>2.15</version>
 					<configuration>
 						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 						<linkXref>true</linkXref>
@@ -321,7 +321,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.3</version>
+					<version>3.5</version>
 					<configuration>
 						<aggregate>true</aggregate>
 						<linkXref>true</linkXref>
@@ -336,7 +336,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.0.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -376,7 +376,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.9.1</version> <!-- NOTE 2.10 and 2.10.1 both have bugs; test with "mvn javadoc:test-javadoc") -->
+						<version>2.10.3</version>
 						<configuration>
 							<charset>${project.build.sourceEncoding}</charset>
 							<encoding>${project.build.sourceEncoding}</encoding>
@@ -392,7 +392,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cobertura-maven-plugin</artifactId>
-						<version>2.6</version>
+						<version>2.7</version>
 					</plugin>
 
 					<!--<plugin>
@@ -410,7 +410,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>sonar-maven-plugin</artifactId>
-						<version>2.4</version>
+						<version>2.6</version>
 					</plugin>
 
 					<plugin>
@@ -438,7 +438,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.5</version>
+						<version>1.6</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
