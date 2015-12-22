@@ -7,8 +7,8 @@
 
 	<packaging>pom</packaging>
 
-	<name>JavaOSC - Aggregation</name>
-	<description>An OSC library implementation in Java - Aggregation</description>
+	<name>JavaOSC-Aggregation</name>
+	<description>An Open Sound Control library implementation in Java - Aggregation</description>
 
 	<scm>
 		<connection>scm:git:git://github.com/hoijui/JavaOSC</connection>
