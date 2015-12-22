@@ -10,9 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCTimeStamp;
-import com.illposed.osc.argument.handler.BlobArgumentHandler;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
