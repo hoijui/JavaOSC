@@ -12,6 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParserFactory;
+import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializerFactory;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
@@ -21,6 +22,7 @@ import java.net.SocketAddress;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -271,6 +273,72 @@ public class OSCPortTest {
 			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
 					+ " but has " + listener.getReceivedTimestamp());
 		}
+	}
+
+	/**
+	 * @param size the approximate size of the resulting, serialized OSC packet in bytes
+	 */
+	private void testReceivingBySize(final int size) throws Exception {
+
+		final String address = "/message/sized";
+		final int numIntegerArgs = (size - (((address.length() + 3 + 1) / 4) * 4)) / 5;
+		final List<Object> args = new ArrayList<Object>(numIntegerArgs);
+		final Random random = new Random();
+		for (int ai = 0; ai < numIntegerArgs; ai++) {
+			args.add(random.nextInt());
+		}
+		final OSCMessage message = new OSCMessage(address, args);
+		final SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(
+				new OSCPatternAddressMessageSelector(message.getAddress()),
+				listener);
+		receiver.startListening();
+		sender.send(message);
+		Thread.sleep(100); // wait a bit
+		receiver.stopListening();
+		if (!listener.isMessageReceived()) {
+			Assert.fail("Message was not received");
+		}
+		if (message.getArguments().size() != listener.getMessage().getArguments().size()) {
+			Assert.fail("Message received #arguments differs from #arguments sent");
+		}
+		if (!message.getArguments().get(numIntegerArgs - 1).equals(
+				listener.getMessage().getArguments().get(numIntegerArgs - 1)))
+		{
+			Assert.fail("Message received last argument '"
+					+ message.getArguments().get(numIntegerArgs - 1)
+					+ "' differs from the sent one '"
+					+ listener.getMessage().getArguments().get(numIntegerArgs - 1)
+					+ "'");
+		}
+	}
+
+	@Test
+	public void testReceivingBig() throws Exception {
+
+		// Create a list of arguments of size 1500 bytes,
+		// so the resulting UDP packet size is sure to be bigger then the default maximum,
+		// which is 1500 bytes (including headers).
+		testReceivingBySize(1500);
+	}
+
+	@Test(expected=OSCSerializeException.class)
+	public void testReceivingHuge() throws Exception {
+
+		// Create a list of arguments of size 66000 bytes,
+		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
+		// which is 65k bytes (including headers).
+		testReceivingBySize(66000);
+	}
+
+	@Test(expected=OSCSerializeException.class)
+	public void testReceivingHugeConnectedOut() throws Exception {
+
+		// Create a list of arguments of size 66000 bytes,
+		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
+		// which is 65k bytes (including headers).
+		sender.connect();
+		testReceivingBySize(66000);
 	}
 
 	private void testBundleReceiving(final boolean shouldReceive) throws Exception {
