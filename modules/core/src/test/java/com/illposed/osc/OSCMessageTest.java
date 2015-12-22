@@ -531,13 +531,13 @@ public class OSCMessageTest {
 
 	@Test
 	public void testEncodeArray() throws OSCParseException {
-		List<Float> floats = new ArrayList<Float>(2);
+		final List<Float> floats = new ArrayList<Float>(2);
 		floats.add(10.0f);
 		floats.add(100.0f);
 		final List<?> origArguments = Collections.singletonList(floats);
 		final OSCMessage message = new OSCMessage("/dummy", origArguments);
-		byte[] byteArray = convertMessageToByteArray(message);
-		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
+		final byte[] byteArray = convertMessageToByteArray(message);
+		final OSCParser converter = OSCParserFactory.createDefaultFactory().create();
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
