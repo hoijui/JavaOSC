@@ -541,19 +541,29 @@ public class OSCMessageTest {
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
-			Assert.fail("Send Array did not receive the correct address");
+			Assert.fail("We did not receive the correct address");
 		}
 		final List<?> arguments = packet.getArguments();
-		if (arguments.size() != 1) {
-			Assert.fail("Send Array should have 1 argument, not " + arguments.size());
+		if (arguments.size() != origArguments.size()) {
+			Assert.fail("We should have received " + origArguments + " arguments, not "
+					+ arguments.size());
 		}
-		if (!(arguments.get(0) instanceof List)) {
-			Assert.fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
+		final Object firstArgument = arguments.get(0);
+		if (!(firstArgument instanceof List)) {
+			Assert.fail("arguments.get(0) should be a List, not "
+					+ ((firstArgument == null)
+							? String.valueOf(firstArgument)
+							: firstArgument.getClass().toString()));
 		}
-		final List<Object> theArray = (List<Object>) arguments.get(0);
+		// We can safely suppress the warning, as we already made sure the cast will not fail.
+		@SuppressWarnings("unchecked") final List<Object> theArray = (List<Object>) firstArgument;
+		if (theArray.size() != floats.size()) {
+			Assert.fail("arguments.get(0) should be a List of size " + floats.size() + " not "
+					+ theArray.size());
+		}
 		for (int i = 0; i < floats.size(); ++i) {
 			if (!floats.get(i).equals(theArray.get(i))) {
-				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not "
+				Assert.fail("List element " + i + " should be " + floats.get(i) + " not "
 						+ theArray.get(i));
 			}
 		}
