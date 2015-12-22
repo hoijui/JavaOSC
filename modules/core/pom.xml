@@ -35,6 +35,10 @@
 							<packageName>${project.packageName}</packageName>
 							<mainClass>${project.mainClass}</mainClass>
 						</manifest>
+						<manifestEntries>
+							<!-- prevent the local user-name from entering the JAR manifest -->
+							<Built-By></Built-By>
+						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
