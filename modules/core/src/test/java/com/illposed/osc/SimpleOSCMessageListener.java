@@ -12,8 +12,14 @@ import com.illposed.osc.argument.OSCTimeStamp;
 
 public class SimpleOSCMessageListener implements OSCMessageListener {
 
-	private boolean messageReceived = false;
-	private OSCTimeStamp receivedTimestamp = null;
+	private boolean messageReceived;
+	private OSCTimeStamp receivedTimestamp;
+
+	public SimpleOSCMessageListener() {
+
+		this.messageReceived = false;
+		this.receivedTimestamp = null;
+	}
 
 	public OSCTimeStamp getReceivedTimestamp() {
 		return receivedTimestamp;
