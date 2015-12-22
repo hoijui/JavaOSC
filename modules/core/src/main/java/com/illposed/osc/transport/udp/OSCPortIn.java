@@ -53,7 +53,6 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private boolean listening;
 	private final OSCParser converter;
 	private final OSCPacketDispatcher dispatcher;
-	private Thread listeningThread;
 
 	/**
 	 * Create an OSCPort that listens using a specified socket,
@@ -70,7 +69,6 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		//   because this is how it worked in this library until Feb. 2015.,
 		//   and thus users of this library expect this behavour by default.
 		this.dispatcher.setAlwaysDispatchingImmediatly(true);
-		this.listeningThread = null;
 	}
 
 	/**
@@ -140,7 +138,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		if (!isListening()) { // NOTE This is not thread-save
 			listening = true;
-			listeningThread = new Thread(this);
+			final Thread listeningThread = new Thread(this);
 			// The JVM exits when the only threads running are all daemon threads.
 			listeningThread.setDaemon(true);
 			listeningThread.start();
@@ -153,10 +151,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void stopListening() {
 
 		listening = false;
-		if (listeningThread != null) { // NOTE This is not thread-save
-			listeningThread.interrupt();
-		}
-		listeningThread = null;
+		getSocket().close();
 	}
 
 	/**
