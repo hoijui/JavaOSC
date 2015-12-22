@@ -14,11 +14,13 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 
 	private boolean messageReceived;
 	private OSCTimeStamp receivedTimestamp;
+	private OSCMessage message;
 
 	public SimpleOSCMessageListener() {
 
 		this.messageReceived = false;
 		this.receivedTimestamp = null;
+		this.message = null;
 	}
 
 	public OSCTimeStamp getReceivedTimestamp() {
@@ -29,9 +31,14 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 		return messageReceived;
 	}
 
+	public OSCMessage getMessage() {
+		return message;
+	}
+
 	@Override
 	public void acceptMessage(final OSCTimeStamp time, final OSCMessage message) {
 		messageReceived = true;
 		receivedTimestamp = time;
+		this.message = message;
 	}
 }
