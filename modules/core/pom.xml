@@ -19,8 +19,8 @@
 
 	<packaging>bundle</packaging>
 
-	<name>JavaOSC - Core</name>
-	<description>An OSC library implementation in Java - Core</description>
+	<name>JavaOSC</name>
+	<description>An Open Sound Control library implementation in Java</description>
 
 	<build>
 		<defaultGoal>package</defaultGoal>

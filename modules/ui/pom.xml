@@ -19,8 +19,8 @@
 
 	<packaging>jar</packaging>
 
-	<name>JavaOSC - UI</name>
-	<description>An OSC library implementation in Java - UI</description>
+	<name>JavaOSC-UI</name>
+	<description>An Open Sound Control library implementation in Java - UI</description>
 
 	<build>
 		<defaultGoal>package</defaultGoal>

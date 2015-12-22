@@ -25,8 +25,8 @@
 		<name>Illposed</name>
 		<url>http://illposed.com</url>
 	</organization>
-	<name>JavaOSC - Parent</name>
-	<description>An OSC library implementation in Java - Parent</description>
+	<name>JavaOSC-Parent</name>
+	<description>An Open Sound Control library implementation in Java - Parent</description>
 	<url>http://sourceforge.net/projects/javaosc/</url>
 	<prerequisites>
 		<maven>2.2.1</maven>
