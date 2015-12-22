@@ -354,11 +354,11 @@ public class OSCSerializer {
 	 *   See {@link #getClassToTypeMapping()} for a complete list of which classes may be used here.
 	 * @throws OSCSerializeException if the argument object failed to serialize
 	 */
-	@SuppressWarnings("unchecked")
 	private void write(final Object anObject) throws OSCSerializeException {
 
 		if (anObject instanceof Collection) {
-			@SuppressWarnings("unchecked") final Collection<Object> theArray = (Collection<Object>) anObject;
+			// We can safely suppress the warning, as we already made sure the cast will not fail.
+			@SuppressWarnings("unchecked") final Collection<?> theArray = (Collection<?>) anObject;
 			for (final Object entry : theArray) {
 				write(entry);
 			}
