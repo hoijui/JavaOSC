@@ -32,6 +32,13 @@ import java.util.Set;
  */
 public class OSCSerializer {
 
+	/**
+	 * If a supplied arguments class implements more then one supported argument types,
+	 * there is no solid way to figure out as which one we should interpret and serialize it,
+	 * so we will fail fast.
+	 */
+	private static final int MAX_IMPLEMENTED_ARGUMENT_TYPES = 1;
+
 	private final ByteBuffer output;
 	/**
 	 * Cache for Java classes of which we know, that we have no argument handler
@@ -301,7 +308,7 @@ public class OSCSerializer {
 			if (matchingSuperTypes.isEmpty()) {
 				unsupportedTypes.add(argumentClass);
 			} else {
-				if (matchingSuperTypes.size() > 1) {
+				if (matchingSuperTypes.size() > MAX_IMPLEMENTED_ARGUMENT_TYPES) {
 					System.out.println("WARNING: Java class "
 							+ argumentClass.getCanonicalName()
 							+ " is a sub-class of multiple supported argument types:");
