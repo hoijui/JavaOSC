@@ -12,6 +12,7 @@ import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,19 +37,41 @@ public class OSCPacketDispatcher {
 	private boolean alwaysDispatchingImmediatly;
 	private final ScheduledExecutorService dispatchScheduler;
 
+	private static class NullOSCSerializer extends OSCSerializer {
+
+		public NullOSCSerializer() {
+			super(Collections.EMPTY_LIST, Collections.EMPTY_MAP, null);
+		}
+
+		@Override
+		public void writeOnlyTypeTags(final List<?> arguments) throws OSCSerializeException {
+			throw new IllegalStateException(
+					"You need to either dispatch only packets containing meta-info, "
+					+ "or supply a serialization factory to the dispatcher");
+		}
+	}
+
+	private static class NullOSCSerializerFactory extends OSCSerializerFactory {
+		@Override
+		public OSCSerializer create(final ByteBuffer output) {
+			return new NullOSCSerializer();
+		}
+	}
+
 	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
 
+		final OSCSerializerFactory nonNullSerializerFactory;
 		if (serializerFactory == null) {
-			this.argumentTypesBuffer = null;
-			this.serializer = null;
-			this.typeTagsCharset = null;
+			this.argumentTypesBuffer = ByteBuffer.allocate(0);
+			nonNullSerializerFactory = new NullOSCSerializerFactory();
 		} else {
 			this.argumentTypesBuffer = ByteBuffer.allocate(64);
-			this.serializer = serializerFactory.create(argumentTypesBuffer);
-			final Map<String, Object> serializationProperties = serializerFactory.getProperties();
-			final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
-			this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
+			nonNullSerializerFactory = serializerFactory;
 		}
+		this.serializer = nonNullSerializerFactory.create(argumentTypesBuffer);
+		final Map<String, Object> serializationProperties = nonNullSerializerFactory.getProperties();
+		final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
+		this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
 		this.selectorToListener = new HashMap<MessageSelector, OSCMessageListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
@@ -151,22 +174,16 @@ public class OSCPacketDispatcher {
 
 	private CharSequence generateTypeTagsString(final List<?> arguments) {
 
-		final CharSequence typeTagsStr;
-		if (serializer == null) {
-			throw new IllegalStateException(
-					"You need to either dispatch only packets containing meta-info, "
-							+ "or supply a serialization factory to the dispatcher");
-		} else {
-			try {
-				serializer.writeOnlyTypeTags(arguments);
-			} catch (final OSCSerializeException ex) {
-				throw new IllegalArgumentException(
-						"Failed generating Arguments Type Tag string while dispatching", ex);
-			}
-			argumentTypesBuffer.flip();
-			typeTagsStr
-					= new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
+		try {
+			serializer.writeOnlyTypeTags(arguments);
+		} catch (final OSCSerializeException ex) {
+			throw new IllegalArgumentException(
+					"Failed generating Arguments Type Tag string while dispatching",
+					ex);
 		}
+		argumentTypesBuffer.flip();
+		final CharSequence typeTagsStr
+				= new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
 
 		return typeTagsStr;
 	}
