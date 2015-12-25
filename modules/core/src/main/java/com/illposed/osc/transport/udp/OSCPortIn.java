@@ -51,6 +51,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/** state for listening */
 	private boolean listening;
+	private boolean daemonListener;
+	private Thread listeningThread;
 	private final OSCParserFactory parserFactory;
 	private final OSCPacketDispatcher dispatcher;
 
@@ -71,6 +73,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		super(local, remote);
 
 		this.listening = false;
+		this.daemonListener = true;
 		this.parserFactory = parserFactory;
 		this.dispatcher = new OSCPacketDispatcher();
 		// NOTE We do this, even though it is against the OSC (1.0) specification,
@@ -158,9 +161,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		if (!isListening()) { // NOTE This is not thread-save
 			listening = true;
-			final Thread listeningThread = new Thread(this);
+			listeningThread = new Thread(this);
 			// The JVM exits when the only threads running are all daemon threads.
-			listeningThread.setDaemon(true);
+			listeningThread.setDaemon(daemonListener);
 			listeningThread.start();
 		}
 	}
@@ -187,6 +190,31 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public boolean isListening() {
 		return listening;
+	}
+
+	/**
+	 * Is this port listening for packets in daemon mode?
+	 * @see #setDaemonListener
+	 * @return <code>true</code> if this ports listening thread is/would be in daemon mode
+	 */
+	public boolean isDaemonListener() {
+		return daemonListener;
+	}
+
+	/**
+	 * Set whether this port should be listening for packets in daemon mode.
+	 * The Java Virtual Machine exits when the only threads running are all daemon threads.
+	 * This is <code>true</code> by default.
+	 * Probably the only feasible reason to set this to <code>false</code>,
+	 * is if the code in the listener is very small,
+	 * and the application consists of nothing more then this listening thread.
+	 * @see java.lang.Thread#setDaemon(boolean)
+	 * @param daemonListener whether this ports listening thread should be in daemon mode
+	 */
+	public void setDaemonListener(final boolean daemonListener) {
+
+		listeningThread.setDaemon(daemonListener);
+		this.daemonListener = daemonListener;
 	}
 
 	@Override
