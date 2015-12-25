@@ -21,12 +21,12 @@ import java.util.Map;
 /**
  * Factory class to create serializers.
  */
-public final class OSCSerializerFactory {
+public class OSCSerializerFactory {
 
 	private final Map<String, Object> properties;
 	private final List<ArgumentHandler> argumentHandlers;
 
-	private OSCSerializerFactory() {
+	protected OSCSerializerFactory() {
 
 		this.properties = new HashMap<String, Object>();
 		this.argumentHandlers = new LinkedList<ArgumentHandler>();
