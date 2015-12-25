@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * A global hub, providing general information about this library.
@@ -37,10 +35,10 @@ public final class LibraryInfo {
 	/** 1 key + 1 value = 2 parts of a key-value pair */
 	private static final int KEY_PLUS_VALUE_COUNT = 2;
 	private static final Set<Package> UNINTERESTING_PKGS;
-	private static Properties manifestProperties;
-	private static final Lock MANIFEST_PROPERTIES_INIT = new ReentrantLock();
+	private final Properties manifestProperties;
 
 	static {
+
 		final Set<Package> tmpUninterestingPkgs = new HashSet<Package>();
 		tmpUninterestingPkgs.add(Package.getPackage("java.lang"));
 		tmpUninterestingPkgs.add(Package.getPackage("java.util"));
@@ -51,8 +49,9 @@ public final class LibraryInfo {
 		UNINTERESTING_PKGS = Collections.unmodifiableSet(tmpUninterestingPkgs);
 	}
 
-	private LibraryInfo() {
-		// utility class
+	public LibraryInfo() throws IOException {
+
+		this.manifestProperties = readJarManifest();
 	}
 
 	private static Properties parseManifestFile(final InputStream manifestIn) throws IOException {
@@ -127,54 +126,38 @@ public final class LibraryInfo {
 	}
 
 	/**
-	 * Reads this application JARs {@link #MANIFEST_FILE} properties file.
+	 * Returns this application JARs {@link #MANIFEST_FILE} properties.
 	 * @return the contents of the manifest file as {@code String} to {@code String} mapping
 	 */
-	public static Properties getManifestProperties() {
-
-		if (manifestProperties == null) {
-			try {
-				MANIFEST_PROPERTIES_INIT.lockInterruptibly();
-				if (manifestProperties == null) {
-					manifestProperties = readJarManifest();
-				}
-			} catch (final IOException ex) {
-				throw new IllegalStateException(ex);
-			} catch (final InterruptedException ex) {
-				throw new IllegalStateException(ex);
-			} finally {
-				MANIFEST_PROPERTIES_INIT.unlock();
-			}
-		}
-
+	public Properties getManifestProperties() {
 		return manifestProperties;
 	}
 
-	public static String getVersion() {
+	public String getVersion() {
 		return getManifestProperties().getProperty("Bundle-Version", UNKNOWN_VALUE);
 	}
 
-	public static String getOscSpecificationVersion() {
+	public String getOscSpecificationVersion() {
 		return getManifestProperties().getProperty("Supported-OSC-Version", UNKNOWN_VALUE);
 	}
 
-	public static String getLicense() {
+	public String getLicense() {
 		return getManifestProperties().getProperty("Bundle-License", UNKNOWN_VALUE);
 	}
 
-	public static boolean isArrayEncodingSupported() {
+	public boolean isArrayEncodingSupported() {
 		return true;
 	}
 
-	public static boolean isArrayDecodingSupported() {
+	public boolean isArrayDecodingSupported() {
 		return true;
 	}
 
-	public static List<ArgumentHandler> getEncodingArgumentHandlers() {
+	public List<ArgumentHandler> getEncodingArgumentHandlers() {
 		return OSCSerializerFactory.createDefaultFactory().getArgumentHandlers();
 	}
 
-	public static Map<Character, ArgumentHandler> getDecodingArgumentHandlers() {
+	public Map<Character, ArgumentHandler> getDecodingArgumentHandlers() {
 		return OSCParserFactory.createDefaultFactory().getIdentifierToTypeMapping();
 	}
 
@@ -209,7 +192,7 @@ public final class LibraryInfo {
 		return classOrMarkerValue;
 	}
 
-	public static String createManifestPropertiesString() {
+	public String createManifestPropertiesString() {
 
 		final StringBuilder info = new StringBuilder(1024);
 
@@ -226,7 +209,7 @@ public final class LibraryInfo {
 		return info.toString();
 	}
 
-	public static String createLibrarySummary() {
+	public String createLibrarySummary() {
 
 		final StringBuilder summary = new StringBuilder(1024);
 
@@ -276,9 +259,10 @@ public final class LibraryInfo {
 		return summary.toString();
 	}
 
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws IOException {
 
-		System.out.println(createLibrarySummary());
-//		System.out.println(createManifestPropertiesString());
+		final LibraryInfo libraryInfo = new LibraryInfo();
+		System.out.println(libraryInfo.createLibrarySummary());
+//		System.out.println(libraryInfo.createManifestPropertiesString());
 	}
 }
