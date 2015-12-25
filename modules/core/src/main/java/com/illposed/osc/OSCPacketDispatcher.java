@@ -69,9 +69,13 @@ public class OSCPacketDispatcher {
 			nonNullSerializerFactory = serializerFactory;
 		}
 		this.serializer = nonNullSerializerFactory.create(argumentTypesBuffer);
-		final Map<String, Object> serializationProperties = nonNullSerializerFactory.getProperties();
-		final Charset propertiesCharset = (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
-		this.typeTagsCharset = (propertiesCharset == null) ? Charset.defaultCharset() : propertiesCharset;
+		final Map<String, Object> serializationProperties
+				= nonNullSerializerFactory.getProperties();
+		final Charset propertiesCharset
+				= (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
+		this.typeTagsCharset = (propertiesCharset == null)
+				? Charset.defaultCharset()
+				: propertiesCharset;
 		this.selectorToListener = new HashMap<MessageSelector, OSCMessageListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
@@ -113,8 +117,10 @@ public class OSCPacketDispatcher {
 	 * @param messageSelector selects which messages will be forwarded to the listener
 	 * @param listener receives messages accepted by the selector
 	 */
-	public void addListener(final MessageSelector messageSelector, final OSCMessageListener listener) {
-
+	public void addListener(
+			final MessageSelector messageSelector,
+			final OSCMessageListener listener)
+	{
 		selectorToListener.put(messageSelector, listener);
 		if (messageSelector.isInfoRequired()) {
 			metaInfoRequired = true;
@@ -160,7 +166,10 @@ public class OSCPacketDispatcher {
 			//   default system clock, and thus might not be enough in some use-cases.
 			//   It can never be more accurate then 1ms, and on many systems will be ~ 10ms.
 			final long delayMs = calculateDelayFromNow(timestamp);
-			dispatchScheduler.schedule(new BundleDispatcher(bundle), delayMs, TimeUnit.MILLISECONDS);
+			dispatchScheduler.schedule(
+					new BundleDispatcher(bundle),
+					delayMs,
+					TimeUnit.MILLISECONDS);
 		}
 	}
 
@@ -202,7 +211,9 @@ public class OSCPacketDispatcher {
 
 		ensureMetaInfo(message);
 
-		for (final Entry<MessageSelector, OSCMessageListener> addrList : selectorToListener.entrySet()) {
+		for (final Entry<MessageSelector, OSCMessageListener> addrList
+				: selectorToListener.entrySet())
+		{
 			if (addrList.getKey().matches(message)) {
 				addrList.getValue().acceptMessage(time, message);
 			}
