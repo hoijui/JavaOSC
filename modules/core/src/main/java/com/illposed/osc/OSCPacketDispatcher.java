@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,6 +38,16 @@ public class OSCPacketDispatcher {
 	 */
 	private boolean alwaysDispatchingImmediatly;
 	private final ScheduledExecutorService dispatchScheduler;
+
+	public static class DaemonThreadFactory implements ThreadFactory {
+		@Override
+		public Thread newThread(final Runnable runnable) {
+
+			final Thread thread = new Thread(runnable);
+			thread.setDaemon(true);
+			return thread;
+		}
+	}
 
 	private static class NullOSCSerializer extends OSCSerializer {
 
@@ -94,7 +105,7 @@ public class OSCPacketDispatcher {
 	}
 
 	public static ScheduledExecutorService createDefaultDispatchScheduler() {
-		return Executors.newScheduledThreadPool(DEFAULT_CORE_THREADS);
+		return Executors.newScheduledThreadPool(DEFAULT_CORE_THREADS, new DaemonThreadFactory());
 	}
 
 	/**
