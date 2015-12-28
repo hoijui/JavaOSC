@@ -58,8 +58,10 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
-
+	public OSCPacketDispatcher(
+			final OSCSerializerFactory serializerFactory,
+			final ScheduledExecutorService dispatchScheduler)
+	{
 		final OSCSerializerFactory nonNullSerializerFactory;
 		if (serializerFactory == null) {
 			this.argumentTypesBuffer = ByteBuffer.allocate(0);
@@ -79,11 +81,19 @@ public class OSCPacketDispatcher {
 		this.selectorToListener = new HashMap<MessageSelector, OSCMessageListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
-		this.dispatchScheduler = Executors.newScheduledThreadPool(3);
+		this.dispatchScheduler = dispatchScheduler;
+	}
+
+	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
+		this(serializerFactory, createDefaultDispatchScheduler());
 	}
 
 	public OSCPacketDispatcher() {
 		this(null);
+	}
+
+	public static ScheduledExecutorService createDefaultDispatchScheduler() {
+		return Executors.newScheduledThreadPool(3);
 	}
 
 	/**
