@@ -103,11 +103,29 @@ public class OSCPortTest {
 	@After
 	public void tearDown() throws Exception {
 
-		receiver.disconnect();
-		sender.disconnect();
+		try {
+			if (receiver.isConnected()) { // HACK This should not be required, as DatagramChannel#disconnect() is supposed to have no effect if a it is not connected, but in certain tests, removing this if clause makes the disconnect cal hang forever; coudl even be a JVM bug -> we should report that (requires a minimal example first, though)
+				receiver.disconnect();
+			}
+		} catch (final IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			sender.disconnect();
+		} catch (final IOException ex) {
+			ex.printStackTrace();
+		}
 
-		receiver.close();
-		sender.close();
+		try {
+			receiver.close();
+		} catch (final IOException ex) {
+			ex.printStackTrace();
+		}
+		try {
+			sender.close();
+		} catch (final IOException ex) {
+			ex.printStackTrace();
+		}
 
 		// wait a bit after closing the receiver,
 		// because (some) operating systems need some time
