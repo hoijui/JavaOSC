@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OSCPacketDispatcher {
 
+	private static final int DEFAULT_CORE_THREADS = 3;
 	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
@@ -93,7 +94,7 @@ public class OSCPacketDispatcher {
 	}
 
 	public static ScheduledExecutorService createDefaultDispatchScheduler() {
-		return Executors.newScheduledThreadPool(3);
+		return Executors.newScheduledThreadPool(DEFAULT_CORE_THREADS);
 	}
 
 	/**
