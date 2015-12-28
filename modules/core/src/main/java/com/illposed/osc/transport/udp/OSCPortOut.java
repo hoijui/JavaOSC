@@ -13,12 +13,11 @@ import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerFactory;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
 /**
  * Sends OSC packets to a specific UDP/IP address and port.
@@ -42,87 +41,114 @@ import java.nio.ByteBuffer;
  */
 public class OSCPortOut extends OSCPort {
 
-	private final InetAddress address;
 	private final ByteBuffer outputBuffer;
 	private final OSCSerializer converter;
 
 	/**
-	 * Create an OSCPort that sends to address:port using a specified socket
-	 * and a specified serializer.
-	 * @param serializerFactory the UDP address to send to
-	 * @param address the UDP address to send to
-	 * @param port the UDP port to send to
-	 * @param socket the DatagramSocket to send from
+	 * Creates an OSC-Port that sends to {@code remote} from the specified local socket,
+	 * using a serializer created from the given factory for converting the packets.
+	 * @param serializerFactory used to create a single serializer that is used to convert
+	 *   all packets to be sent from this port from Java to their OSC byte array representation
+	 * @param remote where we will send the OSC byte array data to
+	 * @param local the local address we use to connect to the remote
+	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortOut(
 			final OSCSerializerFactory serializerFactory,
-			final InetAddress address,
-			final int port,
-			final DatagramSocket socket)
+			final SocketAddress remote,
+			final SocketAddress local)
+			throws IOException
 	{
-		super(socket, port);
-		this.address = address;
+		super(local, remote);
+
 		this.outputBuffer = ByteBuffer.allocate(OSCPortIn.BUFFER_SIZE);
 		this.converter = serializerFactory.create(outputBuffer);
 	}
 
-	/**
-	 * Create an OSCPort that sends to address:port using a specified socket.
-	 * @param address the UDP address to send to
-	 * @param port the UDP port to send to
-	 * @param socket the DatagramSocket to send from
-	 */
-	public OSCPortOut(final InetAddress address, final int port, final DatagramSocket socket) {
-		this(OSCSerializerFactory.createDefaultFactory(), address, port, socket);
+	public OSCPortOut(
+			final OSCSerializerFactory serializerFactory,
+			final SocketAddress remote)
+			throws IOException
+	{
+		this(serializerFactory, remote, new InetSocketAddress(0));
+	}
+
+	public OSCPortOut(final SocketAddress remote) throws IOException {
+		this(OSCSerializerFactory.createDefaultFactory(), remote);
 	}
 
 	/**
-	 * Create an OSCPort that sends to address:port.
-	 * @param address the UDP address to send to
-	 * @param port the UDP port to send to
-	 * @throws SocketException when failing to create a (UDP) out socket
+	 * Creates an OSC-Port that sends to {@code remote}:{@code port}.
+	 * @param remote the address to send to
+	 * @param port the port number to send to
+	 * @throws IOException if we fail to bind a channel to the local address
 	 */
-	public OSCPortOut(final InetAddress address, final int port) throws SocketException {
-		this(address, port, new DatagramSocket());
+	public OSCPortOut(final InetAddress remote, final int port) throws IOException {
+		this(new InetSocketAddress(remote, port));
 	}
 
 	/**
-	 * Create an OSCPort that sends to address,
-	 * using the standard SuperCollider port.
-	 * @param address the UDP address to send to
-	 * @throws SocketException when failing to create a (UDP) out socket
+	 * Creates an OSC-Port that sends to {@code remote}:{@link #DEFAULT_SC_OSC_PORT}.
+	 * @param remote the address to send to
+	 * @throws IOException if we fail to bind a channel to the local address
 	 */
-	public OSCPortOut(final InetAddress address) throws SocketException {
-		this(address, DEFAULT_SC_OSC_PORT);
+	public OSCPortOut(final InetAddress remote) throws IOException {
+		this(remote, DEFAULT_SC_OSC_PORT);
 	}
 
 	/**
-	 * Create an OSCPort that sends to "localhost",
-	 * on the standard SuperCollider port.
-	 * @throws UnknownHostException if the local host name could not be resolved into an address
-	 * @throws SocketException when failing to create a (UDP) out socket
+	 * Creates an OSC-Port that sends to "localhost":{@link #DEFAULT_SC_OSC_PORT}.
+	 * @throws IOException if we fail to bind a channel to the local address,
+	 *   or if the local host name could not be resolved into an address
 	 */
-	public OSCPortOut() throws UnknownHostException, SocketException {
-		this(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT);
+	public OSCPortOut() throws IOException {
+		this(new InetSocketAddress(InetAddress.getLocalHost(), DEFAULT_SC_OSC_PORT));
 	}
 
 	/**
-	 * Send an OSC packet (message or bundle) to the receiver we are bound to.
-	 * @param aPacket the bundle or message to send
-	 * @throws IOException if a (UDP) socket I/O error occurs
+	 * Converts an OSC packet (message or bundle) to its OSC byte array representation.
+	 * @param packet the bundle or message to be converted
+	 * @return the OSC byte array representation of {@code packet}
+	 * @throws IOException if we run out of memory for the conversion buffer
 	 * @throws OSCSerializeException if the packet fails to serialize
 	 */
-	public void send(final OSCPacket aPacket) throws IOException, OSCSerializeException {
+	public ByteBuffer convert(final OSCPacket packet) throws IOException, OSCSerializeException {
 
 		outputBuffer.rewind();
-		converter.write(aPacket);
+		converter.write(packet);
 		outputBuffer.flip();
 		final ByteBuffer oscPacket = outputBuffer;
-		final byte[] oscPacketByteArray = OSCSerializer.toByteArray(oscPacket);
 
-		final DatagramPacket packet = new DatagramPacket(
-				oscPacketByteArray, oscPacketByteArray.length, address, getPort());
-		getSocket().send(packet);
+		return oscPacket;
+	}
+
+	/**
+	 * Sends an OSC packet (message or bundle) to the remote address.
+	 * This assumes that the given data was previously already converted using {@link #convert}.
+	 * @param oscPacket the bundle or message to sent, as OSC byte array
+	 * @throws IOException if a socket I/O error occurs
+	 */
+	public void send(final ByteBuffer oscPacket) throws IOException {
+
+		final DatagramChannel channel = getChannel();
+		if (channel.isConnected()) {
+			channel.write(oscPacket);
+		} else {
+			channel.send(oscPacket, getRemoteAddress());
+		}
+	}
+
+	/**
+	 * Converts and sends an OSC packet (message or bundle) to the remote address.
+	 * @param packet the bundle or message to be converted and sent
+	 * @throws IOException if we run out of memory while converting,
+	 *   or a socket I/O error occurs while sending
+	 * @throws OSCSerializeException if the packet fails to serialize
+	 */
+	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
+
+		final ByteBuffer oscPacket = convert(packet);
+		send(oscPacket);
 	}
 
 	@Override
@@ -134,9 +160,7 @@ public class OSCPortOut extends OSCPort {
 				.append('[')
 				.append(getClass().getSimpleName())
 				.append(": sending to \"")
-				.append(address.getHostName())
-				.append(':')
-				.append(getPort())
+				.append(getRemoteAddress().toString())
 				.append("\"]");
 
 		return rep.toString();

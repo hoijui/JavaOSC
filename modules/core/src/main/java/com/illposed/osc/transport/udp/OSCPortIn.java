@@ -14,10 +14,12 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCParserFactory;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
+import java.nio.channels.DatagramChannel;
 
 /**
  * Listens for OSC packets on a UDP/IP port.
@@ -55,13 +57,20 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCPacketDispatcher dispatcher;
 
 	/**
-	 * Create an OSCPort that listens using a specified socket,
-	 * using a parser for the specified factory.
+	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
+	 * using a parser created with the given factory.
 	 * @param parserFactory to create the internal parser from
-	 * @param socket DatagramSocket to listen on.
+	 * @param local address to listen on
+	 * @param remote address to listen to
+	 * @throws IOException if we fail to bind a channel to the local address
 	 */
-	public OSCPortIn(final OSCParserFactory parserFactory, final DatagramSocket socket) {
-		super(socket, socket.getLocalPort());
+	public OSCPortIn(
+			final OSCParserFactory parserFactory,
+			final SocketAddress local,
+			final SocketAddress remote)
+			throws IOException
+	{
+		super(local, remote);
 
 		this.converter = parserFactory.create();
 		this.dispatcher = new OSCPacketDispatcher();
@@ -71,23 +80,40 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this.dispatcher.setAlwaysDispatchingImmediatly(true);
 	}
 
-	/**
-	 * Create an OSCPort that listens using a specified socket.
-	 * @param socket DatagramSocket to listen on.
-	 */
-	public OSCPortIn(final DatagramSocket socket) {
-		this(OSCParserFactory.createDefaultFactory(), socket);
+	public OSCPortIn(final OSCParserFactory parserFactory, final SocketAddress local)
+			throws IOException
+	{
+		this(parserFactory, local, new InetSocketAddress(0));
 	}
 
 	/**
-	 * Create an OSCPort that listens on the specified port.
-	 * Strings will be decoded using the systems default character set.
-	 * @param port UDP port to listen on.
-	 * @throws SocketException if the port number is invalid,
-	 *   or there is already a socket listening on it
+	 * Creates an OSC-Port that listens on the given local socket.
+	 * @param local address to listen on
+	 * @throws IOException if we fail to bind a channel to the local address
 	 */
-	public OSCPortIn(final int port) throws SocketException {
-		this(new DatagramSocket(port));
+	public OSCPortIn(final SocketAddress local) throws IOException {
+		this(OSCParserFactory.createDefaultFactory(), local);
+	}
+
+	public OSCPortIn(final OSCParserFactory parserFactory, final int port) throws IOException {
+		this(parserFactory, new InetSocketAddress(port));
+	}
+
+	/**
+	 * Creates an OSC-Port that listens on the specified local port.
+	 * @param port port number to listen on
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortIn(final int port) throws IOException {
+		this(new InetSocketAddress(port));
+	}
+
+	/**
+	 * Creates an OSC-Port that listens on local port {@link #DEFAULT_SC_OSC_PORT}..
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortIn() throws IOException {
+		this(defaultSCOSCPort());
 	}
 
 	/**
@@ -97,26 +123,51 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	@Override
 	public void run() {
-		final byte[] buffer = new byte[BUFFER_SIZE];
-		final DatagramPacket packet = new DatagramPacket(buffer, BUFFER_SIZE);
-		final DatagramSocket socket = getSocket();
+
+		ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+		final DatagramChannel channel = getChannel();
 		while (listening) {
 			try {
+				buffer.clear();
 				try {
-					socket.receive(packet);
-				} catch (final SocketException ex) {
+					if (channel.isConnected()) {
+						/*final int readBytes = */channel.read(buffer);
+					} else {
+						channel.receive(buffer);
+					}
+//					final int readBytes = buffer.position();
+				} catch (final ClosedChannelException ex) {
 					if (listening) {
 						throw ex;
 					} else {
-						// if we closed the socket while receiving data,
+						// if we closed the channel while receiving data,
 						// the exception is expected/normal, so we hide it
 						continue;
 					}
 				}
-				final ByteBuffer packetBytes
-						= ByteBuffer.wrap(buffer, 0, packet.getLength()).asReadOnlyBuffer();
-				final OSCPacket oscPacket = converter.convert(packetBytes);
-				dispatcher.dispatchPacket(oscPacket);
+				buffer.flip();
+				if (buffer.limit() == 0) {
+					if (isListening()) {
+						throw new OSCParseException("Received a packet without any data");
+					} else {
+						// normal exit: we just get a no-data package becasue we stopped listening
+						break;
+					}
+				} else {
+					// convert from OSC byte array -> Java object
+					// FIXME BAAAAAAAD!! - the overflow would happen on the receiving end, up there, not down here!
+					OSCPacket oscPacket = null;
+					do {
+						try {
+							oscPacket = converter.convert(buffer);
+						} catch (final BufferOverflowException ex) {
+							buffer = ByteBuffer.allocate(buffer.capacity() + BUFFER_SIZE);
+						}
+					} while (oscPacket == null);
+
+					// dispatch the Java object
+					dispatcher.dispatchPacket(oscPacket);
+				}
 			} catch (final IOException ex) {
 				stopListening(ex);
 			} catch (final OSCParseException ex) {
@@ -152,7 +203,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void stopListening() {
 
 		listening = false;
-		getSocket().close();
+		// NOTE This is not thread-save
+		if (getChannel().isBlocking()) {
+			try {
+				getChannel().close();
+			} catch (final IOException ex) {
+				ex.printStackTrace();
+			}
+		}
 	}
 
 	/**
@@ -175,9 +233,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		if (isListening()) {
 			rep
 					.append("listening on \"")
-					.append(getSocket().getLocalAddress().getHostName())
-					.append(':')
-					.append(getPort())
+					.append(getLocalAddress().toString())
 					.append('\"');
 		} else {
 			rep.append("stopped");
