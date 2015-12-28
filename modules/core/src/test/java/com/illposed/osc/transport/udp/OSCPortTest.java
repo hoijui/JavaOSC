@@ -11,6 +11,7 @@ package com.illposed.osc.transport.udp;
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPacket;
+import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializerFactory;
@@ -59,6 +60,7 @@ public class OSCPortTest {
 		}
 		receiver = new OSCPortIn(
 				OSCParserFactory.createDefaultFactory(),
+				new OSCPacketDispatcher(),
 				receiverInAddress,
 				senderInAddress);
 
