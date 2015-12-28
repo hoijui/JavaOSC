@@ -9,6 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
@@ -242,7 +243,11 @@ public class OSCSerializer {
 	public void write(final OSCPacket packet) throws OSCSerializeException {
 
 		output.rewind();
-		writePacket(packet);
+		try {
+			writePacket(packet);
+		} catch (final BufferOverflowException ex) {
+			throw new OSCSerializeException("Packet is too large for the buffer in use", ex);
+		}
 	}
 
 	/**
@@ -254,7 +259,11 @@ public class OSCSerializer {
 	public void writeOnlyTypeTags(final List<?> arguments) throws OSCSerializeException {
 
 		output.rewind();
-		writeTypeTagsRaw(arguments);
+		try {
+			writeTypeTagsRaw(arguments);
+		} catch (final BufferOverflowException ex) {
+			throw new OSCSerializeException("Type tags are too large for the buffer in use", ex);
+		}
 	}
 
 	private Set<ArgumentHandler> findSuperTypes(final Class argumentClass) {
