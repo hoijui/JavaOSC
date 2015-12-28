@@ -60,12 +60,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
 	 * using a parser created with the given factory.
 	 * @param parserFactory to create the internal parser from
+	 * @param dispatcher to dispatch received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(
 			final OSCParserFactory parserFactory,
+			final OSCPacketDispatcher dispatcher,
 			final SocketAddress local,
 			final SocketAddress remote)
 			throws IOException
@@ -75,17 +77,30 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this.listening = false;
 		this.daemonListener = true;
 		this.parserFactory = parserFactory;
-		this.dispatcher = new OSCPacketDispatcher();
-		// NOTE We do this, even though it is against the OSC (1.0) specification,
-		//   because this is how it worked in this library until Feb. 2015.,
-		//   and thus users of this library expect this behavour by default.
-		this.dispatcher.setAlwaysDispatchingImmediatly(true);
+		if (dispatcher == null) {
+			this.dispatcher = new OSCPacketDispatcher();
+			// HACK We do this, even though it is against the OSC (1.0) specification,
+			//   because this is how it worked in this library until Feb. 2015.,
+			//   and thus users of this library expect this behavour by default.
+			this.dispatcher.setAlwaysDispatchingImmediatly(true);
+		} else {
+			this.dispatcher = dispatcher;
+		}
+	}
+
+	public OSCPortIn(
+			final OSCParserFactory parserFactory,
+			final OSCPacketDispatcher dispatcher,
+			final SocketAddress local)
+			throws IOException
+	{
+		this(parserFactory, dispatcher, local, new InetSocketAddress(0));
 	}
 
 	public OSCPortIn(final OSCParserFactory parserFactory, final SocketAddress local)
 			throws IOException
 	{
-		this(parserFactory, local, new InetSocketAddress(0));
+		this(parserFactory, null, local);
 	}
 
 	/**
