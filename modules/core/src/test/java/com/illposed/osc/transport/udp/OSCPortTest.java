@@ -269,8 +269,25 @@ public class OSCPortTest {
 
 			readWriteReadData(senderChannel, sourceArray, receiverChannel, targetArray, sizeInBytes);
 		} finally {
-			senderChannel.close();
-			receiverChannel.close();
+			if (receiverChannel != null) {
+				try {
+					receiverChannel.close();
+				} catch (final IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+			if (senderChannel != null) {
+				try {
+					senderChannel.close();
+				} catch (final IOException ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			// wait a bit after closing the receiver,
+			// because (some) operating systems need some time
+			// to actually close the underlying socket
+			Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
 		}
 	}
 
