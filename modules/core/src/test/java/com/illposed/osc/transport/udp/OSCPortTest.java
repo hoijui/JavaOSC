@@ -267,7 +267,7 @@ public class OSCPortTest {
 
 			new Random().nextBytes(sourceArray);
 
-			readWriteReadData(senderChannel, sourceArray, receiverChannel, targetArray, sizeInBytes, null);
+			readWriteReadData(senderChannel, sourceArray, receiverChannel, targetArray, sizeInBytes);
 		} finally {
 			senderChannel.close();
 			receiverChannel.close();
@@ -279,8 +279,7 @@ public class OSCPortTest {
 			final byte[] sourceArray,
 			final DatagramChannel receiver,
 			byte[] targetArray,
-			final int dataSize,
-			final String methodName)
+			final int dataSize)
 			throws IOException
 	{
 		// write
