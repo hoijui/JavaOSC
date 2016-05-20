@@ -51,7 +51,7 @@ public class OSCPacketDispatcher {
 
 	private static class NullOSCSerializer extends OSCSerializer {
 
-		public NullOSCSerializer() {
+		NullOSCSerializer() {
 			super(Collections.EMPTY_LIST, Collections.EMPTY_MAP, null);
 		}
 

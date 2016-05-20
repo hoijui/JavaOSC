@@ -16,7 +16,7 @@ import com.illposed.osc.OSCMessage;
  */
 public class CombinedMessageSelector implements MessageSelector {
 
-	public static enum LogicOperator {
+	public enum LogicOperator {
 		AND {
 			@Override
 			public boolean matches(final boolean matches1, final boolean matches2) {
