@@ -190,6 +190,15 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	@Override
+	public void close() throws IOException {
+
+		if (isListening()) {
+			stopListening();
+		}
+		super.close();
+	}
+
+	@Override
 	public String toString() {
 
 		final StringBuilder rep = new StringBuilder(32);
