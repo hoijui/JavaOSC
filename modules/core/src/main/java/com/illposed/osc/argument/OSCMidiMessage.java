@@ -23,8 +23,8 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 	private final byte data1;
 	private final byte data2;
 
-	public OSCMidiMessage(final byte portId, final byte status, final byte data1, final byte data2)
-	{
+	public OSCMidiMessage(final byte portId, final byte status, final byte data1, final byte data2) {
+
 		this.portId = portId;
 		this.status = status;
 		this.data1 = data1;

@@ -405,8 +405,8 @@ public class OSCSerializer {
 	 * @param arguments array of base Objects
 	 * @throws OSCSerializeException if the arguments failed to serialize
 	 */
-	private void writeTypeTagsRaw(final List<?> arguments) throws OSCSerializeException
-	{
+	private void writeTypeTagsRaw(final List<?> arguments) throws OSCSerializeException {
+
 		for (final Object argument : arguments) {
 			if (argument instanceof List) {
 				final List<?> argumentsArray = (List<?>) argument;

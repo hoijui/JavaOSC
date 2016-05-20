@@ -62,8 +62,8 @@ public class ByteArrayBlobArgumentHandler implements ArgumentHandler<byte[]>, Cl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final byte[] value) throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final byte[] value) throws OSCSerializeException {
+
 		final ByteBuffer bufferValue = ByteBuffer.wrap(value).asReadOnlyBuffer();
 		BlobArgumentHandler.INSTANCE.serialize(output, bufferValue);
 	}

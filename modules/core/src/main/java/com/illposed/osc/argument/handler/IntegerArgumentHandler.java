@@ -65,8 +65,8 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Integer value) throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final Integer value) throws OSCSerializeException {
+
 		int curValue = value;
 		final byte[] intBytes = new byte[4];
 		intBytes[3] = (byte)curValue; curValue >>>= 8;
