@@ -418,7 +418,7 @@ public class OSCMessageTest {
 		singleType.add(0);
 		singleType.add(1);
 		singleType.add(2);
-		singleType.add(-1); // double entry; discarded becasue we have a Set
+		singleType.add(-1); // double entry; discarded because we have a Set
 		singleType.add(99);
 		final List<Integer> singleTypeList = new ArrayList<Integer>(singleType);
 		final List<Object> allTypes = new LinkedList<Object>();
