@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.junit.Assert;
@@ -365,7 +365,7 @@ public class OSCMessageTest {
 	@Test
 	public void testArgumentCollectionsMixed() {
 		final List<Object> args = new ArrayList<Object>(5);
-		final Collection<Integer> singleType = new HashSet<Integer>();
+		final Collection<Integer> singleType = new LinkedHashSet<Integer>();
 		singleType.add(-1);
 		singleType.add(0);
 		singleType.add(1);
