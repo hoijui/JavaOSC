@@ -164,8 +164,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	private void stopListening(final Exception exception) {
 
-		System.err.println("Error while listening on " + toString() + ": "
-				+ exception.getMessage());
+		System.err.println("Error while listening on " + toString() + "...");
+		exception.printStackTrace(System.err);
 		stopListening();
 	}
 
