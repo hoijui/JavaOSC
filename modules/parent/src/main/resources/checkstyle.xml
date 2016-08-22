@@ -203,9 +203,12 @@
 		<module name="ArrayTypeStyle"/>
 		<module name="FinalParameters"/>
 		<!-- Rather use the taglist-maven-plugin for this purpose -->
-		<!--
 		<module name="TodoComment">
 			<property name="format" value="FIXME"/>
+		</module>
+		<module name="TodoComment">
+			<property name="format" value="HACK"/>
+			<property name="severity" value="warning"/>
 		</module>
 		<module name="TodoComment">
 			<property name="format" value="TODO"/>
@@ -215,7 +218,6 @@
 			<property name="format" value="XXX"/>
 			<property name="severity" value="warning"/>
 		</module>
-		-->
 		<module name="UpperEll"/>
 
 	</module>
