@@ -9,6 +9,8 @@
 package com.illposed.osc;
 
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -82,5 +84,18 @@ public class OSCPacketDispatcherTest {
 		if (!listener2.isMessageReceived()) {
 			Assert.fail("Bundle didn't dispatch message to listener 2");
 		}
+	}
+
+	@Test
+	public void testDispatchManyArguments() {
+
+		final int numArguments = OSCPacketDispatcher.MAX_ARGUMENTS + 1;
+		final List<Object> arguments = new ArrayList<Object>(numArguments);
+		for (int ai = 0; ai < numArguments; ai++) {
+			arguments.add(ai);
+		}
+		OSCMessage message = new OSCMessage("/listener1", arguments);
+		dispatcher.dispatchPacket(message);
+		Assert.assertEquals(numArguments, listener1.getMessage().getArguments().size());
 	}
 }
