@@ -39,6 +39,14 @@ public class OSCSerializer {
 	 */
 	private static final int MAX_IMPLEMENTED_ARGUMENT_TYPES = 1;
 
+	/**
+	 * Intermediate/Mock/Placeholder value indicating the size of a packet.
+	 * It will be used internally, as long as we do not yet know
+	 * the size of the packet in bytes.
+	 * The actual value is arbitrary.
+	 */
+	private static final Integer PACKET_SIZE_PLACEHOLDER = -1;
+
 	private final ByteBuffer output;
 	/**
 	 * Cache for Java classes of which we know, that we have no argument handler
@@ -229,7 +237,7 @@ public class OSCSerializer {
 
 		final int sizePosition = output.position();
 		// write place-holder size (will be overwritten later)
-		write(Integer.valueOf(-1));
+		write(PACKET_SIZE_PLACEHOLDER);
 		writePacket(packet);
 		final int afterPacketPosition = output.position();
 		final int packetSize = afterPacketPosition - sizePosition - OSCParser.ALIGNMENT_BYTES;
