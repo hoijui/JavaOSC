@@ -87,9 +87,9 @@ public final class OSCUnsigned implements Cloneable, Serializable, Comparable<OS
 			throw new IllegalArgumentException("We need exactly 4 bytes");
 		}
 		final long value
-				= ((long) bytes[0] & 0xFF) << 24
-				| ((long) bytes[1] & 0xFF) << 16
-				| ((long) bytes[2] & 0xFF) << 8
+				= ((long) bytes[0] & 0xFF) << (3 * Byte.SIZE)
+				| ((long) bytes[1] & 0xFF) << (2 * Byte.SIZE)
+				| ((long) bytes[2] & 0xFF) << (1 * Byte.SIZE)
 				| ((long) bytes[3] & 0xFF);
 		return valueOf(value);
 	}
