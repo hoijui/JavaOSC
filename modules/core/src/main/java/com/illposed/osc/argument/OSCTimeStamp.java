@@ -68,6 +68,10 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 * Filter for the most significant bit in a 32bit value.
 	 */
 	private static final long FILTER_MSB_32 = 0x80000000L;
+	/**
+	 * Number of bits for storing the "seconds" value in NTP time.
+	 */
+	private static final int NTP_SECONDS_BITS = 32;
 
 	public static final Date OSC_RANGE_DATE_MIN
 			= new Date(MSB_1_BASE_TIME + (1000L * SECONDS_RANGE_UPPER_START));
@@ -95,7 +99,7 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 * @return high-order 32-bits of the ntpTime 64bits value
 	 */
 	public long getSeconds() {
-		return ntpTime >>> 32;
+		return ntpTime >>> NTP_SECONDS_BITS;
 	}
 
 	/**
@@ -239,7 +243,7 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 //			seconds |= FILTER_MSB_32; // set MSB if base 1 is used
 //		}
 
-		final long ntpTime = seconds << 32 | fraction;
+		final long ntpTime = seconds << NTP_SECONDS_BITS | fraction;
 
 		return ntpTime;
 	}
