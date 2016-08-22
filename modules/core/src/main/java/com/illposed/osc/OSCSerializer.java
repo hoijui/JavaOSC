@@ -152,12 +152,14 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Align a buffer by padding it with {@code (byte) '0'}s so it has a size divisible by 4.
+	 * Align a buffer by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by {@link OSCParser#ALIGNMENT_BYTES}.
 	 * @param output to be aligned
+	 * @see OSCParser#align
 	 */
 	public static void align(final ByteBuffer output) {
-		final int alignmentOverlap = output.position() % 4;
-		final int padLen = (4 - alignmentOverlap) % 4;
+		final int alignmentOverlap = output.position() % OSCParser.ALIGNMENT_BYTES;
+		final int padLen = (OSCParser.ALIGNMENT_BYTES - alignmentOverlap) % OSCParser.ALIGNMENT_BYTES;
 		for (int pci = 0; pci < padLen; pci++) {
 			output.put((byte) 0);
 		}
@@ -166,7 +168,7 @@ public class OSCSerializer {
 	/**
 	 * Terminates the previously written piece of data with a single {@code (byte) '0'},
 	 * and then aligns the stream by padding it with {@code (byte) '0'}s so it has a size
-	 * divisible by 4.
+	 * divisible by {@link OSCParser#ALIGNMENT_BYTES}.
 	 * We always need to terminate with a zero, especially when the stream is already aligned.
 	 * @param output to receive the data-piece termination and alignment
 	 */
@@ -229,7 +231,7 @@ public class OSCSerializer {
 		write(Integer.valueOf(-1)); // write place-holder size
 		writePacket(packet);
 		final int afterPacketPosition = output.position();
-		final int packetSize = afterPacketPosition - sizePosition - 4;
+		final int packetSize = afterPacketPosition - sizePosition - OSCParser.ALIGNMENT_BYTES;
 		output.position(sizePosition);
 		write(packetSize);
 		output.position(afterPacketPosition);

@@ -26,6 +26,10 @@ import java.util.Map;
  */
 public class OSCParser {
 
+	/**
+	 * Number of bytes the raw OSC data stream is aligned to.
+	 */
+	public static final int ALIGNMENT_BYTES = 4;
 	private static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
@@ -54,12 +58,14 @@ public class OSCParser {
 	}
 
 	/**
-	 * If not yet aligned, move the position to the next index dividable by 4.
+	 * If not yet aligned, move the position to the next index dividable by
+	 * {@link #ALIGNMENT_BYTES}.
 	 * @param input to be aligned
+	 * @see OSCSerializer#align
 	 */
 	public static void align(final ByteBuffer input) {
-		final int mod = input.position() % 4;
-		final int padding = (4 - mod) % 4;
+		final int mod = input.position() % ALIGNMENT_BYTES;
+		final int padding = (ALIGNMENT_BYTES - mod) % ALIGNMENT_BYTES;
 		input.position(input.position() + padding);
 	}
 
@@ -137,9 +143,10 @@ public class OSCParser {
 			final int packetLength = IntegerArgumentHandler.INSTANCE.parse(rawInput);
 			if (packetLength == 0) {
 				throw new IllegalArgumentException("Packet length may not be 0");
-			} else if ((packetLength % 4) != 0) {
-				throw new IllegalArgumentException("Packet length has to be a multiple of 4, is:"
-						+ packetLength);
+			} else if ((packetLength % ALIGNMENT_BYTES) != 0) {
+				throw new IllegalArgumentException(
+						"Packet length has to be a multiple of " + ALIGNMENT_BYTES
+								+ ", is:" + packetLength);
 			}
 			final ByteBuffer packetBytes = rawInput.slice();
 			packetBytes.limit(packetLength);
