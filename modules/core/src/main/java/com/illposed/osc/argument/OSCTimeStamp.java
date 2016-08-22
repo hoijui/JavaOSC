@@ -30,13 +30,13 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 * Used for all dates from those one up until "Tue Feb 26 10:42:23 CET 2104".
 	 * Dates after that can not be represented with an OSC time-stamp.
 	 */
-	private static final long MSB_0_BASE_TIME = 2085978496000L;
+	private static final long MSB0_BASE_TIME = 2085978496000L;
 	/**
 	 * Baseline NTP time if bit-0=1 is "1-Jan-1900 @ 01:00:00 UTC" as Java time-stamp.
-	 * It is used for all dates after this one up until the date of {@link #MSB_0_BASE_TIME}.
+	 * It is used for all dates after this one up until the date of {@link #MSB0_BASE_TIME}.
 	 * Dates before this one can not be represented with an OSC time-stamp.
 	 */
-	private static final long MSB_1_BASE_TIME = -2208988800000L;
+	private static final long MSB1_BASE_TIME = -2208988800000L;
 	/**
 	 * The OSC time-stamp with the semantics of "immediately".
 	 */
@@ -49,14 +49,14 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 * The Java representation of an OSC timestamp with the semantics of
 	 * "immediately".
 	 */
-	public static final Date IMMEDIATE_DATE = new Date(MSB_0_BASE_TIME);
+	public static final Date IMMEDIATE_DATE = new Date(MSB0_BASE_TIME);
 	/**
-	 * First value of the upper NTP range for seconds, used on top of {@link #MSB_1_BASE_TIME}.
+	 * First value of the upper NTP range for seconds, used on top of {@link #MSB1_BASE_TIME}.
 	 * This value equals {@link Integer#MIN_VALUE}, but is interpreted as an unsigned integer.
 	 */
 	private static final long SECONDS_RANGE_UPPER_START = 0x80000000L;
 	/**
-	 * Last value of the lower NTP range for seconds, used on top of {@link #MSB_0_BASE_TIME}.
+	 * Last value of the lower NTP range for seconds, used on top of {@link #MSB0_BASE_TIME}.
 	 * This value equals {@link Integer#MAX_VALUE}, but is interpreted as an unsigned integer.
 	 */
 	private static final long SECONDS_RANGE_LOWER_END = 0x7FFFFFFFL;
@@ -74,9 +74,9 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	private static final int NTP_SECONDS_BITS = 32;
 
 	public static final Date OSC_RANGE_DATE_MIN
-			= new Date(MSB_1_BASE_TIME + (1000L * SECONDS_RANGE_UPPER_START));
+			= new Date(MSB1_BASE_TIME + (1000L * SECONDS_RANGE_UPPER_START));
 	public static final Date OSC_RANGE_DATE_MAX
-			= new Date(MSB_0_BASE_TIME + (1000L * SECONDS_RANGE_LOWER_END));
+			= new Date(MSB0_BASE_TIME + (1000L * SECONDS_RANGE_LOWER_END));
 
 	private static final long serialVersionUID = 1L;
 
@@ -174,9 +174,9 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 
 		final long baseTime;
 		if (isUsingBase1()) {
-			baseTime = MSB_1_BASE_TIME;
+			baseTime = MSB1_BASE_TIME;
 		} else {
-			baseTime = MSB_0_BASE_TIME;
+			baseTime = MSB0_BASE_TIME;
 		}
 		return baseTime;
 	}
@@ -224,12 +224,12 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 					+ toExtensiveString(OSC_RANGE_DATE_MIN) + " - "
 					+ toExtensiveString(OSC_RANGE_DATE_MAX));
 		}
-		final boolean useBase1 = javaTime < MSB_0_BASE_TIME;
+		final boolean useBase1 = javaTime < MSB0_BASE_TIME;
 		final long baseTime;
 		if (useBase1) {
-			baseTime = MSB_1_BASE_TIME;
+			baseTime = MSB1_BASE_TIME;
 		} else {
-			baseTime = MSB_0_BASE_TIME;
+			baseTime = MSB0_BASE_TIME;
 		}
 		final long baseTimeAddition = javaTime - baseTime;
 
