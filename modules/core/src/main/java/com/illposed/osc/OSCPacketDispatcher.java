@@ -27,6 +27,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class OSCPacketDispatcher {
 
+	/**
+	 * Completely arbitrary number of arguments,
+	 * required only due to library internal technical reasons.
+	 * It should be possible to get around this limitation,
+	 * by refactoring the code.
+	 * XXX refactor-out this arbitrary number
+	 */
+	public static final int MAX_ARGUMENTS = 64;
 	private static final int DEFAULT_CORE_THREADS = 3;
 	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
@@ -79,7 +87,7 @@ public class OSCPacketDispatcher {
 			this.argumentTypesBuffer = ByteBuffer.allocate(0);
 			nonNullSerializerFactory = new NullOSCSerializerFactory();
 		} else {
-			this.argumentTypesBuffer = ByteBuffer.allocate(64);
+			this.argumentTypesBuffer = ByteBuffer.allocate(MAX_ARGUMENTS);
 			nonNullSerializerFactory = serializerFactory;
 		}
 		this.serializer = nonNullSerializerFactory.create(argumentTypesBuffer);
