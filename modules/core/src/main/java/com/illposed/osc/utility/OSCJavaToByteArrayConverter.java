@@ -228,7 +228,7 @@ public class OSCJavaToByteArrayConverter {
 	public void write(Object anObject) {
 		// Can't do switch on class
 		if (anObject instanceof Collection) {
-			final Collection<Object> theArray = (Collection<Object>) anObject;
+			@SuppressWarnings("unchecked") final Collection<Object> theArray = (Collection<Object>) anObject;
 			for (final Object entry : theArray) {
 				write(entry);
 			}
@@ -303,7 +303,8 @@ public class OSCJavaToByteArrayConverter {
 				// fill the [] with the SuperCollider types corresponding to
 				// the object (e.g., Object of type String needs -s).
 				// XXX Why not call this function, recursively? The only reason would be, to not allow nested arrays, but the specification does not say anythign about them not being allowed.
-				writeTypesArray((Collection<Object>) argument);
+				@SuppressWarnings("unchecked") Collection<Object> collArg = (Collection<Object>) argument;
+				writeTypesArray(collArg);
 				// close the array
 				stream.write(']');
 			} else if (Boolean.TRUE.equals(argument)) {
