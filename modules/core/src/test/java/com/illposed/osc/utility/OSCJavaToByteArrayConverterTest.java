@@ -12,6 +12,8 @@ import com.illposed.osc.OSCMessageTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.nio.charset.Charset;
+
 /**
  * This implementation is based on Markus Gaelli and Iannis Zannos's
  * <a href="http://www.emergent.de/Goodies/">OSC implementation in Squeak</a>
@@ -71,6 +73,16 @@ public class OSCJavaToByteArrayConverterTest {
 		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
 		stream.write("abcd");
 		byte[] answer = {97, 98, 99, 100, 0, 0, 0, 0};
+		byte[] result = stream.toByteArray();
+		checkResultEqualsAnswer(result, answer);
+	}
+
+	@Test
+	public void testPrintString3OnStream() {
+		OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter();
+		stream.setCharset(Charset.forName("UTF-8"));
+		stream.write("\u00e1"); // LATIN SMALL LETTER A WITH ACUTE
+		byte[] answer = {(byte) 0xc3, (byte) 0xa1, 0, 0};
 		byte[] result = stream.toByteArray();
 		checkResultEqualsAnswer(result, answer);
 	}
