@@ -390,7 +390,7 @@ public class OSCSerializer {
 				write(entry);
 			}
 		} else {
-			final ArgumentHandler type = findType(anObject);
+			@SuppressWarnings("unchecked") final ArgumentHandler<Object> type = findType(anObject);
 			type.serialize(output, anObject);
 		}
 	}
