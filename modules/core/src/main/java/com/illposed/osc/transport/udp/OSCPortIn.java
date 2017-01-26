@@ -49,7 +49,6 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public static final int BUFFER_SIZE = 65507;
 
-	/** state for listening */
 	private boolean listening;
 	private boolean daemonListener;
 	private Thread listeningThread;
