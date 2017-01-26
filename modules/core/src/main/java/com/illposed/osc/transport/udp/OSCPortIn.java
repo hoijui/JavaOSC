@@ -174,7 +174,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void startListening() {
 
-		if (!isListening()) { // NOTE This is not thread-save
+		// NOTE This is not thread-save
+		if (!isListening()) {
 			listening = true;
 			listeningThread = new Thread(this);
 			// The JVM exits when the only threads running are all daemon threads.

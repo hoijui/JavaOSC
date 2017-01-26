@@ -245,7 +245,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 						if (pi == p.length()) {
 							return false;
 						}
-						if (p.charAt(pi) == '-') { // c-c
+						if (p.charAt(pi) == '-') {
+							// c-c
 							pi++;
 							if (pi == p.length()) {
 								return false;
@@ -256,13 +257,15 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 								{
 									match = true;
 								}
-							} else { // c-]
+							} else {
+								// c-]
 								if (str.charAt(si) >= c) {
 									match = true;
 								}
 								break;
 							}
-						} else { // cc or c]
+						} else {
+							// cc or c]
 							if (c == str.charAt(si)) {
 								match = true;
 							}
@@ -283,7 +286,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 					while (pi < p.length() && p.charAt(pi) != ']') {
 						pi++;
 					}
-					if (pi++ == p.length()) { // oops!
+					if (pi++ == p.length()) {
+						// oops!
 						return false;
 					}
 					break;
@@ -291,14 +295,18 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 				// {astring,bstring,cstring}
 				case '{':
 					// p.charAt(pi) is now first character in the {brace list}
-					final int place = si; // to backtrack
-					int remainder = pi; // to forwardtrack
+
+					// to backtrack
+					final int place = si;
+					// to forwardtrack
+					int remainder = pi;
 
 					// find the end of the brace list
 					while ((remainder < p.length()) && (p.charAt(remainder) != '}')) {
 						remainder++;
 					}
-					if (remainder == p.length()) /* oops! */ {
+					if (remainder == p.length()) {
+						// oops!
 						return false;
 					}
 					remainder++;
@@ -313,7 +321,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 								si = place;
 								// continue testing,
 								// skip comma
-								if (pi++ == p.length()) { // oops
+								if (pi++ == p.length()) {
+									// oops!
 									return false;
 								}
 							}
@@ -322,14 +331,16 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 							if ((pi == p.length()) && (si == str.length())) {
 								return true;
 							}
-							si--; // str is incremented again below
+							// "si" is incremented again at the end of the loop
+							si--;
 							break;
 						} else if (c == str.charAt(si)) {
 							si++;
 							if ((si == str.length()) && (remainder < p.length())) {
 								return false;
 							}
-						} else { // skip to next comma
+						} else {
+							// skip to next comma
 							si = place;
 							while ((pi < p.length()) && (p.charAt(pi) != ',')
 									&& (p.charAt(pi) != '}'))
