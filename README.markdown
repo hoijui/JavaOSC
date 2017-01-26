@@ -99,8 +99,14 @@ To release a development version to the Sonatype snapshot repository only.
 
 ### Prepare the release
 
-	JAVA_HOME=${JAVA6_HOME} mvn -DdryRun=true release:prepare
-	JAVA_HOME=${JAVA6_HOME} mvn -DdryRun=false release:prepare
+	JAVA_HOME="${JAVA_6_HOME}" \
+		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
+		PATH="${MAVEN_HOME}/bin/:${PATH}" \
+		mvn -DdryRun=true release:prepare
+	JAVA_HOME="${JAVA_6_HOME}" \
+		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
+		PATH="${MAVEN_HOME}/bin/:${PATH}" \
+		mvn -DdryRun=false release:prepare
 
 This does the following:
 
@@ -115,7 +121,10 @@ use the oldest possible JDK version to compile (currently 1.6)
 ### Perform the release (main part)
 
 	git push origin master <release-tag>
-	JAVA_HOME=${JAVA6_HOME} mvn release:perform
+	JAVA_HOME="${JAVA_6_HOME}" \
+		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
+		PATH="${MAVEN_HOME}/bin/:${PATH}" \
+		mvn release:perform
 
 This does the following:
 
