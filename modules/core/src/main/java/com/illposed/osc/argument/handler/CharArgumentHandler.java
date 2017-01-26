@@ -10,7 +10,6 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -55,6 +54,13 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 
 	@Override
 	public Character parse(final ByteBuffer input) throws OSCParseException {
+
+		// Read the char as 1 byte from the last 8 of 32bits
+		// to be compatible with liblo.
+		// This might later be expanded to support multi-byte encoded chars.
+		input.get();
+		input.get();
+		input.get();
 		return (char) input.get();
 	}
 
@@ -62,7 +68,12 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	public void serialize(final ByteBuffer output, final Character value)
 			throws OSCSerializeException
 	{
+		// Put the char as 1 byte in the last 8 of 32bits
+		// to be compatible with liblo.
+		// This might later be expanded to support multi-byte encoded chars.
+		output.put((byte) 0);
+		output.put((byte) 0);
+		output.put((byte) 0);
 		output.put((byte) (char) value);
-		OSCSerializer.align(output);
 	}
 }
