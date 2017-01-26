@@ -207,7 +207,8 @@ public class OSCParser {
 		// http://opensoundcontrol.org/spec-1_0
 		if (rawInput.hasRemaining()) {
 			if (rawInput.get(rawInput.position()) == TYPES_VALUES_SEPARATOR) {
-				rawInput.get(); // position++ to skip the TYPES_VALUES_SEPARATOR
+				// position++ to skip the TYPES_VALUES_SEPARATOR
+				rawInput.get();
 				typeTags = readString(rawInput);
 			} else {
 				// data format is invalid

@@ -228,7 +228,8 @@ public class OSCSerializer {
 	private void writeSizeAndData(final OSCPacket packet) throws OSCSerializeException {
 
 		final int sizePosition = output.position();
-		write(Integer.valueOf(-1)); // write place-holder size
+		// write place-holder size (will be overwritten later)
+		write(Integer.valueOf(-1));
 		writePacket(packet);
 		final int afterPacketPosition = output.position();
 		final int packetSize = afterPacketPosition - sizePosition - OSCParser.ALIGNMENT_BYTES;

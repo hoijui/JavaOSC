@@ -107,8 +107,9 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 		}
 		input.position(input.position() + strLen);
 		// because strings are always padded with at least one zero,
-		// as their length is not given in advance, as is the case with blobs
-		input.get(); // position++ to skip the terminating {@code (byte) 0}
+		// as their length is not given in advance, as is the case with blobs,
+		// we skip over the terminating zero byte (position++)
+		input.get();
 		OSCParser.align(input);
 		return res;
 	}
