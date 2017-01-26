@@ -10,8 +10,8 @@ package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerFactory;
+import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -42,7 +42,7 @@ import java.nio.channels.DatagramChannel;
 public class OSCPortOut extends OSCPort {
 
 	private final ByteBuffer outputBuffer;
-	private final OSCSerializer converter;
+	private final OSCSerializerFactory serializerFactory;
 
 	/**
 	 * Creates an OSC-Port that sends to {@code remote} from the specified local socket,
@@ -62,7 +62,7 @@ public class OSCPortOut extends OSCPort {
 		super(local, remote);
 
 		this.outputBuffer = ByteBuffer.allocate(OSCPortIn.BUFFER_SIZE);
-		this.converter = serializerFactory.create(outputBuffer);
+		this.serializerFactory = serializerFactory;
 	}
 
 	public OSCPortOut(
@@ -106,39 +106,6 @@ public class OSCPortOut extends OSCPort {
 	}
 
 	/**
-	 * Converts an OSC packet (message or bundle) to its OSC byte array representation.
-	 * @param packet the bundle or message to be converted
-	 * @return the OSC byte array representation of {@code packet}
-	 * @throws IOException if we run out of memory for the conversion buffer
-	 * @throws OSCSerializeException if the packet fails to serialize
-	 */
-	public ByteBuffer convert(final OSCPacket packet) throws IOException, OSCSerializeException {
-
-		outputBuffer.rewind();
-		converter.write(packet);
-		outputBuffer.flip();
-		final ByteBuffer oscPacket = outputBuffer;
-
-		return oscPacket;
-	}
-
-	/**
-	 * Sends an OSC packet (message or bundle) to the remote address.
-	 * This assumes that the given data was previously already converted using {@link #convert}.
-	 * @param oscPacket the bundle or message to sent, as OSC byte array
-	 * @throws IOException if a socket I/O error occurs
-	 */
-	public void send(final ByteBuffer oscPacket) throws IOException {
-
-		final DatagramChannel channel = getChannel();
-		if (channel.isConnected()) {
-			channel.write(oscPacket);
-		} else {
-			channel.send(oscPacket, getRemoteAddress());
-		}
-	}
-
-	/**
 	 * Converts and sends an OSC packet (message or bundle) to the remote address.
 	 * @param packet the bundle or message to be converted and sent
 	 * @throws IOException if we run out of memory while converting,
@@ -147,8 +114,9 @@ public class OSCPortOut extends OSCPort {
 	 */
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
 
-		final ByteBuffer oscPacket = convert(packet);
-		send(oscPacket);
+		final DatagramChannel channel = getChannel();
+		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, null, serializerFactory);
+		oscChannel.send(outputBuffer, packet, getRemoteAddress());
 	}
 
 	@Override
