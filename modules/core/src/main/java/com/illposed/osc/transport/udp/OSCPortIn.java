@@ -228,7 +228,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	public void setDaemonListener(final boolean daemonListener) {
 
-		listeningThread.setDaemon(daemonListener);
+		if (isListening()) {
+			listeningThread.setDaemon(daemonListener);
+		}
 		this.daemonListener = daemonListener;
 	}
 
