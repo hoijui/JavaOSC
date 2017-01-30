@@ -183,7 +183,11 @@ public class OSCParser {
 			}
 		}
 
-		return new OSCMessage(address, arguments, new OSCMessageInfo(typeIdentifiers));
+		try {
+			return new OSCMessage(address, arguments, new OSCMessageInfo(typeIdentifiers));
+		} catch (final IllegalArgumentException ex) {
+			throw new OSCParseException(ex);
+		}
 	}
 
 	/**
