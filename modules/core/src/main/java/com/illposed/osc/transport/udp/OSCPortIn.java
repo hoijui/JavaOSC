@@ -51,6 +51,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	private boolean listening;
 	private boolean daemonListener;
+	private boolean resilient;
 	private Thread listeningThread;
 	private final OSCParserFactory parserFactory;
 	private final OSCPacketDispatcher dispatcher;
@@ -75,6 +76,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		this.listening = false;
 		this.daemonListener = true;
+		this.resilient = false;
 		this.parserFactory = parserFactory;
 		if (dispatcher == null) {
 			this.dispatcher = new OSCPacketDispatcher();
@@ -156,7 +158,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 					stopListening();
 				}
 			} catch (final OSCParseException ex) {
-				stopListening(ex);
+				badPacketReceived(ex);
 			}
 		}
 	}
@@ -166,6 +168,16 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		System.err.println("Error while listening on " + toString() + "...");
 		exception.printStackTrace(System.err);
 		stopListening();
+	}
+
+	private void badPacketReceived(final Exception exception) {
+
+		if (isResilient()) {
+			System.err.println("Warning: Bad packet received while listening on " + toString() + "...");
+			exception.printStackTrace(System.err);
+		} else {
+			stopListening(exception);
+		}
 	}
 
 	/**
@@ -232,6 +244,26 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			listeningThread.setDaemon(daemonListener);
 		}
 		this.daemonListener = daemonListener;
+	}
+
+	/**
+	 * Whether this port continues listening and throws
+	 * a {@link OSCParseException} after receiving a bad packet.
+	 * @return <code>true</code> if this port will continue listening
+	 *   after a parse exception
+	 */
+	public boolean isResilient() {
+		return resilient;
+	}
+
+	/**
+	 * Set whether this port continues listening and throws
+	 * a {@link OSCParseException} after receiving a bad packet.
+	 * @param resilient whether this port should continue listening
+	 *   after a parse exception
+	 */
+	public void setResilient(final boolean resilient) {
+		this.resilient = resilient;
 	}
 
 	@Override

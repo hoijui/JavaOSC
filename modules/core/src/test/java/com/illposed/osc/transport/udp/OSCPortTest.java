@@ -10,6 +10,7 @@ package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCParserFactory;
@@ -24,6 +25,7 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import org.junit.After;
@@ -569,6 +571,48 @@ public class OSCPortTest {
 		receiver.startListening();
 		sender.send(msgShort);
 		sender.send(msgLong);
+		Thread.sleep(100); // wait a bit
+		receiver.stopListening();
+		if (!listener.isMessageReceived()) {
+			Assert.fail("Message was not received");
+		}
+	}
+
+	@Test
+	public void testStopListeningAfterReceivingBadAddress() throws Exception {
+
+		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
+				"bad", Collections.emptyList(), null);
+		final OSCMessage msg = new OSCMessage("/message/receiving");
+		final SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector(
+				"/message/receiving"),
+				listener);
+		receiver.setResilient(false);
+		receiver.startListening();
+		sender.send(msgBad);
+		sender.send(msg);
+		Thread.sleep(100); // wait a bit
+		receiver.stopListening();
+		if (listener.isMessageReceived()) {
+			Assert.fail("Message was received, while it should not have been");
+		}
+	}
+
+	@Test
+	public void testListeningAfterBadAddress() throws Exception {
+
+		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
+				"bad", Collections.emptyList(), null);
+		final OSCMessage msg = new OSCMessage("/message/receiving");
+		final SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector(
+				"/message/receiving"),
+				listener);
+		receiver.setResilient(true);
+		receiver.startListening();
+		sender.send(msgBad);
+		sender.send(msg);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
 		if (!listener.isMessageReceived()) {
