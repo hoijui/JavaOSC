@@ -59,8 +59,25 @@ public class OSCMessage implements OSCPacket {
 	 * @param info  meta-info about the message, or {@code null}, if not yet available
 	 */
 	public OSCMessage(final String address, final List<?> arguments, final OSCMessageInfo info) {
+		this(address, arguments, info, true);
+	}
 
-		checkAddress(address);
+	/**
+	 * Creates an OSCMessage with an address
+	 * and arguments already initialized,
+	 * optionally skipping address verification.
+	 * NOTE This only makes sense for testing purposes!
+	 * Under normal circumstances one should never disable address checking.
+	 * @param address  the recipient of this OSC message
+	 * @param arguments  the data sent to the receiver
+	 * @param info  meta-info about the message, or {@code null}, if not yet available
+	 * @param checkAddress  whether to check the address for validity; CAUTION!
+	 */
+	OSCMessage(final String address, final List<?> arguments, final OSCMessageInfo info, final boolean checkAddress) {
+
+		if (checkAddress) {
+			checkAddress(address);
+		}
 		this.address = address;
 		this.arguments = (List<Object>) Collections.unmodifiableList(arguments);
 		this.info = info;

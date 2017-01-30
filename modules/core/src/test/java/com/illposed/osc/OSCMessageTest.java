@@ -33,6 +33,10 @@ public class OSCMessageTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
+	public static OSCMessage createUncheckedAddressMessage(final String address, final List<?> arguments, final OSCMessageInfo info) {
+		return new OSCMessage(address, arguments, info, false);
+	}
+
 	/**
 	 * Creates verbose assertion failures if the result does not conform to what is expected.
 	 * @param result received from OSC
