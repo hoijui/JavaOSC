@@ -199,13 +199,7 @@ public class OSCSerializer {
 	 * @throws OSCSerializeException if the message failed to serialize
 	 */
 	private void writeAddress(final OSCMessage message) throws OSCSerializeException {
-
-		final String address = message.getAddress();
-		if (!OSCMessage.isValidAddress(address)) {
-			throw new OSCSerializeException("Can not serialize a message with invalid address: \""
-					+ address + "\"");
-		}
-		write(address);
+		write(message.getAddress());
 	}
 
 	/**
