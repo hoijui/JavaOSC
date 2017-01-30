@@ -548,4 +548,31 @@ public class OSCPortTest {
 		sender.connect();
 		testBundleReceiving(true);
 	}
+
+	/**
+	 * Checks if buffers are correctly reset after receiving a message.
+	 * @throws Exception
+	 */
+	@Test
+	public void testReceivingLongAfterShort() throws Exception {
+
+		final OSCMessage msgShort = new OSCMessage("/msg/short");
+		final List<Object> someArgs = new ArrayList<Object>(3);
+		someArgs.add("all");
+		someArgs.add("my");
+		someArgs.add("args");
+		final OSCMessage msgLong = new OSCMessage("/message/with/very/long/address/receiving", someArgs);
+		final SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector(
+				"/message/with/very/long/address/receiving"),
+				listener);
+		receiver.startListening();
+		sender.send(msgShort);
+		sender.send(msgLong);
+		Thread.sleep(100); // wait a bit
+		receiver.stopListening();
+		if (!listener.isMessageReceived()) {
+			Assert.fail("Message was not received");
+		}
+	}
 }
