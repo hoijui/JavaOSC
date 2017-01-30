@@ -17,10 +17,12 @@ import java.util.List;
 
 /**
  * Checks whether an OSC <i>Address Pattern</i> matches a given wildcard expression,
- * as described in the OSC protocol specification.
- * For details, see the "OSC Message Dispatching and Pattern Matching" section on
- * <a href="http://opensoundcontrol.org/spec-1_0">the OSC 1.0 specification</a>.
- * Also supports the path-traversal wildcard "//", as specified in OSC 1.1 (borrowed from XPath).
+ * as described in the OSC 1.0 protocol specification.
+ * For details, see the "OSC Message Dispatching and Pattern Matching" section
+ * in <a href="http://opensoundcontrol.org/spec-1_0">the OSC 1.0 specification
+ * </a>.
+ * This also supports the path-traversal wildcard "//",
+ * as specified in OSC 1.1 (borrowed from XPath).
  *
  * <p>
  * A coarse history of the code in the function

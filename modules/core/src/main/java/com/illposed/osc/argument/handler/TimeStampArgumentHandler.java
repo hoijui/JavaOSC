@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC compliant time-stamp.
+ * Parses and serializes an OSC <i>Timetag</i>.
  */
 public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeStamp>, Cloneable {
 

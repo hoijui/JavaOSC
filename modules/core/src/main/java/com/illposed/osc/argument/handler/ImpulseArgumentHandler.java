@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC impulse type.
+ * Parses and serializes an OSC <i>Impulse</i> type.
  */
 public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Cloneable {
 

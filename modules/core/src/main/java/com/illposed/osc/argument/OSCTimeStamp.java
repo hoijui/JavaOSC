@@ -12,11 +12,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This represents an OSC compliant time-stamp.
+ * This represents an OSC <i>Timetag</i>.
  * It uses the NTP (Network Time Protocol) time format,
  * and supports a different time range (smaller) and resolution (more precise)
  * then the Java <code>Date</code> class.
- * See <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol#Timestamps">
+ * See <a href="http://opensoundcontrol.org/node/3/#timetags">
+ * the OSC specification for Timetags</a>
+ * and <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol#Timestamps">
  * the NTP time-stamp documentation on Wikipedia</a> for specification details.
  * TODO When advancing to Java 8, we should introduce <tt>toInstant()</tt>
  *   and <tt>valueOf(Instant)</tt> methods (see {@link java.time.Instant}),

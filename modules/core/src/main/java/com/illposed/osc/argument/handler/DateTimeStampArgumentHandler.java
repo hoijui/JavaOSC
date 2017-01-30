@@ -17,8 +17,10 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC compliant time-stamp, using <code>Date</code> as a wrapper,
+ * Parses and serializes an OSC <i>Timetag</i>,
+ * using {@link Date} as a wrapper,
  * and thus loosing out on the resolution.
+ * You should consider using {@link TimeStampArgumentHandler} instead;
  */
 public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Cloneable {
 

@@ -16,7 +16,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC RGBA color type (32bit).
+ * Parses and serializes an OSC 1.1 optional <i>32bit RGBA color</i> type.
  */
 public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 
