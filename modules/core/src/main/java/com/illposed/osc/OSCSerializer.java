@@ -254,7 +254,8 @@ public class OSCSerializer {
 
 	public void write(final OSCPacket packet) throws OSCSerializeException {
 
-		output.rewind();
+		// reset position, limit and mark
+		output.clear();
 		try {
 			writePacket(packet);
 		} catch (final BufferOverflowException ex) {
@@ -270,7 +271,8 @@ public class OSCSerializer {
 	 */
 	public void writeOnlyTypeTags(final List<?> arguments) throws OSCSerializeException {
 
-		output.rewind();
+		// reset position, limit and mark
+		output.clear();
 		try {
 			writeTypeTagsRaw(arguments);
 		} catch (final BufferOverflowException ex) {
