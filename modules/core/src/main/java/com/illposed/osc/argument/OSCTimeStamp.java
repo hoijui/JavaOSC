@@ -13,13 +13,16 @@ import java.util.Date;
 
 /**
  * This represents an OSC <i>Timetag</i>.
- * It uses the NTP (Network Time Protocol) time format,
+ * It uses the NTP (Network Time Protocol) time-tag format,
  * and supports a different time range (smaller) and resolution (more precise)
- * then the Java <code>Date</code> class.
+ * then {@link java.util.Date}.
  * See <a href="http://opensoundcontrol.org/node/3/#timetags">
  * the OSC specification for Timetags</a>
  * and <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol#Timestamps">
  * the NTP time-stamp documentation on Wikipedia</a> for specification details.
+ * OSC <i>Timetag</i> aswell as <code>Date</code> are time-zone agnostic,
+ * though <code>Date</code> might use the default {@link java.util.Locale}
+ * in some cases, like when formatting as a <code>String</code>.
  * TODO When advancing to Java 8, we should introduce <tt>toInstant()</tt>
  *   and <tt>valueOf(Instant)</tt> methods (see {@link java.time.Instant}),
  *   as it covers the range of the OSC time format, and nearly covers the precision
@@ -40,16 +43,16 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 */
 	private static final long MSB1_BASE_TIME = -2208988800000L;
 	/**
-	 * The OSC time-stamp with the semantics of "immediately".
+	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
 	public static final long IMMEDIATE_RAW = 0x1L;
 	/**
-	 * The OSC time-stamp with the semantics of "immediately".
+	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
 	public static final OSCTimeStamp IMMEDIATE = new OSCTimeStamp(IMMEDIATE_RAW);
 	/**
-	 * The Java representation of an OSC timestamp with the semantics of
-	 * "immediately".
+	 * The Java representation of an OSC time-tag with the semantics of
+	 * "immediately"/"now".
 	 */
 	public static final Date IMMEDIATE_DATE = new Date(MSB0_BASE_TIME);
 	/**
@@ -89,26 +92,32 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	/**
-	 * Returns the NTP conform time-stamp value.
-	 * @return MSB: base, 32 higher bits (including MSB): seconds, 32 lower bits: fraction
+	 * Returns the OSC/NTP conform <i>Timetag</i> value.
+	 * @return 64bits:
+	 *   32 higher bits (including MSB): seconds,
+	 *   32 lower bits: fraction (of a second)
 	 */
 	public long getNtpTime() {
 		return ntpTime;
 	}
 
 	/**
-	 * The raw seconds counter.
-	 * @return high-order 32-bits of the ntpTime 64bits value
+	 * Returns the number of whole seconds from the start of the epoch
+	 * of this time-tag.
+	 * @return high-order 32-bit unsigned value representing the "seconds" part
+	 *   of this OSC <i>Timetag</i>
 	 */
 	public long getSeconds() {
 		return ntpTime >>> NTP_SECONDS_BITS;
 	}
 
 	/**
-	 * The fraction counter.
-	 * Denotes the number of seconds * (1 / 2^32), which allows to specify to a precision
-	 * of about 233 pico seconds.
-	 * @return lower-order 32-bits of the ntpTime 64bits value
+	 * Returns the fraction of a second from the start of the epoch + seconds
+	 * of this time-tag.
+	 * Denotes a number of seconds * (1 / 2^32),
+	 * which allows to specify to a precision of about 233 pico seconds.
+	 * @return lower-order 32-bit unsigned value representing the "fraction"
+	 *   part of this OSC <i>Timetag</i>
 	 */
 	public long getFraction() {
 		return ntpTime & FILTER_LOWER_32;
@@ -149,8 +158,8 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	/**
-	 * Returns the Java Date closest to this time-stamps value
-	 * @return this time-stamps value rounded to the closest full millisecond
+	 * Returns the Java date closest to this time-tags value.
+	 * @return this time-tags value rounded to the closest full millisecond
 	 */
 	public Date toDate() {
 		return new Date(toJavaTime());
@@ -207,14 +216,17 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	/**
-	 * Converts a Java time-stamp (milliseconds since 1970) to a 64-bit NTP time representation.
+	 * Converts a Java time-stamp (milliseconds since 1970)
+	 * to a 64-bit OSC time representation.
 	 * This code was copied from the "Apache Jakarta Commons - Net" library,
 	 * which is licensed under the
-	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">ASF 2.0 license</a>.
+	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">ASF 2.0 license
+	 * </a>.
 	 * The original source file can be found
-	 * <a href="http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co">here</a>.
+	 * <a href="http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co">
+	 * here</a>.
 	 * @param javaTime Java time-stamp, as returned by {@link Date#getTime()}
-	 * @return NTP time-stamp representation of the Java time value.
+	 * @return OSC time-tag representation of the Java time value.
 	 */
 	private static long javaToNtpTimeStamp(final long javaTime) {
 
