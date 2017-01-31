@@ -8,7 +8,7 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -18,9 +18,9 @@ import java.util.Map;
 /**
  * Parses and serializes an OSC <i>Timetag</i>.
  */
-public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeStamp>, Cloneable {
+public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeTag64>, Cloneable {
 
-	public static final ArgumentHandler<OSCTimeStamp> INSTANCE = new TimeStampArgumentHandler();
+	public static final ArgumentHandler<OSCTimeTag64> INSTANCE = new TimeStampArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
 	protected TimeStampArgumentHandler() {
@@ -33,8 +33,8 @@ public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeStamp>, 
 	}
 
 	@Override
-	public Class<OSCTimeStamp> getJavaClass() {
-		return OSCTimeStamp.class;
+	public Class<OSCTimeTag64> getJavaClass() {
+		return OSCTimeTag64.class;
 	}
 
 	@Override
@@ -54,13 +54,13 @@ public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeStamp>, 
 	}
 
 	@Override
-	public OSCTimeStamp parse(final ByteBuffer input) throws OSCParseException {
+	public OSCTimeTag64 parse(final ByteBuffer input) throws OSCParseException {
 		final long ntpTime = LongArgumentHandler.INSTANCE.parse(input);
-		return new OSCTimeStamp(ntpTime);
+		return new OSCTimeTag64(ntpTime);
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCTimeStamp value)
+	public void serialize(final ByteBuffer output, final OSCTimeTag64 value)
 			throws OSCSerializeException
 	{
 		LongArgumentHandler.INSTANCE.serialize(output, value.getNtpTime());

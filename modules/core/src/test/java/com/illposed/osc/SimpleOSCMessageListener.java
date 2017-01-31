@@ -8,12 +8,12 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 
 public class SimpleOSCMessageListener implements OSCMessageListener {
 
 	private boolean messageReceived;
-	private OSCTimeStamp receivedTimestamp;
+	private OSCTimeTag64 receivedTimestamp;
 	private OSCMessage message;
 
 	public SimpleOSCMessageListener() {
@@ -23,7 +23,7 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 		this.message = null;
 	}
 
-	public OSCTimeStamp getReceivedTimestamp() {
+	public OSCTimeTag64 getReceivedTimestamp() {
 		return receivedTimestamp;
 	}
 
@@ -36,7 +36,7 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 	}
 
 	@Override
-	public void acceptMessage(final OSCTimeStamp time, final OSCMessage message) {
+	public void acceptMessage(final OSCTimeTag64 time, final OSCMessage message) {
 		messageReceived = true;
 		receivedTimestamp = time;
 		this.message = message;

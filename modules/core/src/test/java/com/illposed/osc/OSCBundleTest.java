@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +24,7 @@ public class OSCBundleTest {
 
 	private void sendBundleTimestampTestHelper(
 			final OSCBundle bundle,
-			final OSCTimeStamp expectedTimestamp)
+			final OSCTimeTag64 expectedTimestamp)
 			throws IOException, OSCSerializeException, OSCParseException
 	{
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
@@ -43,7 +43,7 @@ public class OSCBundleTest {
 	@Test
 	public void testSendBundle() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
-		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
+		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
@@ -55,29 +55,29 @@ public class OSCBundleTest {
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
-		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
 	}
 
 	@Test
 	public void testSendBundleImmediateExplicit() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
-		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
+		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
-		bundle.setTimestamp(OSCTimeStamp.IMMEDIATE);
-		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
+		bundle.setTimestamp(OSCTimeTag64.IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
 	}
 
 	@Test(expected=IllegalArgumentException.class)
 	public void testSendBundleImmediateExplicitNull() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
-		final OSCTimeStamp timestampNow = OSCTimeStamp.valueOf(timeNow);
+		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
 		bundle.setTimestamp(null); // should throw IllegalArgumentException
-		sendBundleTimestampTestHelper(bundle, OSCTimeStamp.IMMEDIATE);
+		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
 	}
 
 	@Test

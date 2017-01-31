@@ -61,7 +61,7 @@ public final class Activator {
 		//   because type 'b' already converts to byteArray.
 
 		// NOTE We do not register DateTimeStampArgumentHandler (Date) here,
-		//   because type 't' already converts to OSCTimeStamp.
+		//   because type 't' already converts to OSCTimeTag64.
 
 		return parserTypes;
 	}
@@ -84,7 +84,7 @@ public final class Activator {
 		serializerTypes.add(byteArrayBlobArgumentHandler);
 
 		// NOTE We add this for legacy suppport, though it is recommended
-		//   to use OSCTimeStamp over Date, to not loose precission and range during conversions.
+		//   to use OSCTimeTag64 over Date, to not loose precission and range during conversions.
 		final ArgumentHandler dateArgumentHandler = DateTimeStampArgumentHandler.INSTANCE;
 		serializerTypes.add(dateArgumentHandler);
 

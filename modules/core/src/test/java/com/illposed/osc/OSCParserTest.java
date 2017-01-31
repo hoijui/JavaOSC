@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -198,7 +198,7 @@ public class OSCParserTest {
 					0x0C, 0X2F, 0x74, 0x65, 0x73, 0x74, 0, 0, 0, 0x2C, 0, 0, 0};
 
 		final OSCBundle bundle = (OSCBundle) convertToPacket(bytes);
-		if (!bundle.getTimestamp().equals(OSCTimeStamp.IMMEDIATE)) {
+		if (!bundle.getTimestamp().equals(OSCTimeTag64.IMMEDIATE)) {
 			Assert.fail("Timestamp should be IMMEDIATE, but is " + bundle.getTimestamp());
 		}
 		final List<OSCPacket> packets = bundle.getPackets();

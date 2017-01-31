@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class OSCBundle implements OSCPacket {
 
-	private OSCTimeStamp timestamp;
+	private OSCTimeTag64 timestamp;
 	private List<OSCPacket> packets;
 
 	/**
@@ -35,14 +35,14 @@ public class OSCBundle implements OSCPacket {
 	 * You can add packets to the bundle with addPacket()
 	 */
 	public OSCBundle() {
-		this(OSCTimeStamp.IMMEDIATE);
+		this(OSCTimeTag64.IMMEDIATE);
 	}
 
 	/**
 	 * Create an OSCBundle with the specified timestamp.
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final OSCTimeStamp timestamp) {
+	public OSCBundle(final OSCTimeTag64 timestamp) {
 		this(null, timestamp);
 	}
 
@@ -52,7 +52,7 @@ public class OSCBundle implements OSCPacket {
 	 * @param packets array of OSCPackets to initialize this object with
 	 */
 	public OSCBundle(final List<OSCPacket> packets) {
-		this(packets, OSCTimeStamp.IMMEDIATE);
+		this(packets, OSCTimeTag64.IMMEDIATE);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class OSCBundle implements OSCPacket {
 	 * @param packets the packets that make up the bundle
 	 * @param timestamp the time to execute the bundle
 	 */
-	public OSCBundle(final List<OSCPacket> packets, final OSCTimeStamp timestamp) {
+	public OSCBundle(final List<OSCPacket> packets, final OSCTimeTag64 timestamp) {
 
 		if (null == packets) {
 			this.packets = new LinkedList<OSCPacket>();
@@ -71,7 +71,7 @@ public class OSCBundle implements OSCPacket {
 		this.timestamp = timestamp;
 	}
 
-	private static void checkNonNullTimestamp(final OSCTimeStamp timestamp) {
+	private static void checkNonNullTimestamp(final OSCTimeTag64 timestamp) {
 
 		if (timestamp == null) {
 			throw new IllegalArgumentException("Bundle time-stamp may not be null; you may want to "
@@ -83,16 +83,16 @@ public class OSCBundle implements OSCPacket {
 	 * Returns the time the bundle will execute.
 	 * @return will never be {@code null}
 	 */
-	public OSCTimeStamp getTimestamp() {
+	public OSCTimeTag64 getTimestamp() {
 		return timestamp;
 	}
 
 	/**
 	 * Sets the time the bundle will execute.
 	 * @param timestamp when the bundle should execute, can not be {@code null},
-	 *   but {@code OSCTimeStamp.IMMEDIATE}
+	 *   but {@code OSCTimeTag64.IMMEDIATE}
 	 */
-	public void setTimestamp(final OSCTimeStamp timestamp) {
+	public void setTimestamp(final OSCTimeTag64 timestamp) {
 
 		checkNonNullTimestamp(timestamp);
 		this.timestamp = timestamp;

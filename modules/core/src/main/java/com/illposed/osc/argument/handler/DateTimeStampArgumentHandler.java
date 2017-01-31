@@ -8,7 +8,7 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -84,6 +84,6 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 
 	@Override
 	public void serialize(final ByteBuffer output, final Date value) throws OSCSerializeException {
-		TimeStampArgumentHandler.INSTANCE.serialize(output, OSCTimeStamp.valueOf(value));
+		TimeStampArgumentHandler.INSTANCE.serialize(output, OSCTimeTag64.valueOf(value));
 	}
 }

@@ -9,7 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -162,10 +162,10 @@ public class OSCPacketDispatcher {
 	}
 
 	public void dispatchPacket(final OSCPacket packet) {
-		dispatchPacket(packet, OSCTimeStamp.IMMEDIATE);
+		dispatchPacket(packet, OSCTimeTag64.IMMEDIATE);
 	}
 
-	private void dispatchPacket(final OSCPacket packet, final OSCTimeStamp timestamp) {
+	private void dispatchPacket(final OSCPacket packet, final OSCTimeTag64 timestamp) {
 		if (packet instanceof OSCBundle) {
 			dispatchBundle((OSCBundle) packet);
 		} else {
@@ -187,12 +187,12 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	private long calculateDelayFromNow(final OSCTimeStamp timestamp) {
+	private long calculateDelayFromNow(final OSCTimeTag64 timestamp) {
 		return timestamp.toDate(null).getTime() - System.currentTimeMillis();
 	}
 
 	private void dispatchBundle(final OSCBundle bundle) {
-		final OSCTimeStamp timestamp = bundle.getTimestamp();
+		final OSCTimeTag64 timestamp = bundle.getTimestamp();
 		if (isAlwaysDispatchingImmediatly() || timestamp.isImmediate()) {
 			dispatchBundleNow(bundle);
 		} else {
@@ -208,7 +208,7 @@ public class OSCPacketDispatcher {
 	}
 
 	private void dispatchBundleNow(final OSCBundle bundle) {
-		final OSCTimeStamp timestamp = bundle.getTimestamp();
+		final OSCTimeTag64 timestamp = bundle.getTimestamp();
 		final List<OSCPacket> packets = bundle.getPackets();
 		for (final OSCPacket packet : packets) {
 			dispatchPacket(packet, timestamp);
@@ -241,7 +241,7 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	private void dispatchMessageNow(final OSCMessage message, final OSCTimeStamp time) {
+	private void dispatchMessageNow(final OSCMessage message, final OSCTimeTag64 time) {
 
 		ensureMetaInfo(message);
 

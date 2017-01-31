@@ -40,7 +40,7 @@ import java.util.Date;
  * TODO Introduce 128bit version of this class (64bit seconds, 64bit fraction)
  *   as described by NTPv4.
  */
-public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTimeStamp> {
+public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTimeTag64> {
 
 	/**
 	 * OSC epoch length in milliseconds.
@@ -68,7 +68,7 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
-	public static final OSCTimeStamp IMMEDIATE = new OSCTimeStamp(IMMEDIATE_RAW);
+	public static final OSCTimeTag64 IMMEDIATE = new OSCTimeTag64(IMMEDIATE_RAW);
 	/**
 	 * The Java representation of an OSC time-tag with the semantics of
 	 * "immediately"/"now".
@@ -94,7 +94,7 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 */
 	private final long ntpTime;
 
-	public OSCTimeStamp(final long ntpTime) {
+	public OSCTimeTag64(final long ntpTime) {
 		this.ntpTime = ntpTime;
 	}
 
@@ -138,8 +138,8 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	public boolean equals(final Object other) {
 
 		final boolean equal;
-		if (other instanceof OSCTimeStamp) {
-			equal = (getNtpTime() == ((OSCTimeStamp) other).getNtpTime());
+		if (other instanceof OSCTimeTag64) {
+			equal = (getNtpTime() == ((OSCTimeTag64) other).getNtpTime());
 		} else {
 			equal = false;
 		}
@@ -155,13 +155,13 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	@Override
-	public int compareTo(final OSCTimeStamp other) {
+	public int compareTo(final OSCTimeTag64 other) {
 		return (int) (getNtpTime() - other.getNtpTime());
 	}
 
 	@Override
-	public OSCTimeStamp clone() throws CloneNotSupportedException {
-		return (OSCTimeStamp) super.clone();
+	public OSCTimeTag64 clone() throws CloneNotSupportedException {
+		return (OSCTimeTag64) super.clone();
 	}
 
 	/**
@@ -226,16 +226,16 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 		return seconds << NTP_SECONDS_BITS | fraction;
 	}
 
-	public static OSCTimeStamp valueOf(final long ntpTime) {
-		return new OSCTimeStamp(ntpTime);
+	public static OSCTimeTag64 valueOf(final long ntpTime) {
+		return new OSCTimeTag64(ntpTime);
 	}
 
-	public static OSCTimeStamp valueOf(final long seconds, final long fraction) {
-		return new OSCTimeStamp(toNtpTimeTag(seconds, fraction));
+	public static OSCTimeTag64 valueOf(final long seconds, final long fraction) {
+		return new OSCTimeTag64(toNtpTimeTag(seconds, fraction));
 	}
 
-	public static OSCTimeStamp valueOf(final Date javaTime) {
-		return new OSCTimeStamp(javaToNtpTimeStamp(javaTime.getTime()));
+	public static OSCTimeTag64 valueOf(final Date javaTime) {
+		return new OSCTimeTag64(javaToNtpTimeStamp(javaTime.getTime()));
 	}
 
 	@Override

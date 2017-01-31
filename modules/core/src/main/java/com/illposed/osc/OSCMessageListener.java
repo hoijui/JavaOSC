@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 
 /**
  * Allows to listen to incoming messages.
@@ -19,9 +19,9 @@ public interface OSCMessageListener {
 	/**
 	 * Process a matching, incoming OSC Message.
 	 * @param time when the message is to be processed.
-	 *   This should be the time this method is called, or {@code OSCTimeStamp.IMMEDIATE}.
+	 *   This should be the time this method is called, or {@code OSCTimeTag64.IMMEDIATE}.
 	 *   It may never be {@code null}.
 	 * @param message to be processed
 	 */
-	void acceptMessage(OSCTimeStamp time, OSCMessage message);
+	void acceptMessage(OSCTimeTag64 time, OSCMessage message);
 }

@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.IntegerArgumentHandler;
 import com.illposed.osc.argument.handler.TimeStampArgumentHandler;
@@ -136,7 +136,7 @@ public class OSCParser {
 	private OSCBundle convertBundle(final ByteBuffer rawInput) throws OSCParseException {
 		// skip the "#bundle " stuff
 		rawInput.position(BUNDLE_START.length() + 1);
-		final OSCTimeStamp timestamp = TimeStampArgumentHandler.INSTANCE.parse(rawInput);
+		final OSCTimeTag64 timestamp = TimeStampArgumentHandler.INSTANCE.parse(rawInput);
 		final OSCBundle bundle = new OSCBundle(timestamp);
 		while (rawInput.hasRemaining()) {
 			// recursively read through the stream and convert packets you find

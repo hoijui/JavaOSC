@@ -9,7 +9,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCImpulse;
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -255,7 +255,7 @@ public class OSCMessageTest {
 	@Test
 	public void testArgumentTimestamp0() {
 		final List<Object> args = new ArrayList<Object>(1);
-		args.add(OSCTimeStamp.valueOf(new Date(0L)));
+		args.add(OSCTimeTag64.valueOf(new Date(0L)));
 		final OSCMessage message = new OSCMessage("/ts/0", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, -116, -112, 0, 0, 0, 0
@@ -270,7 +270,7 @@ public class OSCMessageTest {
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2000, 0, 0);
-		args.add(OSCTimeStamp.valueOf(calendar.getTime()));
+		args.add(OSCTimeTag64.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/2000", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 126, -112,
@@ -285,7 +285,7 @@ public class OSCMessageTest {
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2037, 0, 0);
-		args.add(OSCTimeStamp.valueOf(calendar.getTime()));
+		args.add(OSCTimeTag64.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/afterFeb2036", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 97, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 0,
@@ -437,7 +437,7 @@ public class OSCMessageTest {
 		allTypes.add(1L);
 		allTypes.add('h');
 		allTypes.add("hello world!");
-		allTypes.add(OSCTimeStamp.valueOf(new Date(0L)));
+		allTypes.add(OSCTimeTag64.valueOf(new Date(0L)));
 		args.add("firstArg");
 		args.add(singleTypeList);
 		args.add("middleArg");
@@ -473,7 +473,7 @@ public class OSCMessageTest {
 		fourthLevel.add(1L);
 		fourthLevel.add('h');
 		fourthLevel.add("hello world!");
-		fourthLevel.add(OSCTimeStamp.valueOf(new Date(0L)));
+		fourthLevel.add(OSCTimeTag64.valueOf(new Date(0L)));
 		final Collection<Object> thirdLevel = new LinkedList<Object>();
 		thirdLevel.add(fourthLevel);
 		thirdLevel.add(-1);

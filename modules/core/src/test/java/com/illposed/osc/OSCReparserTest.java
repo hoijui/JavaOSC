@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.io.IOException;
@@ -185,86 +185,86 @@ public class OSCReparserTest {
 
 	@Test
 	public void testArgumentDateImmediate() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(OSCTimeStamp.IMMEDIATE_DATE));
+		reparseSingleArgument(OSCTimeTag64.valueOf(OSCTimeTag64.IMMEDIATE_DATE));
 	}
 
 	@Test
 	public void testArgumentDateNow() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date()));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date()));
 	}
 
 	@Test
 	public void testArgumentDateLongMin() throws Exception {
 		// this tests a negative epoch
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MIN_VALUE)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(Long.MIN_VALUE)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMinMinus1() throws Exception {
 		// this tests epoch -1
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 - 1))); // out of NTP time-stamp range
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 - 1))); // out of NTP time-stamp range
 	}
 
 	@Test
 	public void testArgumentDateEpochMin() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMinPlus1() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 + 1)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 + 1)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMinPlus2() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 + 2)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 + 2)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMinPlus1000000() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 + 1000000)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 + 1000000)));
 	}
 
 	@Test
 	public void testArgumentDateLongMinus1() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(-1L)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(-1L)));
 	}
 
 	@Test
 	public void testArgumentDateLong0() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(0L)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(0L)));
 	}
 
 	@Test
 	public void testArgumentDateLong1() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(1L)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(1L)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMaxMinus1000000() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 - 1000000)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 - 1000000)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMaxMinus1() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 - 1)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 - 1)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMax() throws Exception {
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0)));
 	}
 
 	@Test
 	public void testArgumentDateEpochMaxPlus1() throws Exception {
 		// this tests epoch 1
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(OSCTimeStamp.EPOCH_START_JAVA_TIME_0 + 1)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(OSCTimeTag64.EPOCH_START_JAVA_TIME_0 + 1)));
 	}
 
 	@Test
 	public void testArgumentDateLongMax() throws Exception {
 		// this tests a positive epoch
-		reparseSingleArgument(OSCTimeStamp.valueOf(new Date(Long.MAX_VALUE)));
+		reparseSingleArgument(OSCTimeTag64.valueOf(new Date(Long.MAX_VALUE)));
 	}
 
 	@Test

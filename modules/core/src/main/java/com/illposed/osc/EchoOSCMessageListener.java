@@ -8,7 +8,7 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeStamp;
+import com.illposed.osc.argument.OSCTimeTag64;
 import java.io.PrintStream;
 
 /**
@@ -56,7 +56,7 @@ public class EchoOSCMessageListener implements OSCMessageListener {
 	}
 
 	@Override
-	public void acceptMessage(final OSCTimeStamp time, final OSCMessage message) {
+	public void acceptMessage(final OSCTimeTag64 time, final OSCMessage message) {
 
 		out.println(message.getAddress());
 		out.printf("  %s%n", message.getInfo().getArgumentTypeTags());
