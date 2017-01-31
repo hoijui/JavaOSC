@@ -37,6 +37,8 @@ import java.util.Date;
  *   and <tt>valueOf(Instant)</tt> methods (see {@link java.time.Instant}),
  *   as it covers the range of the OSC time format, and nearly covers the precision
  *   (1 nanosecond accuracy instead of 233 picoseconds).
+ * TODO Introduce 128bit version of this class (64bit seconds, 64bit fraction)
+ *   as described by NTPv4.
  */
 public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTimeStamp> {
 
