@@ -18,12 +18,12 @@ import java.util.Map;
 /**
  * Parses and serializes an OSC <i>Timetag</i>.
  */
-public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeTag64>, Cloneable {
+public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, Cloneable {
 
-	public static final ArgumentHandler<OSCTimeTag64> INSTANCE = new TimeStampArgumentHandler();
+	public static final ArgumentHandler<OSCTimeTag64> INSTANCE = new TimeTag64ArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	protected TimeStampArgumentHandler() {
+	protected TimeTag64ArgumentHandler() {
 		// ctor declared only for setting the access level
 	}
 
@@ -49,8 +49,8 @@ public class TimeStampArgumentHandler implements ArgumentHandler<OSCTimeTag64>, 
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public TimeStampArgumentHandler clone() throws CloneNotSupportedException {
-		return (TimeStampArgumentHandler) super.clone();
+	public TimeTag64ArgumentHandler clone() throws CloneNotSupportedException {
+		return (TimeTag64ArgumentHandler) super.clone();
 	}
 
 	@Override

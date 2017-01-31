@@ -20,7 +20,7 @@ import java.util.Map;
  * Parses and serializes an OSC <i>Timetag</i>,
  * using {@link Date} as a wrapper,
  * and thus loosing out on the resolution.
- * You should consider using {@link TimeStampArgumentHandler} instead;
+ * You should consider using {@link TimeTag64ArgumentHandler} instead;
  */
 public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Cloneable {
 
@@ -79,11 +79,11 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 
 	@Override
 	public Date parse(final ByteBuffer input) throws OSCParseException {
-		return TimeStampArgumentHandler.INSTANCE.parse(input).toDate(epochIndicatorTime);
+		return TimeTag64ArgumentHandler.INSTANCE.parse(input).toDate(epochIndicatorTime);
 	}
 
 	@Override
 	public void serialize(final ByteBuffer output, final Date value) throws OSCSerializeException {
-		TimeStampArgumentHandler.INSTANCE.serialize(output, OSCTimeTag64.valueOf(value));
+		TimeTag64ArgumentHandler.INSTANCE.serialize(output, OSCTimeTag64.valueOf(value));
 	}
 }

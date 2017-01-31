@@ -35,7 +35,7 @@ public final class Activator {
 		types.add(LongArgumentHandler.INSTANCE);
 		types.add(MidiMessageArgumentHandler.INSTANCE);
 		types.add(NullArgumentHandler.INSTANCE);
-		types.add(TimeStampArgumentHandler.INSTANCE);
+		types.add(TimeTag64ArgumentHandler.INSTANCE);
 		types.add(UnsignedIntegerArgumentHandler.INSTANCE);
 		types.trimToSize();
 		TYPES_STATIC_COMMON = Collections.unmodifiableList(types);
