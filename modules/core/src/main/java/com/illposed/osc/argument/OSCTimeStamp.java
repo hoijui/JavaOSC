@@ -228,6 +228,10 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 		return new OSCTimeStamp(ntpTime);
 	}
 
+	public static OSCTimeStamp valueOf(final long seconds, final long fraction) {
+		return new OSCTimeStamp(toNtpTimeTag(seconds, fraction));
+	}
+
 	public static OSCTimeStamp valueOf(final Date javaTime) {
 		return new OSCTimeStamp(javaToNtpTimeStamp(javaTime.getTime()));
 	}
