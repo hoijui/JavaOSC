@@ -28,6 +28,24 @@ public class JavaRegexAddressMessageSelector implements MessageSelector {
 	}
 
 	@Override
+	public boolean equals(final Object other) {
+
+		boolean equal = false;
+		if (other instanceof JavaRegexAddressMessageSelector) {
+			final JavaRegexAddressMessageSelector otherSelector
+					= (JavaRegexAddressMessageSelector) other;
+			equal = this.selector.equals(otherSelector.selector);
+		}
+
+		return equal;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.selector.hashCode();
+	}
+
+	@Override
 	public boolean isInfoRequired() {
 		return false;
 	}

@@ -77,6 +77,24 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	}
 
 	@Override
+	public boolean equals(final Object other) {
+
+		boolean equal = false;
+		if (other instanceof OSCPatternAddressMessageSelector) {
+			final OSCPatternAddressMessageSelector otherSelector
+					= (OSCPatternAddressMessageSelector) other;
+			equal = this.patternParts.equals(otherSelector.patternParts);
+		}
+
+		return equal;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.patternParts.hashCode();
+	}
+
+	@Override
 	public boolean isInfoRequired() {
 		return false;
 	}

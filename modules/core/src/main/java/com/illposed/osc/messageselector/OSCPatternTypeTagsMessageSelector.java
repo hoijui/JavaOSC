@@ -34,6 +34,24 @@ public class OSCPatternTypeTagsMessageSelector implements MessageSelector {
 	}
 
 	@Override
+	public boolean equals(final Object other) {
+
+		boolean equal = false;
+		if (other instanceof OSCPatternTypeTagsMessageSelector) {
+			final OSCPatternTypeTagsMessageSelector otherSelector
+					= (OSCPatternTypeTagsMessageSelector) other;
+			equal = this.selector.equals(otherSelector.selector);
+		}
+
+		return equal;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.selector.hashCode();
+	}
+
+	@Override
 	public boolean isInfoRequired() {
 		return true;
 	}
