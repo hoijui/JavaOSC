@@ -3,6 +3,7 @@
 
 	<properties>
 		<project.packageName>com.illposed.osc</project.packageName>
+		<supported.osc.version>1.0</supported.osc.version>
 	</properties>
 
 	<parent>
@@ -45,6 +46,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>${project.packageName}</Export-Package>
+						<Supported-OSC-Version>${supported.osc.version}</Supported-OSC-Version>
 					</instructions>
 				</configuration>
 			</plugin>
