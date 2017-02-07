@@ -156,7 +156,9 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 
 	@Override
 	public int compareTo(final OSCTimeTag64 other) {
-		return (int) (getNtpTime() - other.getNtpTime());
+
+		return 10 * Long.signum(Long.valueOf(getSeconds()).compareTo(other.getSeconds()))
+				+ Long.signum(Long.valueOf(getFraction()).compareTo(other.getFraction()));
 	}
 
 	@Override
