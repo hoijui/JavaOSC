@@ -8,6 +8,7 @@
 
 package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.OSCBadDataEvent;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCParseException;
@@ -158,7 +159,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 					stopListening();
 				}
 			} catch (final OSCParseException ex) {
-				badPacketReceived(ex);
+				badPacketReceived(ex, buffer);
 			}
 		}
 	}
@@ -166,16 +167,17 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private void stopListening(final Exception exception) {
 
 		System.err.println("Error while listening on " + toString() + "...");
-		exception.printStackTrace(System.err);
+		if (!(exception instanceof OSCParseException)) {
+			exception.printStackTrace(System.err);
+		}
 		stopListening();
 	}
 
-	private void badPacketReceived(final Exception exception) {
+	private void badPacketReceived(final OSCParseException exception, final ByteBuffer data) {
 
-		if (isResilient()) {
-			System.err.println("Warning: Bad packet received while listening on " + toString() + "...");
-			exception.printStackTrace(System.err);
-		} else {
+		final OSCBadDataEvent badDataEvt = new OSCBadDataEvent(this, data, exception);
+		dispatcher.dispatchBadData(badDataEvt);
+		if (!isResilient()) {
 			stopListening(exception);
 		}
 	}

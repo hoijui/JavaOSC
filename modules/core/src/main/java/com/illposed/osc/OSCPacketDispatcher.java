@@ -40,6 +40,7 @@ public class OSCPacketDispatcher {
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
 	private final List<PacketListener> packetListeners;
+	private final List<OSCBadDataListener> badDataListeners;
 	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
@@ -145,6 +146,7 @@ public class OSCPacketDispatcher {
 				? Charset.defaultCharset()
 				: propertiesCharset;
 		this.packetListeners = new ArrayList<PacketListener>();
+		this.badDataListeners = new ArrayList<OSCBadDataListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
 		this.dispatchScheduler = dispatchScheduler;
@@ -229,6 +231,29 @@ public class OSCPacketDispatcher {
 				}
 			}
 			metaInfoRequired = metaInfoRequiredTmp;
+		}
+	}
+
+	/**
+	 * Adds a listener that will be notified of incoming bad/unrecognized data.
+	 * @param listener will receive chunks of unrecognized data
+	 */
+	public void addBadDataListener(final OSCBadDataListener listener) {
+		badDataListeners.add(listener);
+	}
+
+	/**
+	 * Removes a listener that is notified of incoming bad/unrecognized data.
+	 * @param listener will no longer receive chunks of unrecognized data
+	 */
+	public void removeBadDataListener(final OSCBadDataListener listener) {
+		badDataListeners.remove(listener);
+	}
+
+	public void dispatchBadData(final OSCBadDataEvent badDataEvent) {
+
+		for (final OSCBadDataListener listener : badDataListeners) {
+			listener.badDataReceived(badDataEvent);
 		}
 	}
 

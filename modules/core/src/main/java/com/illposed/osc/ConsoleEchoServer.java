@@ -16,6 +16,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 
 /**
  * Runs a basic OSC server, printing all received OSC content
@@ -30,6 +31,28 @@ public class ConsoleEchoServer extends OSCPortIn {
 	private static final int ARG_INDEX_PORT = 1;
 
 	private final PrintStream out;
+
+	private final class PrintBadDataListener implements OSCBadDataListener {
+
+		PrintBadDataListener() {
+			// ctor declared only for setting the access level
+		}
+
+		@Override
+		public void badDataReceived(final OSCBadDataEvent evt) {
+
+			System.err.printf(
+					"Warning: Bad packet received while listening on %s ...%n",
+					ConsoleEchoServer.this.toString());
+			evt.getException().printStackTrace(System.err);
+			System.err.printf(
+					"### Bad received data: ###%n%s%n###%n%n",
+					new String(evt.getData().array(), Charset.forName("UTF-8")));
+
+			evt.getException().printStackTrace(System.err);
+		}
+
+	}
 
 	public ConsoleEchoServer(final SocketAddress serverAddress, final PrintStream out) throws IOException {
 		super(
@@ -47,6 +70,8 @@ public class ConsoleEchoServer extends OSCPortIn {
 		getDispatcher().addListener(
 				new JavaRegexAddressMessageSelector(".*"),
 				listener);
+		// log errors to console
+		getDispatcher().addBadDataListener(new PrintBadDataListener());
 		// never stop listening
 		setResilient(true);
 		setDaemonListener(false);
