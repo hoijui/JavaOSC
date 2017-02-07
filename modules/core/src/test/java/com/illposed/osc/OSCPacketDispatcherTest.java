@@ -110,4 +110,20 @@ public class OSCPacketDispatcherTest {
 			Assert.fail("Message listener did not get removed");
 		}
 	}
+
+	@Test
+	public void testDispatchMultipleListenersSameSelector() {
+		// change the setup
+		dispatcher.removeListener(new OSCPatternAddressMessageSelector("/listener2"), listener2);
+		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener2);
+
+		OSCMessage message = new OSCMessage("/listener1");
+		dispatcher.dispatchPacket(message);
+		if (!listener1.isMessageReceived()) {
+			Assert.fail("Message did not get sent to listener 1");
+		}
+		if (!listener2.isMessageReceived()) {
+			Assert.fail("Message did not get sent to listener 2");
+		}
+	}
 }
