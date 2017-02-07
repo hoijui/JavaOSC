@@ -68,7 +68,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
-	public static final OSCTimeTag64 IMMEDIATE = new OSCTimeTag64(IMMEDIATE_RAW);
+	public static final OSCTimeTag64 IMMEDIATE = valueOf(IMMEDIATE_RAW);
 	/**
 	 * The Java representation of an OSC time-tag with the semantics of
 	 * "immediately"/"now".
@@ -94,7 +94,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 */
 	private final long ntpTime;
 
-	public OSCTimeTag64(final long ntpTime) {
+	protected OSCTimeTag64(final long ntpTime) {
 		this.ntpTime = ntpTime;
 	}
 

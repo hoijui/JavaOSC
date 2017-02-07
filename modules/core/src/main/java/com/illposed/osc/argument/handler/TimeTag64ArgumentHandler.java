@@ -55,8 +55,9 @@ public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, 
 
 	@Override
 	public OSCTimeTag64 parse(final ByteBuffer input) throws OSCParseException {
+
 		final long ntpTime = LongArgumentHandler.INSTANCE.parse(input);
-		return new OSCTimeTag64(ntpTime);
+		return OSCTimeTag64.valueOf(ntpTime);
 	}
 
 	@Override
