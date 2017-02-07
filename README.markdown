@@ -99,14 +99,27 @@ To release a development version to the Sonatype snapshot repository only.
 
 ### Prepare the release
 
-	JAVA_HOME="${JAVA_6_HOME}" \
-		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
-		PATH="${MAVEN_HOME}/bin/:${PATH}" \
-		mvn -DdryRun=true release:prepare
-	JAVA_HOME="${JAVA_6_HOME}" \
-		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
-		PATH="${MAVEN_HOME}/bin/:${PATH}" \
-		mvn -DdryRun=false release:prepare
+	# open a "private" shell, to not spill the changes in env vars
+	bash
+	# set env vars
+	export JAVA_HOME="${JAVA_6_HOME}"
+	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
+	export PATH="${MAVEN_HOME}/bin/:${PATH}"
+	# check if everything is in order
+	mvn \
+		clean \
+		package \
+		verify \
+		site
+	mvn \
+		-DdryRun=true \
+		release:prepare
+	# run the prepare phase for real
+	mvn \
+		-DdryRun=false \
+		release:prepare
+	# leave our "private" shell instance again
+	exit
 
 This does the following:
 
@@ -120,11 +133,17 @@ use the oldest possible JDK version to compile (currently 1.6)
 
 ### Perform the release (main part)
 
+	# open a "private" shell, to not spill the changes in env vars
+	bash
+	# set env vars
+	export JAVA_HOME="${JAVA_6_HOME}"
+	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
+	export PATH="${MAVEN_HOME}/bin/:${PATH}"
+	# perform the release
 	git push origin master <release-tag>
-	JAVA_HOME="${JAVA_6_HOME}" \
-		MAVEN_HOME="${MAVEN_3_2_5_HOME}" \
-		PATH="${MAVEN_HOME}/bin/:${PATH}" \
-		mvn release:perform
+	mvn release:perform
+	# leave our "private" shell instance again
+	exit
 
 This does the following:
 
