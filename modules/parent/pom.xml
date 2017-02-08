@@ -90,7 +90,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.13</version>
+				<version>2.15</version> <!-- NOTE 2.15 is the latest version still compiled with Java 1.6 -->
 				<configuration>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<linkXref>true</linkXref>
@@ -101,7 +101,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.6</version> <!-- NOTE 3.6 is the latest version still compiled with Java 1.6 -->
 				<configuration>
 					<aggregate>true</aggregate>
 					<linkXref>true</linkXref>
@@ -153,6 +153,7 @@
 									</tag>
 								</tags>
 							</tagClass>
+
 							<tagClass>
 								<displayName>To be considered</displayName>
 								<tags>
@@ -233,7 +234,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.4</version>
+					<version>3.6</version> <!-- NOTE 2.4 is the latest version still compiled with Java 1.6 -->
 				</plugin>
 
 				<plugin>
@@ -281,13 +282,13 @@
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.5.3</version>
+					<version>2.5.3</version> <!-- NOTE 2.5.3 is the latest version still compiled with Java 1.6 -->
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.13</version>
+					<version>2.15</version> <!-- NOTE 2.15 is the latest version still compiled with Java 1.6 -->
 					<configuration>
 						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 						<linkXref>true</linkXref>
@@ -299,7 +300,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.2</version>
+					<version>3.6</version> <!-- NOTE 3.6 is the latest version still compiled with Java 1.6 -->
 					<configuration>
 						<aggregate>true</aggregate>
 						<linkXref>true</linkXref>
