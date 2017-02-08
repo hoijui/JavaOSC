@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +24,7 @@ import java.util.regex.Pattern;
  *
  * @author Chandrasekhar Ramakrishnan
  */
-public class OSCMessage extends AbstractOSCPacket {
+public class OSCMessage implements OSCPacket {
 
 	/**
 	 * Java regular expression pattern matching a single invalid character.
@@ -87,7 +86,6 @@ public class OSCMessage extends AbstractOSCPacket {
 	public void setAddress(final String address) {
 		checkAddress(address);
 		this.address = address;
-		contentChanged();
 	}
 
 	/**
@@ -97,7 +95,6 @@ public class OSCMessage extends AbstractOSCPacket {
 	 */
 	public void addArgument(final Object argument) {
 		arguments.add(argument);
-		contentChanged();
 	}
 
 	/**
@@ -106,35 +103,6 @@ public class OSCMessage extends AbstractOSCPacket {
 	 */
 	public List<Object> getArguments() {
 		return Collections.unmodifiableList(arguments);
-	}
-
-	/**
-	 * Convert the address into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the address to
-	 */
-	private void computeAddressByteArray(final OSCJavaToByteArrayConverter stream) {
-		stream.write(address);
-	}
-
-	/**
-	 * Convert the arguments into a byte array.
-	 * Used internally only.
-	 * @param stream where to write the arguments to
-	 */
-	private void computeArgumentsByteArray(final OSCJavaToByteArrayConverter stream) {
-		stream.write(',');
-		stream.writeTypes(arguments);
-		for (final Object argument : arguments) {
-			stream.write(argument);
-		}
-	}
-
-	@Override
-	protected byte[] computeByteArray(final OSCJavaToByteArrayConverter stream) {
-		computeAddressByteArray(stream);
-		computeArgumentsByteArray(stream);
-		return stream.toByteArray();
 	}
 
 	/**

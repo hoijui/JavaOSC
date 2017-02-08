@@ -9,6 +9,9 @@
 package com.illposed.osc;
 
 import com.illposed.osc.utility.OSCByteArrayToJavaConverter;
+import com.illposed.osc.utility.OSCJavaToByteArrayConverter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -22,8 +25,11 @@ import org.junit.Test;
  */
 public class OSCBundleTest {
 
-	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) {
-		byte[] byteArray = bundle.getByteArray();
+	private void sendBundleTimestampTestHelper(OSCBundle bundle, Date expectedTimestamp) throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter stream = new OSCJavaToByteArrayConverter(buffer);
+		stream.write(bundle);
+		final byte[] byteArray = buffer.toByteArray();
 		OSCByteArrayToJavaConverter converter = new OSCByteArrayToJavaConverter();
 		OSCBundle packet = (OSCBundle) converter.convert(byteArray, byteArray.length);
 		if (!packet.getTimestamp().equals(expectedTimestamp)) {
@@ -39,7 +45,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundle() {
+	public void testSendBundle() throws IOException {
 		Date timestampNow = GregorianCalendar.getInstance().getTime();
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
@@ -48,7 +54,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundleImmediate() {
+	public void testSendBundleImmediate() throws IOException {
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
@@ -56,7 +62,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundleImmediateExplicit() {
+	public void testSendBundleImmediateExplicit() throws IOException {
 		Date timestampNow = GregorianCalendar.getInstance().getTime();
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
@@ -66,7 +72,7 @@ public class OSCBundleTest {
 	}
 
 	@Test
-	public void testSendBundleImmediateExplicitNull() {
+	public void testSendBundleImmediateExplicitNull() throws IOException {
 		Date timestampNow = GregorianCalendar.getInstance().getTime();
 		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
 		packetsSent.add(new OSCMessage("/dummy"));

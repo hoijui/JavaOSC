@@ -8,9 +8,13 @@
 
 package com.illposed.osc.utility;
 
+import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCImpulse;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCPacket;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Date;
@@ -34,6 +38,11 @@ import java.util.Date;
 public class OSCJavaToByteArrayConverter {
 
 	/**
+	 * 2208988800 seconds -- includes 17 leap years
+	 */
+	public static final long SECONDS_FROM_1900_TO_1970 = 2208988800L;
+
+	/**
 	 * baseline NTP time if bit-0=0 is 7-Feb-2036 @ 06:28:16 UTC
 	 */
 	protected static final long MSB_0_BASE_TIME = 2085978496000L;
@@ -42,15 +51,15 @@ public class OSCJavaToByteArrayConverter {
 	 */
 	protected static final long MSB_1_BASE_TIME = -2208988800000L;
 
-	private final ByteArrayOutputStream stream;
+	private final SizeTrackingOutputStream stream;
 	/** Used to encode message addresses and string parameters. */
 	private Charset charset;
 	private final byte[] intBytes;
 	private final byte[] longintBytes;
 
-	public OSCJavaToByteArrayConverter() {
+	public OSCJavaToByteArrayConverter(final OutputStream wrappedStream) {
 
-		this.stream = new ByteArrayOutputStream();
+		this.stream = new SizeTrackingOutputStream(wrappedStream);
 		this.charset = Charset.defaultCharset();
 		this.intBytes = new byte[4];
 		this.longintBytes = new byte[8];
@@ -77,7 +86,7 @@ public class OSCJavaToByteArrayConverter {
 	/**
 	 * Align the stream by padding it with '0's so it has a size divisible by 4.
 	 */
-	private void alignStream() {
+	private void alignStream() throws IOException {
 		final int alignmentOverlap = stream.size() % 4;
 		final int padLen = (4 - alignmentOverlap) % 4;
 		for (int pci = 0; pci < padLen; pci++) {
@@ -85,21 +94,86 @@ public class OSCJavaToByteArrayConverter {
 		}
 	}
 
+	private byte[] convertToByteArray(final OSCPacket packet) throws IOException {
+
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final OSCJavaToByteArrayConverter packetStream = new OSCJavaToByteArrayConverter(buffer);
+		packetStream.setCharset(getCharset());
+		if (packet instanceof OSCBundle) {
+			packetStream.write((OSCBundle) packet);
+		} else if (packet instanceof OSCMessage) {
+			packetStream.write((OSCMessage) packet);
+		} else {
+			throw new UnsupportedOperationException("We do not support writing packets of type: "
+					+ packet.getClass());
+		}
+		return buffer.toByteArray();
+	}
+
+	private void write(final OSCBundle bundle) throws IOException {
+		write("#bundle");
+		writeBundleTimestamp(bundle.getTimestamp());
+		for (final OSCPacket pkg : bundle.getPackets()) {
+			writeInternal(pkg);
+		}
+	}
+
 	/**
-	 * Convert the contents of the output stream to a byte array.
-	 * @return the byte array containing the byte stream
+	 * Convert the address into a byte array.
+	 * Used internally only.
+	 * @param stream where to write the address to
 	 */
-	public byte[] toByteArray() {
-		return stream.toByteArray();
+	private void writeAddressByteArray(final OSCMessage message) throws IOException {
+		write(message.getAddress());
+	}
+
+	/**
+	 * Convert the arguments into a byte array.
+	 * Used internally only.
+	 * @param stream where to write the arguments to
+	 */
+	private void writeArgumentsByteArray(final OSCMessage message) throws IOException {
+		write(',');
+		writeTypes(message.getArguments());
+		for (final Object argument : message.getArguments()) {
+			write(argument);
+		}
+	}
+
+	private void write(final OSCMessage message) throws IOException {
+		writeAddressByteArray(message);
+		writeArgumentsByteArray(message);
+	}
+
+	private void writeInternal(final OSCPacket packet) throws IOException {
+
+		// HACK NOTE We have to do it in this ugly way,
+		//   because we have to know the packets size in bytes
+		//   and write it to the stream,
+		//   before we can write the packets content to the stream.
+		final byte[] packetBytes = convertToByteArray(packet);
+		write(packetBytes); // this first writes the #bytes, before the actual bytes
+	}
+
+	public void write(final OSCPacket packet) throws IOException {
+
+		if (packet instanceof OSCBundle) {
+			write((OSCBundle) packet);
+		} else if (packet instanceof OSCMessage) {
+			write((OSCMessage) packet);
+		} else {
+			throw new UnsupportedOperationException("We do not support writing packets of type: "
+					+ packet.getClass());
+		}
 	}
 
 	/**
 	 * Write bytes into the byte stream.
 	 * @param bytes  bytes to be written
 	 */
-	public void write(byte[] bytes) {
+	void write(final byte[] bytes) throws IOException {
 		writeInteger32ToByteArray(bytes.length);
-		writeUnderHandler(bytes);
+		stream.write(bytes);
 		alignStream();
 	}
 
@@ -107,7 +181,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Write an integer into the byte stream.
 	 * @param anInt the integer to be written
 	 */
-	public void write(int anInt) {
+	void write(final int anInt) throws IOException {
 		writeInteger32ToByteArray(anInt);
 	}
 
@@ -115,7 +189,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Write a float into the byte stream.
 	 * @param aFloat floating point number to be written
 	 */
-	public void write(Float aFloat) {
+	void write(final Float aFloat) throws IOException {
 		writeInteger32ToByteArray(Float.floatToIntBits(aFloat));
 	}
 
@@ -123,29 +197,52 @@ public class OSCJavaToByteArrayConverter {
 	 * Write a double into the byte stream (8 bytes).
 	 * @param aDouble double precision floating point number to be written
 	 */
-	public void write(Double aDouble) {
+	void write(final Double aDouble) throws IOException {
 		writeInteger64ToByteArray(Double.doubleToRawLongBits(aDouble));
 	}
 
 	/**
 	 * @param anInt the integer to be written
 	 */
-	public void write(Integer anInt) {
+	void write(final Integer anInt) throws IOException {
 		writeInteger32ToByteArray(anInt);
 	}
 
 	/**
 	 * @param aLong the double precision integer to be written
 	 */
-	public void write(Long aLong) {
+	void write(final Long aLong) throws IOException {
 		writeInteger64ToByteArray(aLong);
 	}
 
 	/**
 	 * @param timestamp the timestamp to be written
 	 */
-	public void write(Date timestamp) {
+	void write(final Date timestamp) throws IOException {
 		writeInteger64ToByteArray(javaToNtpTimeStamp(timestamp.getTime()));
+	}
+
+	/**
+	 * Convert the time-tag (a Java Date) into the OSC byte stream.
+	 * Used Internally.
+	 * @param stream where to write the time-tag to
+	 */
+	private void writeBundleTimestamp(final Date timestamp) throws IOException {
+		if ((null == timestamp) || (timestamp.equals(OSCBundle.TIMESTAMP_IMMEDIATE))) {
+			write((int) 0);
+			write((int) 1);
+			return;
+		}
+
+		final long millisecs = timestamp.getTime();
+		final long secsSince1970 = (long) (millisecs / 1000);
+		final long secs = secsSince1970 + SECONDS_FROM_1900_TO_1970;
+
+		// this line was cribbed from jakarta commons-net's NTP TimeStamp code
+		final long fraction = ((millisecs % 1000) * 0x100000000L) / 1000;
+
+		write((int) secs);
+		write((int) fraction);
 	}
 
 	/**
@@ -184,9 +281,9 @@ public class OSCJavaToByteArrayConverter {
 	 * Write a string into the byte stream.
 	 * @param aString the string to be written
 	 */
-	public void write(String aString) {
+	void write(final String aString) throws IOException {
 		final byte[] stringBytes = aString.getBytes(charset);
-		writeUnderHandler(stringBytes);
+		stream.write(stringBytes);
 		stream.write(0);
 		alignStream();
 	}
@@ -195,7 +292,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Write a char into the byte stream, and ensure it is 4 byte aligned again.
 	 * @param aChar the character to be written
 	 */
-	public void write(Character aChar) {
+	void write(final Character aChar) throws IOException {
 		stream.write((char) aChar);
 		alignStream();
 	}
@@ -205,7 +302,7 @@ public class OSCJavaToByteArrayConverter {
 	 * CAUTION, this does not ensure 4 byte alignment (it actually breaks it)!
 	 * @param aChar the character to be written
 	 */
-	public void write(char aChar) {
+	void write(final char aChar) throws IOException {
 		stream.write(aChar);
 	}
 
@@ -225,7 +322,7 @@ public class OSCJavaToByteArrayConverter {
 	 * @param anObject (usually) one of Float, Double, String, Character, Integer, Long,
 	 *   or array of these.
 	 */
-	public void write(Object anObject) {
+	void write(Object anObject) throws IOException {
 		// Can't do switch on class
 		if (anObject instanceof Collection) {
 			@SuppressWarnings("unchecked") final Collection<Object> theArray = (Collection<Object>) anObject;
@@ -259,7 +356,7 @@ public class OSCJavaToByteArrayConverter {
 	 * converts to.
 	 * @param typeClass Class of a Java object in the arguments
 	 */
-	public void writeType(Class typeClass) {
+	private void writeType(final Class typeClass) throws IOException {
 
 		// A big ol' else-if chain -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!
@@ -291,7 +388,7 @@ public class OSCJavaToByteArrayConverter {
 	 * Write the types for an array element in the arguments.
 	 * @param arguments array of base Objects
 	 */
-	private void writeTypesArray(Collection<Object> arguments) {
+	private void writeTypesArray(Collection<Object> arguments) throws IOException {
 
 		for (final Object argument : arguments) {
 			if (null == argument) {
@@ -324,36 +421,21 @@ public class OSCJavaToByteArrayConverter {
 	 * Write types for the arguments.
 	 * @param arguments  the arguments to an OSCMessage
 	 */
-	public void writeTypes(Collection<Object> arguments) {
+	public void writeTypes(Collection<Object> arguments) throws IOException {
 
 		writeTypesArray(arguments);
 		// we always need to terminate with a zero,
 		// even if (especially when) the stream is already aligned.
-		stream.write(0);
+		stream.write((byte) 0);
 		// align the stream with padded bytes
 		alignStream();
-	}
-
-	/**
-	 * Write bytes to the stream, catching IOExceptions and converting them to
-	 * RuntimeExceptions.
-	 * @param bytes to be written to the stream
-	 */
-	private void writeUnderHandler(byte[] bytes) {
-
-		try {
-			stream.write(bytes);
-		} catch (IOException ex) {
-			throw new RuntimeException("You're screwed:"
-					+ " IOException writing to a ByteArrayOutputStream", ex);
-		}
 	}
 
 	/**
 	 * Write a 32 bit integer to the byte array without allocating memory.
 	 * @param value a 32 bit integer.
 	 */
-	private void writeInteger32ToByteArray(int value) {
+	private void writeInteger32ToByteArray(int value) throws IOException {
 		//byte[] intBytes = new byte[4];
 		//I allocated the this buffer globally so the GC has less work
 
@@ -362,14 +444,14 @@ public class OSCJavaToByteArrayConverter {
 		intBytes[1] = (byte)value; value >>>= 8;
 		intBytes[0] = (byte)value;
 
-		writeUnderHandler(intBytes);
+		stream.write(intBytes);
 	}
 
 	/**
 	 * Write a 64 bit integer to the byte array without allocating memory.
 	 * @param value a 64 bit integer.
 	 */
-	private void writeInteger64ToByteArray(long value) {
+	private void writeInteger64ToByteArray(long value) throws IOException {
 		longintBytes[7] = (byte)value; value >>>= 8;
 		longintBytes[6] = (byte)value; value >>>= 8;
 		longintBytes[5] = (byte)value; value >>>= 8;
@@ -379,6 +461,6 @@ public class OSCJavaToByteArrayConverter {
 		longintBytes[1] = (byte)value; value >>>= 8;
 		longintBytes[0] = (byte)value;
 
-		writeUnderHandler(longintBytes);
+		stream.write(longintBytes);
 	}
 }
