@@ -62,6 +62,10 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		this.converter = parserFactory.create();
 		this.dispatcher = new OSCPacketDispatcher();
+		// NOTE We do this, even though it is against the OSC (1.0) specification,
+		//   because this is how it worked in this library until Feb. 2015.,
+		//   and thus users of this library expect this behavour by default.
+		dispatcher.setAlwaysDispatchingImmediatly(true);
 		this.listeningThread = null;
 	}
 
