@@ -12,8 +12,6 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -115,11 +113,10 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final String value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final String value) throws OSCSerializeException
 	{
 		final byte[] stringBytes = value.getBytes(charset);
-		stream.write(stringBytes);
-		OSCSerializer.terminateAndAlign(stream);
+		output.put(stringBytes);
+		OSCSerializer.terminateAndAlign(output);
 	}
 }

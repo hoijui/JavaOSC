@@ -9,8 +9,8 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class OSCSerializerTest {
 			final Object... arguments)
 			throws IOException, OSCSerializeException
 	{
-		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		final OSCSerializerFactory serializerFactory = OSCSerializerFactory.createDefaultFactory();
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<String, Object>();
@@ -52,7 +52,8 @@ public class OSCSerializerTest {
 		final OSCSerializer stream = serializerFactory.create(buffer);
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
 		stream.write(oscMessage);
-		byte[] result = buffer.toByteArray();
+		buffer.flip();
+		byte[] result = OSCSerializer.toByteArray(buffer);
 		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);
 		result = Arrays.copyOfRange(result, toBeStrippedOffPrefixBytes, result.length);
 		checkResultEqualsAnswer(result, expected);

@@ -12,13 +12,13 @@ import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerFactory;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 
 /**
  * Sends OSC packets to a specific UDP/IP address and port.
@@ -43,7 +43,7 @@ import java.net.UnknownHostException;
 public class OSCPortOut extends OSCPort {
 
 	private final InetAddress address;
-	private final ByteArrayOutputStream outputBuffer;
+	private final ByteBuffer outputBuffer;
 	private final OSCSerializer converter;
 
 	/**
@@ -62,7 +62,7 @@ public class OSCPortOut extends OSCPort {
 	{
 		super(socket, port);
 		this.address = address;
-		this.outputBuffer = new ByteArrayOutputStream();
+		this.outputBuffer = ByteBuffer.allocate(OSCPortIn.BUFFER_SIZE);
 		this.converter = serializerFactory.create(outputBuffer);
 	}
 
@@ -113,11 +113,15 @@ public class OSCPortOut extends OSCPort {
 	 * @throws OSCSerializeException if the packet fails to serialize
 	 */
 	public void send(final OSCPacket aPacket) throws IOException, OSCSerializeException {
-		outputBuffer.reset();
+
+		outputBuffer.rewind();
 		converter.write(aPacket);
-		final byte[] byteArray = outputBuffer.toByteArray();
-		final DatagramPacket packet =
-				new DatagramPacket(byteArray, byteArray.length, address, getPort());
+		outputBuffer.flip();
+		final ByteBuffer oscPacket = outputBuffer;
+		final byte[] oscPacketByteArray = OSCSerializer.toByteArray(oscPacket);
+
+		final DatagramPacket packet = new DatagramPacket(
+				oscPacketByteArray, oscPacketByteArray.length, address, getPort());
 		getSocket().send(packet);
 	}
 

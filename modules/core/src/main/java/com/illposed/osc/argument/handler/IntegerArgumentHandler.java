@@ -11,8 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -62,8 +60,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Integer value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final Integer value) throws OSCSerializeException
 	{
 		int curValue = value;
 		final byte[] intBytes = new byte[4];
@@ -72,6 +69,6 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 		intBytes[1] = (byte)curValue; curValue >>>= 8;
 		intBytes[0] = (byte)curValue;
 
-		stream.write(intBytes);
+		output.put(intBytes);
 	}
 }

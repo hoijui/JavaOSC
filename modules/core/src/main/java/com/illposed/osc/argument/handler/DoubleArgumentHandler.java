@@ -11,8 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -60,9 +58,8 @@ public class DoubleArgumentHandler implements ArgumentHandler<Double>, Cloneable
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Double value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final Double value) throws OSCSerializeException
 	{
-		LongArgumentHandler.INSTANCE.serialize(stream, Double.doubleToRawLongBits(value));
+		LongArgumentHandler.INSTANCE.serialize(output, Double.doubleToRawLongBits(value));
 	}
 }

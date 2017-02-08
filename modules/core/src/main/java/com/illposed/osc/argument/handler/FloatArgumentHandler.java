@@ -11,8 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -60,9 +58,7 @@ public class FloatArgumentHandler implements ArgumentHandler<Float>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final Float value)
-			throws IOException, OSCSerializeException
-	{
-		IntegerArgumentHandler.INSTANCE.serialize(stream, Float.floatToRawIntBits(value));
+	public void serialize(final ByteBuffer output, final Float value) throws OSCSerializeException {
+		IntegerArgumentHandler.INSTANCE.serialize(output, Float.floatToRawIntBits(value));
 	}
 }

@@ -11,7 +11,6 @@ package com.illposed.osc;
 import com.illposed.osc.argument.OSCTimeStamp;
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCUnsigned;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -46,6 +45,7 @@ public class OSCReparserTest {
 			= new Comparator<ByteBuffer>() {
 				@Override
 				public int compare(final ByteBuffer obj1, final ByteBuffer obj2) {
+					obj1.flip(); // HACK
 					return obj1.compareTo(obj2);
 				}
 			};
@@ -53,11 +53,12 @@ public class OSCReparserTest {
 	private static ByteBuffer serialize(final OSCPacket packet)
 			throws IOException, OSCSerializeException
 	{
-		final ByteArrayOutputStream serializedStream = new ByteArrayOutputStream();
+		final ByteBuffer serialized = ByteBuffer.allocate(1024);
 		final OSCSerializer serializer
-				= OSCSerializerFactory.createDefaultFactory().create(serializedStream);
+				= OSCSerializerFactory.createDefaultFactory().create(serialized);
 		serializer.write(packet);
-		return ByteBuffer.wrap(serializedStream.toByteArray()).asReadOnlyBuffer();
+		serialized.flip();
+		return serialized;
 	}
 
 	private static OSCPacket parse(final ByteBuffer packetBytes)

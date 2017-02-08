@@ -12,8 +12,6 @@ import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.SizeTrackingOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -65,9 +63,9 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	}
 
 	@Override
-	public void serialize(final SizeTrackingOutputStream stream, final OSCMidiMessage value)
-			throws IOException, OSCSerializeException
+	public void serialize(final ByteBuffer output, final OSCMidiMessage value)
+			throws OSCSerializeException
 	{
-		stream.write(value.toContentArray());
+		output.put(value.toContentArray());
 	}
 }
