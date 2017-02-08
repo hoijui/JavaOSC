@@ -255,6 +255,14 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.0.2</version>
+					<configuration>
+						<archive>
+							<manifestEntries>
+								<!-- prevent the local user-name from entering the JAR manifest -->
+								<Built-By />
+							</manifestEntries>
+						</archive>
+					</configuration>
 				</plugin>
 
 				<plugin>
