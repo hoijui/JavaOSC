@@ -51,6 +51,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private boolean listening;
 	private final OSCByteArrayToJavaConverter converter;
 	private final OSCPacketDispatcher dispatcher;
+	private Thread listeningThread;
 
 	/**
 	 * Create an OSCPort that listens using a specified socket.
@@ -61,6 +62,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		this.converter = new OSCByteArrayToJavaConverter();
 		this.dispatcher = new OSCPacketDispatcher();
+		this.listeningThread = null;
 	}
 
 	/**
@@ -125,18 +127,26 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Start listening for incoming OSCPackets
 	 */
 	public void startListening() {
-		listening = true;
-		final Thread thread = new Thread(this);
-		// The JVM exits when the only threads running are all daemon threads.
-		thread.setDaemon(true);
-		thread.start();
+
+		if (!isListening()) { // NOTE This is not thread-save
+			listening = true;
+			listeningThread = new Thread(this);
+			// The JVM exits when the only threads running are all daemon threads.
+			listeningThread.setDaemon(true);
+			listeningThread.start();
+		}
 	}
 
 	/**
 	 * Stop listening for incoming OSCPackets
 	 */
 	public void stopListening() {
+
 		listening = false;
+		if (listeningThread != null) { // NOTE This is not thread-save
+			listeningThread.interrupt();
+		}
+		listeningThread = null;
 	}
 
 	/**
