@@ -111,10 +111,12 @@ To release a development version to the Sonatype snapshot repository only.
 		package \
 		verify \
 		site
+	mvn release:clean
 	mvn \
 		-DdryRun=true \
 		release:prepare
 	# run the prepare phase for real
+	mvn release:clean
 	mvn \
 		-DdryRun=false \
 		release:prepare
