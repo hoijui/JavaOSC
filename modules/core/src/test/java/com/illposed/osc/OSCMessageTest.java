@@ -552,7 +552,7 @@ public class OSCMessageTest {
 		}
 		// We can safely suppress the warning, as we already made sure the cast will not fail.
 		@SuppressWarnings("unchecked") final List<Object> theArray = (List<Object>) arguments.get(0);
-		for (int i = 0; i < 2; ++i) {
+		for (int i = 0; i < floats.size(); ++i) {
 			if (!floats.get(i).equals(theArray.get(i))) {
 				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not "
 						+ theArray.get(i));
