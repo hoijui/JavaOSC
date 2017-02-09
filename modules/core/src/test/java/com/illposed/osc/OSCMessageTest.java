@@ -484,7 +484,8 @@ public class OSCMessageTest {
 		if (!(arguments.get(0) instanceof List)) {
 			Assert.fail("arguments.get(0) should be a Object array, not " + arguments.get(0));
 		}
-		final List<Object> theArray = (List<Object>) arguments.get(0);
+		// We can safely suppress the warning, as we already made sure the cast will not fail.
+		@SuppressWarnings("unchecked") final List<Object> theArray = (List<Object>) arguments.get(0);
 		for (int i = 0; i < 2; ++i) {
 			if (!floats.get(i).equals(theArray.get(i))) {
 				Assert.fail("Array element " + i + " should be " + floats.get(i) + " not " + theArray.get(i));
