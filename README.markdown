@@ -171,6 +171,7 @@ use the oldest possible JDK version to compile (currently 1.6)
 	# perform the release
 	git push origin master <release-tag>
 	mvn release:perform
+	mvn deploy -P release
 	# leave our "private" shell instance again
 	exit
 
@@ -180,6 +181,7 @@ This does the following:
 * checks-out the release tag
 * builds
 * deploy into Sonatype staging repository
+* promote it on Maven Central repository (may have a delay of up to 4h)
 
 ### Release the site
 
@@ -192,28 +194,6 @@ This does the following:
 * generates the site
 * pushes the site to the GitHub `gh-pages` branch,
   which is visible under `http://hoijui.github.com/JavaOSC/`
-
-### Promote it on Maven
-
-Use one of these methods:
-
-* _default_: using the Nexus staging plugin
-
-		mvn nexus:staging-close
-		mvn nexus:staging-release
-
-* _alternative_: using the web-interface
-	1. firefox https://oss.sonatype.org
-	2. login
-	3. got to the "Staging Repositories" tab
-	4. select "com.illposed..."
-	5. "Close" it
-	6. select "com.illposed..." again
-	7. "Release" it
-
-This moves the artifact from the Sonatype staging to the main Sonatype repository.
-From there, it will automatically be copied to Maven Central,
-which happens at least every four hours.
 
 
 ## Thanks
