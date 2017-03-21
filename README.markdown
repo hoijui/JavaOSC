@@ -97,6 +97,31 @@ To release a development version to the Sonatype snapshot repository only.
 
 	mvn release:clean
 
+### Setup for signing the release
+
+To be able to sign the release artifacts,
+make sure you have a section in your `~/.m2/settings.xml` that looks like this:
+
+	<profiles>
+		<profile>
+			<id>ossrh</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<gpg.executable>gpg2</gpg.executable>
+				<!--
+					This needs to match the `uid` as displayed by `gpg2 --list-keys`,
+					and needs to be XML escaped.
+				-->
+				<gpg.keyname>Firstname Lastname (Comment) &lt;user@email.org&gt;</gpg.keyname>
+			</properties>
+		</profile>
+	</profiles>
+
+See [the Sonatype guide](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
+for further details about how to work with GPG keys.
+
 ### Prepare the release
 
 	# open a "private" shell, to not spill the changes in env vars
@@ -110,6 +135,7 @@ To release a development version to the Sonatype snapshot repository only.
 		clean \
 		package \
 		verify \
+		gpg:sign \
 		site
 	mvn release:clean
 	mvn \
