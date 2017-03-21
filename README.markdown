@@ -119,6 +119,7 @@ make sure you have a section in your `~/.m2/settings.xml` that looks like this:
 		</profile>
 	</profiles>
 
+If you have not yet done so, generate and publish a key-pair.
 See [the Sonatype guide](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
 for further details about how to work with GPG keys.
 
