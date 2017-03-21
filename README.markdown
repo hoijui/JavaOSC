@@ -183,18 +183,6 @@ This does the following:
 * deploy into Sonatype staging repository
 * promote it on Maven Central repository (may have a delay of up to 4h)
 
-### Release the site
-
-	git checkout <release-tag>
-	mvn clean site
-	git checkout master
-
-This does the following:
-
-* generates the site
-* pushes the site to the GitHub `gh-pages` branch,
-  which is visible under `http://hoijui.github.com/JavaOSC/`
-
 
 ## Thanks
 
