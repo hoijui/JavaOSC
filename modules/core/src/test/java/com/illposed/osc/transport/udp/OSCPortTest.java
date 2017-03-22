@@ -553,7 +553,7 @@ public class OSCPortTest {
 
 	/**
 	 * Checks if buffers are correctly reset after receiving a message.
-	 * @throws Exception
+	 * @throws Exception if anything goes wrong
 	 */
 	@Test
 	public void testReceivingLongAfterShort() throws Exception {
