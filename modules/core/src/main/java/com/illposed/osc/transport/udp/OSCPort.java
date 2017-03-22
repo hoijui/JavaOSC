@@ -32,6 +32,8 @@ public class OSCPort {
 		this.remote = remote;
 		this.channel = DatagramChannel.open();
 
+		// NOTE StandardSocketOptions is only available since Java 1.7
+		this.channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
 		this.channel.socket().bind(local);
 	}
 
