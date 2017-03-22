@@ -328,6 +328,27 @@ public class OSCPortTest {
 		}
 	}
 
+	/**
+	 * This test would always fail (tested on 64bit Ubuntu Linux),
+	 * because we try to bind to an IPv4 address, but after successful binding,
+	 * the local address is an IPv6 one.
+	 * This seems to be some Linux oddity.
+	 * @throws Exception if anything goes wrong
+	 */
+	@Test
+	public void testBindChannel() throws Exception {
+
+		final SocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
+
+		final DatagramChannel channel = DatagramChannel.open();
+		// NOTE StandardSocketOptions is only available since Java 1.7
+		channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
+		channel.socket().bind(bindAddress);
+
+		// NOTE DatagramChannel#getLocalAddress() is only available since Java 1.7
+		Assert.assertEquals(bindAddress, channel.getLocalAddress());
+	}
+
 	@Test
 	public void testStart() throws Exception {
 
