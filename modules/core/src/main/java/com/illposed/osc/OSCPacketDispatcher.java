@@ -161,6 +161,30 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	/**
+	 * Removes a listener (<i>Method</i> in OSC speak) that will no longer
+	 * be notified of incoming messages that match the selector.
+	 * @param messageSelector selects which messages will be forwarded to the listener
+	 * @param listener receives messages accepted by the selector
+	 */
+	public void removeListener(
+			final MessageSelector messageSelector,
+			final OSCMessageListener listener)
+	{
+		selectorToListener.remove(messageSelector, listener);
+		if (metaInfoRequired) {
+			// re-evaluate whether meta info is still required
+			boolean metaInfoRequiredTmp = false;
+			for (final MessageSelector listedMessageSelector : selectorToListener.keySet()) {
+				if (listedMessageSelector.isInfoRequired()) {
+					metaInfoRequiredTmp = true;
+					break;
+				}
+			}
+			metaInfoRequired = metaInfoRequiredTmp;
+		}
+	}
+
 	public void dispatchPacket(final OSCPacket packet) {
 		dispatchPacket(packet, OSCTimeTag64.IMMEDIATE);
 	}

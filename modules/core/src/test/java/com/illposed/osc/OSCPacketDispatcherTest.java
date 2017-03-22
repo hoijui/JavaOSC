@@ -98,4 +98,16 @@ public class OSCPacketDispatcherTest {
 		dispatcher.dispatchPacket(message);
 		Assert.assertEquals(numArguments, listener1.getMessage().getArguments().size());
 	}
+
+	@Test
+	public void testListenerRemoval() {
+		// change the setup
+		dispatcher.removeListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
+
+		OSCMessage message = new OSCMessage("/listener1");
+		dispatcher.dispatchPacket(message);
+		if (listener1.isMessageReceived()) {
+			Assert.fail("Message listener did not get removed");
+		}
+	}
 }
