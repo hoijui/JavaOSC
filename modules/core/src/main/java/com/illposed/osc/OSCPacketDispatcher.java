@@ -13,11 +13,10 @@ import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -40,7 +39,7 @@ public class OSCPacketDispatcher {
 	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
-	private final Map<MessageSelector, OSCMessageListener> selectorToListener;
+	private final List<PacketListener> packetListeners;
 	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
@@ -55,6 +54,49 @@ public class OSCPacketDispatcher {
 			final Thread thread = new Thread(runnable);
 			thread.setDaemon(true);
 			return thread;
+		}
+	}
+
+	private static final class PacketListener {
+
+		private final MessageSelector selector;
+		private final OSCMessageListener listener;
+
+		public PacketListener(
+				final MessageSelector selector,
+				final OSCMessageListener listener)
+		{
+			this.selector = selector;
+			this.listener = listener;
+		}
+
+		public MessageSelector getSelector() {
+			return selector;
+		}
+
+		public OSCMessageListener getListener() {
+			return listener;
+		}
+
+		@Override
+		public boolean equals(final Object other) {
+
+			boolean equal = false;
+			if (other instanceof PacketListener) {
+				final PacketListener otherSelector = (PacketListener) other;
+				equal = this.selector.equals(otherSelector.selector)
+						&& this.listener.equals(otherSelector.listener);
+			}
+
+			return equal;
+		}
+
+		@Override
+		public int hashCode() {
+			int hash = 7;
+			hash = 89 * hash + this.selector.hashCode();
+			hash = 89 * hash + this.listener.hashCode();
+			return hash;
 		}
 	}
 
@@ -102,7 +144,7 @@ public class OSCPacketDispatcher {
 		this.typeTagsCharset = (propertiesCharset == null)
 				? Charset.defaultCharset()
 				: propertiesCharset;
-		this.selectorToListener = new HashMap<MessageSelector, OSCMessageListener>();
+		this.packetListeners = new ArrayList<PacketListener>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediatly = false;
 		this.dispatchScheduler = dispatchScheduler;
@@ -148,6 +190,10 @@ public class OSCPacketDispatcher {
 	/**
 	 * Adds a listener (<i>Method</i> in OSC speak) that will be notified
 	 * of incoming messages that match the selector.
+	 * Registered listeners will be notified of selected messages in the order
+	 * they were added to the dispatcher.
+	 * A listener can be registered multiple times,
+	 * and will consequently be notified as many times as it was added.
 	 * @param messageSelector selects which messages will be forwarded to the listener
 	 * @param listener receives messages accepted by the selector
 	 */
@@ -155,28 +201,29 @@ public class OSCPacketDispatcher {
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
 	{
-		selectorToListener.put(messageSelector, listener);
+		packetListeners.add(new PacketListener(messageSelector, listener));
 		if (messageSelector.isInfoRequired()) {
 			metaInfoRequired = true;
 		}
 	}
 
 	/**
-	 * Removes a listener (<i>Method</i> in OSC speak) that will no longer
-	 * be notified of incoming messages that match the selector.
-	 * @param messageSelector selects which messages will be forwarded to the listener
-	 * @param listener receives messages accepted by the selector
+	 * Removes a listener (<i>Method</i> in OSC speak), which will no longer
+	 * be notified of incoming messages.
+	 * Removes only the first occurrence of the selector and listener pair.
+	 * @param messageSelector has to match the registered pair to be removed
+	 * @param listener will no longer receive messages accepted by the selector
 	 */
 	public void removeListener(
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
 	{
-		selectorToListener.remove(messageSelector, listener);
+		packetListeners.remove(new PacketListener(messageSelector, listener));
 		if (metaInfoRequired) {
 			// re-evaluate whether meta info is still required
 			boolean metaInfoRequiredTmp = false;
-			for (final MessageSelector listedMessageSelector : selectorToListener.keySet()) {
-				if (listedMessageSelector.isInfoRequired()) {
+			for (final PacketListener packetListener : packetListeners) {
+				if (packetListener.getSelector().isInfoRequired()) {
 					metaInfoRequiredTmp = true;
 					break;
 				}
@@ -269,11 +316,9 @@ public class OSCPacketDispatcher {
 
 		ensureMetaInfo(message);
 
-		for (final Entry<MessageSelector, OSCMessageListener> addrList
-				: selectorToListener.entrySet())
-		{
-			if (addrList.getKey().matches(message)) {
-				addrList.getValue().acceptMessage(time, message);
+		for (final PacketListener packetListener : packetListeners) {
+			if (packetListener.getSelector().matches(message)) {
+				packetListener.getListener().acceptMessage(time, message);
 			}
 		}
 	}

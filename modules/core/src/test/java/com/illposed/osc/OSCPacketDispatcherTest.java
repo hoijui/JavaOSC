@@ -126,4 +126,32 @@ public class OSCPacketDispatcherTest {
 			Assert.fail("Message did not get sent to listener 2");
 		}
 	}
+
+	@Test
+	public void testDispatchMultipleTimesSingleListenersSameSelector() {
+		// change the setup
+		dispatcher.removeListener(new OSCPatternAddressMessageSelector("/listener2"), listener2);
+		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
+
+		OSCMessage message = new OSCMessage("/listener1");
+		dispatcher.dispatchPacket(message);
+		if (listener1.getMessageReceivedCount() != 2) {
+			Assert.fail("Message did not get sent two times to listener 1, but "
+					+ listener1.getMessageReceivedCount() + " times");
+		}
+	}
+
+	@Test
+	public void testDispatchMultipleTimesSingleListenersDifferentSelectors() {
+		// change the setup
+		dispatcher.removeListener(new OSCPatternAddressMessageSelector("/listener2"), listener2);
+		dispatcher.addListener(new OSCPatternAddressMessageSelector("/*"), listener1);
+
+		OSCMessage message = new OSCMessage("/listener1");
+		dispatcher.dispatchPacket(message);
+		if (listener1.getMessageReceivedCount() != 2) {
+			Assert.fail("Message did not get sent two times to listener 1, but "
+					+ listener1.getMessageReceivedCount() + " times");
+		}
+	}
 }

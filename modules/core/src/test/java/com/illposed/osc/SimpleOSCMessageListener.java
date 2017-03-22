@@ -12,13 +12,13 @@ import com.illposed.osc.argument.OSCTimeTag64;
 
 public class SimpleOSCMessageListener implements OSCMessageListener {
 
-	private boolean messageReceived;
+	private int messageReceivedCount;
 	private OSCTimeTag64 receivedTimestamp;
 	private OSCMessage message;
 
 	public SimpleOSCMessageListener() {
 
-		this.messageReceived = false;
+		this.messageReceivedCount = 0;
 		this.receivedTimestamp = null;
 		this.message = null;
 	}
@@ -28,7 +28,11 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 	}
 
 	public boolean isMessageReceived() {
-		return messageReceived;
+		return (messageReceivedCount > 0);
+	}
+
+	public int getMessageReceivedCount() {
+		return messageReceivedCount;
 	}
 
 	public OSCMessage getMessage() {
@@ -37,7 +41,7 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 
 	@Override
 	public void acceptMessage(final OSCTimeTag64 time, final OSCMessage message) {
-		messageReceived = true;
+		messageReceivedCount++;
 		receivedTimestamp = time;
 		this.message = message;
 	}
