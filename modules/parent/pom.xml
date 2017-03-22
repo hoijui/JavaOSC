@@ -9,8 +9,8 @@
 		<project.build.encoding>UTF-8</project.build.encoding>
 		<project.build.sourceEncoding>${project.build.encoding}</project.build.sourceEncoding>
 		<project.build.resourceEncoding>${project.build.encoding}</project.build.resourceEncoding>
-		<java.old.version>6</java.old.version>
-		<java.old.home>${env.JAVA_6_HOME}</java.old.home>
+		<java.old.version>7</java.old.version>
+		<java.old.home>${env.JAVA_7_HOME}</java.old.home>
 		<!-- NOTE This works for reactor/aggregation & child module builds. -->
 		<root.basedir>${project.basedir}/../parent</root.basedir>
 	</properties>

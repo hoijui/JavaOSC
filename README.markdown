@@ -128,7 +128,7 @@ for further details about how to work with GPG keys.
 	# open a "private" shell, to not spill the changes in env vars
 	bash
 	# set env vars
-	export JAVA_HOME="${JAVA_6_HOME}"
+	export JAVA_HOME="${JAVA_7_HOME}"
 	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
 	export PATH="${MAVEN_HOME}/bin/:${PATH}"
 	# check if everything is in order
@@ -153,7 +153,7 @@ for further details about how to work with GPG keys.
 This does the following:
 
 * _Important for backwards compatibility_:
-use the oldest possible JDK version to compile (currently 1.6)
+use the oldest possible JDK version to compile (currently 1.7)
 * asks for the release and new snapshot versions to use (for all modules)
 * packages
 * signs with GPG
@@ -165,7 +165,7 @@ use the oldest possible JDK version to compile (currently 1.6)
 	# open a "private" shell, to not spill the changes in env vars
 	bash
 	# set env vars
-	export JAVA_HOME="${JAVA_6_HOME}"
+	export JAVA_HOME="${JAVA_7_HOME}"
 	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
 	export PATH="${MAVEN_HOME}/bin/:${PATH}"
 	# perform the release
