@@ -188,7 +188,7 @@ public class OSCPacketDispatcher {
 	}
 
 	private long calculateDelayFromNow(final OSCTimeStamp timestamp) {
-		return timestamp.toDate().getTime() - System.currentTimeMillis();
+		return timestamp.toDate(null).getTime() - System.currentTimeMillis();
 	}
 
 	private void dispatchBundle(final OSCBundle bundle) {

@@ -25,10 +25,21 @@ import java.util.Map;
 public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Cloneable {
 
 	public static final ArgumentHandler<Date> INSTANCE = new DateTimeStampArgumentHandler();
+	/**
+	 * This {@link Date} property indicates the epoch into which we parse
+	 * OSC Timetags.
+	 * The Java dates parsed by this handler will be in the same OSC/NTP epoch
+	 * as this properties value.
+	 */
+	public static final String PROP_NAME_EPOCH_INDICATOR_TIME = "epoch-indicator";
+
+	private Long epochIndicatorTime;
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
 	protected DateTimeStampArgumentHandler() {
-		// ctor declared only for setting the access level
+
+		// now
+		this.epochIndicatorTime = new Date().getTime();
 	}
 
 	@Override
@@ -41,9 +52,18 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 		return Date.class;
 	}
 
+	public void setEpochIndicatorTime(final Long epochIndicatorTime) {
+		this.epochIndicatorTime = epochIndicatorTime;
+	}
+
 	@Override
 	public void setProperties(final Map<String, Object> properties) {
-		// we make no use of any properties
+
+		final Long newEpochIndicatorTime
+				= (Long) properties.get(PROP_NAME_EPOCH_INDICATOR_TIME);
+		if (newEpochIndicatorTime != null) {
+			setEpochIndicatorTime(newEpochIndicatorTime);
+		}
 	}
 
 	@Override
@@ -59,7 +79,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 
 	@Override
 	public Date parse(final ByteBuffer input) throws OSCParseException {
-		return TimeStampArgumentHandler.INSTANCE.parse(input).toDate();
+		return TimeStampArgumentHandler.INSTANCE.parse(input).toDate(epochIndicatorTime);
 	}
 
 	@Override

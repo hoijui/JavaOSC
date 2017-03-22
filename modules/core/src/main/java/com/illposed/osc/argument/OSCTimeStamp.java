@@ -23,6 +23,16 @@ import java.util.Date;
  * OSC <i>Timetag</i> aswell as <code>Date</code> are time-zone agnostic,
  * though <code>Date</code> might use the default {@link java.util.Locale}
  * in some cases, like when formatting as a <code>String</code>.
+ * The epoch 0 starts in 1900 and ends in 2036.
+ * Dates before or after the end of this first epoch are represented with
+ * a rolled over (the same) value range again, which means one needs to
+ * define the epoch to convert to,
+ * when converting from the short epoch OSC Timetag to a bigger range one like
+ * Java <code>Date</code>.
+ * We do this with the
+ * {@link com.illposed.osc.argument.handler.DateTimeStampArgumentHandler#PROP_NAME_EPOCH_INDICATOR_TIME}
+ * property.
+ * By default, it uses the epoch we are currently in.
  * TODO When advancing to Java 8, we should introduce <tt>toInstant()</tt>
  *   and <tt>valueOf(Instant)</tt> methods (see {@link java.time.Instant}),
  *   as it covers the range of the OSC time format, and nearly covers the precision
@@ -31,17 +41,24 @@ import java.util.Date;
 public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTimeStamp> {
 
 	/**
-	 * Baseline NTP time if bit-0=0 is "7-Feb-2036 @ 06:28:16 UTC" as Java time-stamp.
-	 * Used for all dates from those one up until "Tue Feb 26 10:42:23 CET 2104".
-	 * Dates after that can not be represented with an OSC time-stamp.
+	 * OSC epoch length in milliseconds.
+	 * An epoch is the maximum range of a 64bit OSC Timetag,
+	 * which is (uint32_max + 1) * 1000 milliseconds.
 	 */
-	private static final long MSB0_BASE_TIME = 2085978496000L;
+	public static final long EPOCH_LENGTH_JAVA_TIME = 0x100000000L * 1000L;
 	/**
-	 * Baseline NTP time if bit-0=1 is "1-Jan-1900 @ 01:00:00 UTC" as Java time-stamp.
-	 * It is used for all dates after this one up until the date of {@link #MSB0_BASE_TIME}.
-	 * Dates before this one can not be represented with an OSC time-stamp.
+	 * Start of the first epoch expressed in Java time
+	 * (as used by {@link java.util.Date#Date(long)}
+	 * and {@link java.util.Date#getTime()}).
+	 * This is "1-Jan-1900 @ 00:00:00", and we use UTC as time-zone.
+	 * Dates before this can not be represented with an OSC Timetag.
 	 */
-	private static final long MSB1_BASE_TIME = -2208988800000L;
+	public static final long EPOCH_START_JAVA_TIME_0 = -2208992400000L;
+	/**
+	 * Start of the current epoch expressed in Java time.
+	 */
+	public static final long EPOCH_START_JAVA_TIME_CURRENT
+			= findEpochStartJavaTime(new Date().getTime());
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
@@ -54,37 +71,25 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 * The Java representation of an OSC time-tag with the semantics of
 	 * "immediately"/"now".
 	 */
-	public static final Date IMMEDIATE_DATE = new Date(MSB0_BASE_TIME);
-	/**
-	 * First value of the upper NTP range for seconds, used on top of {@link #MSB1_BASE_TIME}.
-	 * This value equals {@link Integer#MIN_VALUE}, but is interpreted as an unsigned integer.
-	 */
-	private static final long SECONDS_RANGE_UPPER_START = 0x80000000L;
-	/**
-	 * Last value of the lower NTP range for seconds, used on top of {@link #MSB0_BASE_TIME}.
-	 * This value equals {@link Integer#MAX_VALUE}, but is interpreted as an unsigned integer.
-	 */
-	private static final long SECONDS_RANGE_LOWER_END = 0x7FFFFFFFL;
+	public static final Date IMMEDIATE_DATE = IMMEDIATE.toDate(new Date(EPOCH_START_JAVA_TIME_0));
 	/**
 	 * Filter for the 32 lower/least-significant bits of a long.
 	 */
 	private static final long FILTER_LOWER_32 = 0xFFFFFFFFL;
 	/**
-	 * Filter for the most significant bit in a 32bit value.
-	 */
-	private static final long FILTER_MSB_32 = 0x80000000L;
-	/**
 	 * Number of bits for storing the "seconds" value in NTP time.
 	 */
 	private static final int NTP_SECONDS_BITS = 32;
-
-	public static final Date OSC_RANGE_DATE_MIN
-			= new Date(MSB1_BASE_TIME + (1000L * SECONDS_RANGE_UPPER_START));
-	public static final Date OSC_RANGE_DATE_MAX
-			= new Date(MSB0_BASE_TIME + (1000L * SECONDS_RANGE_LOWER_END));
-
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * This Timetags value as specified by the OSC protocol standard.
+	 * It is treated as a 64bit unsigned integer,
+	 * with the higher-order 32bit representing the whole seconds
+	 * from the beginning of the epoch,
+	 * and the lower-order 32bit representing the fractions of a second
+	 * from the beginning of the last full second.
+	 */
 	private final long ntpTime;
 
 	public OSCTimeStamp(final long ntpTime) {
@@ -159,48 +164,64 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 
 	/**
 	 * Returns the Java date closest to this time-tags value.
+	 * @param epochIndicatorTime the resulting date will be
+	 *   in the same OSC epoch as this Java date-stamp
 	 * @return this time-tags value rounded to the closest full millisecond
 	 */
-	public Date toDate() {
-		return new Date(toJavaTime());
+	public Date toDate(final long epochIndicatorTime) {
+		return new Date(toJavaTime(epochIndicatorTime));
 	}
 
 	/**
-	 * The most significant bit (MSB) on the seconds field denotes the base to use.
-	 * The following text is a quote from RFC-2030 (SNTP v4):
-	 * <quote>
-	 * If bit 0 is set, the UTC time is in the range 1968-2036 and UTC time
-	 * is reckoned from 0h 0m 0s UTC on 1 January 1900. If bit 0 is not set,
-	 * the time is in the range 2036-2104 and UTC time is reckoned from
-	 * 6h 28m 16s UTC on 7 February 2036.
-	 * </quote>
+	 * Returns the Java date closest to this time-tags value.
+	 * @param epochIndicator the resulting date will be
+	 *   in the same OSC epoch as this
+	 * @return this time-tags value rounded to the closest full millisecond
 	 */
-	private boolean isUsingBase1() {
-
-		final long msb = getSeconds() & FILTER_MSB_32;
-		return (msb == FILTER_MSB_32);
+	public Date toDate(final Date epochIndicator) {
+		return (epochIndicator == null)
+				? toDate()
+				: toDate(epochIndicator.getTime());
 	}
 
-	private long evaluateBase() {
-
-		final long baseTime;
-		if (isUsingBase1()) {
-			baseTime = MSB1_BASE_TIME;
-		} else {
-			baseTime = MSB0_BASE_TIME;
-		}
-		return baseTime;
+	/**
+	 * Returns the Java date closest to this time-tags value.
+	 * The resulting date will be in the current OSC epoch.
+	 * @return this time-tags value rounded to the closest full millisecond
+	 */
+	private Date toDate() {
+		return new Date(toJavaTimeInEpoch(EPOCH_START_JAVA_TIME_CURRENT));
 	}
 
-	private long toJavaTime() {
+	private static long findEpochStartJavaTime(final long javaTime) {
 
+		final long epochIndex = (javaTime - EPOCH_START_JAVA_TIME_0) / EPOCH_LENGTH_JAVA_TIME;
+		return EPOCH_START_JAVA_TIME_0 + (epochIndex * EPOCH_LENGTH_JAVA_TIME);
+	}
+
+	private long toJavaTimeInEpoch(final long epochStart) {
+
+		final long secondsInMs = getSeconds() * 1000L;
 		// use round-off on the fractional part to preserve going to lower precision
 		final long fractionInMs = Math.round(1000D * getFraction() / 0x100000000L);
 
-		final long seconds = getSeconds();
-		final long baseTime = evaluateBase();
-		final long secondsInMs = seconds * 1000L;
-		return baseTime + secondsInMs + fractionInMs;
+		return epochStart + (secondsInMs | fractionInMs);
+	}
+
+	private long toJavaTime(final Long epochIndicatorTime) {
+
+		final long epochStart;
+		if (epochIndicatorTime == null) {
+			epochStart = EPOCH_START_JAVA_TIME_CURRENT;
+		} else {
+			epochStart = findEpochStartJavaTime(epochIndicatorTime);
+		}
+
+		return toJavaTimeInEpoch(epochStart);
+	}
+
+	private static long toNtpTimeTag(final long seconds, final long fraction) {
+		return seconds << NTP_SECONDS_BITS | fraction;
 	}
 
 	public static OSCTimeStamp valueOf(final long ntpTime) {
@@ -211,8 +232,9 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 		return new OSCTimeStamp(javaToNtpTimeStamp(javaTime.getTime()));
 	}
 
-	private static String toExtensiveString(final Date date) {
-		return "\"" + date.toString() + "\" (time-stamp: " + date.getTime() + ")";
+	@Override
+	public String toString() {
+		return toDate().toString();
 	}
 
 	/**
@@ -230,34 +252,11 @@ public class OSCTimeStamp implements Cloneable, Serializable, Comparable<OSCTime
 	 */
 	private static long javaToNtpTimeStamp(final long javaTime) {
 
-		if ((javaTime < OSC_RANGE_DATE_MIN.getTime())
-				|| (javaTime > OSC_RANGE_DATE_MAX.getTime()))
-		{
-			throw new IllegalArgumentException("Java Date " + toExtensiveString(new Date(javaTime))
-					+ " lies outside the NTP time-stamp range, which OSC uses: "
-					+ toExtensiveString(OSC_RANGE_DATE_MIN) + " - "
-					+ toExtensiveString(OSC_RANGE_DATE_MAX));
-		}
-		final boolean useBase1 = javaTime < MSB0_BASE_TIME;
-		final long baseTime;
-		if (useBase1) {
-			baseTime = MSB1_BASE_TIME;
-		} else {
-			baseTime = MSB0_BASE_TIME;
-		}
-		final long baseTimeAddition = javaTime - baseTime;
-
-		final long seconds = baseTimeAddition / 1000L;
-		final long fraction = Math.round(((baseTimeAddition % 1000L) * 0x100000000L) / 1000D);
-
-		// We do not have to do that, because if we use base 1 but the MSB is not yet set,
-		// we would be trying to describe a date outside the OSC time-stamp range,
-		// for which we already checked earlier.
-//		if (useBase1) {
-//			seconds |= FILTER_MSB_32; // set MSB if base 1 is used
-//		}
-
-		final long ntpTime = seconds << NTP_SECONDS_BITS | fraction;
+		final long epochStart = findEpochStartJavaTime(javaTime);
+		final long millisecInEpoch = javaTime - epochStart;
+		final long seconds = millisecInEpoch / 1000L;
+		final long fraction = Math.round(((millisecInEpoch % 1000L) * 0x100000000L) / 1000D);
+		final long ntpTime = toNtpTimeTag(seconds, fraction);
 
 		return ntpTime;
 	}
