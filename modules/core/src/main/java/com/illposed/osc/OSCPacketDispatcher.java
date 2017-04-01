@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2014, C. Ramakrishnan / Auracle.
+ * Copyright (C) 2003-2017, C. Ramakrishnan / Auracle.
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
