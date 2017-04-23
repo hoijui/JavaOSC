@@ -17,6 +17,7 @@ import java.util.Map;
  * Handles all aspects regarding a single OSC <i>Argument</i> type.
  * This is used to {@link #parse} (convert from OSC byte representation to Java objects),
  * and to {@link #serialize} (convert from Java objects to OSC byte representation).
+ * @param <T> Java type of the OSC argument this handler deals with
  */
 public interface ArgumentHandler<T> extends Cloneable {
 
