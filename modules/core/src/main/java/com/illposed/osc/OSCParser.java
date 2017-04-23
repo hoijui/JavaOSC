@@ -30,7 +30,7 @@ public class OSCParser {
 	 * Number of bytes the raw OSC data stream is aligned to.
 	 */
 	public static final int ALIGNMENT_BYTES = 4;
-	private static final String BUNDLE_START = "#bundle";
+	public static final String BUNDLE_START = "#bundle";
 	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
 	private static final String NO_ARGUMENT_TYPES = "";
 	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';

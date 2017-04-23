@@ -186,7 +186,7 @@ public class OSCSerializer {
 	}
 
 	private void write(final OSCBundle bundle) throws OSCSerializeException {
-		write("#bundle");
+		write(OSCParser.BUNDLE_START);
 		write(bundle.getTimestamp());
 		for (final OSCPacket pkg : bundle.getPackets()) {
 			writeSizeAndData(pkg);
