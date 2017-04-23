@@ -27,6 +27,7 @@ import java.nio.channels.DatagramChannel;
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testMessageWithArgs()})
  * <blockquote><pre>{@code
+ * // sends from "localhost"
  * OSCPortOut sender = new OSCPortOut();
  * List<Object> args = new ArrayList<Object>(2);
  * args.add(3);
@@ -46,9 +47,12 @@ public class OSCPortOut extends OSCPort {
 
 	/**
 	 * Creates an OSC-Port that sends to {@code remote} from the specified local socket,
-	 * using a serializer created from the given factory for converting the packets.
-	 * @param serializerFactory used to create a single serializer that is used to convert
-	 *   all packets to be sent from this port from Java to their OSC byte array representation
+	 * using an {@link com.illposed.osc.OSCSerializer}
+	 * created from the given factory for converting the packets.
+	 * @param serializerFactory used to create a single
+	 *   {@link com.illposed.osc.OSCSerializer} that is used to convert
+	 *   all packets to be sent from this port,
+	 *   from Java objects to their OSC byte array representations
 	 * @param remote where we will send the OSC byte array data to
 	 * @param local the local address we use to connect to the remote
 	 * @throws IOException if we fail to bind a channel to the local address

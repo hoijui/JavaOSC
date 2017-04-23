@@ -26,6 +26,8 @@ import java.nio.channels.DatagramChannel;
  * An example:<br>
  * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
  * <blockquote><pre>{@code
+ * // listens on the wildcard address (all local network interfaces)
+ * // on the given port (the default one)
  * OSCPortIn receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT);
  * OSCMessageListener listener = new OSCMessageListener() {
  *   public void acceptMessage(OSCTimeStamp time, OSCMessage message) {
@@ -119,7 +121,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Creates an OSC-Port that listens on the specified local port.
+	 * Creates an OSC-Port that listens on the wildcard address
+	 * (all local network interfaces) on the specified local port.
 	 * @param port port number to listen on
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
@@ -128,7 +131,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
-	 * Creates an OSC-Port that listens on local port {@link #DEFAULT_SC_OSC_PORT}..
+	 * Creates an OSC-Port that listens on the wildcard address
+	 * (all local network interfaces) on the default local port
+	 * {@link #DEFAULT_SC_OSC_PORT}.
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn() throws IOException {
