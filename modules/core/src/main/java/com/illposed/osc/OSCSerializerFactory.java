@@ -81,18 +81,42 @@ public class OSCSerializerFactory {
 	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(properties);
 	}
-
 	/**
-	 * Sets a new set of properties, possibly overriding, but not clearing the old ones.
-	 * These will be propagated to created serializers and to the argument-handlers.
+	 * Sets a new set of properties after clearing the current ones.
+	 * Properties will be propagated to created serializers
+	 * and to the argument-handlers.
+	 * This will only have an effect for serializers and argument-handlers
+	 * being created in the future.
 	 * @param properties the new set of properties to adhere to
 	 */
 	public void setProperties(final Map<String, Object> properties) {
-		this.properties.putAll(properties);
+
+		clearProperties();
+		addProperties(properties);
 	}
 
+	/**
+	 * Adds a new set of properties, extending,
+	 * possibly overriding the current ones.
+	 * Properties will be propagated to created serializers
+	 * and to the argument-handlers.
+	 * This will only have an effect for serializers and argument-handlers
+	 * being created in the future.
+	 * @param additionalProperties the new set of properties to adhere to
+	 */
+	public void addProperties(final Map<String, Object> additionalProperties) {
+		properties.putAll(additionalProperties);
+	}
+
+	/**
+	 * Clears all currently stored properties.
+	 * Properties will be propagated to created serializers
+	 * and to the argument-handlers.
+	 * This will only have an effect for serializers and argument-handlers
+	 * being created in the future.
+	 */
 	public void clearProperties() {
-		this.properties.clear();
+		properties.clear();
 	}
 
 	public void registerArgumentHandler(final ArgumentHandler argumentHandler) {

@@ -47,7 +47,7 @@ public class OSCSerializerTest {
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<String, Object>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
-			serializerFactory.setProperties(properties);
+			serializerFactory.addProperties(properties);
 		}
 		final OSCSerializer stream = serializerFactory.create(buffer);
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
