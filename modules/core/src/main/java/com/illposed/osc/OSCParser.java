@@ -76,6 +76,7 @@ public class OSCParser {
 	/**
 	 * Returns the set of properties this parser was created with.
 	 * @return the set of properties to adhere to
+	 * @see ArgumentHandler#setProperties(java.util.Map)
 	 */
 	public Map<String, Object> getProperties() {
 		return properties;

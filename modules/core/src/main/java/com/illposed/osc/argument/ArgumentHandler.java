@@ -44,8 +44,14 @@ public interface ArgumentHandler<T> extends Cloneable {
 	 * as they have a single, unconfigurable way of operating.
 	 * But the <code>String</code> type for example, allows to specify the character-set.
 	 * This method is usually called once for all types before the parsing/serialization starts.
+	 * Note that this set of properties is parser/serializer global,
+	 * meaning that there is a single set per parser/serializer
+	 * and all the associated handlers,
+	 * which means one has to make sure to not use a single property key
+	 * in multiple places (i.e. two different handlers)
+	 * with different meaning or syntax.
 	 * @param properties a set of properties that usually gets passed over to all types,
-	 *   for example: <code>properties.put("charset", Charset.defaultCharset());</code>
+	 *   for example: <code>properties.put(StringArgumentHandler.PROP_NAME_CHARSET, Charset.defaultCharset());</code>
 	 */
 	void setProperties(Map<String, Object> properties);
 

@@ -75,6 +75,7 @@ public final class OSCParserFactory {
 	 * Returns the current set of properties.
 	 * These will be propagated to created parsers and to the argument-handlers.
 	 * @return the set of properties to adhere to
+	 * @see ArgumentHandler#setProperties(java.util.Map)
 	 */
 	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(properties);
