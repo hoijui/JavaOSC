@@ -131,11 +131,23 @@ public class OSCSerializer {
 		// usually, we should not need a stack size of 16, which is the default initial size
 		this.unsupportedTypes = new HashSet<Class>(4);
 		this.subToSuperTypes = new HashMap<Class, Class>(4);
-		// TODO create at least a shallow copy of these maps
-		this.classToMarker = Collections.unmodifiableMap(classToMarkerTmp);
-		this.classToType = Collections.unmodifiableMap(classToTypeTmp);
-		this.markerValueToType = Collections.unmodifiableMap(markerValueToTypeTmp);
-		this.properties = Collections.unmodifiableMap(properties);
+		// We create (shallow) copies of these collections,
+		// so if "the creator" modifies them after creating us,
+		// we do not get different behaviour during our lifetime,
+		// which might be very confusing to users of this class.
+		// As the copies are not deep though,
+		// It does not protect us from change in behaviour
+		// do to change of the objects themselfs,
+		// which are contained in these collections.
+		// TODO instead of these shallow copies, maybe create deep ones?
+		this.classToMarker = Collections.unmodifiableMap(
+				new HashMap<Class, Boolean>(classToMarkerTmp));
+		this.classToType = Collections.unmodifiableMap(
+				new HashMap<Class, ArgumentHandler>(classToTypeTmp));
+		this.markerValueToType = Collections.unmodifiableMap(
+				new HashMap<Object, ArgumentHandler>(markerValueToTypeTmp));
+		this.properties = Collections.unmodifiableMap(
+				new HashMap<String, Object>(properties));
 	}
 
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {

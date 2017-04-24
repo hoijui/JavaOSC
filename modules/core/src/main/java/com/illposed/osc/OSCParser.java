@@ -15,6 +15,7 @@ import com.illposed.osc.argument.handler.TimeTag64ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +59,19 @@ public class OSCParser {
 			final Map<Character, ArgumentHandler> identifierToType,
 			final Map<String, Object> properties)
 	{
-		// TODO create at least a shallow copy of these maps
-		this.identifierToType = Collections.unmodifiableMap(identifierToType);
-		this.properties = Collections.unmodifiableMap(properties);
+		// We create (shallow) copies of these collections,
+		// so if "the creator" modifies them after creating us,
+		// we do not get different behaviour during our lifetime,
+		// which might be very confusing to users of this class.
+		// As the copies are not deep though,
+		// It does not protect us from change in behaviour
+		// do to change of the objects themselfs,
+		// which are contained in these collections.
+		// TODO instead of these shallow copies, maybe create deep ones?
+		this.identifierToType = Collections.unmodifiableMap(
+				new HashMap<Character, ArgumentHandler>(identifierToType));
+		this.properties = Collections.unmodifiableMap(
+				new HashMap<String, Object>(properties));
 	}
 
 	/**
