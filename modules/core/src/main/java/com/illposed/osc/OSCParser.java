@@ -48,6 +48,12 @@ public class OSCParser {
 		}
 	}
 
+	/**
+	 * Creates a new parser with all the required ingredients.
+	 * @param identifierToType all of these, and only these arguments will be
+	 *   parsable by this object, that are supported by these handlers
+	 * @param properties see {@link ArgumentHandler#setProperties(java.util.Map)}
+	 */
 	public OSCParser(
 			final Map<Character, ArgumentHandler> identifierToType,
 			final Map<String, Object> properties)
