@@ -164,6 +164,7 @@ public class OSCParser {
 			rawInput.get(bundleStartChecker);
 			bundle = Arrays.equals(bundleStartChecker, BUNDLE_START_BYTES);
 		} catch (final BufferUnderflowException bue) {
+			// the package is too short to even contain the bundle start indicator
 			bundle = false;
 		}
 		rawInput.position(positionStart);
