@@ -610,6 +610,9 @@ public class OSCMessageTest {
 		Assert.assertFalse(OSCMessage.isValidAddress("/{hello/world"));
 		Assert.assertFalse(OSCMessage.isValidAddress("/}hello/world"));
 		Assert.assertFalse(OSCMessage.isValidAddress("//hello/world"));
+		Assert.assertFalse(OSCMessage.isValidAddress("#abc"));
+		Assert.assertFalse(OSCMessage.isValidAddress("#replyx"));
+		Assert.assertFalse(OSCMessage.isValidAddress("#replx"));
 		Assert.assertTrue( OSCMessage.isValidAddress("/hello"));
 		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world"));
 		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
@@ -636,5 +639,6 @@ public class OSCMessageTest {
 		Assert.assertTrue( OSCMessage.isValidAddress("/:hello/world"));
 		Assert.assertTrue( OSCMessage.isValidAddress("/'hello/world"));
 		Assert.assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
+		Assert.assertTrue( OSCMessage.isValidAddress("#reply"));
 	}
 }

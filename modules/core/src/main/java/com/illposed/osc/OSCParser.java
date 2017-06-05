@@ -12,8 +12,11 @@ import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.IntegerArgumentHandler;
 import com.illposed.osc.argument.handler.TimeTag64ArgumentHandler;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +35,8 @@ public class OSCParser {
 	 */
 	public static final int ALIGNMENT_BYTES = 4;
 	public static final String BUNDLE_START = "#bundle";
-	private static final char BUNDLE_IDENTIFIER = BUNDLE_START.charAt(0);
+	private static final byte[] BUNDLE_START_BYTES
+			= BUNDLE_START.getBytes(Charset.forName("UTF-8"));
 	private static final String NO_ARGUMENT_TYPES = "";
 	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';
 	public static final char TYPE_ARRAY_BEGIN = (byte) '[';
@@ -40,6 +44,7 @@ public class OSCParser {
 
 	private final Map<Character, ArgumentHandler> identifierToType;
 	private final Map<String, Object> properties;
+	private final byte[] bundleStartChecker;
 
 	private static class UnknownArgumentTypeParseException extends OSCParseException {
 
@@ -72,6 +77,7 @@ public class OSCParser {
 				new HashMap<Character, ArgumentHandler>(identifierToType));
 		this.properties = Collections.unmodifiableMap(
 				new HashMap<String, Object>(properties));
+		this.bundleStartChecker = new byte[BUNDLE_START.length()];
 	}
 
 	/**
@@ -138,12 +144,30 @@ public class OSCParser {
 	 * or an OSC Bundle. The first byte of the packet's contents unambiguously
 	 * distinguishes between these two alternatives.
 	 * </quote>
+	 * Meaning, if the first byte is '#', the packet is a bundle,
+	 * otherwise it is a message.
+	 * Yet, the OSC standard body later itself broke with this standard/concept,
+	 * when they released a document suggesting to use messages
+	 * with an address of "#reply" for a statefull meta protocol
+	 * in the following document:
+	 *
+	 * @see <a href="http://opensoundcontrol.org/files/osc-query-system.pdf">
+	 *   A Query System for Open Sound Control (Draft Proposal)</a>
+	 *
 	 * @return true if it the byte array is a bundle, false o.w.
 	 */
 	private boolean isBundle(final ByteBuffer rawInput) {
-		// The shortest valid packet may be no shorter then 4 bytes,
-		// thus we may assume to always have a byte at index 0.
-		return rawInput.get(0) == BUNDLE_IDENTIFIER;
+
+		boolean bundle;
+		final int positionStart = rawInput.position();
+		try {
+			rawInput.get(bundleStartChecker);
+			bundle = Arrays.equals(bundleStartChecker, BUNDLE_START_BYTES);
+		} catch (final BufferUnderflowException bue) {
+			bundle = false;
+		}
+		rawInput.position(positionStart);
+		return bundle;
 	}
 
 	/**

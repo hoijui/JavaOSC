@@ -142,8 +142,12 @@ public class OSCMessage implements OSCPacket {
 	public static boolean isValidAddress(final String address) {
 		return (address != null)
 				&& !address.isEmpty()
-				&& address.charAt(0) == '/'
-				&& !address.contains("//")
-				&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find();
+				&& (
+					address.equals("#reply")
+					|| (
+						(address.charAt(0) == '/')
+						&& !address.contains("//")
+						&& !ILLEGAL_ADDRESS_CHAR.matcher(address).find()
+					));
 	}
 }
