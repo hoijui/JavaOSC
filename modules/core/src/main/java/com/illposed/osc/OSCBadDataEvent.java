@@ -16,13 +16,13 @@ import java.util.EventObject;
  */
 public class OSCBadDataEvent extends EventObject {
 
-	private final ByteBuffer data;
+	private final SerializableByteBuffer data;
 	private final OSCParseException exception;
 
 	public OSCBadDataEvent(final Object source, final ByteBuffer data, final OSCParseException exception) {
 		super(source);
 
-		this.data = data.asReadOnlyBuffer();
+		this.data = new SerializableByteBuffer(data.asReadOnlyBuffer());
 		this.exception = exception;
 	}
 
@@ -33,7 +33,7 @@ public class OSCBadDataEvent extends EventObject {
 	 *   {@link com.illposed.osc.transport.udp.OSCPortIn}, for example
 	 */
 	public ByteBuffer getData() {
-		return data;
+		return data.getBuffer();
 	}
 
 	/**
