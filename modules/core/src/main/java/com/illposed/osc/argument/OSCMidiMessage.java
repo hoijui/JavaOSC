@@ -82,7 +82,7 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 
 	@Override
 	public int compareTo(final OSCMidiMessage other) {
-		return Integer.valueOf(hashCode()).compareTo(other.hashCode());
+		return Integer.compare(hashCode(), other.hashCode());
 	}
 
 	@Override
