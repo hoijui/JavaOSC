@@ -7,7 +7,6 @@
  */
 
 /**
- * TODO.
  * Provides means to send and receive OSC content over the UDP(/IP) protocol.
  */
 package com.illposed.osc.transport.channel;
