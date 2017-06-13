@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
@@ -340,7 +341,7 @@ public class OSCPortTest {
 
 		final SocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
 
-		final DatagramChannel channel = DatagramChannel.open();
+		final DatagramChannel channel = DatagramChannel.open(StandardProtocolFamily.INET);
 		// NOTE StandardSocketOptions is only available since Java 1.7
 		channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
 		channel.socket().bind(bindAddress);
