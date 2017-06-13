@@ -74,7 +74,8 @@ public class OSCPortOut extends OSCPort {
 			final SocketAddress remote)
 			throws IOException
 	{
-		this(serializerFactory, remote, new InetSocketAddress(0));
+		this(serializerFactory, remote, new InetSocketAddress(
+				OSCPort.generateWildcard(remote), 0));
 	}
 
 	public OSCPortOut(final SocketAddress remote) throws IOException {

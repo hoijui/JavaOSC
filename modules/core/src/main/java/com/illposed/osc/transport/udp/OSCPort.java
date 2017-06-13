@@ -9,7 +9,13 @@
 package com.illposed.osc.transport.udp;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.StandardProtocolFamily;
+import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
 
 /**
@@ -30,7 +36,30 @@ public class OSCPort {
 
 		this.local = local;
 		this.remote = remote;
-		this.channel = DatagramChannel.open();
+		final DatagramChannel tmpChannel;
+		if (InetSocketAddress.class.isInstance(local)) {
+			final InetSocketAddress localIsa = (InetSocketAddress) local;
+			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
+			if (!localIsa.getAddress().getClass().equals(
+					remoteIsa.getAddress().getClass()))
+			{
+				throw new IllegalArgumentException(
+						"local and remote addresses are not of the same family"
+						+ " (IP v4 vs v6)");
+			}
+			if (Inet4Address.class.isInstance(localIsa.getAddress())) {
+				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
+			} else if (Inet6Address.class.isInstance(localIsa.getAddress())) {
+				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
+			} else {
+				throw new IllegalArgumentException(
+						"Unknown address type: "
+						+ localIsa.getAddress().getClass().getCanonicalName());
+			}
+		} else {
+			tmpChannel = DatagramChannel.open();
+		}
+		this.channel = tmpChannel;
 
 		// NOTE StandardSocketOptions is only available since Java 1.7
 		this.channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
@@ -56,6 +85,47 @@ public class OSCPort {
 	public static int defaultSCLangOSCPort() {
 		return DEFAULT_SC_LANG_OSC_PORT;
 	}
+
+	/**
+	 * Generates an wildcard IP address (matches all (local) IPs) of the same
+	 * family as the given address.
+	 * @param address from this we figure out the IP address family (IP v4 or v6)
+	 * @return
+	 *   <code>0.0.0.0</code> if IP v4,
+	 *   <code>::</code> if IP v6,
+	 *   <i>undefined behavior</i> otherwise
+	 */
+	public static InetAddress generateWildcard(final SocketAddress address) throws UnknownHostException {
+		return InetAddress.getByName((extractFamily(address) == 4) ? "0.0.0.0" : "::");
+	}
+
+	/**
+	 * Extracts the (IP) family of a given address.
+	 * @param address the address of which to return the (IP) family of
+	 * @return
+	 *   <code>4</code> if IP v4,
+	 *   <code>6</code> if IP v6,
+	 *   <code>0</code> otherwise
+	 */
+	public static int extractFamily(final SocketAddress address) {
+
+		final int family;
+		if (InetSocketAddress.class.isInstance(address)) {
+			final InetSocketAddress inetAddress = (InetSocketAddress) address;
+			if (Inet4Address.class.isInstance(inetAddress.getAddress())) {
+				family = 4;
+			} else if (Inet6Address.class.isInstance(inetAddress.getAddress())) {
+				family = 6;
+			} else {
+				family = 0;
+			}
+		} else {
+			family = 0;
+		}
+
+		return family;
+	}
+
 
 	/**
 	 * Returns the channel associated with this port.

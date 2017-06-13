@@ -98,7 +98,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			final SocketAddress local)
 			throws IOException
 	{
-		this(parserFactory, dispatcher, local, new InetSocketAddress(0));
+		this(parserFactory, dispatcher, local, new InetSocketAddress(
+				OSCPort.generateWildcard(local), 0));
 	}
 
 	public OSCPortIn(final OSCParserFactory parserFactory, final SocketAddress local)

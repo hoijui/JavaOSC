@@ -19,9 +19,12 @@ import com.illposed.osc.OSCSerializerFactory;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
@@ -328,25 +331,62 @@ public class OSCPortTest {
 		}
 	}
 
-	/**
-	 * This test would always fail (tested on 64bit Ubuntu Linux),
-	 * because we try to bind to an IPv4 address, but after successful binding,
-	 * the local address is an IPv6 one.
-	 * This seems to be some Linux oddity.
-	 * @throws Exception if anything goes wrong
-	 */
 	@Test
 	public void testBindChannel() throws Exception {
 
-		final SocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
+		final InetSocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
 
-		final DatagramChannel channel = DatagramChannel.open();
+		final DatagramChannel channel;
+		if (Inet4Address.class.isInstance(bindAddress.getAddress())) {
+			channel = DatagramChannel.open(StandardProtocolFamily.INET);
+		} else if (Inet6Address.class.isInstance(bindAddress.getAddress())) {
+			channel = DatagramChannel.open(StandardProtocolFamily.INET6);
+		} else {
+			throw new IllegalArgumentException(
+					"Unknown address type: "
+					+ bindAddress.getAddress().getClass().getCanonicalName());
+		}
 		// NOTE StandardSocketOptions is only available since Java 1.7
 		channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
 		channel.socket().bind(bindAddress);
 
 		// NOTE DatagramChannel#getLocalAddress() is only available since Java 1.7
 		Assert.assertEquals(bindAddress, channel.getLocalAddress());
+	}
+
+	private void testReceivingLoopback(final InetAddress loopbackAddress) throws Exception {
+
+		final InetSocketAddress loopbackSocket = new InetSocketAddress(loopbackAddress, OSCPort.defaultSCOSCPort());
+
+		// close the underlying sockets
+		receiver.close();
+		sender.close();
+
+		// make sure the old receiver is gone for good
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		// check if the underlying sockets were closed
+		// NOTE We can have many (out-)sockets sending
+		//   on the same address and port,
+		//   but only one receiving per each such tuple.
+		sender = new OSCPortOut(loopbackAddress, OSCPort.defaultSCOSCPort());
+		receiver = new OSCPortIn(loopbackSocket);
+
+		testReceiving();
+	}
+
+	@Test
+	public void testReceivingLoopbackIPv4() throws Exception {
+
+		final InetAddress loopbackAddress = InetAddress.getByName("127.0.0.1");
+		testReceivingLoopback(loopbackAddress);
+	}
+
+	@Test
+	public void testReceivingLoopbackIPv6() throws Exception {
+
+		final InetAddress loopbackAddress = InetAddress.getByName("::1");
+		testReceivingLoopback(loopbackAddress);
 	}
 
 	@Test
