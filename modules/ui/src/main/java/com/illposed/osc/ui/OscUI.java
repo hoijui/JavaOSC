@@ -536,7 +536,7 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to start the synth "pink" on node 1000.
-		List<Object> args = new ArrayList<Object>(6);
+		List<Object> args = new ArrayList<>(6);
 		args.add("javaosc-example");
 		args.add(node);
 		args.add(1);
@@ -602,7 +602,7 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to set the node 1000
-		List<Object> args = new ArrayList<Object>(3);
+		List<Object> args = new ArrayList<>(3);
 		args.add(node);
 		args.add("freq");
 		args.add(freq);
@@ -622,20 +622,20 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		List<Object> args1 = new ArrayList<Object>(1);
+		List<Object> args1 = new ArrayList<>(1);
 		args1.add(node1);
 		OSCMessage msg1 = new OSCMessage("/n_free", args1);
 
-		List<Object> args2 = new ArrayList<Object>(1);
+		List<Object> args2 = new ArrayList<>(1);
 		args2.add(node2);
 		OSCMessage msg2 = new OSCMessage("/n_free", args2);
 
-		List<Object> args3 = new ArrayList<Object>(1);
+		List<Object> args3 = new ArrayList<>(1);
 		args3.add(node3);
 		OSCMessage msg3 = new OSCMessage("/n_free", args3);
 
 		// create a timeStamped bundle of the messages
-		List<OSCPacket> packets = new ArrayList<OSCPacket>(3);
+		List<OSCPacket> packets = new ArrayList<>(3);
 		packets.add(msg1);
 		packets.add(msg2);
 		packets.add(msg3);
@@ -660,21 +660,21 @@ public class OscUI extends JPanel {
 			showError("Please set an address first");
 		}
 
-		List<Object> args1 = new ArrayList<Object>(4);
+		List<Object> args1 = new ArrayList<>(4);
 		args1.add("javaosc-example");
 		args1.add(node1);
 		args1.add(1);
 		args1.add(0);
 		OSCMessage msg1 = new OSCMessage("/s_new", args1);
 
-		List<Object> args2 = new ArrayList<Object>(4);
+		List<Object> args2 = new ArrayList<>(4);
 		args2.add("javaosc-example");
 		args2.add(node2);
 		args2.add(1);
 		args2.add(0);
 		OSCMessage msg2 = new OSCMessage("/s_new", args2);
 
-		List<Object> args3 = new ArrayList<Object>(4);
+		List<Object> args3 = new ArrayList<>(4);
 		args3.add("javaosc-example");
 		args3.add(node3);
 		args3.add(1);
