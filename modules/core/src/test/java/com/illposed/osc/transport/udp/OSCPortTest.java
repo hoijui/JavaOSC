@@ -399,7 +399,7 @@ public class OSCPortTest {
 	@Test
 	public void testMessageWithArgs() throws Exception {
 
-		List<Object> args = new ArrayList<Object>(2);
+		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
 		OSCMessage mesg = new OSCMessage("/foo/bar", args);
@@ -409,10 +409,10 @@ public class OSCPortTest {
 	@Test
 	public void testBundle() throws Exception {
 
-		List<Object> args = new ArrayList<Object>(2);
+		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
-		List<OSCPacket> msgs = new ArrayList<OSCPacket>(1);
+		List<OSCPacket> msgs = new ArrayList<>(1);
 		msgs.add(new OSCMessage("/foo/bar", args));
 		OSCBundle bundle = new OSCBundle(msgs);
 		sender.send(bundle);
@@ -421,7 +421,7 @@ public class OSCPortTest {
 	@Test
 	public void testBundle2() throws Exception {
 
-		final List<Object> arguments = new ArrayList<Object>(2);
+		final List<Object> arguments = new ArrayList<>(2);
 		arguments.add(3);
 		arguments.add("hello");
 		final OSCMessage mesg = new OSCMessage("/foo/bar", arguments);
@@ -474,7 +474,7 @@ public class OSCPortTest {
 
 		final String address = "/message/sized";
 		final int numIntegerArgs = (size - (((address.length() + 3 + 1) / 4) * 4)) / 5;
-		final List<Object> args = new ArrayList<Object>(numIntegerArgs);
+		final List<Object> args = new ArrayList<>(numIntegerArgs);
 		final Random random = new Random();
 		for (int ai = 0; ai < numIntegerArgs; ai++) {
 			args.add(random.nextInt());
@@ -620,7 +620,7 @@ public class OSCPortTest {
 	public void testReceivingLongAfterShort() throws Exception {
 
 		final OSCMessage msgShort = new OSCMessage("/msg/short");
-		final List<Object> someArgs = new ArrayList<Object>(3);
+		final List<Object> someArgs = new ArrayList<>(3);
 		someArgs.add("all");
 		someArgs.add("my");
 		someArgs.add("args");
