@@ -63,14 +63,14 @@ public class OscUI extends JPanel {
 		makeDisplay();
 		try {
 			oscPort = new OSCPortOut();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			// this is just a demo program, so this is acceptable behavior
 			ex.printStackTrace();
 		}
 	}
 
 	// create a method for widget building
-	private final void makeDisplay() {
+	private void makeDisplay() {
 
 		// setLayout to be a BoxLayout
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -81,7 +81,6 @@ public class OscUI extends JPanel {
 		addFirstSynthPanel();
 		addSecondSynthPanel();
 		addThirdSynthPanel();
-
 	}
 
 	// create a method for adding ServerAddress Panel to the OscUI Panel
@@ -97,7 +96,8 @@ public class OscUI extends JPanel {
 		// a "Set Address" argument for its screen name
 		JButton setAddressButton = new JButton("Set Address");
 		setAddressButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// perform the addressChanged method when action is received
 				addressChanged();
 			}
@@ -136,7 +136,8 @@ public class OscUI extends JPanel {
 		globalControlPanel.setBackground(new Color(13, 53, 0));
 
 		globalOnButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				doSendGlobalOn(1000, 1001, 1002);
 				firstSynthButtonOn.setEnabled(false);
 				firstSynthButtonOff.setEnabled(true);
@@ -160,7 +161,8 @@ public class OscUI extends JPanel {
 		});
 		// ??? have an anonymous class listen to the setAddressButton action
 		globalOffButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				doSendGlobalOff(1000, 1001, 1002);
 				firstSynthButtonOn.setEnabled(true);
 				firstSynthButtonOff.setEnabled(false);
@@ -220,7 +222,8 @@ public class OscUI extends JPanel {
 		textBox.setEnabled(false);
 
 		firstSynthButtonOn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the on button is pushed, doSendOn method is invoked
 				// send the arguments for frequency and node
 				doSendOn(440, 1000);
@@ -235,7 +238,8 @@ public class OscUI extends JPanel {
 		// when the on button is pushed, doSendOff method is invoked
 		// send the argument for node
 		firstSynthButtonOff.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the action occurs the doSend1 method is invoked
 				doSendOff(1000);
 				firstSynthButtonOn.setEnabled(true);
@@ -251,8 +255,9 @@ public class OscUI extends JPanel {
 		// send the argument for freq and node
 		slider.addChangeListener(new ChangeListener() {
 
-			public void stateChanged(ChangeEvent e) {
-				JSlider mySlider = (JSlider) e.getSource();
+			@Override
+			public void stateChanged(final ChangeEvent evt) {
+				final JSlider mySlider = (JSlider) evt.getSource();
 				if (mySlider.getValueIsAdjusting()) {
 					float freq = (float) mySlider.getValue();
 					freq = (freq / 10000) * (freq / 10000);
@@ -268,9 +273,10 @@ public class OscUI extends JPanel {
 		// invoked; send the argument for freq and node
 		textBox.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				JTextField field = (JTextField) e.getSource();
-				float freq = (Float.valueOf(field.getText())).floatValue();
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				JTextField field = (JTextField) evt.getSource();
+				float freq = Float.valueOf(field.getText());
 				if (freq > 10020) { freq = 10020; doPrintValue(freq); }
 				if (freq < 20) { freq = 20; doPrintValue(freq); }
 				slider.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
@@ -313,7 +319,8 @@ public class OscUI extends JPanel {
 		textBox2.setEnabled(false);
 
 		secondSynthButtonOn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the action occurs the doSendOn method is invoked
 				// with the arguments for freq and node
 				doSendOn(440, 1001);
@@ -327,7 +334,8 @@ public class OscUI extends JPanel {
 		});
 		// add the action for the Off button
 		secondSynthButtonOff.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the action occurs the doSendOff method is invoked
 				// with the argument for node
 				doSendOff(1001);
@@ -341,8 +349,9 @@ public class OscUI extends JPanel {
 		});
 		// add the action for the slider
 		slider2.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JSlider mySlider2 = (JSlider) e.getSource();
+			@Override
+			public void stateChanged(final ChangeEvent evt) {
+				JSlider mySlider2 = (JSlider) evt.getSource();
 				if (mySlider2.getValueIsAdjusting()) {
 					float freq = (float) mySlider2.getValue();
 					freq = (freq / 10000) * (freq / 10000);
@@ -359,11 +368,17 @@ public class OscUI extends JPanel {
 		// invoked; send the argument for freq and node
 		textBox2.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				JTextField field = (JTextField) e.getSource();
-				float freq = (Float.valueOf(field.getText())).floatValue();
-				if (freq > 10020) { freq = 10020; doPrintValue2(freq); }
-				if (freq < 20) { freq = 20; doPrintValue2(freq); }
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				final JTextField field = (JTextField) evt.getSource();
+				float freq = Float.valueOf(field.getText());
+				if (freq > 10020) {
+					freq = 10020;
+					doPrintValue2(freq);
+				} else if (freq < 20) {
+					freq = 20;
+					doPrintValue2(freq);
+				}
 				slider2.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
 				doSendSlider(freq, 1001);
 			}
@@ -395,7 +410,8 @@ public class OscUI extends JPanel {
 		textBox3.setEnabled(false);
 
 		thirdSynthButtonOn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the action occurs the doSendOn method is invoked
 				// with arguments for freq and node
 				doSendOn(440, 1002);
@@ -409,7 +425,8 @@ public class OscUI extends JPanel {
 		});
 
 		thirdSynthButtonOff.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
 				// when the action occurs the doSendOff method is invoked
 				// with argument for node
 				doSendOff(1002);
@@ -424,9 +441,10 @@ public class OscUI extends JPanel {
 
 		slider3.addChangeListener(new ChangeListener() {
 
-			public void stateChanged(ChangeEvent e) {
+			@Override
+			public void stateChanged(final ChangeEvent evt) {
 				//  JSlider source = (JSlider) e.getSource();
-				JSlider mySlider3 = (JSlider) e.getSource();
+				final JSlider mySlider3 = (JSlider) evt.getSource();
 				//if (source.getValueIsAdjusting()) {
 				if (mySlider3.getValueIsAdjusting()) {
 					// int freq = (int)source.getValue();
@@ -446,11 +464,17 @@ public class OscUI extends JPanel {
 		// invoked; send the argument for freq and node
 		textBox3.addActionListener(new ActionListener() {
 
-			public void actionPerformed(ActionEvent e) {
-				JTextField field = (JTextField) e.getSource();
-				float freq = (Float.valueOf(field.getText())).floatValue();
-				if (freq > 10020) { freq = 10020; doPrintValue3(freq); }
-				if (freq < 20) { freq = 20; doPrintValue3(freq); }
+			@Override
+			public void actionPerformed(final ActionEvent evt) {
+				JTextField field = (JTextField) evt.getSource();
+				float freq = Float.valueOf(field.getText());
+				if (freq > 10020) {
+					freq = 10020;
+					doPrintValue3(freq);
+				} else if (freq < 20) {
+					freq = 20;
+					doPrintValue3(freq);
+				}
 				slider3.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
 				doSendSlider(freq, 1002);
 			}
@@ -498,7 +522,7 @@ public class OscUI extends JPanel {
 				new OSCPortOut(InetAddress.getByName(addressWidget.getText()));
 			// if the oscPort variable fails to be instantiated then sent
 			// the error message
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't set address");
 		}
 	}
@@ -514,15 +538,15 @@ public class OscUI extends JPanel {
 		// send an OSC message to start the synth "pink" on node 1000.
 		List<Object> args = new ArrayList<Object>(6);
 		args.add("javaosc-example");
-		args.add(new Integer(node));
-		args.add(new Integer(1));
-		args.add(new Integer(0));
+		args.add(node);
+		args.add(1);
+		args.add(0);
 		args.add("freq");
-		args.add(new Float(freq));
+		args.add(freq);
 		// a comma is placed after /s_new in the code
 		OSCMessage msg = new OSCMessage("/s_new", args);
 
-		// Object[] args2 = {new Symbol("amp"), new Float(0.5)};
+		// Object[] args2 = {new Symbol("amp"), 0.5};
 		// OscMessage msg2 = new OscMessage("/n_set", args2);
 		//oscPort.send(msg);
 
@@ -530,7 +554,7 @@ public class OscUI extends JPanel {
 		// send an error message if this doesn't happen
 		try {
 			oscPort.send(msg);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 	}
@@ -545,14 +569,14 @@ public class OscUI extends JPanel {
 
 		// send an OSC message to free the node 1000
 		List<Object> args = new ArrayList<Object>(1);
-		args.add(new Integer(node));
+		args.add(node);
 		OSCMessage msg = new OSCMessage("/n_free", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
 		// send an error message if this doesn't happen
 		try {
 			oscPort.send(msg);
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 	}
@@ -579,16 +603,16 @@ public class OscUI extends JPanel {
 
 		// send an OSC message to set the node 1000
 		List<Object> args = new ArrayList<Object>(3);
-		args.add(new Integer(node));
+		args.add(node);
 		args.add("freq");
-		args.add(new Float(freq));
+		args.add(freq);
 		OSCMessage msg = new OSCMessage("/n_set", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
 		// send an error message if this doesn't happen
 		try {
 			oscPort.send(msg);
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 	}
@@ -599,15 +623,15 @@ public class OscUI extends JPanel {
 		}
 
 		List<Object> args1 = new ArrayList<Object>(1);
-		args1.add(new Integer(node1));
+		args1.add(node1);
 		OSCMessage msg1 = new OSCMessage("/n_free", args1);
 
 		List<Object> args2 = new ArrayList<Object>(1);
-		args2.add(new Integer(node2));
+		args2.add(node2);
 		OSCMessage msg2 = new OSCMessage("/n_free", args2);
 
 		List<Object> args3 = new ArrayList<Object>(1);
-		args3.add(new Integer(node3));
+		args3.add(node3);
 		OSCMessage msg3 = new OSCMessage("/n_free", args3);
 
 		// create a timeStamped bundle of the messages
@@ -625,7 +649,7 @@ public class OscUI extends JPanel {
 
 		try {
 			oscPort.send(bundle);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			showError("Couldn't send");
 		}
 
@@ -638,40 +662,40 @@ public class OscUI extends JPanel {
 
 		List<Object> args1 = new ArrayList<Object>(4);
 		args1.add("javaosc-example");
-		args1.add(new Integer(node1));
-		args1.add(new Integer(1));
-		args1.add(new Integer(0));
+		args1.add(node1);
+		args1.add(1);
+		args1.add(0);
 		OSCMessage msg1 = new OSCMessage("/s_new", args1);
 
 		List<Object> args2 = new ArrayList<Object>(4);
 		args2.add("javaosc-example");
-		args2.add(new Integer(node2));
-		args2.add(new Integer(1));
-		args2.add(new Integer(0));
+		args2.add(node2);
+		args2.add(1);
+		args2.add(0);
 		OSCMessage msg2 = new OSCMessage("/s_new", args2);
 
 		List<Object> args3 = new ArrayList<Object>(4);
 		args3.add("javaosc-example");
-		args3.add(new Integer(node3));
-		args3.add(new Integer(1));
-		args3.add(new Integer(0));
+		args3.add(node3);
+		args3.add(1);
+		args3.add(0);
 		OSCMessage msg3 = new OSCMessage("/s_new", args3);
 
 		try {
 			oscPort.send(msg1);
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 
 		try {
 			oscPort.send(msg2);
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 
 		try {
 			oscPort.send(msg3);
-		} catch (Exception e) {
+		} catch (final Exception ex) {
 			showError("Couldn't send");
 		}
 	}
