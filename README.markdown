@@ -86,9 +86,18 @@ They can be run with `mvn test`.
 
 ## Release a SNAPSHOT (devs only)
 
-	mvn clean deploy
+To release a development version to the Sonatype snapshot repository only:
 
-To release a development version to the Sonatype snapshot repository only.
+	# open a "private" shell, to not spill the changes in env vars
+	bash
+	# set env vars
+	export JAVA_HOME="${JAVA_7_HOME}"
+	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
+	export PATH="${MAVEN_HOME}/bin/:${PATH}"
+	# do the release
+	mvn clean deploy
+	# leave our "private" shell instance again
+	exit
 
 
 ## Release (devs only)
