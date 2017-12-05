@@ -1,4 +1,11 @@
-## Overview
+	      _                       ____    _____   _____
+	     | |                     / __ \  / ____| / ____|
+	     | |  __ _ __   __ __ _ | |  | || (___  | |
+	 _   | | / _` |\ \ / // _` || |  | | \___ \ | |
+	| |__| || (_| | \ V /| (_| || |__| | ____) || |____
+	 \____/  \__,_|  \_/  \__,_| \____/ |_____/  \_____|
+
+<!-- The title was created with: `figlet -k -f big JavaOSC` -->
 
 _Open Sound Control_ (OSC) is a _content format_,
 though it is often though of as a protocol for the transmission of data over a network.
