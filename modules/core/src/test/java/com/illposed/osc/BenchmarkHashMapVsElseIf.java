@@ -47,6 +47,7 @@ public class BenchmarkHashMapVsElseIf {
 		runBenchmark(numDataPoints, numTestRuns);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public static void runBenchmark(final int numDataPoints, final int numTestRuns) {
 
 		System.err.printf("Generating %d data-points\n", numDataPoints);
@@ -90,13 +91,15 @@ public class BenchmarkHashMapVsElseIf {
 		return types;
 	}
 
+	@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 	public static Character convertToTypeHashMap(Class cls) {
 		return JAVA_CLASS_TO_OSC_TYPE.get(cls);
 	}
 
+	@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 	public static Character convertToTypeElseIf(Class cls) {
 
-		final Character type;
+		final char type;
 
 		// A big ol' else-if chain -- what's polymorphism mean, again?
 		// I really wish I could extend the base classes!

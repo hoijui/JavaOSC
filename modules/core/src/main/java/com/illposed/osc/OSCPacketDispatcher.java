@@ -34,6 +34,7 @@ public class OSCPacketDispatcher {
 	 * by refactoring the code.
 	 * XXX refactor-out this arbitrary number
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int MAX_ARGUMENTS = 64;
 	private static final int DEFAULT_CORE_THREADS = 3;
 	private final ByteBuffer argumentTypesBuffer;
@@ -45,7 +46,7 @@ public class OSCPacketDispatcher {
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
 	 */
-	private boolean alwaysDispatchingImmediatly;
+	private boolean alwaysDispatchingImmediately;
 	private final ScheduledExecutorService dispatchScheduler;
 
 	public static class DaemonThreadFactory implements ThreadFactory {
@@ -63,7 +64,7 @@ public class OSCPacketDispatcher {
 		private final MessageSelector selector;
 		private final OSCMessageListener listener;
 
-		public PacketListener(
+		PacketListener(
 				final MessageSelector selector,
 				final OSCMessageListener listener)
 		{
@@ -71,11 +72,11 @@ public class OSCPacketDispatcher {
 			this.listener = listener;
 		}
 
-		public MessageSelector getSelector() {
+		MessageSelector getSelector() {
 			return selector;
 		}
 
-		public OSCMessageListener getListener() {
+		OSCMessageListener getListener() {
 			return listener;
 		}
 
@@ -111,7 +112,7 @@ public class OSCPacketDispatcher {
 		}
 
 		@Override
-		public void writeOnlyTypeTags(final List<?> arguments) throws OSCSerializeException {
+		public void writeOnlyTypeTags(final List<?> arguments) {
 			throw new IllegalStateException(
 					"You need to either dispatch only packets containing meta-info, "
 					+ "or supply a serialization factory to the dispatcher");
@@ -125,6 +126,7 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCPacketDispatcher(
 			final OSCSerializerFactory serializerFactory,
 			final ScheduledExecutorService dispatchScheduler)
@@ -145,13 +147,14 @@ public class OSCPacketDispatcher {
 		this.typeTagsCharset = (propertiesCharset == null)
 				? Charset.defaultCharset()
 				: propertiesCharset;
-		this.packetListeners = new ArrayList<PacketListener>();
-		this.badDataListeners = new ArrayList<OSCBadDataListener>();
+		this.packetListeners = new ArrayList<>();
+		this.badDataListeners = new ArrayList<>();
 		this.metaInfoRequired = false;
-		this.alwaysDispatchingImmediatly = false;
+		this.alwaysDispatchingImmediately = false;
 		this.dispatchScheduler = dispatchScheduler;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
 		this(serializerFactory, createDefaultDispatchScheduler());
 	}
@@ -160,31 +163,34 @@ public class OSCPacketDispatcher {
 		this(null);
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static ScheduledExecutorService createDefaultDispatchScheduler() {
 		return Executors.newScheduledThreadPool(DEFAULT_CORE_THREADS, new DaemonThreadFactory());
 	}
 
 	/**
 	 * Set whether to disregard bundle time-stamps for dispatch-scheduling.
-	 * @param alwaysDispatchingImmediatly if {@code true}, all bundles will be
+	 * @param alwaysDispatchingImmediately if {@code true}, all bundles will be
 	 *   dispatched immediately
 	 */
-	public void setAlwaysDispatchingImmediatly(final boolean alwaysDispatchingImmediatly) {
-		this.alwaysDispatchingImmediatly = alwaysDispatchingImmediatly;
+	public void setAlwaysDispatchingImmediately(final boolean alwaysDispatchingImmediately) {
+		this.alwaysDispatchingImmediately = alwaysDispatchingImmediately;
 	}
 
 	/**
 	 * Indicates whether we disregard bundle time-stamps for dispatch-scheduling.
 	 * @return {@code true}, if all bundles are dispatched immediately
 	 */
-	public boolean isAlwaysDispatchingImmediatly() {
-		return alwaysDispatchingImmediatly;
+	@SuppressWarnings("WeakerAccess") // Public API
+	public boolean isAlwaysDispatchingImmediately() {
+		return alwaysDispatchingImmediately;
 	}
 
 	/**
 	 * Indicates whether we need outgoing messages to have meta-info attached.
 	 * @return {@code true}, if at least one of the registered listeners requires message meta-info
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isMetaInfoRequired() {
 		return metaInfoRequired;
 	}
@@ -216,6 +222,7 @@ public class OSCPacketDispatcher {
 	 * @param messageSelector has to match the registered pair to be removed
 	 * @param listener will no longer receive messages accepted by the selector
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void removeListener(
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
@@ -238,6 +245,7 @@ public class OSCPacketDispatcher {
 	 * Adds a listener that will be notified of incoming bad/unrecognized data.
 	 * @param listener will receive chunks of unrecognized data
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void addBadDataListener(final OSCBadDataListener listener) {
 		badDataListeners.add(listener);
 	}
@@ -246,6 +254,7 @@ public class OSCPacketDispatcher {
 	 * Removes a listener that is notified of incoming bad/unrecognized data.
 	 * @param listener will no longer receive chunks of unrecognized data
 	 */
+	@SuppressWarnings("unused") // Public API
 	public void removeBadDataListener(final OSCBadDataListener listener) {
 		badDataListeners.remove(listener);
 	}
@@ -289,10 +298,10 @@ public class OSCPacketDispatcher {
 
 	private void dispatchBundle(final OSCBundle bundle) {
 		final OSCTimeTag64 timestamp = bundle.getTimestamp();
-		if (isAlwaysDispatchingImmediatly() || timestamp.isImmediate()) {
+		if (isAlwaysDispatchingImmediately() || timestamp.isImmediate()) {
 			dispatchBundleNow(bundle);
 		} else {
-			// NOTE This scheduling accurracy is only to at most the accurracy of the
+			// NOTE This scheduling accuracy is only to at most the accuracy of the
 			//   default system clock, and thus might not be enough in some use-cases.
 			//   It can never be more accurate then 1ms, and on many systems will be ~ 10ms.
 			final long delayMs = calculateDelayFromNow(timestamp);
@@ -321,10 +330,8 @@ public class OSCPacketDispatcher {
 					ex);
 		}
 		argumentTypesBuffer.flip();
-		final CharSequence typeTagsStr
-				= new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
 
-		return typeTagsStr;
+		return new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
 	}
 
 	private void ensureMetaInfo(final OSCMessage message) {

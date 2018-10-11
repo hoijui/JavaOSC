@@ -22,7 +22,7 @@ public final class Activator {
 
 	private static final List<ArgumentHandler> TYPES_STATIC_COMMON;
 	static {
-		final ArrayList<ArgumentHandler> types = new ArrayList<ArgumentHandler>();
+		final ArrayList<ArgumentHandler> types = new ArrayList<>();
 		types.add(BlobArgumentHandler.INSTANCE);
 		types.add(BooleanFalseArgumentHandler.INSTANCE);
 		types.add(BooleanTrueArgumentHandler.INSTANCE);
@@ -46,7 +46,7 @@ public final class Activator {
 	public static Map<Character, ArgumentHandler> createParserTypes() {
 
 		final Map<Character, ArgumentHandler> parserTypes
-				= new HashMap<Character, ArgumentHandler>(TYPES_STATIC_COMMON.size() + 1);
+				= new HashMap<>(TYPES_STATIC_COMMON.size() + 1);
 		for (final ArgumentHandler type : TYPES_STATIC_COMMON) {
 			parserTypes.put(type.getDefaultIdentifier(), type);
 		}
@@ -69,7 +69,7 @@ public final class Activator {
 	public static List<ArgumentHandler> createSerializerTypes() {
 
 		final List<ArgumentHandler> serializerTypes
-				= new ArrayList<ArgumentHandler>(TYPES_STATIC_COMMON.size() + 2);
+				= new ArrayList<>(TYPES_STATIC_COMMON.size() + 2);
 		serializerTypes.addAll(TYPES_STATIC_COMMON);
 
 		final StringArgumentHandler stringArgumentHandler = new StringArgumentHandler();
@@ -78,13 +78,13 @@ public final class Activator {
 		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
 		serializerTypes.add(symbolArgumentHandler);
 
-		// NOTE We add this for legacy suppport, though it is recommended
+		// NOTE We add this for legacy support, though it is recommended
 		//   to use ByteBuffer over byte[], as it may be handled more efficiently by some code.
 		final ArgumentHandler byteArrayBlobArgumentHandler = ByteArrayBlobArgumentHandler.INSTANCE;
 		serializerTypes.add(byteArrayBlobArgumentHandler);
 
-		// NOTE We add this for legacy suppport, though it is recommended
-		//   to use OSCTimeTag64 over Date, to not loose precission and range during conversions.
+		// NOTE We add this for legacy support, though it is recommended
+		//   to use OSCTimeTag64 over Date, to not loose precision and range during conversions.
 		final ArgumentHandler dateArgumentHandler = DateTimeStampArgumentHandler.INSTANCE;
 		serializerTypes.add(dateArgumentHandler);
 

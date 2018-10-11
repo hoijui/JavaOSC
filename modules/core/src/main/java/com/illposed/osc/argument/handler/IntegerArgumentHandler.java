@@ -8,8 +8,6 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -22,12 +20,14 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	/**
 	 * The number of bytes used to represent this type in an OSC byte array (4).
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int BYTES = Integer.SIZE / Byte.SIZE;
 	public static final ArgumentHandler<Integer> INSTANCE = new IntegerArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected IntegerArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public Integer parse(final ByteBuffer input) throws OSCParseException {
+	public Integer parse(final ByteBuffer input) {
 
 		final Integer value = input.asIntBuffer().get();
 		input.position(input.position() + BYTES);
@@ -65,7 +65,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Integer value) throws OSCSerializeException {
+	public void serialize(final ByteBuffer output, final Integer value) {
 
 		int curValue = value;
 		final byte[] intBytes = new byte[4];

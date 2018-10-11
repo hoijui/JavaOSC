@@ -8,8 +8,6 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -22,8 +20,9 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	public static final ArgumentHandler<Character> INSTANCE = new CharArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected CharArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	}
 
 	@Override
-	public Character parse(final ByteBuffer input) throws OSCParseException {
+	public Character parse(final ByteBuffer input) {
 
 		// Read the char as 1 byte from the last 8 of 32bits
 		// to be compatible with liblo.
@@ -65,9 +64,8 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Character value)
-			throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final Character value) {
+
 		// Put the char as 1 byte in the last 8 of 32bits
 		// to be compatible with liblo.
 		// This might later be expanded to support multi-byte encoded chars.

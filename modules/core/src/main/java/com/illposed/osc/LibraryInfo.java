@@ -30,6 +30,7 @@ import java.util.Set;
 public final class LibraryInfo {
 
 	private static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final String UNKNOWN_VALUE = "<unknown>";
 	private static final char MANIFEST_CONTINUATION_LINE_INDICATOR = ' ';
 	/** 1 key + 1 value = 2 parts of a key-value pair */
@@ -39,7 +40,7 @@ public final class LibraryInfo {
 
 	static {
 
-		final Set<Package> tmpUninterestingPkgs = new HashSet<Package>();
+		final Set<Package> tmpUninterestingPkgs = new HashSet<>();
 		tmpUninterestingPkgs.add(Package.getPackage("java.lang"));
 		tmpUninterestingPkgs.add(Package.getPackage("java.util"));
 		// NOTE We need to do it like this, because otherwise "java.awt" can not be found
@@ -58,10 +59,9 @@ public final class LibraryInfo {
 
 		final Properties manifestProps = new Properties();
 
-		BufferedReader manifestBufferedIn = null;
-		try {
-			manifestBufferedIn = new BufferedReader(new InputStreamReader(manifestIn,
-					Charset.forName("UTF-8")));
+		try (final BufferedReader manifestBufferedIn = new BufferedReader(new InputStreamReader(manifestIn,
+				Charset.forName("UTF-8"))))
+		{
 			String manifestLine = manifestBufferedIn.readLine();
 			String currentKey = null;
 			final StringBuilder currentValue = new StringBuilder(80);
@@ -95,10 +95,6 @@ public final class LibraryInfo {
 			if (currentKey != null) {
 				manifestProps.setProperty(currentKey, currentValue.toString());
 			}
-		} finally {
-			if (manifestBufferedIn != null) {
-				manifestBufferedIn.close();
-			}
 		}
 
 		return manifestProps;
@@ -106,20 +102,13 @@ public final class LibraryInfo {
 
 	private static Properties readJarManifest() throws IOException {
 
-		Properties mavenProps = null;
+		Properties mavenProps;
 
-		InputStream manifestFileIn = null;
-		try {
-			manifestFileIn = LibraryInfo.class.getResourceAsStream(MANIFEST_FILE);
+		try (final InputStream manifestFileIn = LibraryInfo.class.getResourceAsStream(MANIFEST_FILE)) {
 			if (manifestFileIn == null) {
-				throw new IOException("Failed locating resource in the classpath: "
-						+ MANIFEST_FILE);
+				throw new IOException("Failed locating resource in the classpath: " + MANIFEST_FILE);
 			}
 			mavenProps = parseManifestFile(manifestFileIn);
-		} finally {
-			if (manifestFileIn != null) {
-				manifestFileIn.close();
-			}
 		}
 
 		return mavenProps;
@@ -129,14 +118,17 @@ public final class LibraryInfo {
 	 * Returns this application JARs {@link #MANIFEST_FILE} properties.
 	 * @return the contents of the manifest file as {@code String} to {@code String} mapping
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public Properties getManifestProperties() {
 		return manifestProperties;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public String getVersion() {
 		return getManifestProperties().getProperty("Bundle-Version", UNKNOWN_VALUE);
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public String getOscSpecificationVersion() {
 		return getManifestProperties().getProperty("Supported-OSC-Version", UNKNOWN_VALUE);
 	}
@@ -145,18 +137,22 @@ public final class LibraryInfo {
 		return getManifestProperties().getProperty("Bundle-License", UNKNOWN_VALUE);
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isArrayEncodingSupported() {
 		return true;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isArrayDecodingSupported() {
 		return true;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public List<ArgumentHandler> getEncodingArgumentHandlers() {
 		return OSCSerializerFactory.createDefaultFactory().getArgumentHandlers();
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public Map<Character, ArgumentHandler> getDecodingArgumentHandlers() {
 		return OSCParserFactory.createDefaultFactory().getIdentifierToTypeMapping();
 	}
@@ -183,7 +179,7 @@ public final class LibraryInfo {
 				classOrMarkerValue = extractPrettyClassName(type.getJavaClass())
 						+ ":" + markerValueStr;
 			} catch (OSCParseException ex) {
-				throw new IllegalStateException("Developper error; This should never happen", ex);
+				throw new IllegalStateException("Developer error; This should never happen", ex);
 			}
 		} else {
 			classOrMarkerValue = extractPrettyClassName(type.getJavaClass());
@@ -192,6 +188,7 @@ public final class LibraryInfo {
 		return classOrMarkerValue;
 	}
 
+	@SuppressWarnings("unused") // Public API
 	public String createManifestPropertiesString() {
 
 		final StringBuilder info = new StringBuilder(1024);
@@ -209,6 +206,7 @@ public final class LibraryInfo {
 		return info.toString();
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public String createLibrarySummary() {
 
 		final StringBuilder summary = new StringBuilder(1024);

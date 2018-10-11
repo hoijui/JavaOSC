@@ -10,8 +10,6 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -23,8 +21,9 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	public static final ArgumentHandler<OSCMidiMessage> INSTANCE = new MidiMessageArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected MidiMessageArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -54,7 +53,7 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	}
 
 	@Override
-	public OSCMidiMessage parse(final ByteBuffer input) throws OSCParseException {
+	public OSCMidiMessage parse(final ByteBuffer input) {
 		return OSCMidiMessage.valueOf(new byte[] {
 				input.get(),
 				input.get(),
@@ -63,9 +62,7 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCMidiMessage value)
-			throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final OSCMidiMessage value) {
 		output.put(value.toContentArray());
 	}
 }

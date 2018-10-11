@@ -73,7 +73,7 @@ public class OSCMessageTest {
 		checkResultEqualsAnswer(result, expected, 4);
 	}
 
-	public static void checkResultEqualsAnswer(byte[] result, byte[] expected) {
+	static void checkResultEqualsAnswer(byte[] result, byte[] expected) {
 		checkResultEqualsAnswer(result, expected, 0);
 	}
 
@@ -269,7 +269,7 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<>(1);
 		final Calendar calendar = createCalendar();
 		calendar.clear();
-		calendar.set(2000, 0, 0);
+		calendar.set(2000, Calendar.JANUARY, 0);
 		args.add(OSCTimeTag64.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/2000", args);
 		final byte[] answer
@@ -284,7 +284,7 @@ public class OSCMessageTest {
 		final List<Object> args = new ArrayList<>(1);
 		final Calendar calendar = createCalendar();
 		calendar.clear();
-		calendar.set(2037, 0, 0);
+		calendar.set(2037, Calendar.JANUARY, 0);
 		args.add(OSCTimeTag64.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/afterFeb2036", args);
 		final byte[] answer
@@ -556,7 +556,7 @@ public class OSCMessageTest {
 		if (!(firstArgument instanceof List)) {
 			Assert.fail("arguments.get(0) should be a List, not "
 					+ ((firstArgument == null)
-							? String.valueOf(firstArgument)
+							? String.valueOf((Object) null)
 							: firstArgument.getClass().toString()));
 		}
 		// We can safely suppress the warning, as we already made sure the cast will not fail.
@@ -574,7 +574,7 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testAddressValidationFrontendCtorNull() {
+	public void testAddressValidationFrontendConstructorNull() {
 
 		// expect no exception, as we could still set a valid address later on
 		expectedException.expect(IllegalArgumentException.class);
@@ -582,14 +582,14 @@ public class OSCMessageTest {
 	}
 
 	@Test
-	public void testAddressValidationFrontendCtorValid() {
+	public void testAddressValidationFrontendConstructorValid() {
 
 		// expect no exception, as the address is valid
 		OSCMessage oscMessage = new OSCMessage("/hello/world");
 	}
 
 	@Test
-	public void testAddressValidationFrontendCtorInvalid() {
+	public void testAddressValidationFrontendConstructorInvalid() {
 
 		expectedException.expect(IllegalArgumentException.class);
 		OSCMessage oscMessage = new OSCMessage("/ hello/world");

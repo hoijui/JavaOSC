@@ -89,9 +89,9 @@ public class OSCSerializer {
 			final Map<String, Object> properties,
 			final ByteBuffer output)
 	{
-		final Map<Class, Boolean> classToMarkerTmp = new HashMap<Class, Boolean>(types.size());
-		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<Class, ArgumentHandler>();
-		final Map<Object, ArgumentHandler> markerValueToTypeTmp = new HashMap<Object, ArgumentHandler>();
+		final Map<Class, Boolean> classToMarkerTmp = new HashMap<>(types.size());
+		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<>();
+		final Map<Object, ArgumentHandler> markerValueToTypeTmp = new HashMap<>();
 		for (final ArgumentHandler type : types) {
 			final Class typeJava = type.getJavaClass();
 			final Boolean registeredIsMarker = classToMarkerTmp.get(typeJava);
@@ -113,7 +113,7 @@ public class OSCSerializer {
 					}
 					markerValueToTypeTmp.put(markerValue, type);
 				} catch (final OSCParseException ex) {
-					throw new IllegalStateException("Developper error; this should never happen",
+					throw new IllegalStateException("Developer error; this should never happen",
 							ex);
 				}
 			} else {
@@ -129,27 +129,28 @@ public class OSCSerializer {
 
 		this.output = output;
 		// usually, we should not need a stack size of 16, which is the default initial size
-		this.unsupportedTypes = new HashSet<Class>(4);
-		this.subToSuperTypes = new HashMap<Class, Class>(4);
+		this.unsupportedTypes = new HashSet<>(4);
+		this.subToSuperTypes = new HashMap<>(4);
 		// We create (shallow) copies of these collections,
 		// so if "the creator" modifies them after creating us,
 		// we do not get different behaviour during our lifetime,
 		// which might be very confusing to users of this class.
 		// As the copies are not deep though,
 		// It does not protect us from change in behaviour
-		// do to change of the objects themselfs,
+		// do to change of the objects themselves,
 		// which are contained in these collections.
 		// TODO instead of these shallow copies, maybe create deep ones?
 		this.classToMarker = Collections.unmodifiableMap(
-				new HashMap<Class, Boolean>(classToMarkerTmp));
+				new HashMap<>(classToMarkerTmp));
 		this.classToType = Collections.unmodifiableMap(
-				new HashMap<Class, ArgumentHandler>(classToTypeTmp));
+				new HashMap<>(classToTypeTmp));
 		this.markerValueToType = Collections.unmodifiableMap(
-				new HashMap<Object, ArgumentHandler>(markerValueToTypeTmp));
+				new HashMap<>(markerValueToTypeTmp));
 		this.properties = Collections.unmodifiableMap(
-				new HashMap<String, Object>(properties));
+				new HashMap<>(properties));
 	}
 
+	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
 		return classToType;
 	}
@@ -163,6 +164,7 @@ public class OSCSerializer {
 		return properties;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static byte[] toByteArray(final ByteBuffer buffer) {
 
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -175,6 +177,7 @@ public class OSCSerializer {
 	 * We always need to terminate with a zero, especially when the stream is already aligned.
 	 * @param output to receive the data-piece termination
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static void terminate(final ByteBuffer output) {
 		output.put((byte) 0);
 	}
@@ -302,7 +305,7 @@ public class OSCSerializer {
 
 	private Set<ArgumentHandler> findSuperTypes(final Class argumentClass) {
 
-		final Set<ArgumentHandler> matchingSuperTypes = new HashSet<ArgumentHandler>();
+		final Set<ArgumentHandler> matchingSuperTypes = new HashSet<>();
 
 		// check all base-classes, for whether our argument-class is a sub-class
 		// of any of them

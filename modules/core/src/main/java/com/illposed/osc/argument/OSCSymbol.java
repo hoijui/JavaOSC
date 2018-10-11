@@ -21,6 +21,7 @@ public class OSCSymbol implements Cloneable, Serializable, Comparable<OSCSymbol>
 
 	private final String value;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCSymbol(final String value) {
 		this.value = value;
 	}
@@ -30,7 +31,7 @@ public class OSCSymbol implements Cloneable, Serializable, Comparable<OSCSymbol>
 
 		final boolean equal;
 		if (other instanceof OSCSymbol) {
-			equal = toString().equals(((OSCSymbol) other).toString());
+			equal = toString().equals(other.toString());
 		} else {
 			equal = false;
 		}

@@ -9,8 +9,6 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.OSCUnsigned;
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -23,8 +21,9 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 	public static final ArgumentHandler<OSCUnsigned> INSTANCE = new UnsignedIntegerArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected UnsignedIntegerArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -60,7 +59,7 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 	 * @return single precision, unsigned integer (32 bit) wrapped in a 64 bit integer (long)
 	 */
 	@Override
-	public OSCUnsigned parse(final ByteBuffer input) throws OSCParseException {
+	public OSCUnsigned parse(final ByteBuffer input) {
 		return OSCUnsigned.valueOf(new byte[] {
 				input.get(),
 				input.get(),
@@ -69,9 +68,8 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCUnsigned value)
-			throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final OSCUnsigned value) {
+
 		final long asLong = value.toLong();
 		output.put((byte) (asLong >> 24 & 0xFFL));
 		output.put((byte) (asLong >> 16 & 0xFFL));

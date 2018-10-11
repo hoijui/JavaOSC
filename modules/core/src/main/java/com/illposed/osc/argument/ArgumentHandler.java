@@ -41,7 +41,7 @@ public interface ArgumentHandler<T> extends Cloneable {
 	 * Used to configure special properties that might further specify
 	 * parsing and/or serializing objects of this type.
 	 * Most default OSC Argument are "static" in this regard,
-	 * as they have a single, unconfigurable way of operating.
+	 * as they have a single, not configurable way of operating.
 	 * But the <code>String</code> type for example, allows to specify the character-set.
 	 * This method is usually called once for all types before the parsing/serialization starts.
 	 * Note that this set of properties is parser/serializer global,

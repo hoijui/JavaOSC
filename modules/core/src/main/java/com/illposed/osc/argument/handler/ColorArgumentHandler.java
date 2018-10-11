@@ -9,8 +9,6 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.ArgumentHandler;
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -23,8 +21,9 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	public static final ArgumentHandler<Color> INSTANCE = new ColorArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected ColorArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -60,6 +59,7 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	 * @return the argument converted to {@code int} by an unsigned conversion NOTE Since Java 8,
 	 * one could use Byte#toUnsignedInt
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static int toUnsignedInt(final byte signedByte) {
 		return ((int) signedByte) & 0xff;
 	}
@@ -70,12 +70,13 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	 * @param unsignedInt the value to convert to a signed {@code byte}; has to be in range [0, 255]
 	 * @return the argument converted to {@code byte} by a sign introducing conversion
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static byte toSignedByte(final int unsignedInt) {
 		return (byte) unsignedInt;
 	}
 
 	@Override
-	public Color parse(final ByteBuffer input) throws OSCParseException {
+	public Color parse(final ByteBuffer input) {
 		return new Color(
 				toUnsignedInt(input.get()),
 				toUnsignedInt(input.get()),
@@ -84,7 +85,7 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Color value) throws OSCSerializeException {
+	public void serialize(final ByteBuffer output, final Color value) {
 
 		output.put(toSignedByte(value.getRed()));
 		output.put(toSignedByte(value.getGreen()));

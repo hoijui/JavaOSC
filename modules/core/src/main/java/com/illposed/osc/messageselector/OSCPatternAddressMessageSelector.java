@@ -115,7 +115,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	private static List<String> splitIntoParts(final String addressOrPattern) {
 
 		final List<String> parts
-				= new ArrayList<String>(Arrays.asList(addressOrPattern.split("/", -1)));
+				= new ArrayList<>(Arrays.asList(addressOrPattern.split("/", -1)));
 		if (addressOrPattern.startsWith("/")) {
 			// as "/hello" gets split into {"", "hello"}, we remove the first empty entry,
 			// so we end up with {"hello"}
@@ -133,9 +133,9 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * Tries to match an OSC <i>Address Pattern</i> to a selector,
 	 * both already divided into their parts.
 	 * @param patternParts all the parts of the pattern
-	 * @param ppi index/pointer to the current part of the pattern we are looking at
+	 * @param patternPartIndex index/pointer to the current part of the pattern we are looking at
 	 * @param messageAddressParts all the parts of the address
-	 * @param api index/pointer to the current part of the address we are looking at
+	 * @param addressPartIndex index/pointer to the current part of the address we are looking at
 	 * @return true if the address matches, false otherwise
 	 */
 	private static boolean matches(
@@ -200,6 +200,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static boolean matches(final String str, final String p) {
 
 		boolean negate;
@@ -302,7 +303,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 					if (negate == match) {
 						return false;
 					}
-					// if there is a match, skip past the cset and continue on
+					// if there is a match, skip past the cSet and continue on
 					while (pi < p.length() && p.charAt(pi) != ']') {
 						pi++;
 					}
@@ -312,13 +313,13 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 					}
 					break;
 
-				// {astring,bstring,cstring}
+				// {aString,bString,cString}
 				case '{':
 					// p.charAt(pi) is now first character in the {brace list}
 
-					// to backtrack
+					// to back-track
 					final int place = si;
-					// to forwardtrack
+					// to forward-track
 					int remainder = pi;
 
 					// find the end of the brace list

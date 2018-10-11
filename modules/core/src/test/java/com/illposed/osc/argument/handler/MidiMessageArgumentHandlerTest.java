@@ -11,7 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import java.io.IOException;
 import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +18,7 @@ import org.junit.Test;
 public class MidiMessageArgumentHandlerTest {
 
 	private static OSCMidiMessage reparse(final OSCMidiMessage orig)
-			throws IOException, OSCSerializeException, OSCParseException
+			throws OSCSerializeException, OSCParseException
 	{
 		return ColorArgumentHandlerTest.reparse(
 				MidiMessageArgumentHandler.INSTANCE,
@@ -28,13 +27,13 @@ public class MidiMessageArgumentHandlerTest {
 	}
 
 	private static void testReparse(final OSCMidiMessage orig)
-			throws IOException, OSCSerializeException, OSCParseException
+			throws OSCSerializeException, OSCParseException
 	{
 		Assert.assertEquals(orig, reparse(orig));
 	}
 
 	@Test(expected = NullPointerException.class)
-	public void testReparseNull() throws IOException, OSCSerializeException, OSCParseException {
+	public void testReparseNull() throws OSCSerializeException, OSCParseException {
 
 		final OSCMidiMessage orig = null;
 		Assert.assertEquals(orig, reparse(orig));
@@ -65,7 +64,7 @@ public class MidiMessageArgumentHandlerTest {
 	}
 
 	@Test
-	public void testContentBytesfour() {
+	public void testContentBytesFour() {
 		testContent(new byte[4]);
 	}
 

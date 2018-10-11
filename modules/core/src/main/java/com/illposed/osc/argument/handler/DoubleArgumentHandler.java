@@ -22,8 +22,9 @@ public class DoubleArgumentHandler implements ArgumentHandler<Double>, Cloneable
 	public static final ArgumentHandler<Double> INSTANCE = new DoubleArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected DoubleArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override

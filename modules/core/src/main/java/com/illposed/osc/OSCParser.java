@@ -33,13 +33,18 @@ public class OSCParser {
 	/**
 	 * Number of bytes the raw OSC data stream is aligned to.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int ALIGNMENT_BYTES = 4;
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final String BUNDLE_START = "#bundle";
 	private static final byte[] BUNDLE_START_BYTES
 			= BUNDLE_START.getBytes(Charset.forName("UTF-8"));
 	private static final String NO_ARGUMENT_TYPES = "";
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final char TYPE_ARRAY_BEGIN = (byte) '[';
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final char TYPE_ARRAY_END = (byte) ']';
 
 	private final Map<Character, ArgumentHandler> identifierToType;
@@ -60,6 +65,7 @@ public class OSCParser {
 	 *   parsable by this object, that are supported by these handlers
 	 * @param properties see {@link ArgumentHandler#setProperties(java.util.Map)}
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCParser(
 			final Map<Character, ArgumentHandler> identifierToType,
 			final Map<String, Object> properties)
@@ -70,13 +76,13 @@ public class OSCParser {
 		// which might be very confusing to users of this class.
 		// As the copies are not deep though,
 		// It does not protect us from change in behaviour
-		// do to change of the objects themselfs,
+		// do to change of the objects themselves,
 		// which are contained in these collections.
 		// TODO instead of these shallow copies, maybe create deep ones?
 		this.identifierToType = Collections.unmodifiableMap(
-				new HashMap<Character, ArgumentHandler>(identifierToType));
+				new HashMap<>(identifierToType));
 		this.properties = Collections.unmodifiableMap(
-				new HashMap<String, Object>(properties));
+				new HashMap<>(properties));
 		this.bundleStartChecker = new byte[BUNDLE_START.length()];
 	}
 
@@ -92,6 +98,7 @@ public class OSCParser {
 		input.position(input.position() + padding);
 	}
 
+	@SuppressWarnings("unused") // Public API
 	public Map<Character, ArgumentHandler> getIdentifierToTypeMapping() {
 		return identifierToType;
 	}
@@ -148,7 +155,7 @@ public class OSCParser {
 	 * otherwise it is a message.
 	 * Yet, the OSC standard body later itself broke with this standard/concept,
 	 * when they released a document suggesting to use messages
-	 * with an address of "#reply" for a statefull meta protocol
+	 * with an address of "#reply" for a stateful meta protocol
 	 * in the following document:
 	 *
 	 * @see <a href="http://opensoundcontrol.org/files/osc-query-system.pdf">
@@ -212,7 +219,7 @@ public class OSCParser {
 		// typeIdentifiers.length() gives us an upper bound for the number of arguments
 		// and a good approximation in general.
 		// It is equal to the number of arguments if there are no arrays.
-		final List<Object> arguments = new ArrayList<Object>(typeIdentifiers.length());
+		final List<Object> arguments = new ArrayList<>(typeIdentifiers.length());
 		for (int ti = 0; ti < typeIdentifiers.length(); ++ti) {
 			if (TYPE_ARRAY_BEGIN == typeIdentifiers.charAt(ti)) {
 				// we're looking at an array -- read it in
@@ -264,7 +271,7 @@ public class OSCParser {
 								+ "but there is still more data left in the message");
 			}
 		} else {
-			// NOTE Stricty speaking, it is invalid for a message to omit the "OSC Type Tag String",
+			// NOTE Strictly speaking, it is invalid for a message to omit the "OSC Type Tag String",
 			//   even if that message has no arguments.
 			//   See these two excerpts from the OSC 1.0 specification:
 			//   1. "An OSC message consists of an OSC Address Pattern followed by
@@ -300,8 +307,8 @@ public class OSCParser {
 	}
 
 	/**
-	 * Reads an array from the byte stream.
-	 * @param typeIdentifiers
+	 * Reads an array of arguments from the byte stream.
+	 * @param typeIdentifiers type identifiers of the whole message
 	 * @param pos at which position to start reading
 	 * @return the array that was read
 	 */
@@ -313,7 +320,7 @@ public class OSCParser {
 		while (typeIdentifiers.charAt(pos + arrayLen) != TYPE_ARRAY_END) {
 			arrayLen++;
 		}
-		final List<Object> array = new ArrayList<Object>(arrayLen);
+		final List<Object> array = new ArrayList<>(arrayLen);
 		for (int ai = 0; ai < arrayLen; ai++) {
 			array.add(readArgument(rawInput, typeIdentifiers.charAt(pos + ai)));
 		}

@@ -11,7 +11,6 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCSymbol;
 import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -20,14 +19,17 @@ import java.util.Map;
  */
 public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Cloneable {
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final char DEFAULT_IDENTIFIER = 'S';
 
 	private final StringArgumentHandler stringArgumentHandler;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public SymbolArgumentHandler() {
 		this.stringArgumentHandler = new StringArgumentHandler();
 	}
 
+	@SuppressWarnings("unused") // Public API
 	public StringArgumentHandler getInternalStringArgumentHandler() {
 		return stringArgumentHandler;
 	}
@@ -64,9 +66,7 @@ public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Clonea
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCSymbol value)
-			throws OSCSerializeException
-	{
+	public void serialize(final ByteBuffer output, final OSCSymbol value) {
 		stringArgumentHandler.serialize(output, value.toString());
 	}
 }

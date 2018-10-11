@@ -23,12 +23,14 @@ public class CombinedMessageSelector implements MessageSelector {
 				return (matches1 && matches2);
 			}
 		},
+		@SuppressWarnings("unused") // Public API
 		OR {
 			@Override
 			public boolean matches(final boolean matches1, final boolean matches2) {
 				return (matches1 || matches2);
 			}
 		},
+		@SuppressWarnings("unused") // Public API
 		XOR {
 			@Override
 			public boolean matches(final boolean matches1, final boolean matches2) {
@@ -43,6 +45,7 @@ public class CombinedMessageSelector implements MessageSelector {
 	private final MessageSelector selector2;
 	private final LogicOperator logicOperator;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public CombinedMessageSelector(
 			final MessageSelector selector1,
 			final MessageSelector selector2,
@@ -53,6 +56,7 @@ public class CombinedMessageSelector implements MessageSelector {
 		this.logicOperator = logicOperator;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public CombinedMessageSelector(
 			final MessageSelector selector1,
 			final MessageSelector selector2)

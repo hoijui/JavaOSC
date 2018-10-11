@@ -31,6 +31,7 @@ public class SimpleOSCMessageListener implements OSCMessageListener {
 		return (messageReceivedCount > 0);
 	}
 
+	@SuppressWarnings("WeakerAccess")
 	public int getMessageReceivedCount() {
 		return messageReceivedCount;
 	}

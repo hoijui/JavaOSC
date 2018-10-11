@@ -46,11 +46,13 @@ public class EchoOSCMessageListener implements OSCMessageListener {
 
 	private final PrintStream out;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public EchoOSCMessageListener(final PrintStream out) {
 
 		this.out = out;
 	}
 
+	@SuppressWarnings("unused") // Public API
 	public EchoOSCMessageListener() {
 		this(System.out);
 	}

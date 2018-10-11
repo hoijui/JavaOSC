@@ -8,8 +8,6 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -22,12 +20,14 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	/**
 	 * The number of bytes used to represent this type in an OSC byte array (8).
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int BYTES = Long.SIZE / Byte.SIZE;
 	public static final ArgumentHandler<Long> INSTANCE = new LongArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected LongArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public Long parse(final ByteBuffer input) throws OSCParseException {
+	public Long parse(final ByteBuffer input) {
 
 		final Long value = input.asLongBuffer().get();
 		input.position(input.position() + BYTES);
@@ -65,19 +65,19 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Long value) throws OSCSerializeException {
+	public void serialize(final ByteBuffer output, final Long value) {
 
 		long curValue = value;
-		final byte[] longintBytes = new byte[8];
-		longintBytes[7] = (byte)curValue; curValue >>>= 8;
-		longintBytes[6] = (byte)curValue; curValue >>>= 8;
-		longintBytes[5] = (byte)curValue; curValue >>>= 8;
-		longintBytes[4] = (byte)curValue; curValue >>>= 8;
-		longintBytes[3] = (byte)curValue; curValue >>>= 8;
-		longintBytes[2] = (byte)curValue; curValue >>>= 8;
-		longintBytes[1] = (byte)curValue; curValue >>>= 8;
-		longintBytes[0] = (byte)curValue;
+		final byte[] longIntBytes = new byte[8];
+		longIntBytes[7] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[6] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[5] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[4] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[3] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[2] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[1] = (byte)curValue; curValue >>>= 8;
+		longIntBytes[0] = (byte)curValue;
 
-		output.put(longintBytes);
+		output.put(longIntBytes);
 	}
 }

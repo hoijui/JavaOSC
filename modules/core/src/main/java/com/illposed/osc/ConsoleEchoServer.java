@@ -26,6 +26,7 @@ import java.nio.charset.Charset;
  */
 public class ConsoleEchoServer extends OSCPortIn {
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int DEFAULT_PORT = 7770;
 	private static final int ARG_INDEX_ADDRESS = 0;
 	private static final int ARG_INDEX_PORT = 1;
@@ -35,7 +36,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 	private final class PrintBadDataListener implements OSCBadDataListener {
 
 		PrintBadDataListener() {
-			// ctor declared only for setting the access level
+			// declared only for setting the access level
 		}
 
 		@Override
@@ -54,6 +55,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public ConsoleEchoServer(final SocketAddress serverAddress, final PrintStream out) throws IOException {
 		super(
 				OSCParserFactory.createDefaultFactory(),
@@ -63,6 +65,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 		this.out = out;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void start() {
 
 		final OSCMessageListener listener = new EchoOSCMessageListener(out);
@@ -80,6 +83,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 				getLocalAddress().toString());
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static SocketAddress parseServerAddress(final String[] args)
 			throws UnknownHostException
 	{

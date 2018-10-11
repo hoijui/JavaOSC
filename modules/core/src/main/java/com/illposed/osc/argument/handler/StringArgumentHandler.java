@@ -10,7 +10,6 @@ package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
@@ -23,14 +22,17 @@ import java.util.Map;
  */
 public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable {
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final char DEFAULT_IDENTIFIER = 's';
 	public static final String PROP_NAME_CHARSET = "charset";
 
 	private Charset charset;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public StringArgumentHandler(final Charset charset) {
 		this.charset = charset;
 	}
+	@SuppressWarnings("WeakerAccess") // Public API
 	public StringArgumentHandler() {
 		this(Charset.defaultCharset());
 	}
@@ -39,6 +41,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	 * Returns the character-set used to encode and decode string arguments.
 	 * @return the currently used character-encoding-set
 	 */
+	@SuppressWarnings("unused") // Public API
 	public Charset getCharset() {
 		return charset;
 	}
@@ -47,10 +50,10 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	 * Sets the character-set used to encode and decode string arguments.
 	 * @param charset the new character-encoding-set
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setCharset(final Charset charset) {
 		this.charset = charset;
 	}
-
 
 	@Override
 	public char getDefaultIdentifier() {
@@ -115,7 +118,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final String value) throws OSCSerializeException {
+	public void serialize(final ByteBuffer output, final String value) {
 
 		final byte[] stringBytes = value.getBytes(charset);
 		output.put(stringBytes);

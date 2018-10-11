@@ -22,8 +22,9 @@ public class FloatArgumentHandler implements ArgumentHandler<Float>, Cloneable {
 	public static final ArgumentHandler<Float> INSTANCE = new FloatArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected FloatArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override

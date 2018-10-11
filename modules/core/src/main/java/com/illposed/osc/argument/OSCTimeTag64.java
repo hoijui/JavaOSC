@@ -12,22 +12,22 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * This represents an OSC <i>Timetag</i>.
+ * This represents an OSC <i>Time-tag</i>.
  * It uses the NTP (Network Time Protocol) time-tag format,
  * and supports a different time range (smaller) and resolution (more precise)
  * then {@link java.util.Date}.
  * See <a href="http://opensoundcontrol.org/node/3/#timetags">
- * the OSC specification for Timetags</a>
+ * the OSC specification for Time-tags</a>
  * and <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol#Timestamps">
  * the NTP time-stamp documentation on Wikipedia</a> for specification details.
- * OSC <i>Timetag</i> aswell as <code>Date</code> are time-zone agnostic,
+ * OSC <i>Time-tag</i> aswell as <code>Date</code> are time-zone agnostic,
  * though <code>Date</code> might use the default {@link java.util.Locale}
  * in some cases, like when formatting as a <code>String</code>.
  * The epoch 0 starts in 1900 and ends in 2036.
  * Dates before or after the end of this first epoch are represented with
  * a rolled over (the same) value range again, which means one needs to
  * define the epoch to convert to,
- * when converting from the short epoch OSC Timetag to a bigger range one like
+ * when converting from the short epoch OSC Time-tag to a bigger range one like
  * Java <code>Date</code>.
  * We do this with the
  * {@link com.illposed.osc.argument.handler.DateTimeStampArgumentHandler#PROP_NAME_EPOCH_INDICATOR_TIME}
@@ -44,26 +44,29 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 
 	/**
 	 * OSC epoch length in milliseconds.
-	 * An epoch is the maximum range of a 64bit OSC Timetag,
+	 * An epoch is the maximum range of a 64bit OSC Time-tag,
 	 * which is (uint32_max + 1) * 1000 milliseconds.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final long EPOCH_LENGTH_JAVA_TIME = 0x100000000L * 1000L;
 	/**
 	 * Start of the first epoch expressed in Java time
 	 * (as used by {@link java.util.Date#Date(long)}
 	 * and {@link java.util.Date#getTime()}).
 	 * This is "1-Jan-1900 @ 00:00:00", and we use UTC as time-zone.
-	 * Dates before this can not be represented with an OSC Timetag.
+	 * Dates before this can not be represented with an OSC Time-tag.
 	 */
 	public static final long EPOCH_START_JAVA_TIME_0 = -2208992400000L;
 	/**
 	 * Start of the current epoch expressed in Java time.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final long EPOCH_START_JAVA_TIME_CURRENT
 			= findEpochStartJavaTime(new Date().getTime());
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final long IMMEDIATE_RAW = 0x1L;
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
@@ -85,7 +88,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * This Timetags value as specified by the OSC protocol standard.
+	 * This Time-tags value as specified by the OSC protocol standard.
 	 * It is treated as a 64bit unsigned integer,
 	 * with the higher-order 32bit representing the whole seconds
 	 * from the beginning of the epoch,
@@ -99,7 +102,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	/**
-	 * Returns the OSC/NTP conform <i>Timetag</i> value.
+	 * Returns the OSC/NTP conform <i>Time-tag</i> value.
 	 * @return 64bits:
 	 *   32 higher bits (including MSB): seconds,
 	 *   32 lower bits: fraction (of a second)
@@ -112,8 +115,9 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * Returns the number of whole seconds from the start of the epoch
 	 * of this time-tag.
 	 * @return high-order 32-bit unsigned value representing the "seconds" part
-	 *   of this OSC <i>Timetag</i>
+	 *   of this OSC <i>Time-tag</i>
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public long getSeconds() {
 		return ntpTime >>> NTP_SECONDS_BITS;
 	}
@@ -124,8 +128,9 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * Denotes a number of seconds * (1 / 2^32),
 	 * which allows to specify to a precision of about 233 pico seconds.
 	 * @return lower-order 32-bit unsigned value representing the "fraction"
-	 *   part of this OSC <i>Timetag</i>
+	 *   part of this OSC <i>Time-tag</i>
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public long getFraction() {
 		return ntpTime & FILTER_LOWER_32;
 	}
@@ -261,11 +266,10 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	private static long javaToNtpTimeStamp(final long javaTime) {
 
 		final long epochStart = findEpochStartJavaTime(javaTime);
-		final long millisecInEpoch = javaTime - epochStart;
-		final long seconds = millisecInEpoch / 1000L;
-		final long fraction = Math.round(((millisecInEpoch % 1000L) * 0x100000000L) / 1000D);
-		final long ntpTime = toNtpTimeTag(seconds, fraction);
+		final long millisecondsInEpoch = javaTime - epochStart;
+		final long seconds = millisecondsInEpoch / 1000L;
+		final long fraction = Math.round(((millisecondsInEpoch % 1000L) * 0x100000000L) / 1000D);
 
-		return ntpTime;
+		return toNtpTimeTag(seconds, fraction);
 	}
 }

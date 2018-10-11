@@ -9,7 +9,6 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.OSCImpulse;
-import com.illposed.osc.OSCParseException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -22,8 +21,9 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 	public static final ArgumentHandler<OSCImpulse> INSTANCE = new ImpulseArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected ImpulseArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 	}
 
 	@Override
-	public OSCImpulse parse(final ByteBuffer input) throws OSCParseException {
+	public OSCImpulse parse(final ByteBuffer input) {
 		return OSCImpulse.INSTANCE;
 	}
 

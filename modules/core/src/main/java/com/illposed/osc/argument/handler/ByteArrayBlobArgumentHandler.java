@@ -22,8 +22,9 @@ public class ByteArrayBlobArgumentHandler implements ArgumentHandler<byte[]>, Cl
 	public static final ArgumentHandler<byte[]> INSTANCE = new ByteArrayBlobArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected ByteArrayBlobArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override

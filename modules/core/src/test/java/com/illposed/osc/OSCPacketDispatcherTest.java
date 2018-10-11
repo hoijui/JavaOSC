@@ -90,7 +90,7 @@ public class OSCPacketDispatcherTest {
 	public void testDispatchManyArguments() {
 
 		final int numArguments = OSCPacketDispatcher.MAX_ARGUMENTS + 1;
-		final List<Object> arguments = new ArrayList<Object>(numArguments);
+		final List<Object> arguments = new ArrayList<>(numArguments);
 		for (int ai = 0; ai < numArguments; ai++) {
 			arguments.add(ai);
 		}

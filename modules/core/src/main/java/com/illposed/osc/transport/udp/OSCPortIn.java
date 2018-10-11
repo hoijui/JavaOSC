@@ -50,6 +50,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Buffers were 1500 bytes in size, but were increased to 1536, as this is a common MTU,
 	 * and then increased to 65507, as this is the maximum incoming datagram data size.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int BUFFER_SIZE = 65507;
 
 	private volatile boolean listening;
@@ -85,8 +86,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			this.dispatcher = new OSCPacketDispatcher();
 			// HACK We do this, even though it is against the OSC (1.0) specification,
 			//   because this is how it worked in this library until Feb. 2015.,
-			//   and thus users of this library expect this behavour by default.
-			this.dispatcher.setAlwaysDispatchingImmediatly(true);
+			//   and thus users of this library expect this behaviour by default.
+			this.dispatcher.setAlwaysDispatchingImmediately(true);
 		} else {
 			this.dispatcher = dispatcher;
 		}
@@ -191,6 +192,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	/**
 	 * Start listening for incoming OSCPackets
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void startListening() {
 
 		// NOTE This is not thread-save
@@ -206,6 +208,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	/**
 	 * Stop listening for incoming OSCPackets
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void stopListening() {
 
 		listening = false;
@@ -223,6 +226,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Is this port listening for packets?
 	 * @return true if this port is in listening mode
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isListening() {
 		return listening;
 	}
@@ -232,6 +236,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @see #setDaemonListener
 	 * @return <code>true</code> if this ports listening thread is/would be in daemon mode
 	 */
+	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
 	public boolean isDaemonListener() {
 		return daemonListener;
 	}
@@ -246,6 +251,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @see java.lang.Thread#setDaemon(boolean)
 	 * @param daemonListener whether this ports listening thread should be in daemon mode
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setDaemonListener(final boolean daemonListener) {
 
 		if (isListening()) {
@@ -260,6 +266,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @return <code>true</code> if this port will continue listening
 	 *   after a parse exception
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isResilient() {
 		return resilient;
 	}
@@ -270,6 +277,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param resilient whether this port should continue listening
 	 *   after a parse exception
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setResilient(final boolean resilient) {
 		this.resilient = resilient;
 	}
@@ -305,6 +313,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		return rep.toString();
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCPacketDispatcher getDispatcher() {
 		return dispatcher;
 	}

@@ -30,6 +30,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPartPrefix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/he*/wo*");
@@ -41,6 +42,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPartPostfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/*o/*rld");
@@ -52,6 +54,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPartPreAndPostfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h*o/w*rld*");
@@ -63,6 +66,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testSingle() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/?ello/w?rl?");
@@ -85,6 +89,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testGroupBackwards() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[z-a]o");
@@ -100,6 +105,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testGroupList() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[aly]o");
@@ -115,6 +121,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testGroupListAndRange() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[lya-c]o");
@@ -132,6 +139,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testGroupHyphenAndRange() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[-a-c]o");
@@ -148,6 +156,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testCloseBracketAndRange() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[]a-c]o");
@@ -164,6 +173,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testRegexNegate() {
 
 		// '^' is just a character like any other, no special meaning!
@@ -183,6 +193,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testNegate() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[!a-c]o");
@@ -200,6 +211,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testStringGroupSolo() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/{hello,hididelidoo}");
@@ -216,6 +228,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testStringGroupPrefix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h{ello,ididelidoo}");
@@ -232,6 +245,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testStringGroupPostfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/{hell,hididelido}o");
@@ -248,6 +262,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testStringGroupPreAndPostfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/h{ell,ididelido}o");
@@ -326,6 +341,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPathTraversingWildcardAroundfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello//two");
@@ -382,6 +398,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPathTraversingWildcardMultipleAroundfix() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello////two");
@@ -411,6 +428,7 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testPathTraversingWildcardComplex() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/my//hello///two/cents//");

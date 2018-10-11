@@ -63,9 +63,9 @@ public class OSCBundle implements OSCPacket {
 	public OSCBundle(final List<OSCPacket> packets, final OSCTimeTag64 timestamp) {
 
 		if (null == packets) {
-			this.packets = new LinkedList<OSCPacket>();
+			this.packets = new LinkedList<>();
 		} else {
-			this.packets = new ArrayList<OSCPacket>(packets);
+			this.packets = new ArrayList<>(packets);
 		}
 		checkNonNullTimestamp(timestamp);
 		this.timestamp = timestamp;
@@ -92,6 +92,7 @@ public class OSCBundle implements OSCPacket {
 	 * @param timestamp when the bundle should execute, can not be {@code null},
 	 *   but {@code OSCTimeTag64.IMMEDIATE}
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setTimestamp(final OSCTimeTag64 timestamp) {
 
 		checkNonNullTimestamp(timestamp);

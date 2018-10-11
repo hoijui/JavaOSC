@@ -9,7 +9,6 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeTag64;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -25,7 +24,7 @@ public class OSCBundleTest {
 	private void sendBundleTimestampTestHelper(
 			final OSCBundle bundle,
 			final OSCTimeTag64 expectedTimestamp)
-			throws IOException, OSCSerializeException, OSCParseException
+			throws OSCSerializeException, OSCParseException
 	{
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {

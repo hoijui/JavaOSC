@@ -16,15 +16,16 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC <i>Timetag</i>.
+ * Parses and serializes an OSC <i>Time-tag</i>.
  */
 public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, Cloneable {
 
 	public static final ArgumentHandler<OSCTimeTag64> INSTANCE = new TimeTag64ArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected TimeTag64ArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override

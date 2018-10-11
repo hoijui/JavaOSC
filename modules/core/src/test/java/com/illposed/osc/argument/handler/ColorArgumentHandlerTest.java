@@ -12,7 +12,6 @@ import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import java.awt.Color;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
@@ -36,8 +35,8 @@ public class ColorArgumentHandlerTest {
 		Color.WHITE,
 		Color.YELLOW};
 
-	public static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
-			throws IOException, OSCSerializeException, OSCParseException
+	static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
+			throws OSCSerializeException, OSCParseException
 	{
 		// serialize
 		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
@@ -45,13 +44,11 @@ public class ColorArgumentHandlerTest {
 		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
 
 		// re-parse
-		final T reparsed = type.parse(reparsableBuffer);
-
-		return reparsed;
+		return type.parse(reparsableBuffer);
 	}
 
 	private static Color reparse(final Color orig)
-			throws IOException, OSCSerializeException, OSCParseException
+			throws OSCSerializeException, OSCParseException
 	{
 		return reparse(ColorArgumentHandler.INSTANCE, 4, orig);
 	}
@@ -100,6 +97,7 @@ public class ColorArgumentHandlerTest {
 	 * @throws Exception on re-parse failure
 	 */
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testReparseDefaultColorsAlphaed() throws Exception {
 
 		final long alphaRandomSeed = new Random().nextLong();

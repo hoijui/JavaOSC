@@ -23,6 +23,7 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 	private final byte data1;
 	private final byte data2;
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public OSCMidiMessage(final byte portId, final byte status, final byte data1, final byte data2) {
 
 		this.portId = portId;
@@ -35,18 +36,22 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 		return new byte[] {getPortId(), getStatus(), getData1(), getData2()};
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public byte getPortId() {
 		return portId;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public byte getStatus() {
 		return status;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public byte getData1() {
 		return data1;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public byte getData2() {
 		return data2;
 	}
@@ -101,6 +106,6 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 				content[contentByteIndex++],
 				content[contentByteIndex++],
 				content[contentByteIndex++],
-				content[contentByteIndex++]);
+				content[contentByteIndex]);
 	}
 }

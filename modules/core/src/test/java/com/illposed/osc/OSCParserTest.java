@@ -66,7 +66,7 @@ public class OSCParserTest {
 		final OSCMessage packet = convertToMessage(bytes);
 		final OSCUnsigned unsigned = (OSCUnsigned) packet.getArguments().get(0);
 		final long parsed32bitUnsigned = unsigned.toLong();
-		Assert.assertEquals("Failed parsing 32bit unsinged ('u') value",
+		Assert.assertEquals("Failed parsing 32bit unsigned ('u') value",
 				given32bitUnsigned, parsed32bitUnsigned);
 	}
 
@@ -140,9 +140,9 @@ public class OSCParserTest {
 
 	@Test
 	public void testReadShortestPacketWithoutArgumentsSeparator() {
-		// This pakcet ommits the character (',') that separates address
+		// This packet omits the character (',') that separates address
 		// from parameters. This is supposed legacy practise,
-		// but still not explicitly forbidden by the OSC 1.0 specificiations,
+		// but still not explicitly forbidden by the OSC 1.0 specifications,
 		// and should therefore be supported.
 		final byte[] bytes = {47, 0, 0, 0};
 		final OSCMessage packet = convertToMessage(bytes);

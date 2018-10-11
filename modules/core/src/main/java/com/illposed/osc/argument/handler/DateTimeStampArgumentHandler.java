@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Parses and serializes an OSC <i>Timetag</i>,
+ * Parses and serializes an OSC <i>Time-tag</i>,
  * using {@link Date} as a wrapper,
  * and thus loosing out on the resolution.
  * You should consider using {@link TimeTag64ArgumentHandler} instead;
@@ -27,7 +27,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 	public static final ArgumentHandler<Date> INSTANCE = new DateTimeStampArgumentHandler();
 	/**
 	 * This {@link Date} property indicates the epoch into which we parse
-	 * OSC Timetags.
+	 * OSC Time-tags.
 	 * The Java dates parsed by this handler will be in the same OSC/NTP epoch
 	 * as this properties value.
 	 */
@@ -36,6 +36,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 	private Long epochIndicatorTime;
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected DateTimeStampArgumentHandler() {
 
 		// now
@@ -52,6 +53,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 		return Date.class;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setEpochIndicatorTime(final Long epochIndicatorTime) {
 		this.epochIndicatorTime = epochIndicatorTime;
 	}

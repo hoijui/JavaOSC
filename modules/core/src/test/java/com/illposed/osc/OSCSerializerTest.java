@@ -114,6 +114,7 @@ public class OSCSerializerTest {
 
 	@Test
 	public void testPrintString2OnStream() throws Exception {
+		//noinspection SpellCheckingInspection
 		checkPrintOnStream(
 				new byte[] {97, 98, 99, 100, 0, 0, 0, 0},
 				"abcd");

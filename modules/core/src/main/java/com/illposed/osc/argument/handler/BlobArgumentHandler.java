@@ -24,7 +24,7 @@ public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneab
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
 	protected BlobArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override

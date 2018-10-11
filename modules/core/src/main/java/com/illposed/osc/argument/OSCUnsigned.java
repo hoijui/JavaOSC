@@ -20,14 +20,17 @@ public final class OSCUnsigned implements Cloneable, Serializable, Comparable<OS
 	/**
 	 * The number of bytes used to represent an unsigned integer value in binary form.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final int BYTES = 4;
 	/**
 	 * A constant holding the minimum value a 32bit unsigned integer can have, 0.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final OSCUnsigned MIN_VALUE = new OSCUnsigned(0x0L);
 	/**
 	 * A constant holding the maximum value a 32bit unsigned integer can have, 2^{32}.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static final OSCUnsigned MAX_VALUE = new OSCUnsigned(0xFFFFFFFFL);
 
 	private static final long serialVersionUID = 1L;
@@ -89,7 +92,7 @@ public final class OSCUnsigned implements Cloneable, Serializable, Comparable<OS
 		final long value
 				= ((long) bytes[0] & 0xFF) << (3 * Byte.SIZE)
 				| ((long) bytes[1] & 0xFF) << (2 * Byte.SIZE)
-				| ((long) bytes[2] & 0xFF) << (1 * Byte.SIZE)
+				| ((long) bytes[2] & 0xFF) << (    Byte.SIZE)
 				| ((long) bytes[3] & 0xFF);
 		return valueOf(value);
 	}

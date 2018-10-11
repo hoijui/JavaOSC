@@ -8,7 +8,6 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.OSCParseException;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -21,8 +20,9 @@ public class BooleanFalseArgumentHandler implements ArgumentHandler<Boolean>, Cl
 	public static final ArgumentHandler<Boolean> INSTANCE = new BooleanFalseArgumentHandler();
 
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
+	@SuppressWarnings("WeakerAccess") // Public API
 	protected BooleanFalseArgumentHandler() {
-		// ctor declared only for setting the access level
+		// declared only for setting the access level
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class BooleanFalseArgumentHandler implements ArgumentHandler<Boolean>, Cl
 	}
 
 	@Override
-	public Boolean parse(final ByteBuffer input) throws OSCParseException {
+	public Boolean parse(final ByteBuffer input) {
 		return Boolean.FALSE;
 	}
 

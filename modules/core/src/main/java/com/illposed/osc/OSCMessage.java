@@ -79,7 +79,7 @@ public class OSCMessage implements OSCPacket {
 			checkAddress(address);
 		}
 		this.address = address;
-		this.arguments = (List<Object>) Collections.unmodifiableList(arguments);
+		this.arguments = Collections.unmodifiableList(arguments);
 		this.info = info;
 	}
 
@@ -107,6 +107,7 @@ public class OSCMessage implements OSCPacket {
 		return info;
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public boolean isInfoSet() {
 		return (info != null);
 	}
@@ -116,6 +117,7 @@ public class OSCMessage implements OSCPacket {
 	 * This method may only be called if the meta-info has not yet been set.
 	 * @param info the meta-info for this message, may not be {@code null}
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void setInfo(final OSCMessageInfo info) {
 
 		if (this.info != null) {
@@ -139,6 +141,7 @@ public class OSCMessage implements OSCPacket {
 	 * @param address to be checked for validity
 	 * @return true if the supplied string constitutes a valid OSC address
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static boolean isValidAddress(final String address) {
 		return (address != null)
 				&& !address.isEmpty()

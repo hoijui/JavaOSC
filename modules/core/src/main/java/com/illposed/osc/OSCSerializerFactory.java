@@ -28,14 +28,16 @@ public class OSCSerializerFactory {
 
 	protected OSCSerializerFactory() {
 
-		this.properties = new HashMap<String, Object>();
-		this.argumentHandlers = new LinkedList<ArgumentHandler>();
+		this.properties = new HashMap<>();
+		this.argumentHandlers = new LinkedList<>();
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public List<ArgumentHandler> getArgumentHandlers() {
 		return Collections.unmodifiableList(argumentHandlers);
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public static OSCSerializerFactory createEmptyFactory() {
 		return new OSCSerializerFactory();
 	}
@@ -56,7 +58,7 @@ public class OSCSerializerFactory {
 
 		final Map<String, Object> currentProperties = getProperties();
 		final List<ArgumentHandler> typeCopies
-				= new ArrayList<ArgumentHandler>(argumentHandlers.size());
+				= new ArrayList<>(argumentHandlers.size());
 		for (final ArgumentHandler<?> type : argumentHandlers) {
 			final ArgumentHandler<?> typeClone;
 			try {
@@ -104,6 +106,7 @@ public class OSCSerializerFactory {
 	 * being created in the future.
 	 * @param additionalProperties the new set of properties to adhere to
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void addProperties(final Map<String, Object> additionalProperties) {
 		properties.putAll(additionalProperties);
 	}
@@ -115,14 +118,17 @@ public class OSCSerializerFactory {
 	 * This will only have an effect for serializers and argument-handlers
 	 * being created in the future.
 	 */
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void clearProperties() {
 		properties.clear();
 	}
 
+	@SuppressWarnings("WeakerAccess") // Public API
 	public void registerArgumentHandler(final ArgumentHandler argumentHandler) {
 		argumentHandlers.add(argumentHandler);
 	}
 
+	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
 	public void unregisterArgumentHandler(final ArgumentHandler argumentHandler) {
 		argumentHandlers.remove(argumentHandler);
 	}
