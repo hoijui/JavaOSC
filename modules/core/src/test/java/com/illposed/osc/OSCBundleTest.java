@@ -44,7 +44,7 @@ public class OSCBundleTest {
 	public void testSendBundle() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
-		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		List<OSCPacket> packetsSent = new ArrayList<>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
 		sendBundleTimestampTestHelper(bundle, timestampNow);
@@ -52,7 +52,7 @@ public class OSCBundleTest {
 
 	@Test
 	public void testSendBundleImmediate() throws Exception {
-		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		List<OSCPacket> packetsSent = new ArrayList<>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent);
 		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
@@ -62,7 +62,7 @@ public class OSCBundleTest {
 	public void testSendBundleImmediateExplicit() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
-		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		List<OSCPacket> packetsSent = new ArrayList<>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
 		bundle.setTimestamp(OSCTimeTag64.IMMEDIATE);
@@ -73,7 +73,7 @@ public class OSCBundleTest {
 	public void testSendBundleImmediateExplicitNull() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
-		List<OSCPacket> packetsSent = new ArrayList<OSCPacket>(1);
+		List<OSCPacket> packetsSent = new ArrayList<>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
 		bundle.setTimestamp(null); // should throw IllegalArgumentException
@@ -92,17 +92,17 @@ public class OSCBundleTest {
 		//       > message-2
 		//       > message-3
 
-		final List<OSCPacket> packetsBundle2 = new ArrayList<OSCPacket>(2);
+		final List<OSCPacket> packetsBundle2 = new ArrayList<>(2);
 		packetsBundle2.add(new OSCMessage("/leaf/2"));
 		packetsBundle2.add(new OSCMessage("/leaf/3"));
 		final OSCBundle bundle2 = new OSCBundle(packetsBundle2);
 
-		final List<OSCPacket> packetsBundle1 = new ArrayList<OSCPacket>(2);
+		final List<OSCPacket> packetsBundle1 = new ArrayList<>(2);
 		packetsBundle1.add(new OSCMessage("/leaf/1"));
 		packetsBundle1.add(bundle2);
 		final OSCBundle bundle1 = new OSCBundle(packetsBundle1);
 
-		final List<OSCPacket> packetsBundle0 = new ArrayList<OSCPacket>(2);
+		final List<OSCPacket> packetsBundle0 = new ArrayList<>(2);
 		packetsBundle0.add(new OSCMessage("/leaf/0"));
 		packetsBundle0.add(bundle1);
 		final OSCBundle bundle0 = new OSCBundle(packetsBundle0);

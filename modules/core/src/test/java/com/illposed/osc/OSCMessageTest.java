@@ -175,7 +175,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentInteger() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(99);
 		final OSCMessage message = new OSCMessage("/int", args);
 		final byte[] answer = { 47, 105, 110, 116, 0, 0, 0, 0, 44, 105, 0, 0, 0, 0, 0, 99 };
@@ -185,7 +185,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentFloat() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(999.9f);
 		final OSCMessage message = new OSCMessage("/float", args);
 		final byte[] answer
@@ -196,7 +196,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentDouble() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(777777.777);
 		final OSCMessage message = new OSCMessage("/double", args);
 		final byte[] answer = {
@@ -208,7 +208,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentCharacter() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add('x');
 		final OSCMessage message = new OSCMessage("/char", args);
 		final byte[] answer = { 47, 99, 104, 97, 114, 0, 0, 0, 44, 99, 0, 0, 0, 0, 0, 120 };
@@ -218,7 +218,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentBlob() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(new byte[] { -1, 0, 1 });
 		final OSCMessage message = new OSCMessage("/blob", args);
 		final byte[] answer
@@ -229,7 +229,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentImpulse() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(OSCImpulse.INSTANCE);
 		final OSCMessage message = new OSCMessage("/impulse", args);
 		final byte[] answer = { 47, 105, 109, 112, 117, 108, 115, 101, 0, 0, 0, 0, 44, 73, 0, 0 };
@@ -239,7 +239,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentLong() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(Long.MAX_VALUE);
 		final OSCMessage message = new OSCMessage("/long", args);
 		final byte[] answer = {
@@ -254,7 +254,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentTimestamp0() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(OSCTimeTag64.valueOf(new Date(0L)));
 		final OSCMessage message = new OSCMessage("/ts/0", args);
 		final byte[] answer
@@ -266,7 +266,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentTimestamp2000() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2000, 0, 0);
@@ -281,7 +281,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentTimestampAfterFeb2036() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		final Calendar calendar = createCalendar();
 		calendar.clear();
 		calendar.set(2037, 0, 0);
@@ -296,7 +296,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testAtLeastOneZeroAfterAddressAndTypesAndArgumentStrings() {
-		final List<Object> args = new ArrayList<Object>(3);
+		final List<Object> args = new ArrayList<>(3);
 		// We add 3 arguments.
 		// Together with the comma before the types,
 		// this creates a 4 byte aligned stream again (",sii").
@@ -322,7 +322,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentTrue() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(true);
 		final OSCMessage message = new OSCMessage("/true", args);
 		final byte[] answer = { 47, 116, 114, 117, 101, 0, 0, 0, 44, 84, 0, 0 };
@@ -332,7 +332,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentFalse() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(false);
 		final OSCMessage message = new OSCMessage("/false", args);
 		final byte[] answer = { 47, 102, 97, 108, 115, 101, 0, 0, 44, 70, 0, 0 };
@@ -342,7 +342,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentNull() {
-		final List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<>(1);
 		args.add(null);
 		final OSCMessage message = new OSCMessage("/null", args);
 		final byte[] answer = { 47, 110, 117, 108, 108, 0, 0, 0, 44, 78, 0, 0 };
@@ -352,7 +352,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testDecreaseVolume() {
-		List<Object> args = new ArrayList<Object>(2);
+		List<Object> args = new ArrayList<>(2);
 		args.add(1);
 		args.add(0.2f);
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
@@ -370,7 +370,7 @@ public class OSCMessageTest {
 	 */
 	@Test
 	public void testIncreaseVolume() {
-		List<Object> args = new ArrayList<Object>(2);
+		List<Object> args = new ArrayList<>(2);
 		args.add(1);
 		args.add(1.0f);
 		OSCMessage message = new OSCMessage("/sc/mixer/volume", args);
@@ -401,7 +401,7 @@ public class OSCMessageTest {
 	@Test
 	public void testCreateSynth() {
 
-		final List<Object> origArguments = new ArrayList<Object>(3);
+		final List<Object> origArguments = new ArrayList<>(3);
 		origArguments.add(1001);
 		origArguments.add("freq");
 		origArguments.add(440.0f);
@@ -416,16 +416,16 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentCollectionsMixed() {
-		final List<Object> args = new ArrayList<Object>(5);
-		final Collection<Integer> singleType = new LinkedHashSet<Integer>();
+		final List<Object> args = new ArrayList<>(5);
+		final Collection<Integer> singleType = new LinkedHashSet<>();
 		singleType.add(-1);
 		singleType.add(0);
 		singleType.add(1);
 		singleType.add(2);
 		singleType.add(-1); // double entry; discarded because we have a Set
 		singleType.add(99);
-		final List<Integer> singleTypeList = new ArrayList<Integer>(singleType);
-		final List<Object> allTypes = new LinkedList<Object>();
+		final List<Integer> singleTypeList = new ArrayList<>(singleType);
+		final List<Object> allTypes = new LinkedList<>();
 		allTypes.add(null);
 		allTypes.add(Boolean.TRUE);
 		allTypes.add(Boolean.FALSE);
@@ -460,8 +460,8 @@ public class OSCMessageTest {
 
 	@Test
 	public void testArgumentCollectionsRecursiveMixed() {
-		final List<Object> args = new ArrayList<Object>(5);
-		final Collection<Object> fourthLevel = new LinkedList<Object>();
+		final List<Object> args = new ArrayList<>(5);
+		final Collection<Object> fourthLevel = new LinkedList<>();
 		fourthLevel.add(null);
 		fourthLevel.add(Boolean.TRUE);
 		fourthLevel.add(Boolean.FALSE);
@@ -474,17 +474,17 @@ public class OSCMessageTest {
 		fourthLevel.add('h');
 		fourthLevel.add("hello world!");
 		fourthLevel.add(OSCTimeTag64.valueOf(new Date(0L)));
-		final Collection<Object> thirdLevel = new LinkedList<Object>();
+		final Collection<Object> thirdLevel = new LinkedList<>();
 		thirdLevel.add(fourthLevel);
 		thirdLevel.add(-1);
 		thirdLevel.add('h');
 		thirdLevel.add(9.9);
-		final Collection<Object> secondLevel = new LinkedList<Object>();
+		final Collection<Object> secondLevel = new LinkedList<>();
 		secondLevel.add(0);
 		secondLevel.add(thirdLevel);
 		secondLevel.add('e');
 		secondLevel.add(8.8);
-		final Collection<Object> firstLevel = new LinkedList<Object>();
+		final Collection<Object> firstLevel = new LinkedList<>();
 		firstLevel.add(1);
 		firstLevel.add('l');
 		firstLevel.add(secondLevel);
@@ -535,7 +535,7 @@ public class OSCMessageTest {
 
 	@Test
 	public void testEncodeArray() throws OSCParseException {
-		final List<Float> floats = new ArrayList<Float>(2);
+		final List<Float> floats = new ArrayList<>(2);
 		floats.add(10.0f);
 		floats.add(100.0f);
 		final List<?> origArguments = Collections.singletonList(floats);

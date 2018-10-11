@@ -254,7 +254,7 @@
 						</execution>
 					</executions>
 					<configuration>
-						<mainClass>${project.mainClass}</mainClass>
+						<!-- <mainClass>${project.mainClass}</mainClass>-->
 					</configuration>
 				</plugin>
 
@@ -270,7 +270,7 @@
 					<version>2.15</version> <!-- NOTE 2.15 is the latest version still compiled with Java 1.6 -->
 					<configuration>
 						<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-						<linkXref>true</linkXref>
+						<linkXRef>true</linkXRef>
 						<configLocation>src/main/resources/checkstyle.xml</configLocation>
 						<propertyExpansion>java.header.regex.template.file=${root.basedir}/src/main/resources/java_header_regex_template.txt</propertyExpansion>
 					</configuration>
@@ -282,7 +282,7 @@
 					<version>3.6</version> <!-- NOTE 3.6 is the latest version still compiled with Java 1.6 -->
 					<configuration>
 						<aggregate>true</aggregate>
-						<linkXref>true</linkXref>
+						<linkXRef>true</linkXRef>
 						<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 						<targetJdk>1.${java.old.version}</targetJdk>
 						<rulesets>

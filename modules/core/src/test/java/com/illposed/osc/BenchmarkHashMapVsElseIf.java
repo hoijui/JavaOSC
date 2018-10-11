@@ -24,7 +24,7 @@ public class BenchmarkHashMapVsElseIf {
 
 	private static final Map<Class, Character> JAVA_CLASS_TO_OSC_TYPE;
 	static {
-		Map<Class, Character> classToType = new HashMap<Class, Character>(6);
+		Map<Class, Character> classToType = new HashMap<>(6);
 
 		classToType.put(Integer.class, 'i');
 		classToType.put(Long.class, 'h');
@@ -36,7 +36,7 @@ public class BenchmarkHashMapVsElseIf {
 		JAVA_CLASS_TO_OSC_TYPE = Collections.unmodifiableMap(classToType);
 	}
 	private static final List<Class> JAVA_CLASSES
-			= new ArrayList<Class>(JAVA_CLASS_TO_OSC_TYPE.keySet());
+			= new ArrayList<>(JAVA_CLASS_TO_OSC_TYPE.keySet());
 	private static final Random TYPE_GENERATOR_RND = new Random();
 
 	public static void main(String[] args) {
@@ -82,7 +82,7 @@ public class BenchmarkHashMapVsElseIf {
 
 	private static List<Class> generateRandomTypes(int numEntries) {
 
-		List<Class> types = new ArrayList<Class>(numEntries);
+		List<Class> types = new ArrayList<>(numEntries);
 		for (int ti = 0; ti < numEntries; ti++) {
 			types.add(generateRandomType());
 		}

@@ -13,7 +13,6 @@ import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -33,14 +32,6 @@ public class OSCReparserTest {
 				}
 			};
 
-	private static final Comparator<byte[]> BYTE_ARRAY_BLOB_COMPARATOR
-			= new Comparator<byte[]>() {
-				@Override
-				public int compare(final byte[] obj1, final byte[] obj2) {
-					return Arrays.equals(obj1, obj2) ? 0 : 1;
-				}
-			};
-
 	private static final Comparator<ByteBuffer> BLOB_COMPARATOR
 			= new Comparator<ByteBuffer>() {
 				@Override
@@ -51,7 +42,7 @@ public class OSCReparserTest {
 			};
 
 	private static ByteBuffer serialize(final OSCPacket packet)
-			throws IOException, OSCSerializeException
+			throws OSCSerializeException
 	{
 		final ByteBuffer serialized = ByteBuffer.allocate(1024);
 		final OSCSerializer serializer
@@ -62,14 +53,14 @@ public class OSCReparserTest {
 	}
 
 	private static OSCPacket parse(final ByteBuffer packetBytes)
-			throws IOException, OSCParseException
+			throws OSCParseException
 	{
 		final OSCParser parser = OSCParserFactory.createDefaultFactory().create();
 		return parser.convert(packetBytes);
 	}
 
-	public static <T extends OSCPacket> T reparse(final T packet)
-			throws IOException, OSCParseException, OSCSerializeException
+	static <T extends OSCPacket> T reparse(final T packet)
+			throws OSCParseException, OSCSerializeException
 	{
 		return (T) parse(serialize(packet));
 	}
@@ -77,7 +68,7 @@ public class OSCReparserTest {
 	private <C, I extends C, O extends C> void reparseSingleArgument(
 			final I argument,
 			final Comparator<C> comparator)
-			throws IOException, OSCParseException, OSCSerializeException
+			throws OSCParseException, OSCSerializeException
 	{
 		final OSCMessage message = new OSCMessage("/hello/world",
 				Collections.singletonList(argument));
@@ -93,13 +84,13 @@ public class OSCReparserTest {
 	}
 
 	private void reparseSingleArgument(final Object argument)
-			throws IOException, OSCParseException, OSCSerializeException
+			throws OSCParseException, OSCSerializeException
 	{
 		reparseSingleArgument(argument, EQUALS_COMPARATOR);
 	}
 
 	private void reparseSingleBlobArgument(final byte[] blob)
-			throws IOException, OSCParseException, OSCSerializeException
+			throws OSCParseException, OSCSerializeException
 	{
 		reparseSingleArgument(ByteBuffer.wrap(blob), BLOB_COMPARATOR);
 	}

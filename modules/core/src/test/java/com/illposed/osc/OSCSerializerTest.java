@@ -9,7 +9,6 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -40,12 +39,12 @@ public class OSCSerializerTest {
 			final Charset charset,
 			final byte[] expected,
 			final Object... arguments)
-			throws IOException, OSCSerializeException
+			throws OSCSerializeException
 	{
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		final OSCSerializerFactory serializerFactory = OSCSerializerFactory.createDefaultFactory();
 		if (charset != null) {
-			final Map<String, Object> properties = new HashMap<String, Object>();
+			final Map<String, Object> properties = new HashMap<>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
 			serializerFactory.addProperties(properties);
 		}
@@ -62,7 +61,7 @@ public class OSCSerializerTest {
 	private void checkPrintOnStream(
 			final byte[] expected,
 			final Object... arguments)
-			throws IOException, OSCSerializeException
+			throws OSCSerializeException
 	{
 		checkPrintOnStream(null, expected, arguments);
 	}
