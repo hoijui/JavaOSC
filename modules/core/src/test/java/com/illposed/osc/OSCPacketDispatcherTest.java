@@ -96,7 +96,7 @@ public class OSCPacketDispatcherTest {
 		}
 		OSCMessage message = new OSCMessage("/listener1", arguments);
 		dispatcher.dispatchPacket(message);
-		Assert.assertEquals(numArguments, listener1.getMessage().getArguments().size());
+		Assert.assertEquals(numArguments, listener1.getReceivedEvent().getMessage().getArguments().size());
 	}
 
 	@Test

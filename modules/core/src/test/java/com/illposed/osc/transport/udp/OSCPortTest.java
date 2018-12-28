@@ -461,9 +461,9 @@ public class OSCPortTest {
 		if (!listener.isMessageReceived()) {
 			Assert.fail("Message was not received");
 		}
-		if (!listener.getReceivedTimestamp().equals(bundle.getTimestamp())) {
+		if (!listener.getReceivedEvent().getTime().equals(bundle.getTimestamp())) {
 			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
-					+ " but has " + listener.getReceivedTimestamp());
+					+ " but has " + listener.getReceivedEvent().getTime());
 		}
 	}
 
@@ -491,16 +491,16 @@ public class OSCPortTest {
 		if (!listener.isMessageReceived()) {
 			Assert.fail("Message was not received");
 		}
-		if (message.getArguments().size() != listener.getMessage().getArguments().size()) {
+		if (message.getArguments().size() != listener.getReceivedEvent().getMessage().getArguments().size()) {
 			Assert.fail("Message received #arguments differs from #arguments sent");
 		}
 		if (!message.getArguments().get(numIntegerArgs - 1).equals(
-				listener.getMessage().getArguments().get(numIntegerArgs - 1)))
+				listener.getReceivedEvent().getMessage().getArguments().get(numIntegerArgs - 1)))
 		{
 			Assert.fail("Message received last argument '"
 					+ message.getArguments().get(numIntegerArgs - 1)
 					+ "' differs from the sent one '"
-					+ listener.getMessage().getArguments().get(numIntegerArgs - 1)
+					+ listener.getReceivedEvent().getMessage().getArguments().get(numIntegerArgs - 1)
 					+ "'");
 		}
 	}

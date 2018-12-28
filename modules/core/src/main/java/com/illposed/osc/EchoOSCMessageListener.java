@@ -58,8 +58,9 @@ public class EchoOSCMessageListener implements OSCMessageListener {
 	}
 
 	@Override
-	public void acceptMessage(final OSCTimeTag64 time, final OSCMessage message) {
+	public void acceptMessage(final OSCMessageEvent event) {
 
+		final OSCMessage message = event.getMessage();
 		out.println(message.getAddress());
 		out.printf("  %s%n", message.getInfo().getArgumentTypeTags());
 		for (final Object arg : message.getArguments()) {

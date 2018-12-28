@@ -348,9 +348,10 @@ public class OSCPacketDispatcher {
 
 		ensureMetaInfo(message);
 
+		final OSCMessageEvent event = new OSCMessageEvent(this, time, message);
 		for (final PacketListener packetListener : packetListeners) {
-			if (packetListener.getSelector().matches(message)) {
-				packetListener.getListener().acceptMessage(time, message);
+			if (packetListener.getSelector().matches(message)) { // TODO Maybe also supply the message event instead of only hte message?
+				packetListener.getListener().acceptMessage(event);
 			}
 		}
 	}
