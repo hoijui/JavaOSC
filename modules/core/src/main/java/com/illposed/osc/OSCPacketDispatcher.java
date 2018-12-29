@@ -266,29 +266,31 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	public void dispatchPacket(final OSCPacket packet) {
-		dispatchPacket(packet, OSCTimeTag64.IMMEDIATE);
+	public void dispatchPacket(final Object source, final OSCPacket packet) {
+		dispatchPacket(source, packet, OSCTimeTag64.IMMEDIATE);
 	}
 
-	private void dispatchPacket(final OSCPacket packet, final OSCTimeTag64 timestamp) {
+	private void dispatchPacket(final Object source, final OSCPacket packet, final OSCTimeTag64 timestamp) {
 		if (packet instanceof OSCBundle) {
-			dispatchBundle((OSCBundle) packet);
+			dispatchBundle(source, (OSCBundle) packet);
 		} else {
-			dispatchMessageNow((OSCMessage) packet, timestamp);
+			dispatchMessageNow(new OSCMessageEvent(this, timestamp, (OSCMessage) packet));
 		}
 	}
 
 	private class BundleDispatcher implements Runnable {
 
+		private final Object source;
 		private final OSCBundle bundle;
 
-		BundleDispatcher(final OSCBundle bundle) {
+		BundleDispatcher(final Object source, final OSCBundle bundle) {
+			this.source = source;
 			this.bundle = bundle;
 		}
 
 		@Override
 		public void run() {
-			dispatchBundleNow(bundle);
+			dispatchBundleNow(source, bundle);
 		}
 	}
 
@@ -296,27 +298,27 @@ public class OSCPacketDispatcher {
 		return timestamp.toDate(null).getTime() - System.currentTimeMillis();
 	}
 
-	private void dispatchBundle(final OSCBundle bundle) {
+	private void dispatchBundle(final Object source, final OSCBundle bundle) {
 		final OSCTimeTag64 timestamp = bundle.getTimestamp();
 		if (isAlwaysDispatchingImmediately() || timestamp.isImmediate()) {
-			dispatchBundleNow(bundle);
+			dispatchBundleNow(source, bundle);
 		} else {
 			// NOTE This scheduling accuracy is only to at most the accuracy of the
 			//   default system clock, and thus might not be enough in some use-cases.
 			//   It can never be more accurate then 1ms, and on many systems will be ~ 10ms.
 			final long delayMs = calculateDelayFromNow(timestamp);
 			dispatchScheduler.schedule(
-					new BundleDispatcher(bundle),
+					new BundleDispatcher(source, bundle),
 					delayMs,
 					TimeUnit.MILLISECONDS);
 		}
 	}
 
-	private void dispatchBundleNow(final OSCBundle bundle) {
+	private void dispatchBundleNow(final Object source, final OSCBundle bundle) {
 		final OSCTimeTag64 timestamp = bundle.getTimestamp();
 		final List<OSCPacket> packets = bundle.getPackets();
 		for (final OSCPacket packet : packets) {
-			dispatchPacket(packet, timestamp);
+			dispatchPacket(source, packet, timestamp);
 		}
 	}
 
@@ -344,13 +346,12 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	private void dispatchMessageNow(final OSCMessage message, final OSCTimeTag64 time) {
+	private void dispatchMessageNow(final OSCMessageEvent event) {
 
-		ensureMetaInfo(message);
+		ensureMetaInfo(event.getMessage());
 
-		final OSCMessageEvent event = new OSCMessageEvent(this, time, message);
 		for (final PacketListener packetListener : packetListeners) {
-			if (packetListener.getSelector().matches(message)) { // TODO Maybe also supply the message event instead of only hte message?
+			if (packetListener.getSelector().matches(event.getMessage())) { // TODO Maybe also supply the message event instead of only the message?
 				packetListener.getListener().acceptMessage(event);
 			}
 		}

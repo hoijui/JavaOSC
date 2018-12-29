@@ -158,7 +158,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
 				// dispatch the Java object
-				dispatcher.dispatchPacket(oscPacket);
+				dispatcher.dispatchPacket(this, oscPacket);
 			} catch (final IOException ex) {
 				if (isListening()) {
 					stopListening(ex);
