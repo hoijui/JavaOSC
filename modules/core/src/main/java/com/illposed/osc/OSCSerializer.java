@@ -150,7 +150,8 @@ public class OSCSerializer {
 				new HashMap<>(properties));
 	}
 
-	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
+	// Public API
+	@SuppressWarnings({"WeakerAccess", "unused"})
 	public Map<Class, ArgumentHandler> getClassToTypeMapping() {
 		return classToType;
 	}
@@ -164,7 +165,8 @@ public class OSCSerializer {
 		return properties;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static byte[] toByteArray(final ByteBuffer buffer) {
 
 		final byte[] bytes = new byte[buffer.remaining()];
@@ -172,12 +174,13 @@ public class OSCSerializer {
 		return bytes;
 	}
 
+	// Public API
 	/**
 	 * Terminates the previously written piece of data with a single {@code (byte) '0'}.
 	 * We always need to terminate with a zero, especially when the stream is already aligned.
 	 * @param output to receive the data-piece termination
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static void terminate(final ByteBuffer output) {
 		output.put((byte) 0);
 	}

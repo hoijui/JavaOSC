@@ -20,8 +20,9 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 
 	public static final ArgumentHandler<OSCMidiMessage> INSTANCE = new MidiMessageArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected MidiMessageArgumentHandler() {
 		// declared only for setting the access level
 	}

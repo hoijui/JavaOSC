@@ -19,17 +19,20 @@ public class JavaRegexTypeTagsMessageSelector implements MessageSelector {
 
 	private final Pattern selector;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public JavaRegexTypeTagsMessageSelector(final Pattern selector) {
 		this.selector = selector;
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public JavaRegexTypeTagsMessageSelector(final String selectorRegex) {
 		this(Pattern.compile(selectorRegex));
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public static MessageSelector createAddressAndTypeTagsSelector(
 			final Pattern addressSelector,
 			final Pattern typeTagsSelector)

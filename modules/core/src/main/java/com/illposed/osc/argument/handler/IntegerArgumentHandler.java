@@ -17,15 +17,17 @@ import java.util.Map;
  */
 public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneable {
 
+	// Public API
 	/**
 	 * The number of bytes used to represent this type in an OSC byte array (4).
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final int BYTES = Integer.SIZE / Byte.SIZE;
 	public static final ArgumentHandler<Integer> INSTANCE = new IntegerArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected IntegerArgumentHandler() {
 		// declared only for setting the access level
 	}

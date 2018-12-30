@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeTag64;
 import java.io.PrintStream;
 
 /**
@@ -46,13 +45,15 @@ public class EchoOSCMessageListener implements OSCMessageListener {
 
 	private final PrintStream out;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public EchoOSCMessageListener(final PrintStream out) {
 
 		this.out = out;
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public EchoOSCMessageListener() {
 		this(System.out);
 	}

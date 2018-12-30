@@ -190,6 +190,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 		return (api == messageAddressParts.size());
 	}
 
+	// Public API
 	/**
 	 * Tries to match an OSC <i>Address Pattern</i> part to a part of
 	 * a selector.
@@ -200,7 +201,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static boolean matches(final String str, final String p) {
 
 		boolean negate;

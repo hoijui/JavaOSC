@@ -19,8 +19,9 @@ public class BooleanTrueArgumentHandler implements ArgumentHandler<Boolean>, Clo
 
 	public static final ArgumentHandler<Boolean> INSTANCE = new BooleanTrueArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected BooleanTrueArgumentHandler() {
 		// declared only for setting the access level
 	}

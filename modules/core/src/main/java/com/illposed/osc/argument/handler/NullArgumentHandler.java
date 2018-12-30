@@ -19,8 +19,9 @@ public class NullArgumentHandler implements ArgumentHandler<Object>, Cloneable {
 
 	public static final ArgumentHandler<Object> INSTANCE = new NullArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected NullArgumentHandler() {
 		// declared only for setting the access level
 	}

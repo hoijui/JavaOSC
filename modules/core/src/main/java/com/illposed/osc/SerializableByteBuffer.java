@@ -15,10 +15,11 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+// Public API
 /**
  * Allows to serialize and deserialize a {@link java.nio.ByteBuffer}.
  */
-@SuppressWarnings("WeakerAccess") // Public API
+@SuppressWarnings("WeakerAccess")
 public class SerializableByteBuffer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -26,12 +27,14 @@ public class SerializableByteBuffer implements Serializable {
 	// mark as transient so this is not serialized by default
 	private transient ByteBuffer buffer;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public SerializableByteBuffer(final ByteBuffer buffer) {
 		this.buffer = buffer;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public ByteBuffer getBuffer() {
 		return buffer;
 	}

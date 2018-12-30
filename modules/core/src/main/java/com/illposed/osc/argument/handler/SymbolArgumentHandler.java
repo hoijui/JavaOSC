@@ -19,17 +19,20 @@ import java.util.Map;
  */
 public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Cloneable {
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final char DEFAULT_IDENTIFIER = 'S';
 
 	private final StringArgumentHandler stringArgumentHandler;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public SymbolArgumentHandler() {
 		this.stringArgumentHandler = new StringArgumentHandler();
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public StringArgumentHandler getInternalStringArgumentHandler() {
 		return stringArgumentHandler;
 	}

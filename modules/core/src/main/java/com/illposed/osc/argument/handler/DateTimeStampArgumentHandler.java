@@ -35,8 +35,9 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 
 	private Long epochIndicatorTime;
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected DateTimeStampArgumentHandler() {
 
 		// now
@@ -53,7 +54,8 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 		return Date.class;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setEpochIndicatorTime(final Long epochIndicatorTime) {
 		this.epochIndicatorTime = epochIndicatorTime;
 	}

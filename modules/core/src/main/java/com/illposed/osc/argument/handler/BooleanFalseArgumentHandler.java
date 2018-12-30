@@ -19,8 +19,9 @@ public class BooleanFalseArgumentHandler implements ArgumentHandler<Boolean>, Cl
 
 	public static final ArgumentHandler<Boolean> INSTANCE = new BooleanFalseArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected BooleanFalseArgumentHandler() {
 		// declared only for setting the access level
 	}

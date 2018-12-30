@@ -30,21 +30,26 @@ import java.util.Map;
  */
 public class OSCParser {
 
+	// Public API
 	/**
 	 * Number of bytes the raw OSC data stream is aligned to.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final int ALIGNMENT_BYTES = 4;
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final String BUNDLE_START = "#bundle";
 	private static final byte[] BUNDLE_START_BYTES
 			= BUNDLE_START.getBytes(Charset.forName("UTF-8"));
 	private static final String NO_ARGUMENT_TYPES = "";
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final byte TYPES_VALUES_SEPARATOR = (byte) ',';
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final char TYPE_ARRAY_BEGIN = (byte) '[';
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final char TYPE_ARRAY_END = (byte) ']';
 
 	private final Map<Character, ArgumentHandler> identifierToType;
@@ -59,13 +64,14 @@ public class OSCParser {
 		}
 	}
 
+	// Public API
 	/**
 	 * Creates a new parser with all the required ingredients.
 	 * @param identifierToType all of these, and only these arguments will be
 	 *   parsable by this object, that are supported by these handlers
 	 * @param properties see {@link ArgumentHandler#setProperties(java.util.Map)}
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCParser(
 			final Map<Character, ArgumentHandler> identifierToType,
 			final Map<String, Object> properties)
@@ -98,7 +104,8 @@ public class OSCParser {
 		input.position(input.position() + padding);
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public Map<Character, ArgumentHandler> getIdentifierToTypeMapping() {
 		return identifierToType;
 	}

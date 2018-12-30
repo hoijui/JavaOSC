@@ -20,8 +20,9 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 
 	public static final ArgumentHandler<Color> INSTANCE = new ColorArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected ColorArgumentHandler() {
 		// declared only for setting the access level
 	}
@@ -52,6 +53,7 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 		return (ColorArgumentHandler) super.clone();
 	}
 
+	// Public API
 	/**
 	 * Converts the argument to an {@code int} by an unsigned conversion.
 	 *
@@ -59,18 +61,19 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 	 * @return the argument converted to {@code int} by an unsigned conversion NOTE Since Java 8,
 	 * one could use Byte#toUnsignedInt
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static int toUnsignedInt(final byte signedByte) {
 		return ((int) signedByte) & 0xff;
 	}
 
+	// Public API
 	/**
 	 * Converts the argument to an {@code byte} by a sign introducing conversion.
 	 *
 	 * @param unsignedInt the value to convert to a signed {@code byte}; has to be in range [0, 255]
 	 * @return the argument converted to {@code byte} by a sign introducing conversion
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static byte toSignedByte(final int unsignedInt) {
 		return (byte) unsignedInt;
 	}

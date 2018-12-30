@@ -42,12 +42,13 @@ import java.util.Date;
  */
 public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTimeTag64> {
 
+	// Public API
 	/**
 	 * OSC epoch length in milliseconds.
 	 * An epoch is the maximum range of a 64bit OSC Time-tag,
 	 * which is (uint32_max + 1) * 1000 milliseconds.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final long EPOCH_LENGTH_JAVA_TIME = 0x100000000L * 1000L;
 	/**
 	 * Start of the first epoch expressed in Java time
@@ -57,16 +58,18 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * Dates before this can not be represented with an OSC Time-tag.
 	 */
 	public static final long EPOCH_START_JAVA_TIME_0 = -2208992400000L;
+	// Public API
 	/**
 	 * Start of the current epoch expressed in Java time.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final long EPOCH_START_JAVA_TIME_CURRENT
 			= findEpochStartJavaTime(new Date().getTime());
+	// Public API
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final long IMMEDIATE_RAW = 0x1L;
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
@@ -111,17 +114,19 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 		return ntpTime;
 	}
 
+	// Public API
 	/**
 	 * Returns the number of whole seconds from the start of the epoch
 	 * of this time-tag.
 	 * @return high-order 32-bit unsigned value representing the "seconds" part
 	 *   of this OSC <i>Time-tag</i>
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public long getSeconds() {
 		return ntpTime >>> NTP_SECONDS_BITS;
 	}
 
+	// Public API
 	/**
 	 * Returns the fraction of a second from the start of the epoch + seconds
 	 * of this time-tag.
@@ -130,7 +135,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * @return lower-order 32-bit unsigned value representing the "fraction"
 	 *   part of this OSC <i>Time-tag</i>
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public long getFraction() {
 		return ntpTime & FILTER_LOWER_32;
 	}

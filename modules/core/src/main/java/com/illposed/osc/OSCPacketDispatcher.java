@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OSCPacketDispatcher {
 
+	// Public API
 	/**
 	 * Completely arbitrary number of arguments,
 	 * required only due to library internal technical reasons.
@@ -34,7 +35,7 @@ public class OSCPacketDispatcher {
 	 * by refactoring the code.
 	 * XXX refactor-out this arbitrary number
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final int MAX_ARGUMENTS = 64;
 	private static final int DEFAULT_CORE_THREADS = 3;
 	private final ByteBuffer argumentTypesBuffer;
@@ -126,7 +127,8 @@ public class OSCPacketDispatcher {
 		}
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher(
 			final OSCSerializerFactory serializerFactory,
 			final ScheduledExecutorService dispatchScheduler)
@@ -154,7 +156,8 @@ public class OSCPacketDispatcher {
 		this.dispatchScheduler = dispatchScheduler;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
 		this(serializerFactory, createDefaultDispatchScheduler());
 	}
@@ -163,7 +166,8 @@ public class OSCPacketDispatcher {
 		this(null);
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static ScheduledExecutorService createDefaultDispatchScheduler() {
 		return Executors.newScheduledThreadPool(DEFAULT_CORE_THREADS, new DaemonThreadFactory());
 	}
@@ -177,20 +181,22 @@ public class OSCPacketDispatcher {
 		this.alwaysDispatchingImmediately = alwaysDispatchingImmediately;
 	}
 
+	// Public API
 	/**
 	 * Indicates whether we disregard bundle time-stamps for dispatch-scheduling.
 	 * @return {@code true}, if all bundles are dispatched immediately
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isAlwaysDispatchingImmediately() {
 		return alwaysDispatchingImmediately;
 	}
 
+	// Public API
 	/**
 	 * Indicates whether we need outgoing messages to have meta-info attached.
 	 * @return {@code true}, if at least one of the registered listeners requires message meta-info
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isMetaInfoRequired() {
 		return metaInfoRequired;
 	}
@@ -215,6 +221,7 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	// Public API
 	/**
 	 * Removes a listener (<i>Method</i> in OSC speak), which will no longer
 	 * be notified of incoming messages.
@@ -222,7 +229,7 @@ public class OSCPacketDispatcher {
 	 * @param messageSelector has to match the registered pair to be removed
 	 * @param listener will no longer receive messages accepted by the selector
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void removeListener(
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
@@ -241,20 +248,22 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	// Public API
 	/**
 	 * Adds a listener that will be notified of incoming bad/unrecognized data.
 	 * @param listener will receive chunks of unrecognized data
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void addBadDataListener(final OSCBadDataListener listener) {
 		badDataListeners.add(listener);
 	}
 
+	// Public API
 	/**
 	 * Removes a listener that is notified of incoming bad/unrecognized data.
 	 * @param listener will no longer receive chunks of unrecognized data
 	 */
-	@SuppressWarnings("unused") // Public API
+	@SuppressWarnings("unused")
 	public void removeBadDataListener(final OSCBadDataListener listener) {
 		badDataListeners.remove(listener);
 	}
@@ -351,7 +360,8 @@ public class OSCPacketDispatcher {
 		ensureMetaInfo(event.getMessage());
 
 		for (final PacketListener packetListener : packetListeners) {
-			if (packetListener.getSelector().matches(event.getMessage())) { // TODO Maybe also supply the message event instead of only the message?
+			// TODO Maybe also supply the message event instead of only the message?
+			if (packetListener.getSelector().matches(event.getMessage())) {
 				packetListener.getListener().acceptMessage(event);
 			}
 		}

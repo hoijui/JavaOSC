@@ -22,8 +22,9 @@ public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, 
 
 	public static final ArgumentHandler<OSCTimeTag64> INSTANCE = new TimeTag64ArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected TimeTag64ArgumentHandler() {
 		// declared only for setting the access level
 	}

@@ -22,35 +22,40 @@ import java.util.Map;
  */
 public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable {
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final char DEFAULT_IDENTIFIER = 's';
 	public static final String PROP_NAME_CHARSET = "charset";
 
 	private Charset charset;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public StringArgumentHandler(final Charset charset) {
 		this.charset = charset;
 	}
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public StringArgumentHandler() {
 		this(Charset.defaultCharset());
 	}
 
+	// Public API
 	/**
 	 * Returns the character-set used to encode and decode string arguments.
 	 * @return the currently used character-encoding-set
 	 */
-	@SuppressWarnings("unused") // Public API
+	@SuppressWarnings("unused")
 	public Charset getCharset() {
 		return charset;
 	}
 
+	// Public API
 	/**
 	 * Sets the character-set used to encode and decode string arguments.
 	 * @param charset the new character-encoding-set
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setCharset(final Charset charset) {
 		this.charset = charset;
 	}

@@ -19,7 +19,8 @@ public class JavaRegexAddressMessageSelector implements MessageSelector {
 
 	private final Pattern selector;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public JavaRegexAddressMessageSelector(final Pattern selector) {
 		this.selector = selector;
 	}

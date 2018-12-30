@@ -30,7 +30,8 @@ import java.util.Set;
 public final class LibraryInfo {
 
 	private static final String MANIFEST_FILE = "/META-INF/MANIFEST.MF";
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final String UNKNOWN_VALUE = "<unknown>";
 	private static final char MANIFEST_CONTINUATION_LINE_INDICATOR = ' ';
 	/** 1 key + 1 value = 2 parts of a key-value pair */
@@ -114,21 +115,24 @@ public final class LibraryInfo {
 		return mavenProps;
 	}
 
+	// Public API
 	/**
 	 * Returns this application JARs {@link #MANIFEST_FILE} properties.
 	 * @return the contents of the manifest file as {@code String} to {@code String} mapping
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public Properties getManifestProperties() {
 		return manifestProperties;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public String getVersion() {
 		return getManifestProperties().getProperty("Bundle-Version", UNKNOWN_VALUE);
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public String getOscSpecificationVersion() {
 		return getManifestProperties().getProperty("Supported-OSC-Version", UNKNOWN_VALUE);
 	}
@@ -137,22 +141,26 @@ public final class LibraryInfo {
 		return getManifestProperties().getProperty("Bundle-License", UNKNOWN_VALUE);
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isArrayEncodingSupported() {
 		return true;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isArrayDecodingSupported() {
 		return true;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public List<ArgumentHandler> getEncodingArgumentHandlers() {
 		return OSCSerializerFactory.createDefaultFactory().getArgumentHandlers();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public Map<Character, ArgumentHandler> getDecodingArgumentHandlers() {
 		return OSCParserFactory.createDefaultFactory().getIdentifierToTypeMapping();
 	}
@@ -188,7 +196,8 @@ public final class LibraryInfo {
 		return classOrMarkerValue;
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public String createManifestPropertiesString() {
 
 		final StringBuilder info = new StringBuilder(1024);
@@ -206,7 +215,8 @@ public final class LibraryInfo {
 		return info.toString();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public String createLibrarySummary() {
 
 		final StringBuilder summary = new StringBuilder(1024);

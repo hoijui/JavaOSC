@@ -107,17 +107,19 @@ public class OSCMessage implements OSCPacket {
 		return info;
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isInfoSet() {
 		return (info != null);
 	}
 
+	// Public API
 	/**
 	 * Sets meta-info about this message.
 	 * This method may only be called if the meta-info has not yet been set.
 	 * @param info the meta-info for this message, may not be {@code null}
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setInfo(final OSCMessageInfo info) {
 
 		if (this.info != null) {
@@ -136,12 +138,13 @@ public class OSCMessage implements OSCPacket {
 		}
 	}
 
+	// Public API
 	/**
 	 * Checks whether a given string is a valid OSC <i>Address Pattern</i>.
 	 * @param address to be checked for validity
 	 * @return true if the supplied string constitutes a valid OSC address
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static boolean isValidAddress(final String address) {
 		return (address != null)
 				&& !address.isEmpty()

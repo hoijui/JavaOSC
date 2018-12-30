@@ -28,12 +28,14 @@ public final class OSCParserFactory {
 		this.identifierToType = new HashMap<>();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public Map<Character, ArgumentHandler> getIdentifierToTypeMapping() {
 		return Collections.unmodifiableMap(identifierToType);
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static OSCParserFactory createEmptyFactory() {
 		return new OSCParserFactory();
 	}
@@ -97,6 +99,7 @@ public final class OSCParserFactory {
 		addProperties(properties);
 	}
 
+	// Public API
 	/**
 	 * Adds a new set of properties, extending,
 	 * possibly overriding the current ones.
@@ -106,11 +109,12 @@ public final class OSCParserFactory {
 	 * being created in the future.
 	 * @param additionalProperties the new set of properties to adhere to
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void addProperties(final Map<String, Object> additionalProperties) {
 		properties.putAll(additionalProperties);
 	}
 
+	// Public API
 	/**
 	 * Clears all currently stored properties.
 	 * Properties will be propagated to created parsers
@@ -118,17 +122,19 @@ public final class OSCParserFactory {
 	 * This will only have an effect for parsers and argument-handlers
 	 * being created in the future.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void clearProperties() {
 		properties.clear();
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public void registerArgumentHandler(final ArgumentHandler argumentHandler) {
 		registerArgumentHandler(argumentHandler, argumentHandler.getDefaultIdentifier());
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public void registerArgumentHandler(
 			final ArgumentHandler argumentHandler,
 			final char typeIdentifier)
@@ -142,12 +148,14 @@ public final class OSCParserFactory {
 		identifierToType.put(typeIdentifier, argumentHandler);
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public void unregisterArgumentHandler(final ArgumentHandler argumentHandler) {
 		unregisterArgumentHandler(argumentHandler.getDefaultIdentifier());
 	}
 
-	@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"}) // Public API
+	// Public API
+	@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
 	public ArgumentHandler unregisterArgumentHandler(final char typeIdentifier) {
 		return identifierToType.remove(typeIdentifier);
 	}

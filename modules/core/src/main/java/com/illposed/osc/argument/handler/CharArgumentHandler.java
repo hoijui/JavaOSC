@@ -19,8 +19,9 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 
 	public static final ArgumentHandler<Character> INSTANCE = new CharArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected CharArgumentHandler() {
 		// declared only for setting the access level
 	}

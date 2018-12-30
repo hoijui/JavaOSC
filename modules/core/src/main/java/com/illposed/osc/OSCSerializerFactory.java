@@ -32,12 +32,14 @@ public class OSCSerializerFactory {
 		this.argumentHandlers = new LinkedList<>();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public List<ArgumentHandler> getArgumentHandlers() {
 		return Collections.unmodifiableList(argumentHandlers);
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public static OSCSerializerFactory createEmptyFactory() {
 		return new OSCSerializerFactory();
 	}
@@ -97,6 +99,7 @@ public class OSCSerializerFactory {
 		addProperties(properties);
 	}
 
+	// Public API
 	/**
 	 * Adds a new set of properties, extending,
 	 * possibly overriding the current ones.
@@ -106,11 +109,12 @@ public class OSCSerializerFactory {
 	 * being created in the future.
 	 * @param additionalProperties the new set of properties to adhere to
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void addProperties(final Map<String, Object> additionalProperties) {
 		properties.putAll(additionalProperties);
 	}
 
+	// Public API
 	/**
 	 * Clears all currently stored properties.
 	 * Properties will be propagated to created serializers
@@ -118,17 +122,19 @@ public class OSCSerializerFactory {
 	 * This will only have an effect for serializers and argument-handlers
 	 * being created in the future.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void clearProperties() {
 		properties.clear();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public void registerArgumentHandler(final ArgumentHandler argumentHandler) {
 		argumentHandlers.add(argumentHandler);
 	}
 
-	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
+	// Public API
+	@SuppressWarnings({"WeakerAccess", "unused"})
 	public void unregisterArgumentHandler(final ArgumentHandler argumentHandler) {
 		argumentHandlers.remove(argumentHandler);
 	}

@@ -46,11 +46,12 @@ import java.nio.channels.DatagramChannel;
  */
 public class OSCPortIn extends OSCPort implements Runnable {
 
+	// Public API
 	/**
 	 * Buffers were 1500 bytes in size, but were increased to 1536, as this is a common MTU,
 	 * and then increased to 65507, as this is the maximum incoming datagram data size.
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final int BUFFER_SIZE = 65507;
 
 	private volatile boolean listening;
@@ -189,10 +190,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		}
 	}
 
+	// Public API
 	/**
 	 * Start listening for incoming OSCPackets
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void startListening() {
 
 		// NOTE This is not thread-save
@@ -205,10 +207,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		}
 	}
 
+	// Public API
 	/**
 	 * Stop listening for incoming OSCPackets
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void stopListening() {
 
 		listening = false;
@@ -222,25 +225,28 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		}
 	}
 
+	// Public API
 	/**
 	 * Is this port listening for packets?
 	 * @return true if this port is in listening mode
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isListening() {
 		return listening;
 	}
 
+	// Public API
 	/**
 	 * Is this port listening for packets in daemon mode?
 	 * @see #setDaemonListener
 	 * @return <code>true</code> if this ports listening thread is/would be in daemon mode
 	 */
-	@SuppressWarnings({"WeakerAccess", "unused"}) // Public API
+	@SuppressWarnings({"WeakerAccess", "unused"})
 	public boolean isDaemonListener() {
 		return daemonListener;
 	}
 
+	// Public API
 	/**
 	 * Set whether this port should be listening for packets in daemon mode.
 	 * The Java Virtual Machine exits when the only threads running are all daemon threads.
@@ -251,7 +257,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @see java.lang.Thread#setDaemon(boolean)
 	 * @param daemonListener whether this ports listening thread should be in daemon mode
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setDaemonListener(final boolean daemonListener) {
 
 		if (isListening()) {
@@ -260,24 +266,26 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this.daemonListener = daemonListener;
 	}
 
+	// Public API
 	/**
 	 * Whether this port continues listening and throws
 	 * a {@link OSCParseException} after receiving a bad packet.
 	 * @return <code>true</code> if this port will continue listening
 	 *   after a parse exception
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public boolean isResilient() {
 		return resilient;
 	}
 
+	// Public API
 	/**
 	 * Set whether this port continues listening and throws
 	 * a {@link OSCParseException} after receiving a bad packet.
 	 * @param resilient whether this port should continue listening
 	 *   after a parse exception
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setResilient(final boolean resilient) {
 		this.resilient = resilient;
 	}
@@ -313,7 +321,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		return rep.toString();
 	}
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher getDispatcher() {
 		return dispatcher;
 	}

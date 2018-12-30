@@ -87,12 +87,13 @@ public class OSCBundle implements OSCPacket {
 		return timestamp;
 	}
 
+	// Public API
 	/**
 	 * Sets the time the bundle will execute.
 	 * @param timestamp when the bundle should execute, can not be {@code null},
 	 *   but {@code OSCTimeTag64.IMMEDIATE}
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public void setTimestamp(final OSCTimeTag64 timestamp) {
 
 		checkNonNullTimestamp(timestamp);

@@ -20,12 +20,14 @@ public class OSCPatternTypeTagsMessageSelector implements MessageSelector {
 
 	private final String selector;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCPatternTypeTagsMessageSelector(final String selector) {
 		this.selector = selector;
 	}
 
-	@SuppressWarnings("unused") // Public API
+	// Public API
+	@SuppressWarnings("unused")
 	public static MessageSelector createAddressAndTypeTagsSelector(
 			final String addressSelector,
 			final String typeTagsSelector)

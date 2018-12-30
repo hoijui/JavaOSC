@@ -20,8 +20,9 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 
 	public static final ArgumentHandler<OSCImpulse> INSTANCE = new ImpulseArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected ImpulseArgumentHandler() {
 		// declared only for setting the access level
 	}

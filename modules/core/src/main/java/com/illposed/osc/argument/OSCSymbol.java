@@ -21,7 +21,8 @@ public class OSCSymbol implements Cloneable, Serializable, Comparable<OSCSymbol>
 
 	private final String value;
 
-	@SuppressWarnings("WeakerAccess") // Public API
+	// Public API
+	@SuppressWarnings("WeakerAccess")
 	public OSCSymbol(final String value) {
 		this.value = value;
 	}

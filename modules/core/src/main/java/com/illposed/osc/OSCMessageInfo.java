@@ -16,10 +16,11 @@ public class OSCMessageInfo {
 
 	private final CharSequence argumentTypeTags;
 
+	// Public API
 	/**
 	 * @param argumentTypeTags the <i>Arguments Type Tags</i> string, for example "iiscdi[fff]h"
 	 */
-	@SuppressWarnings({"WeakerAccess", "SpellCheckingInspection"}) // Public API
+	@SuppressWarnings({"WeakerAccess", "SpellCheckingInspection"})
 	public OSCMessageInfo(final CharSequence argumentTypeTags) {
 		this.argumentTypeTags = argumentTypeTags;
 	}

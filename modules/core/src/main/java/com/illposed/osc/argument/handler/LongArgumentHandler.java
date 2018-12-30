@@ -17,15 +17,17 @@ import java.util.Map;
  */
 public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 
+	// Public API
 	/**
 	 * The number of bytes used to represent this type in an OSC byte array (8).
 	 */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	public static final int BYTES = Long.SIZE / Byte.SIZE;
 	public static final ArgumentHandler<Long> INSTANCE = new LongArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected LongArgumentHandler() {
 		// declared only for setting the access level
 	}

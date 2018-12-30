@@ -20,8 +20,9 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 
 	public static final ArgumentHandler<OSCUnsigned> INSTANCE = new UnsignedIntegerArgumentHandler();
 
+	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
-	@SuppressWarnings("WeakerAccess") // Public API
+	@SuppressWarnings("WeakerAccess")
 	protected UnsignedIntegerArgumentHandler() {
 		// declared only for setting the access level
 	}
