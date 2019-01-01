@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Dispatches {@link OSCPacket}s to registered listeners (<i>Method</i>s).
  */
-public class OSCPacketDispatcher {
+public class OSCPacketDispatcher implements OSCPacketListener {
 
 	// Public API
 	/**
@@ -275,6 +275,11 @@ public class OSCPacketDispatcher {
 		}
 	}
 
+	@Override
+	public void handleBadData(final OSCBadDataEvent event) {
+		dispatchBadData(event);
+	}
+
 	public void dispatchPacket(final Object source, final OSCPacket packet) {
 		dispatchPacket(source, packet, OSCTimeTag64.IMMEDIATE);
 	}
@@ -285,6 +290,11 @@ public class OSCPacketDispatcher {
 		} else {
 			dispatchMessageNow(new OSCMessageEvent(this, timestamp, (OSCMessage) packet));
 		}
+	}
+
+	@Override
+	public void handlePacket(final Object source, final OSCPacket packet) {
+		dispatchPacket(source, packet);
 	}
 
 	private class BundleDispatcher implements Runnable {

@@ -13,10 +13,13 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
+import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializerFactory;
 import com.illposed.osc.SimpleOSCMessageListener;
+import com.illposed.osc.SimpleOSCPacketListener;
+import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -52,7 +55,8 @@ public class OSCPortTest {
 			final int portSenderOut,
 			final int portSenderIn,
 			final int portReceiverOut,
-			final int portReceiverIn)
+			final int portReceiverIn,
+			boolean defaultListener)
 			throws Exception
 	{
 		final SocketAddress senderOutAddress = new InetSocketAddress(portSenderOut);
@@ -64,10 +68,15 @@ public class OSCPortTest {
 			receiver.close();
 		}
 		receiver = new OSCPortIn(
-				OSCParserFactory.createDefaultFactory(),
-				new OSCPacketDispatcher(),
-				receiverInAddress,
-				senderInAddress);
+			OSCParserFactory.createDefaultFactory(),
+			new ArrayList<OSCPacketListener>() {
+				{
+					add(new OSCPacketDispatcher());
+				}
+			},
+			receiverInAddress,
+			senderInAddress
+		);
 
 		if (sender != null) {
 			sender.close();
@@ -78,8 +87,18 @@ public class OSCPortTest {
 				senderOutAddress);
 	}
 
+	private void reSetUp(
+		final int portSenderOut, final int portSenderIn, final int portReceiverOut,
+		final int portReceiverIn
+	) throws Exception {
+		reSetUp(portSenderOut, portSenderIn, portReceiverOut, portReceiverIn, true);
+	}
+
 	private void reSetUp(final int portSender, final int portReceiver) throws Exception {
-		reSetUp(portSender, portSender, portReceiver, portReceiver);
+		boolean defaultListener = true;
+		reSetUp(
+			portSender, portSender, portReceiver, portReceiver, defaultListener
+		);
 	}
 
 	private void reSetUp(final int portReceiver) throws Exception {
@@ -89,6 +108,12 @@ public class OSCPortTest {
 	@Before
 	public void setUp() throws Exception {
 		reSetUp(OSCPort.defaultSCOSCPort());
+	}
+
+	private void reSetUpWithoutDefaultListener() throws Exception {
+		int sender = 0;
+		int receiver = OSCPort.defaultSCOSCPort();
+		reSetUp(sender, sender, receiver, receiver, false);
 	}
 
 	private void reSetUpDifferentPorts() throws Exception {
@@ -464,6 +489,91 @@ public class OSCPortTest {
 		if (!listener.getReceivedEvent().getTime().equals(bundle.getTimestamp())) {
 			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
 					+ " but has " + listener.getReceivedEvent().getTime());
+		}
+	}
+
+	@Test
+	public void testLowLevelBundleReceiving() throws Exception {
+		reSetUpWithoutDefaultListener();
+
+		SimpleOSCPacketListener listener = new SimpleOSCPacketListener();
+		receiver.addPacketListener(listener);
+		receiver.startListening();
+
+		OSCBundle bundle = new OSCBundle();
+		bundle.addPacket(new OSCMessage("/low-level/bundle/receiving"));
+		sender.send(bundle);
+		Thread.sleep(100); // wait a bit
+
+		receiver.stopListening();
+
+		if (!listener.isMessageReceived()) {
+			Assert.fail("Message was not received");
+		}
+
+		OSCBundle packet = (OSCBundle)listener.getReceivedPacket();
+		OSCTimeTag64 timetag = packet.getTimestamp();
+
+		if (!timetag.equals(bundle.getTimestamp())) {
+			Assert.fail(
+				"Message should have timestamp " +
+				bundle.getTimestamp() +
+				" but has " +
+				timetag
+			);
+		}
+	}
+
+	@Test
+	public void testLowLevelMessageReceiving() throws Exception {
+		reSetUpWithoutDefaultListener();
+
+		SimpleOSCPacketListener listener = new SimpleOSCPacketListener();
+		receiver.addPacketListener(listener);
+		receiver.startListening();
+
+		String expectedAddress = "/low-level/message/receiving";
+
+		OSCMessage message = new OSCMessage(expectedAddress);
+		sender.send(message);
+		Thread.sleep(100); // wait a bit
+
+		receiver.stopListening();
+
+		if (!listener.isMessageReceived()) {
+			Assert.fail("Message was not received");
+		}
+
+		OSCMessage packet = (OSCMessage)listener.getReceivedPacket();
+		String actualAddress = packet.getAddress();
+
+		if (!expectedAddress.equals(actualAddress)) {
+			Assert.fail(
+				"Message should have address " +
+				expectedAddress +
+				" but has address" +
+				actualAddress
+			);
+		}
+	}
+
+	@Test
+	public void testLowLevelRemovingPacketListener() throws Exception {
+		SimpleOSCPacketListener listener = new SimpleOSCPacketListener();
+		receiver.addPacketListener(listener);
+		receiver.removePacketListener(listener);
+		receiver.startListening();
+
+		OSCMessage message = new OSCMessage("/low-level/removing-packet-listener");
+		sender.send(message);
+		Thread.sleep(100); // wait a bit
+
+		receiver.stopListening();
+
+		if (listener.isMessageReceived()) {
+			Assert.fail(
+				"Message was received, despite removePacketListener having been called."
+			);
 		}
 	}
 

@@ -1,0 +1,35 @@
+/*
+ * Copyright (C) 2018, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
+package com.illposed.osc;
+
+/**
+ * A listener that handles <b>packets</b>. A packet can be either a bundle or a
+ * message.
+ *
+ * This is useful if you need to handle the messages in bundles differently than
+ * individual messages.
+ *
+ * If you don't have this constraint, you might prefer to use OSCMessageListener
+ * instead.
+ */
+public interface OSCPacketListener {
+
+	/**
+	 * Process an incoming packet.
+	 * @param source the source of the packet
+	 * @param packet the packet to process
+	 */
+	void handlePacket(final Object source, final OSCPacket packet);
+
+	/**
+	 * Process a bad data event.
+	 * @param event the bad data event to handle
+	 */
+	void handleBadData(final OSCBadDataEvent event);
+}

@@ -11,6 +11,7 @@ package com.illposed.osc.transport.udp;
 import com.illposed.osc.OSCBadDataEvent;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
+import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
@@ -19,6 +20,8 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Listens for OSC packets on a UDP/IP port.
@@ -59,73 +62,131 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private boolean resilient;
 	private Thread listeningThread;
 	private final OSCParserFactory parserFactory;
-	private final OSCPacketDispatcher dispatcher;
+	private final List<OSCPacketListener> packetListeners;
 
 	/**
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
 	 * using a parser created with the given factory.
 	 * @param parserFactory to create the internal parser from
-	 * @param dispatcher to dispatch received and serialized OSC packets
+	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(
 			final OSCParserFactory parserFactory,
-			final OSCPacketDispatcher dispatcher,
+			final List<OSCPacketListener> packetListeners,
 			final SocketAddress local,
 			final SocketAddress remote)
 			throws IOException
 	{
 		super(local, remote);
 
-		this.listening = false;
-		this.daemonListener = true;
-		this.resilient = false;
-		this.parserFactory = parserFactory;
-		if (dispatcher == null) {
-			this.dispatcher = new OSCPacketDispatcher();
-			// HACK We do this, even though it is against the OSC (1.0) specification,
-			//   because this is how it worked in this library until Feb. 2015.,
-			//   and thus users of this library expect this behaviour by default.
-			this.dispatcher.setAlwaysDispatchingImmediately(true);
-		} else {
-			this.dispatcher = dispatcher;
-		}
+		this.listening       = false;
+		this.daemonListener  = true;
+		this.resilient       = false;
+		this.parserFactory   = parserFactory;
+		this.packetListeners = packetListeners;
 	}
 
 	public OSCPortIn(
 			final OSCParserFactory parserFactory,
-			final OSCPacketDispatcher dispatcher,
+			final List<OSCPacketListener> packetListeners,
 			final SocketAddress local)
 			throws IOException
 	{
-		this(parserFactory, dispatcher, local, new InetSocketAddress(
-				OSCPort.generateWildcard(local), 0));
+		this(
+			parserFactory,
+			packetListeners,
+			local,
+			new InetSocketAddress(OSCPort.generateWildcard(local), 0)
+		);
 	}
 
-	public OSCPortIn(final OSCParserFactory parserFactory, final SocketAddress local)
-			throws IOException
+	private static List<OSCPacketListener> packetListeners(
+		final boolean defaultListener
+	)
 	{
-		this(parserFactory, null, local);
+		List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
+
+		if (defaultListener) {
+			OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+			// HACK We do this, even though it is against the OSC (1.0) specification,
+			//   because this is how it worked in this library until Feb. 2015.,
+			//   and thus users of this library expect this behaviour by default.
+			dispatcher.setAlwaysDispatchingImmediately(true);
+
+			listeners.add(dispatcher);
+		}
+
+		// If one is opting out of using the default listener, one is expected to
+		// use `addPacketListener` to provide at least one listener to handle
+		// packets. Failure to do this will result in unspecified behavior.
+
+		return listeners;
+	}
+
+	public OSCPortIn(
+		final OSCParserFactory parserFactory, final SocketAddress local,
+		final boolean defaultListener
+	) throws IOException
+	{
+		this(parserFactory, packetListeners(defaultListener), local);
 	}
 
 	/**
 	 * Creates an OSC-Port that listens on the given local socket.
 	 * @param local address to listen on
+	 * @param defaultListener whether to use the default packet listener, which
+	 * unwraps bundles and dispatches individual messages to message listeners
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
-	public OSCPortIn(final SocketAddress local) throws IOException {
-		this(OSCParserFactory.createDefaultFactory(), local);
-	}
-
-	public OSCPortIn(final OSCParserFactory parserFactory, final int port) throws IOException {
-		this(parserFactory, new InetSocketAddress(port));
+	public OSCPortIn(
+		final SocketAddress local, final boolean defaultListener
+	) throws IOException
+	{
+		this(OSCParserFactory.createDefaultFactory(), local, defaultListener);
 	}
 
 	/**
 	 * Creates an OSC-Port that listens on the wildcard address
 	 * (all local network interfaces) on the specified local port.
+	 * Uses the default packet listener, which unwraps bundles and dispatches
+	 * individual messages to message listeners.
+	 * @param local socket address to listen on
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortIn(final SocketAddress local) throws IOException {
+		this(local, true);
+	}
+
+	public OSCPortIn(
+		final OSCParserFactory parserFactory, final int port,
+		final boolean defaultListener
+	) throws IOException
+	{
+		this(parserFactory, new InetSocketAddress(port), defaultListener);
+	}
+
+	/**
+	 * Creates an OSC-Port that listens on the wildcard address
+	 * (all local network interfaces) on the specified local port.
+	 * @param port port number to listen on
+	 * @param defaultListener whether to use the default packet listener, which
+	 * unwraps bundles and dispatches individual messages to message listeners
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortIn(final int port, final boolean defaultListener)
+	throws IOException
+	{
+		this(new InetSocketAddress(port), defaultListener);
+	}
+
+	/**
+	 * Creates an OSC-Port that listens on the wildcard address
+	 * (all local network interfaces) on the specified local port.
+	 * Uses the default packet listener, which unwraps bundles and dispatches
+	 * individual messages to message listeners.
 	 * @param port port number to listen on
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
@@ -158,8 +219,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
-				// dispatch the Java object
-				dispatcher.dispatchPacket(this, oscPacket);
+				for (OSCPacketListener listener : packetListeners) {
+					listener.handlePacket(this, oscPacket);
+				}
 			} catch (final IOException ex) {
 				if (isListening()) {
 					stopListening(ex);
@@ -184,7 +246,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private void badPacketReceived(final OSCParseException exception, final ByteBuffer data) {
 
 		final OSCBadDataEvent badDataEvt = new OSCBadDataEvent(this, data, exception);
-		dispatcher.dispatchBadData(badDataEvt);
+
+		for (OSCPacketListener listener : packetListeners) {
+			listener.handleBadData(badDataEvt);
+		}
+
 		if (!isResilient()) {
 			stopListening(exception);
 		}
@@ -324,6 +390,42 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher getDispatcher() {
-		return dispatcher;
+		for (OSCPacketListener listener : packetListeners) {
+			if (listener instanceof OSCPacketDispatcher) {
+				return (OSCPacketDispatcher)listener;
+			}
+		}
+
+		throw new RuntimeException(
+			"OSCPortIn packet listeners do not include a dispatcher."
+		);
 	}
+
+	public List<OSCPacketListener> getPacketListeners() {
+		return packetListeners;
+	}
+
+	/**
+	 * Adds a listener that will handle all packets received.
+	 * This includes bundles and individual (non-bundled) messages.
+	 * Registered listeners will be notified of packets in the order they were
+	 * added to the dispatcher.
+	 * A listener can be registered multiple times, and will consequently be
+	 * notified as many times as it was added.
+	 * @param listener receives and handles packets
+	 */
+	public void addPacketListener(final OSCPacketListener listener) {
+		packetListeners.add(listener);
+	}
+
+	/**
+	 * Removes a packet listener, which will no longer be notified of incoming
+	 * packets.
+	 * Removes only the first occurrence of the listener.
+	 * @param listener will no longer receive packets
+	 */
+	public void removePacketListener(final OSCPacketListener listener) {
+		packetListeners.remove(listener);
+	}
+
 }

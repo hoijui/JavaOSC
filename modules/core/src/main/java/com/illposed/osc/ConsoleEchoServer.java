@@ -59,11 +59,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public ConsoleEchoServer(final SocketAddress serverAddress, final PrintStream out) throws IOException {
-		super(
-				OSCParserFactory.createDefaultFactory(),
-				new OSCPacketDispatcher(),
-				serverAddress);
-
+		super(serverAddress);
 		this.out = out;
 	}
 
