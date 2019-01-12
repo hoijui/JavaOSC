@@ -70,7 +70,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		final List<OSCPacketListener> listeners
 	)
 	{
-		for (OSCPacketListener listener : listeners) {
+		for (final OSCPacketListener listener : listeners) {
 			if (listener instanceof OSCPacketDispatcher) {
 				return (OSCPacketDispatcher)listener;
 			}
@@ -297,7 +297,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
-				for (OSCPacketListener listener : packetListeners) {
+				for (final OSCPacketListener listener : packetListeners) {
 					listener.handlePacket(this, oscPacket);
 				}
 			} catch (final IOException ex) {
@@ -325,7 +325,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		final OSCBadDataEvent badDataEvt = new OSCBadDataEvent(this, data, exception);
 
-		for (OSCPacketListener listener : packetListeners) {
+		for (final OSCPacketListener listener : packetListeners) {
 			listener.handleBadData(badDataEvt);
 		}
 
