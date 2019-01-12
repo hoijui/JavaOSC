@@ -8,7 +8,9 @@
 
 package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCBadDataEvent;
+import com.illposed.osc.OSCMessageListener;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCPacketListener;
@@ -64,6 +66,141 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCParserFactory parserFactory;
 	private final List<OSCPacketListener> packetListeners;
 
+	private static OSCPacketDispatcher getDispatcher(
+		final List<OSCPacketListener> listeners
+	)
+	{
+		for (OSCPacketListener listener : listeners) {
+			if (listener instanceof OSCPacketDispatcher) {
+				return (OSCPacketDispatcher)listener;
+			}
+		}
+
+		return null;
+	}
+
+	private static OSCPacketListener defaultPacketListener() {
+		OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+		// HACK: We do this, even though it is against the OSC (1.0) specification,
+		// because this is how it worked in this library until Feb. 2015., and thus
+		// users of this library expect this behaviour by default.
+		dispatcher.setAlwaysDispatchingImmediately(true);
+
+		return dispatcher;
+	}
+
+	private static List<OSCPacketListener> defaultPacketListeners() {
+		List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
+		listeners.add(defaultPacketListener());
+		return listeners;
+	}
+
+	public static class Builder {
+		private OSCParserFactory parserFactory;
+		private List<OSCPacketListener> packetListeners;
+		private SocketAddress local;
+		private SocketAddress remote;
+
+		private void addDefaultPacketListener() {
+			if (packetListeners == null) {
+				packetListeners = new ArrayList<OSCPacketListener>();
+			}
+
+			packetListeners.add(defaultPacketListener());
+		}
+
+		public OSCPortIn build() throws IOException {
+			if (local == null) {
+				throw new IllegalArgumentException(
+					"Missing local socket address / port."
+				);
+			}
+
+			if (remote == null) {
+				throw new IllegalArgumentException(
+					"Missing remote socket address / port."
+				);
+			}
+
+			if (parserFactory == null) {
+				parserFactory = OSCParserFactory.createDefaultFactory();
+			}
+
+			if (packetListeners == null) {
+				addDefaultPacketListener();
+			}
+
+			return new OSCPortIn(parserFactory, packetListeners, local, remote);
+		}
+
+		public Builder setPort(final int port) {
+			SocketAddress address = new InetSocketAddress(port);
+			local = address;
+			remote = address;
+			return this;
+		}
+
+		public Builder setLocalPort(final int port) {
+			local = new InetSocketAddress(port);
+			return this;
+		}
+
+		public Builder setRemotePort(final int port) {
+			remote = new InetSocketAddress(port);
+			return this;
+		}
+
+		public Builder setSocketAddress(final SocketAddress address) {
+			local = address;
+			remote = address;
+			return this;
+		}
+
+		public Builder setLocalSocketAddress(final SocketAddress address) {
+			local = address;
+			return this;
+		}
+
+		public Builder setRemoteSocketAddress(final SocketAddress address) {
+			remote = address;
+			return this;
+		}
+
+		public Builder setPacketListeners(final List<OSCPacketListener> listeners) {
+			packetListeners = listeners;
+			return this;
+		}
+
+		public Builder setPacketListener(final OSCPacketListener listener) {
+			packetListeners = new ArrayList<OSCPacketListener>();
+			packetListeners.add(listener);
+			return this;
+		}
+
+		public Builder addPacketListener(final OSCPacketListener listener) {
+			if (packetListeners == null) {
+				packetListeners = new ArrayList<OSCPacketListener>();
+			}
+
+			packetListeners.add(listener);
+			return this;
+		}
+
+		public Builder addMessageListener(
+			final MessageSelector selector, final OSCMessageListener listener
+		)
+		{
+			OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
+
+			if (dispatcher == null) {
+				addDefaultPacketListener();
+			}
+
+			dispatcher.addListener(selector, listener);
+			return this;
+		}
+	}
+
 	/**
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
 	 * using a parser created with the given factory.
@@ -103,90 +240,31 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		);
 	}
 
-	private static List<OSCPacketListener> packetListeners(
-		final boolean defaultListener
-	)
-	{
-		List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
-
-		if (defaultListener) {
-			OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
-			// HACK We do this, even though it is against the OSC (1.0) specification,
-			//   because this is how it worked in this library until Feb. 2015.,
-			//   and thus users of this library expect this behaviour by default.
-			dispatcher.setAlwaysDispatchingImmediately(true);
-
-			listeners.add(dispatcher);
-		}
-
-		// If one is opting out of using the default listener, one is expected to
-		// use `addPacketListener` to provide at least one listener to handle
-		// packets. Failure to do this will result in unspecified behavior.
-
-		return listeners;
-	}
-
 	public OSCPortIn(
-		final OSCParserFactory parserFactory, final SocketAddress local,
-		final boolean defaultListener
+		final OSCParserFactory parserFactory, final SocketAddress local
 	) throws IOException
 	{
-		this(parserFactory, packetListeners(defaultListener), local);
+		this(parserFactory, defaultPacketListeners(), local);
+	}
+
+	public OSCPortIn(final OSCParserFactory parserFactory, final int port)
+	throws IOException
+	{
+		this(parserFactory, new InetSocketAddress(port));
 	}
 
 	/**
 	 * Creates an OSC-Port that listens on the given local socket.
 	 * @param local address to listen on
-	 * @param defaultListener whether to use the default packet listener, which
-	 * unwraps bundles and dispatches individual messages to message listeners
-	 * @throws IOException if we fail to bind a channel to the local address
-	 */
-	public OSCPortIn(
-		final SocketAddress local, final boolean defaultListener
-	) throws IOException
-	{
-		this(OSCParserFactory.createDefaultFactory(), local, defaultListener);
-	}
-
-	/**
-	 * Creates an OSC-Port that listens on the wildcard address
-	 * (all local network interfaces) on the specified local port.
-	 * Uses the default packet listener, which unwraps bundles and dispatches
-	 * individual messages to message listeners.
-	 * @param local socket address to listen on
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(final SocketAddress local) throws IOException {
-		this(local, true);
-	}
-
-	public OSCPortIn(
-		final OSCParserFactory parserFactory, final int port,
-		final boolean defaultListener
-	) throws IOException
-	{
-		this(parserFactory, new InetSocketAddress(port), defaultListener);
+		this(OSCParserFactory.createDefaultFactory(), local);
 	}
 
 	/**
 	 * Creates an OSC-Port that listens on the wildcard address
 	 * (all local network interfaces) on the specified local port.
-	 * @param port port number to listen on
-	 * @param defaultListener whether to use the default packet listener, which
-	 * unwraps bundles and dispatches individual messages to message listeners
-	 * @throws IOException if we fail to bind a channel to the local address
-	 */
-	public OSCPortIn(final int port, final boolean defaultListener)
-	throws IOException
-	{
-		this(new InetSocketAddress(port), defaultListener);
-	}
-
-	/**
-	 * Creates an OSC-Port that listens on the wildcard address
-	 * (all local network interfaces) on the specified local port.
-	 * Uses the default packet listener, which unwraps bundles and dispatches
-	 * individual messages to message listeners.
 	 * @param port port number to listen on
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
@@ -390,15 +468,15 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher getDispatcher() {
-		for (OSCPacketListener listener : packetListeners) {
-			if (listener instanceof OSCPacketDispatcher) {
-				return (OSCPacketDispatcher)listener;
-			}
+		OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
+
+		if (dispatcher == null) {
+			throw new RuntimeException(
+				"OSCPortIn packet listeners do not include a dispatcher."
+			);
 		}
 
-		throw new RuntimeException(
-			"OSCPortIn packet listeners do not include a dispatcher."
-		);
+		return dispatcher;
 	}
 
 	public List<OSCPacketListener> getPacketListeners() {
