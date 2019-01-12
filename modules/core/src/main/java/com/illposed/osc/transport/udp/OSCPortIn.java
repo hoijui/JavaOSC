@@ -67,8 +67,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final List<OSCPacketListener> packetListeners;
 
 	private static OSCPacketDispatcher getDispatcher(
-		final List<OSCPacketListener> listeners
-	)
+			final List<OSCPacketListener> listeners)
 	{
 		for (final OSCPacketListener listener : listeners) {
 			if (listener instanceof OSCPacketDispatcher) {
@@ -187,8 +186,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		}
 
 		public Builder addMessageListener(
-			final MessageSelector selector, final OSCMessageListener listener
-		)
+			final MessageSelector selector, final OSCMessageListener listener)
 		{
 			OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
 
@@ -219,10 +217,10 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	{
 		super(local, remote);
 
-		this.listening       = false;
-		this.daemonListener  = true;
-		this.resilient       = false;
-		this.parserFactory   = parserFactory;
+		this.listening = false;
+		this.daemonListener = true;
+		this.resilient = false;
+		this.parserFactory = parserFactory;
 		this.packetListeners = packetListeners;
 	}
 
@@ -241,8 +239,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public OSCPortIn(
-		final OSCParserFactory parserFactory, final SocketAddress local
-	) throws IOException
+			final OSCParserFactory parserFactory,
+			final SocketAddress local)
+			throws IOException
 	{
 		this(parserFactory, defaultPacketListeners(), local);
 	}

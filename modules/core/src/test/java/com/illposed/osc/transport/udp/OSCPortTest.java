@@ -48,8 +48,8 @@ public class OSCPortTest {
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
-	private OSCPortOut        sender;
-	private OSCPortIn         receiver;
+	private OSCPortOut sender;
+	private OSCPortIn receiver;
 	private OSCPacketListener listener;
 
 	private void reSetUp(
@@ -89,9 +89,12 @@ public class OSCPortTest {
 	}
 
 	private void reSetUp(
-		final int portSenderOut, final int portSenderIn, final int portReceiverOut,
-		final int portReceiverIn
-	) throws Exception {
+			final int portSenderOut,
+			final int portSenderIn,
+			final int portReceiverOut,
+			final int portReceiverIn)
+			throws Exception
+	{
 		reSetUp(portSenderOut, portSenderIn, portReceiverOut, portReceiverIn, null);
 	}
 
