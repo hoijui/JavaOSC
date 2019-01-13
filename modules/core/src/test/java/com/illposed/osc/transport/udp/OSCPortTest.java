@@ -69,7 +69,7 @@ public class OSCPortTest {
 			receiver.close();
 		}
 
-		OSCPortIn.Builder builder = new OSCPortIn.Builder()
+		OSCPortInBuilder builder = new OSCPortInBuilder()
 			.setLocalSocketAddress(receiverInAddress)
 			.setRemoteSocketAddress(senderInAddress);
 
