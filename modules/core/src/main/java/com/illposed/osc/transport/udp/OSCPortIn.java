@@ -13,6 +13,7 @@ import com.illposed.osc.OSCBadDataEvent;
 import com.illposed.osc.OSCMessageListener;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketDispatcher;
+import com.illposed.osc.OSCPacketEvent;
 import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParserFactory;
@@ -297,7 +298,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
 				for (final OSCPacketListener listener : packetListeners) {
-					listener.handlePacket(this, oscPacket);
+					listener.handlePacket(new OSCPacketEvent(this, oscPacket));
 				}
 			} catch (final IOException ex) {
 				if (isListening()) {

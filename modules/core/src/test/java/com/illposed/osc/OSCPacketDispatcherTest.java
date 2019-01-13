@@ -42,7 +42,7 @@ public class OSCPacketDispatcherTest {
 	@Test
 	public void testDispatchToListener1() {
 		OSCMessage message = new OSCMessage("/listener1");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (!listener1.isMessageReceived()) {
 			Assert.fail("Message to listener1 didn't get sent to listener1");
 		}
@@ -54,7 +54,7 @@ public class OSCPacketDispatcherTest {
 	@Test
 	public void testDispatchToListener2() {
 		OSCMessage message = new OSCMessage("/listener2");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (listener1.isMessageReceived()) {
 			Assert.fail("Message to listener2 got sent to listener1");
 		}
@@ -66,7 +66,7 @@ public class OSCPacketDispatcherTest {
 	@Test
 	public void testDispatchToNobody() {
 		OSCMessage message = new OSCMessage("/nobody");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (listener1.isMessageReceived() || listener2.isMessageReceived()) {
 			Assert.fail("Message to nobody got dispatched incorrectly");
 		}
@@ -77,7 +77,7 @@ public class OSCPacketDispatcherTest {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/listener1"));
 		bundle.addPacket(new OSCMessage("/listener2"));
-		dispatcher.dispatchPacket(this, bundle);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, bundle));
 		if (!listener1.isMessageReceived()) {
 			Assert.fail("Bundle didn't dispatch message to listener 1");
 		}
@@ -95,7 +95,7 @@ public class OSCPacketDispatcherTest {
 			arguments.add(ai);
 		}
 		OSCMessage message = new OSCMessage("/listener1", arguments);
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		Assert.assertEquals(numArguments, listener1.getReceivedEvent().getMessage().getArguments().size());
 	}
 
@@ -105,7 +105,7 @@ public class OSCPacketDispatcherTest {
 		dispatcher.removeListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
 
 		OSCMessage message = new OSCMessage("/listener1");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (listener1.isMessageReceived()) {
 			Assert.fail("Message listener did not get removed");
 		}
@@ -118,7 +118,7 @@ public class OSCPacketDispatcherTest {
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener2);
 
 		OSCMessage message = new OSCMessage("/listener1");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (!listener1.isMessageReceived()) {
 			Assert.fail("Message did not get sent to listener 1");
 		}
@@ -134,7 +134,7 @@ public class OSCPacketDispatcherTest {
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
 
 		OSCMessage message = new OSCMessage("/listener1");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (listener1.getMessageReceivedCount() != 2) {
 			Assert.fail("Message did not get sent two times to listener 1, but "
 					+ listener1.getMessageReceivedCount() + " times");
@@ -148,7 +148,7 @@ public class OSCPacketDispatcherTest {
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/*"), listener1);
 
 		OSCMessage message = new OSCMessage("/listener1");
-		dispatcher.dispatchPacket(this, message);
+		dispatcher.dispatchPacket(new OSCPacketEvent(this, message));
 		if (listener1.getMessageReceivedCount() != 2) {
 			Assert.fail("Message did not get sent two times to listener 1, but "
 					+ listener1.getMessageReceivedCount() + " times");

@@ -25,7 +25,7 @@ public interface OSCPacketListener {
 	 * @param source the source of the packet
 	 * @param packet the packet to process
 	 */
-	void handlePacket(final Object source, final OSCPacket packet);
+	void handlePacket(final OSCPacketEvent event);
 
 	/**
 	 * Process a bad data event.

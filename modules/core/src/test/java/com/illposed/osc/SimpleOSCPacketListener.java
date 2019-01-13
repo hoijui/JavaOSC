@@ -26,9 +26,9 @@ public class SimpleOSCPacketListener implements OSCPacketListener {
 	}
 
 	@Override
-	public void handlePacket(Object source, final OSCPacket packet) {
+	public void handlePacket(final OSCPacketEvent event) {
 		packetReceivedCount++;
-		this.packet = packet;
+		this.packet = event.getPacket();
 	}
 
 	@Override
