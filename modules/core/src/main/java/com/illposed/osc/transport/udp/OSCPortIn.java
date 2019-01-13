@@ -101,12 +101,15 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		private SocketAddress local;
 		private SocketAddress remote;
 
-		private void addDefaultPacketListener() {
+		private OSCPacketListener addDefaultPacketListener() {
 			if (packetListeners == null) {
 				packetListeners = new ArrayList<OSCPacketListener>();
 			}
 
-			packetListeners.add(defaultPacketListener());
+			OSCPacketListener listener = defaultPacketListener();
+			packetListeners.add(listener);
+
+			return listener;
 		}
 
 		public OSCPortIn build() throws IOException {
@@ -192,10 +195,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
 
 			if (dispatcher == null) {
-				addDefaultPacketListener();
+				dispatcher = (OSCPacketDispatcher)addDefaultPacketListener();
 			}
 
 			dispatcher.addListener(selector, listener);
+
 			return this;
 		}
 	}
