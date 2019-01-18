@@ -22,8 +22,7 @@ public interface OSCPacketListener {
 
 	/**
 	 * Process an incoming packet.
-	 * @param source the source of the packet
-	 * @param packet the packet to process
+	 * @param event contains the packet content and meta-data
 	 */
 	void handlePacket(final OSCPacketEvent event);
 

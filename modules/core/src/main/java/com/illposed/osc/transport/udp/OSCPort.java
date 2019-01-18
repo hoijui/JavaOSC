@@ -94,6 +94,7 @@ public class OSCPort {
 	 *   <code>0.0.0.0</code> if IP v4,
 	 *   <code>::</code> if IP v6,
 	 *   <i>undefined behavior</i> otherwise
+	 * @throws UnknownHostException this should never occur
 	 */
 	public static InetAddress generateWildcard(final SocketAddress address) throws UnknownHostException {
 		return InetAddress.getByName((extractFamily(address) == 4) ? "0.0.0.0" : "::");

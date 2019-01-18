@@ -24,6 +24,7 @@ public class OSCMessageEvent extends EventObject {
 
 	/**
 	 * Creates a new message received event.
+	 * @param source The object on which the Event initially occurred.
 	 * @param time when the message is to be processed.
 	 *   This should be the time the event is delivered, or {@code OSCTimeTag64.IMMEDIATE}.
 	 *   It may never be {@code null}.
