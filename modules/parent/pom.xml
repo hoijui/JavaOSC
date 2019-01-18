@@ -370,15 +370,6 @@
 						<artifactId>sonar-maven-plugin</artifactId>
 						<version>3.2</version>
 					</plugin>
-
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>emma-maven-plugin</artifactId>
-						<version>1.0-alpha-3</version>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-						</configuration>
-					</plugin>
 				</plugins>
 			</reporting>
 		</profile>
