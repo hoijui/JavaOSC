@@ -68,13 +68,16 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public static OSCPacketDispatcher getDispatcher(
 			final List<OSCPacketListener> listeners)
 	{
+		OSCPacketDispatcher dispatcher = null;
+
 		for (final OSCPacketListener listener : listeners) {
 			if (listener instanceof OSCPacketDispatcher) {
-				return (OSCPacketDispatcher)listener;
+				dispatcher = (OSCPacketDispatcher)listener;
+				break;
 			}
 		}
 
-		return null;
+		return dispatcher;
 	}
 
 	public static OSCPacketListener defaultPacketListener() {
@@ -190,8 +193,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
+				final OSCPacketEvent event = new OSCPacketEvent(this, oscPacket);
 				for (final OSCPacketListener listener : packetListeners) {
-					listener.handlePacket(new OSCPacketEvent(this, oscPacket));
+					listener.handlePacket(event);
 				}
 			} catch (final IOException ex) {
 				if (isListening()) {
@@ -364,7 +368,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		final OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
 
 		if (dispatcher == null) {
-			throw new RuntimeException(
+			throw new IllegalStateException(
 				"OSCPortIn packet listeners do not include a dispatcher.");
 		}
 
