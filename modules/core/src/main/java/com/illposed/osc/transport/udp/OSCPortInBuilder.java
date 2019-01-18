@@ -30,7 +30,7 @@ public class OSCPortInBuilder {
 			packetListeners = new ArrayList<OSCPacketListener>();
 		}
 
-		OSCPacketListener listener = OSCPortIn.defaultPacketListener();
+		final OSCPacketListener listener = OSCPortIn.defaultPacketListener();
 		packetListeners.add(listener);
 
 		return listener;
@@ -59,7 +59,7 @@ public class OSCPortInBuilder {
 	}
 
 	public OSCPortInBuilder setPort(final int port) {
-		SocketAddress address = new InetSocketAddress(port);
+		final SocketAddress address = new InetSocketAddress(port);
 		local = address;
 		remote = address;
 		return this;

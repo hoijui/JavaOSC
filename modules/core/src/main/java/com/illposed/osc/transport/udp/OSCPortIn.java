@@ -78,7 +78,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public static OSCPacketListener defaultPacketListener() {
-		OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
+		final OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
 		// HACK: We do this, even though it is against the OSC (1.0) specification,
 		// because this is how it worked in this library until Feb. 2015., and thus
 		// users of this library expect this behaviour by default.
@@ -88,7 +88,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public static List<OSCPacketListener> defaultPacketListeners() {
-		List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
+		final List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
 		listeners.add(defaultPacketListener());
 		return listeners;
 	}
@@ -361,7 +361,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher getDispatcher() {
-		OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
+		final OSCPacketDispatcher dispatcher = getDispatcher(packetListeners);
 
 		if (dispatcher == null) {
 			throw new RuntimeException(
