@@ -8,11 +8,15 @@
 
 package com.illposed.osc;
 
+import java.io.Serializable;
+
 /**
  * Holds (meta-)info about a message.
  * This might be used by some implementations of {@link MessageSelector}, for example.
  */
-public class OSCMessageInfo {
+public class OSCMessageInfo implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private final CharSequence argumentTypeTags;
 

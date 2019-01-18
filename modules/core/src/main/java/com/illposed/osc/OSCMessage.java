@@ -21,6 +21,8 @@ import java.util.regex.Pattern;
  */
 public class OSCMessage implements OSCPacket {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Java regular expression pattern matching a single invalid character.
 	 * The invalid characters are:

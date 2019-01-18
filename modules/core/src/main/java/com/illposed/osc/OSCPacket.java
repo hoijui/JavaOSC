@@ -8,6 +8,8 @@
 
 package com.illposed.osc;
 
+import java.io.Serializable;
+
 /**
  * An abstract superclass for messages and bundles.
  *
@@ -18,6 +20,6 @@ package com.illposed.osc;
  *   and/or made up of multiple messages
  * </ul>
  */
-public interface OSCPacket {
+public interface OSCPacket extends Serializable {
 
 }

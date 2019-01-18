@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class OSCBundle implements OSCPacket {
 
+	private static final long serialVersionUID = 1L;
+
 	private OSCTimeTag64 timestamp;
 	private List<OSCPacket> packets;
 
