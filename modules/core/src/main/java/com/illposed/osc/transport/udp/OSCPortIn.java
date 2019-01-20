@@ -211,6 +211,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	private void stopListening(final Exception exception) {
 
+		// TODO This implies a low-level problem (for example network IO), but it might just aswell be a high-level one (for example a parse exception)
 		System.err.println("Error while listening on " + toString() + "...");
 		if (!(exception instanceof OSCParseException)) {
 			exception.printStackTrace(System.err);
