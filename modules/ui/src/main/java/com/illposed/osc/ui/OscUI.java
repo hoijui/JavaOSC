@@ -195,10 +195,10 @@ public class OscUI extends JPanel {
 	// create method for adding a the buttons and synths of the
 	// first synth on one panel
 	public void addFirstSynthPanel() {
-		// the variable firstSynthPanel holds an instance of Jpanel
+		// the variable firstSynthPanel holds an instance of JPanel
 		// created by the makeNewJPanel method
 		final JPanel firstSynthPanel = makeNewJPanel();
-		// the variable firstSynthButytonOn holds an instance of JButton labeled
+		// the variable firstSynthButtonOn holds an instance of JButton labeled
 		// "On"
 
 		firstSynthPanel.setBackground(new Color(13, 23, 0));
@@ -269,7 +269,7 @@ public class OscUI extends JPanel {
 			}
 		});
 
-		// when the value in the textbox is changed, doSendSlider method is
+		// when the value in the text-box is changed, doSendSlider method is
 		// invoked; send the argument for freq and node
 		textBox.addActionListener(new ActionListener() {
 
