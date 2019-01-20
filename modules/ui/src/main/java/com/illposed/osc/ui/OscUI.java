@@ -527,13 +527,19 @@ public class OscUI extends JPanel {
 		}
 	}
 
-	// create a method for the doSend action (Send)
-	public void doSendOn(float freq, int node) {
+	// if "Set Address" has not been performed, then give the message to set
+	// it first
+	private void checkAddress() {
 		// if "Set Address" has not been performed then give the message to set
 		// it first
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
+	}
+
+	// create a method for the doSend action (Send)
+	public void doSendOn(final float freq, final int node) {
+		checkAddress();
 
 		// send an OSC message to start the synth "pink" on node 1000.
 		final List<Object> args = new ArrayList<>(6);
@@ -561,11 +567,7 @@ public class OscUI extends JPanel {
 
 	// create a method for the doSend1 action (Send)
 	public void doSendOff(final int node) {
-		// if "Set Address" has not been performed then give the message to set
-		// it first
-		if (null == oscPort) {
-			showError("Please set an address first");
-		}
+		checkAddress();
 
 		// send an OSC message to free the node 1000
 		final List<Object> args = new ArrayList<Object>(1);
@@ -595,11 +597,7 @@ public class OscUI extends JPanel {
 
 	// create a method for the doSend3 action (Send)
 	public void doSendSlider(final float freq, final int node) {
-		// if "Set Address" has not been performed then give the message to set
-		// it first
-		if (null == oscPort) {
-			showError("Please set an address first");
-		}
+		checkAddress();
 
 		// send an OSC message to set the node 1000
 		final List<Object> args = new ArrayList<>(3);
@@ -618,9 +616,7 @@ public class OscUI extends JPanel {
 	}
 
 	public void doSendGlobalOff(final int node1, final int node2, final int node3) {
-		if (null == oscPort) {
-			showError("Please set an address first");
-		}
+		checkAddress();
 
 		final List<Object> args1 = new ArrayList<>(1);
 		args1.add(node1);
@@ -656,9 +652,7 @@ public class OscUI extends JPanel {
 	}
 
 	public void doSendGlobalOn(final int node1, final int node2, final int node3) {
-		if (null == oscPort) {
-			showError("Please set an address first");
-		}
+		checkAddress();
 
 		final List<Object> args1 = new ArrayList<>(4);
 		args1.add("javaosc-example");
