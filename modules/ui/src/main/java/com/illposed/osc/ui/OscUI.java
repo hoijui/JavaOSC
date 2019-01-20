@@ -40,7 +40,7 @@ import javax.swing.event.ChangeListener;
 public class OscUI extends JPanel {
 
 	// declare some variables
-	private JFrame parent;
+	private final JFrame parent;
 	private JTextField addressWidget;
 	private JLabel portWidget;
 	private JTextField textBox;
@@ -57,7 +57,7 @@ public class OscUI extends JPanel {
 
 	// create a constructor
 	// OscUI takes an argument of myParent which is a JFrame
-	public OscUI(JFrame myParent) {
+	public OscUI(final JFrame myParent) {
 		super();
 		parent = myParent;
 		makeDisplay();
@@ -88,13 +88,13 @@ public class OscUI extends JPanel {
 
 		// variable addressPanel holds an instance of JPanel.
 		// instance of JPanel received from makeNewJPanel method
-		JPanel addressPanel = makeNewJPanel1();
+		final JPanel addressPanel = makeNewJPanel1();
 		addressPanel.setBackground(new Color(123, 150, 123));
 		// variable addressWidget holds an instance of JTextField
 		addressWidget = new JTextField("localhost");
 		// variable setAddressButton holds an insatnce of JButton with
 		// a "Set Address" argument for its screen name
-		JButton setAddressButton = new JButton("Set Address");
+		final JButton setAddressButton = new JButton("Set Address");
 		setAddressButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
@@ -109,7 +109,7 @@ public class OscUI extends JPanel {
 		portWidget = new JLabel(Integer.toString(OSCPort.defaultSCOSCPort()));
 
 		portWidget.setForeground(new Color(255, 255, 255));
-		JLabel portLabel = new JLabel("Port");
+		final JLabel portLabel = new JLabel("Port");
 		portLabel.setForeground(new Color(255, 255, 255));
 
 		// add the setAddressButton to the addressPanel
@@ -127,9 +127,9 @@ public class OscUI extends JPanel {
 	}
 
 	public void addGlobalControlPanel() {
-		JPanel globalControlPanel = makeNewJPanel();
-		JButton globalOffButton = new JButton("All Off");
-		JButton globalOnButton = new JButton("All On");
+		final JPanel globalControlPanel = makeNewJPanel();
+		final JButton globalOffButton = new JButton("All Off");
+		final JButton globalOnButton = new JButton("All On");
 		textBox4 = new JTextField(String.valueOf(1000), 8);
 		delayLabel = new JLabel("All Off delay in ms");
 		delayLabel.setForeground(new Color(255, 255, 255));
@@ -197,7 +197,7 @@ public class OscUI extends JPanel {
 	public void addFirstSynthPanel() {
 		// the variable firstSynthPanel holds an instance of Jpanel
 		// created by the makeNewJPanel method
-		JPanel firstSynthPanel = makeNewJPanel();
+		final JPanel firstSynthPanel = makeNewJPanel();
 		// the variable firstSynthButytonOn holds an instance of JButton labeled
 		// "On"
 
@@ -275,7 +275,7 @@ public class OscUI extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				JTextField field = (JTextField) evt.getSource();
+				final JTextField field = (JTextField) evt.getSource();
 				float freq = Float.valueOf(field.getText());
 				if (freq > 10020) { freq = 10020; doPrintValue(freq); }
 				if (freq < 20) { freq = 20; doPrintValue(freq); }
@@ -301,7 +301,7 @@ public class OscUI extends JPanel {
 	// create method for adding a the Second Synth Panel
 	protected void addSecondSynthPanel() {
 		// make a new JPanel called secondSynthPanel
-		JPanel secondSynthPanel = makeNewJPanel();
+		final JPanel secondSynthPanel = makeNewJPanel();
 		secondSynthPanel.setBackground(new Color(13, 23, 0));
 		// the variable secondSynthButtonOn holds an instance of JButton
 		secondSynthButtonOn = new JButton("On");
@@ -351,7 +351,7 @@ public class OscUI extends JPanel {
 		slider2.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(final ChangeEvent evt) {
-				JSlider mySlider2 = (JSlider) evt.getSource();
+				final JSlider mySlider2 = (JSlider) evt.getSource();
 				if (mySlider2.getValueIsAdjusting()) {
 					float freq = (float) mySlider2.getValue();
 					freq = (freq / 10000) * (freq / 10000);
@@ -396,7 +396,7 @@ public class OscUI extends JPanel {
 	}
 
 	protected void addThirdSynthPanel() {
-		JPanel thirdSynthPanel = makeNewJPanel();
+		final JPanel thirdSynthPanel = makeNewJPanel();
 		thirdSynthPanel.setBackground(new Color(13, 23, 0));
 		thirdSynthButtonOn = new JButton("On");
 		thirdSynthButtonOff = new JButton("Off");
@@ -466,7 +466,7 @@ public class OscUI extends JPanel {
 
 			@Override
 			public void actionPerformed(final ActionEvent evt) {
-				JTextField field = (JTextField) evt.getSource();
+				final JTextField field = (JTextField) evt.getSource();
 				float freq = Float.valueOf(field.getText());
 				if (freq > 10020) {
 					freq = 10020;
@@ -495,7 +495,7 @@ public class OscUI extends JPanel {
 	// here is the make new JPanel method
 	protected JPanel makeNewJPanel() {
 		// a variable tempPanel holds an instance of JPanel
-		JPanel tempPanel = new JPanel();
+		final JPanel tempPanel = new JPanel();
 		// set the Layout of tempPanel to be a FlowLayout aligned left
 		tempPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		// function returns the tempPanel
@@ -505,7 +505,7 @@ public class OscUI extends JPanel {
 	// here is the make new JPanel method
 	protected JPanel makeNewJPanel1() {
 		// a variable tempPanel holds an instance of JPanel
-		JPanel tempPanel1 = new JPanel();
+		final JPanel tempPanel1 = new JPanel();
 		// set the Layout of tempPanel to be a FlowLayout aligned left
 		tempPanel1.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		// function returns the tempPanel
@@ -536,7 +536,7 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to start the synth "pink" on node 1000.
-		List<Object> args = new ArrayList<>(6);
+		final List<Object> args = new ArrayList<>(6);
 		args.add("javaosc-example");
 		args.add(node);
 		args.add(1);
@@ -544,7 +544,7 @@ public class OscUI extends JPanel {
 		args.add("freq");
 		args.add(freq);
 		// a comma is placed after /s_new in the code
-		OSCMessage msg = new OSCMessage("/s_new", args);
+		final OSCMessage msg = new OSCMessage("/s_new", args);
 
 		// Object[] args2 = {new Symbol("amp"), 0.5};
 		// OscMessage msg2 = new OscMessage("/n_set", args2);
@@ -560,7 +560,7 @@ public class OscUI extends JPanel {
 	}
 
 	// create a method for the doSend1 action (Send)
-	public void doSendOff(int node) {
+	public void doSendOff(final int node) {
 		// if "Set Address" has not been performed then give the message to set
 		// it first
 		if (null == oscPort) {
@@ -568,9 +568,9 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to free the node 1000
-		List<Object> args = new ArrayList<Object>(1);
+		final List<Object> args = new ArrayList<Object>(1);
 		args.add(node);
-		OSCMessage msg = new OSCMessage("/n_free", args);
+		final OSCMessage msg = new OSCMessage("/n_free", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
 		// send an error message if this doesn't happen
@@ -581,20 +581,20 @@ public class OscUI extends JPanel {
 		}
 	}
 
-	public void doPrintValue(float freq) {
+	public void doPrintValue(final float freq) {
 		textBox.setText(String.valueOf(freq));
 	}
 
-	public void doPrintValue2(float freq) {
+	public void doPrintValue2(final float freq) {
 		textBox2.setText(String.valueOf(freq));
 	}
 
-	public void doPrintValue3(float freq) {
+	public void doPrintValue3(final float freq) {
 		textBox3.setText(String.valueOf(freq));
 	}
 
 	// create a method for the doSend3 action (Send)
-	public void doSendSlider(float freq, int node) {
+	public void doSendSlider(final float freq, final int node) {
 		// if "Set Address" has not been performed then give the message to set
 		// it first
 		if (null == oscPort) {
@@ -602,11 +602,11 @@ public class OscUI extends JPanel {
 		}
 
 		// send an OSC message to set the node 1000
-		List<Object> args = new ArrayList<>(3);
+		final List<Object> args = new ArrayList<>(3);
 		args.add(node);
 		args.add("freq");
 		args.add(freq);
-		OSCMessage msg = new OSCMessage("/n_set", args);
+		final OSCMessage msg = new OSCMessage("/n_set", args);
 
 		// try to use the send method of oscPort using the msg in nodeWidget
 		// send an error message if this doesn't happen
@@ -617,35 +617,35 @@ public class OscUI extends JPanel {
 		}
 	}
 
-	public void doSendGlobalOff(int node1, int node2, int node3) {
+	public void doSendGlobalOff(final int node1, final int node2, final int node3) {
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
 
-		List<Object> args1 = new ArrayList<>(1);
+		final List<Object> args1 = new ArrayList<>(1);
 		args1.add(node1);
-		OSCMessage msg1 = new OSCMessage("/n_free", args1);
+		final OSCMessage msg1 = new OSCMessage("/n_free", args1);
 
-		List<Object> args2 = new ArrayList<>(1);
+		final List<Object> args2 = new ArrayList<>(1);
 		args2.add(node2);
-		OSCMessage msg2 = new OSCMessage("/n_free", args2);
+		final OSCMessage msg2 = new OSCMessage("/n_free", args2);
 
-		List<Object> args3 = new ArrayList<>(1);
+		final List<Object> args3 = new ArrayList<>(1);
 		args3.add(node3);
-		OSCMessage msg3 = new OSCMessage("/n_free", args3);
+		final OSCMessage msg3 = new OSCMessage("/n_free", args3);
 
 		// create a timeStamped bundle of the messages
-		List<OSCPacket> packets = new ArrayList<>(3);
+		final List<OSCPacket> packets = new ArrayList<>(3);
 		packets.add(msg1);
 		packets.add(msg2);
 		packets.add(msg3);
-		Date newDate = new Date();
+		final Date newDate = new Date();
 		long time = newDate.getTime();
-		Integer delayTime = Integer.valueOf(textBox4.getText());
+		final Integer delayTime = Integer.valueOf(textBox4.getText());
 		time = time + delayTime.longValue();
 		newDate.setTime(time);
 
-		OSCBundle bundle = new OSCBundle(packets, OSCTimeTag64.valueOf(newDate));
+		final OSCBundle bundle = new OSCBundle(packets, OSCTimeTag64.valueOf(newDate));
 
 		try {
 			oscPort.send(bundle);
@@ -655,31 +655,31 @@ public class OscUI extends JPanel {
 
 	}
 
-	public void doSendGlobalOn(int node1, int node2, int node3) {
+	public void doSendGlobalOn(final int node1, final int node2, final int node3) {
 		if (null == oscPort) {
 			showError("Please set an address first");
 		}
 
-		List<Object> args1 = new ArrayList<>(4);
+		final List<Object> args1 = new ArrayList<>(4);
 		args1.add("javaosc-example");
 		args1.add(node1);
 		args1.add(1);
 		args1.add(0);
-		OSCMessage msg1 = new OSCMessage("/s_new", args1);
+		final OSCMessage msg1 = new OSCMessage("/s_new", args1);
 
-		List<Object> args2 = new ArrayList<>(4);
+		final List<Object> args2 = new ArrayList<>(4);
 		args2.add("javaosc-example");
 		args2.add(node2);
 		args2.add(1);
 		args2.add(0);
-		OSCMessage msg2 = new OSCMessage("/s_new", args2);
+		final OSCMessage msg2 = new OSCMessage("/s_new", args2);
 
-		List<Object> args3 = new ArrayList<>(4);
+		final List<Object> args3 = new ArrayList<>(4);
 		args3.add("javaosc-example");
 		args3.add(node3);
 		args3.add(1);
 		args3.add(0);
-		OSCMessage msg3 = new OSCMessage("/s_new", args3);
+		final OSCMessage msg3 = new OSCMessage("/s_new", args3);
 
 		try {
 			oscPort.send(msg1);
@@ -701,7 +701,7 @@ public class OscUI extends JPanel {
 	}
 
 	// create a showError method
-	protected void showError(String anErrorMessage) {
+	protected void showError(final String anErrorMessage) {
 		// tell the JOptionPane to showMessageDialog
 		JOptionPane.showMessageDialog(parent, anErrorMessage);
 	}

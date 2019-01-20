@@ -25,7 +25,7 @@ public class Main extends JFrame {
 	public Main() {
 		super("OSC");
 		addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
+			public void windowClosing(final WindowEvent evt) {
 				myUi.doSendGlobalOff(1000, 1001, 1002);
 				System.exit(0);
 			}
@@ -36,7 +36,7 @@ public class Main extends JFrame {
 	}
 
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		new Main();
 	}
 }
