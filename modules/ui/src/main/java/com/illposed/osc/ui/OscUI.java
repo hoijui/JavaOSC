@@ -39,6 +39,9 @@ import javax.swing.event.ChangeListener;
  */
 public class OscUI extends JPanel {
 
+	private static final int FREQ_MIN = 20;
+	private static final int FREQ_MAX = 10000;
+
 	// declare some variables
 	private final JFrame parent;
 	private JTextField addressWidget;
@@ -211,14 +214,14 @@ public class OscUI extends JPanel {
 		// the variable slider holds an instance of JSlider which is
 		// set to be a Horizontal slider
 		slider = new JSlider(JSlider.HORIZONTAL);
-		// set the minimum value of the slider to 20
+		// set the minimum value of the slider to FREQ_MIN
 		slider.setMinimum(0);
-		slider.setMaximum(10000);
+		slider.setMaximum(FREQ_MAX);
 		// set the inital value of the slider to 400
 		//slider.setValue(1 / 5);
 		slider.setEnabled(false);
 
-		textBox = new JTextField(String.valueOf((1 / 5) * 10000), 8);
+		textBox = new JTextField(String.valueOf((1 / 5) * FREQ_MAX), 8);
 		textBox.setEnabled(false);
 
 		firstSynthButtonOn.addActionListener(new ActionListener() {
@@ -260,9 +263,9 @@ public class OscUI extends JPanel {
 				final JSlider mySlider = (JSlider) evt.getSource();
 				if (mySlider.getValueIsAdjusting()) {
 					float freq = (float) mySlider.getValue();
-					freq = (freq / 10000) * (freq / 10000);
-					freq = freq * 10000;
-					freq = freq + 20;
+					freq = (freq / FREQ_MAX) * (freq / FREQ_MAX);
+					freq = freq * FREQ_MAX;
+					freq = freq + FREQ_MIN;
 					doPrintValue(freq);
 					doSendSlider(freq, 1000);
 				}
@@ -277,9 +280,9 @@ public class OscUI extends JPanel {
 			public void actionPerformed(final ActionEvent evt) {
 				final JTextField field = (JTextField) evt.getSource();
 				float freq = Float.valueOf(field.getText());
-				if (freq > 10020) { freq = 10020; doPrintValue(freq); }
-				if (freq < 20) { freq = 20; doPrintValue(freq); }
-				slider.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
+				if (freq > (FREQ_MIN + FREQ_MAX)) { freq = (FREQ_MIN + FREQ_MAX); doPrintValue(freq); }
+				if (freq < FREQ_MIN) { freq = FREQ_MIN; doPrintValue(freq); }
+				slider.setValue((int)(FREQ_MAX * Math.sqrt(((freq - FREQ_MIN) / FREQ_MAX))));
 				doSendSlider(freq, 1000);
 			}
 		});
@@ -312,10 +315,10 @@ public class OscUI extends JPanel {
 		// horizontally
 		slider2 = new JSlider(JSlider.HORIZONTAL);
 		slider2.setMinimum(0);
-		slider2.setMaximum(10000);
+		slider2.setMaximum(FREQ_MAX);
 		slider2.setEnabled(false);
 
-		textBox2 = new JTextField(String.valueOf((2 / 5) * 10000), 8);
+		textBox2 = new JTextField(String.valueOf((2 / 5) * FREQ_MAX), 8);
 		textBox2.setEnabled(false);
 
 		secondSynthButtonOn.addActionListener(new ActionListener() {
@@ -354,9 +357,9 @@ public class OscUI extends JPanel {
 				final JSlider mySlider2 = (JSlider) evt.getSource();
 				if (mySlider2.getValueIsAdjusting()) {
 					float freq = (float) mySlider2.getValue();
-					freq = (freq / 10000) * (freq / 10000);
-					freq = freq * 10000;
-					freq = freq + 20;
+					freq = (freq / FREQ_MAX) * (freq / FREQ_MAX);
+					freq = freq * FREQ_MAX;
+					freq = freq + FREQ_MIN;
 					doPrintValue2(freq);
 					// arguments for freq and node
 					doSendSlider(freq, 1001);
@@ -372,14 +375,14 @@ public class OscUI extends JPanel {
 			public void actionPerformed(final ActionEvent evt) {
 				final JTextField field = (JTextField) evt.getSource();
 				float freq = Float.valueOf(field.getText());
-				if (freq > 10020) {
-					freq = 10020;
+				if (freq > (FREQ_MIN + FREQ_MAX)) {
+					freq = (FREQ_MIN + FREQ_MAX);
 					doPrintValue2(freq);
-				} else if (freq < 20) {
-					freq = 20;
+				} else if (freq < FREQ_MIN) {
+					freq = FREQ_MIN;
 					doPrintValue2(freq);
 				}
-				slider2.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
+				slider2.setValue((int)(FREQ_MAX * Math.sqrt(((freq - FREQ_MIN) / FREQ_MAX))));
 				doSendSlider(freq, 1001);
 			}
 		});
@@ -403,10 +406,10 @@ public class OscUI extends JPanel {
 		thirdSynthButtonOff.setEnabled(false);
 		slider3 = new JSlider(JSlider.HORIZONTAL);
 		slider3.setMinimum(0);
-		slider3.setMaximum(10000);
+		slider3.setMaximum(FREQ_MAX);
 		slider3.setEnabled(false);
 
-		textBox3 = new JTextField(String.valueOf((1 / 25) * 10000), 8);
+		textBox3 = new JTextField(String.valueOf((1 / 25) * FREQ_MAX), 8);
 		textBox3.setEnabled(false);
 
 		thirdSynthButtonOn.addActionListener(new ActionListener() {
@@ -449,9 +452,9 @@ public class OscUI extends JPanel {
 				if (mySlider3.getValueIsAdjusting()) {
 					// int freq = (int)source.getValue();
 					float freq = (float) mySlider3.getValue();
-					freq = (freq / 10000) * (freq / 10000);
-					freq = freq * 10000;
-					freq = freq + 20;
+					freq = (freq / FREQ_MAX) * (freq / FREQ_MAX);
+					freq = freq * FREQ_MAX;
+					freq = freq + FREQ_MIN;
 					doPrintValue3(freq);
 					// when the action occurs the doSendSlider method is invoked
 					// with arguments for freq and node
@@ -468,14 +471,14 @@ public class OscUI extends JPanel {
 			public void actionPerformed(final ActionEvent evt) {
 				final JTextField field = (JTextField) evt.getSource();
 				float freq = Float.valueOf(field.getText());
-				if (freq > 10020) {
-					freq = 10020;
+				if (freq > (FREQ_MIN + FREQ_MAX)) {
+					freq = (FREQ_MIN + FREQ_MAX);
 					doPrintValue3(freq);
-				} else if (freq < 20) {
-					freq = 20;
+				} else if (freq < FREQ_MIN) {
+					freq = FREQ_MIN;
 					doPrintValue3(freq);
 				}
-				slider3.setValue((int)(10000*Math.sqrt(((freq - 20) / 10000))));
+				slider3.setValue((int)(FREQ_MAX * Math.sqrt(((freq - FREQ_MIN) / FREQ_MAX))));
 				doSendSlider(freq, 1002);
 			}
 		});
