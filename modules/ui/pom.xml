@@ -2,8 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<project.packageName>com.illposed.osc</project.packageName>
-		<project.mainClass>com.illposed.osc.ui.Main</project.mainClass>
+		<project.mainClass>${project.packageName}.ui.Main</project.mainClass>
 	</properties>
 
 	<parent>
@@ -13,7 +12,6 @@
 		<relativePath>../parent</relativePath>
 	</parent>
 
-	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-ui</artifactId>
 	<version>0.5-SNAPSHOT</version>
 

@@ -2,6 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
+		<project.packageName>${project.groupId}</project.packageName>
 		<!--
 			This may get better support in Maven 3, see:
 			http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
