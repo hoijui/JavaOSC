@@ -127,15 +127,6 @@ public class OSCPortOut extends OSCPort {
 	@Override
 	public String toString() {
 
-		final StringBuilder rep = new StringBuilder(64);
-
-		rep
-				.append('[')
-				.append(getClass().getSimpleName())
-				.append(": sending to \"")
-				.append(getRemoteAddress().toString())
-				.append("\"]");
-
-		return rep.toString();
+		return '[' + getClass().getSimpleName() + ": sending to \"" + getRemoteAddress().toString() + "\"]";
 	}
 }
