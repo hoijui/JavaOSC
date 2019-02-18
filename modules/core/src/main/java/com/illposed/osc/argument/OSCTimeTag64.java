@@ -9,6 +9,7 @@
 package com.illposed.osc.argument;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -33,10 +34,6 @@ import java.util.Date;
  * {@link com.illposed.osc.argument.handler.DateTimeStampArgumentHandler#PROP_NAME_EPOCH_INDICATOR_TIME}
  * property.
  * By default, it uses the epoch we are currently in.
- * TODO When advancing to Java 8, we should introduce <tt>toInstant()</tt>
- *   and <tt>valueOf(Instant)</tt> methods (see {@link java.time.Instant}),
- *   as it covers the range of the OSC time format, and nearly covers the precision
- *   (1 nanosecond accuracy instead of 233 picoseconds).
  * TODO Introduce 128bit version of this class (64bit seconds, 64bit fraction)
  *   as described by NTPv4.
  */
@@ -88,10 +85,15 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * Number of bits for storing the "seconds" value in NTP time.
 	 */
 	private static final int NTP_SECONDS_BITS = 32;
+	/**
+	 * The Factor to multiply `fractions` with, to get to the number of nano-seconds.
+	 * It is calculated as <code>10^9 / 2^32</code>.
+	 */
+	private static final double FRACTION_TO_NANOS_MULTIPLIER = 0.23283;
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * This Time-tags value as specified by the OSC protocol standard.
+	 * The Time-tags value as specified by the OSC protocol standard.
 	 * It is treated as a 64bit unsigned integer,
 	 * with the higher-order 32bit representing the whole seconds
 	 * from the beginning of the epoch,
@@ -138,6 +140,18 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	@SuppressWarnings("WeakerAccess")
 	public long getFraction() {
 		return ntpTime & FILTER_LOWER_32;
+	}
+
+	// Public API
+	/**
+	 * Returns the rounded number of nanoseconds from the start of the epoch + seconds
+	 * of this time-tag.
+	 * @return 32-bit unsigned value representing the nano-seconds after the last full second
+	 *   of this OSC <i>Time-tag</i>
+	 */
+	@SuppressWarnings("WeakerAccess")
+	public int getNanos() {
+		return (int) Math.round(getFraction() * FRACTION_TO_NANOS_MULTIPLIER);
 	}
 
 	public boolean isImmediate() {
@@ -236,6 +250,31 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 
 	private static long toNtpTimeTag(final long seconds, final long fraction) {
 		return seconds << NTP_SECONDS_BITS | fraction;
+	}
+
+	/**
+	 * Returns the Java instant closest to this time-tags value.
+	 * {@link java.time.Instant} covers the range of the OSC time tag,
+	 * and nearly covers the precision
+	 * (1 nanosecond accuracy instead of 233 picoseconds).
+	 * @see #valueOf(Instant)
+	 * @return this time-tags value rounded to the closest full nanosecond
+	 */
+	public Instant toInstant() {
+		return Instant.ofEpochSecond(getSeconds(), getNanos());
+	}
+
+	/**
+	 * Returns the Java instant closest to this time-tags value.
+	 *  {@link java.time.Instant} covers the range of the OSC time tag,
+	 *  and nearly covers the precision
+	 *  (1 nanosecond accuracy instead of 233 picoseconds).
+	 * @param instant to be converted to an OSC time tag
+	 * @see #toInstant()
+	 * @return the closest
+	 */
+	public static OSCTimeTag64 valueOf(final Instant instant) {
+		return valueOf(instant.getEpochSecond(), Math.round(instant.getNano() / FRACTION_TO_NANOS_MULTIPLIER));
 	}
 
 	public static OSCTimeTag64 valueOf(final long ntpTime) {
