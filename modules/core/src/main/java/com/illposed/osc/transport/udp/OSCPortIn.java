@@ -91,7 +91,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public static List<OSCPacketListener> defaultPacketListeners() {
-		final List<OSCPacketListener> listeners = new ArrayList<OSCPacketListener>();
+		final List<OSCPacketListener> listeners = new ArrayList<>();
 		listeners.add(defaultPacketListener());
 		return listeners;
 	}

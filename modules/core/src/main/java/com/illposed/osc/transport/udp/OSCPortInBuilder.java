@@ -27,7 +27,7 @@ public class OSCPortInBuilder {
 
 	private OSCPacketListener addDefaultPacketListener() {
 		if (packetListeners == null) {
-			packetListeners = new ArrayList<OSCPacketListener>();
+			packetListeners = new ArrayList<>();
 		}
 
 		final OSCPacketListener listener = OSCPortIn.defaultPacketListener();
@@ -99,14 +99,14 @@ public class OSCPortInBuilder {
 	}
 
 	public OSCPortInBuilder setPacketListener(final OSCPacketListener listener) {
-		packetListeners = new ArrayList<OSCPacketListener>();
+		packetListeners = new ArrayList<>();
 		packetListeners.add(listener);
 		return this;
 	}
 
 	public OSCPortInBuilder addPacketListener(final OSCPacketListener listener) {
 		if (packetListeners == null) {
-			packetListeners = new ArrayList<OSCPacketListener>();
+			packetListeners = new ArrayList<>();
 		}
 
 		packetListeners.add(listener);

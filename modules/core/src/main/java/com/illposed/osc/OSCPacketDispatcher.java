@@ -8,7 +8,6 @@
 
 package com.illposed.osc;
 
-import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
@@ -107,8 +106,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 		NullOSCSerializer() {
 			super(
-					Collections.<ArgumentHandler>emptyList(),
-					Collections.<String, Object>emptyMap(),
+					Collections.emptyList(),
+					Collections.emptyMap(),
 					null);
 		}
 
