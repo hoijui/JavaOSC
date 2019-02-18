@@ -82,10 +82,12 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	public static OSCPacketListener defaultPacketListener() {
 		final OSCPacketDispatcher dispatcher = new OSCPacketDispatcher();
-		// HACK: We do this, even though it is against the OSC (1.0) specification,
-		// because this is how it worked in this library until Feb. 2015., and thus
-		// users of this library expect this behaviour by default.
-		dispatcher.setAlwaysDispatchingImmediately(true);
+		// Until version 0.4, we did the following property to <code>true</code>,
+		// because this is how it always worked in this library until Feb. 2015.,
+		// and thus users of this library expected this behaviour by default.
+		// It is against the OSC (1.0) specification though,
+		// so since version 0.5 of this library, we set it to <code>false</code>.
+		dispatcher.setAlwaysDispatchingImmediately(false);
 
 		return dispatcher;
 	}
