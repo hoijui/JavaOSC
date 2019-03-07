@@ -1,14 +1,11 @@
 language: java
 sudo: false # faster builds
 
-# SonarCube disabled, because its Community Edition only allows branch master.
-# aee for example:
-# https://community.sonarsource.com/t/community-edition-with-vsts-to-use-the-property-sonar-branch-name-the-branch-plugin-is-required-but-not-installed/1686/21
-#addons:
-#  sonarcloud:
-#    organization: "hoijui-github"
-#    token:
-#      secure: "6b0921904f3f9b1a695f964b912e9c93594c36a7"
+addons:
+  sonarcloud:
+    organization: "hoijui-github"
+    token:
+      secure: "6b0921904f3f9b1a695f964b912e9c93594c36a7"
 
 jdk:
 # Only test one JDK to save energy
@@ -17,13 +14,12 @@ jdk:
   - openjdk8
 #  - openjdk11
 
-# SonarCube disabled, because its Community Edition only allows branch master.
-#script:
-#  # JaCoCo is used to have code coverage, the agent has to be activated
-#  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+script:
+# NOTE JaCoCo is used to have code coverage, the agent has to be activated
+# NOTE The SonarCube Community Edition (free plan) only allows branch "master".
+  - mvnExtra=""; if [ $TRAVIS_BRANCH = "master" ]; then mvnExtra="sonar:sonar"; fi; mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package $mvnExtra
 
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
-
