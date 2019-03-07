@@ -17,8 +17,12 @@ import java.util.Arrays;
 import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColorArgumentHandlerTest {
+
+	private final Logger log = LoggerFactory.getLogger(ColorArgumentHandlerTest.class);
 
 	private static final Color[] DEFAULT_COLORS = new Color[] {
 		Color.BLACK,
@@ -101,8 +105,8 @@ public class ColorArgumentHandlerTest {
 	public void testReparseDefaultColorsAlphaed() throws Exception {
 
 		final long alphaRandomSeed = new Random().nextLong();
-		System.out.println(ColorArgumentHandlerTest.class.getSimpleName()
-				+ "#testReparseDefaultColorsAlphaed:alphaRandomSeed: " + alphaRandomSeed);
+		log.debug("{}#testReparseDefaultColorsAlphaed:alphaRandomSeed: {}",
+				ColorArgumentHandlerTest.class.getSimpleName(), alphaRandomSeed);
 		final Random alphaRandom = new Random(alphaRandomSeed);
 		final Color[] alphaedDefaultColors = Arrays.copyOf(DEFAULT_COLORS, DEFAULT_COLORS.length);
 		for (int tci = 0; tci < alphaedDefaultColors.length; tci++) {

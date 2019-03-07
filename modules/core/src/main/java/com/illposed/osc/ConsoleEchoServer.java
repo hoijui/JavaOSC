@@ -10,8 +10,9 @@ package com.illposed.osc;
 
 import com.illposed.osc.messageselector.JavaRegexAddressMessageSelector;
 import com.illposed.osc.transport.udp.OSCPortIn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -32,7 +33,9 @@ public class ConsoleEchoServer extends OSCPortIn {
 	private static final int ARG_INDEX_ADDRESS = 0;
 	private static final int ARG_INDEX_PORT = 1;
 
-	private final PrintStream out;
+	private static final Logger LOG = LoggerFactory.getLogger(ConsoleEchoServer.class);
+
+	private final Logger log;
 
 	private final class PrintBadDataListener implements OSCBadDataListener {
 
@@ -43,31 +46,26 @@ public class ConsoleEchoServer extends OSCPortIn {
 		@Override
 		public void badDataReceived(final OSCBadDataEvent evt) {
 
-			System.err.printf(
-					"Warning: Bad packet received while listening on %s ...%n",
-					ConsoleEchoServer.this.toString());
-			evt.getException().printStackTrace(System.err);
-			System.err.printf(
-					"### Bad received data: ###%n%s%n###%n%n",
+			log.warn("Bad packet received while listening on " + ConsoleEchoServer.this.toString() + " ...",
+					evt.getException());
+			log.warn(
+					"### Received data (bad): ###\n{}\n###\n\n",
 					new String(evt.getData().array(), Charset.forName("UTF-8")));
-
-			evt.getException().printStackTrace(System.err);
 		}
-
 	}
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
-	public ConsoleEchoServer(final SocketAddress serverAddress, final PrintStream out) throws IOException {
+	public ConsoleEchoServer(final SocketAddress serverAddress, final Logger log) throws IOException {
 		super(serverAddress);
-		this.out = out;
+		this.log = log;
 	}
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public void start() {
 
-		final OSCMessageListener listener = new EchoOSCMessageListener(out);
+		final OSCMessageListener listener = new EchoOSCMessageListener(log);
 		// select all messages
 		getDispatcher().addListener(
 				new JavaRegexAddressMessageSelector(".*"),
@@ -78,7 +76,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 		setResilient(true);
 		setDaemonListener(false);
 		startListening();
-		out.printf("# Listening for OSC Packets on %s ...%n",
+		log.info("# Listening for OSC Packets on {} ...",
 				getLocalAddress().toString());
 	}
 
@@ -96,7 +94,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 				try {
 					port = Integer.parseInt(args[ARG_INDEX_PORT]);
 				} catch (final NumberFormatException ex) {
-					System.err.println("# ERROR: Invalid port: " + args[ARG_INDEX_PORT]);
+					LOG.error("# ERROR: Invalid port: {}", args[ARG_INDEX_PORT]);
 					throw ex;
 				}
 			}
@@ -108,6 +106,6 @@ public class ConsoleEchoServer extends OSCPortIn {
 	}
 
 	public static void main(final String[] args) throws IOException {
-		new ConsoleEchoServer(parseServerAddress(args), System.out).start();
+		new ConsoleEchoServer(parseServerAddress(args), LoggerFactory.getLogger(ConsoleEchoServer.class)).start();
 	}
 }

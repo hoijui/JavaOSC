@@ -9,6 +9,8 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -46,6 +48,8 @@ public class OSCSerializer {
 	 * The actual value is arbitrary.
 	 */
 	private static final Integer PACKET_SIZE_PLACEHOLDER = -1;
+
+	private final Logger log = LoggerFactory.getLogger(OSCSerializer.class);
 
 	private final ByteBuffer output;
 	/**
@@ -342,25 +346,19 @@ public class OSCSerializer {
 				unsupportedTypes.add(argumentClass);
 			} else {
 				if (matchingSuperTypes.size() > MAX_IMPLEMENTED_ARGUMENT_TYPES) {
-					System.out.println("WARNING: Java class "
-							+ argumentClass.getCanonicalName()
-							+ " is a sub-class of multiple supported argument types:");
+					log.warn("Java class {} is a sub-class of multiple supported argument types:",
+							argumentClass.getCanonicalName());
 					for (final ArgumentHandler matchingSuperType : matchingSuperTypes) {
-						System.out.println('\t'
-								+ matchingSuperType.getJavaClass().getCanonicalName()
-								+ " (supported by "
-								+ matchingSuperType.getClass().getCanonicalName()
-								+ ')');
+						log.warn("\t{} (supported by {})",
+								matchingSuperType.getJavaClass().getCanonicalName(),
+								matchingSuperType.getClass().getCanonicalName());
 					}
 				}
 				final ArgumentHandler matchingSuperType = matchingSuperTypes.iterator().next();
-				System.out.println("INFO: Java class "
-						+ argumentClass.getCanonicalName()
-						+ " will be mapped to "
-						+ matchingSuperType.getJavaClass().getCanonicalName()
-						+ " (supported by "
-						+ matchingSuperType.getClass().getCanonicalName()
-						+ ')');
+				log.info("Java class {} will be mapped to {} (supported by {})",
+						argumentClass.getCanonicalName(),
+						matchingSuperType.getJavaClass().getCanonicalName(),
+						matchingSuperType.getClass().getCanonicalName());
 				final Class matchingSuperClass = matchingSuperType.getJavaClass();
 				subToSuperTypes.put(argumentClass, matchingSuperClass);
 				superType = matchingSuperClass;

@@ -16,6 +16,8 @@ import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -49,6 +51,8 @@ import java.util.List;
  * with the address "/message/receiving".
  */
 public class OSCPortIn extends OSCPort implements Runnable {
+
+	private final Logger log = LoggerFactory.getLogger(OSCPortIn.class);
 
 	// Public API
 	/**
@@ -214,9 +218,12 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private void stopListening(final Exception exception) {
 
 		// TODO This implies a low-level problem (for example network IO), but it could just aswell be a high-level one (for example a parse exception)
-		System.err.println("Error while listening on " + toString() + "...");
-		if (!(exception instanceof OSCParseException)) {
-			exception.printStackTrace(System.err);
+		final String errorMsg = "Error while listening on " + toString() + "...";
+		log.error(errorMsg);
+		if (exception instanceof OSCParseException) {
+			log.error(errorMsg);
+		} else {
+			log.error(errorMsg, exception);
 		}
 		stopListening();
 	}

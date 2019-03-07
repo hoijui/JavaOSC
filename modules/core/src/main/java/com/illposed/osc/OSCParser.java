@@ -12,6 +12,8 @@ import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.IntegerArgumentHandler;
 import com.illposed.osc.argument.handler.TimeTag64ArgumentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -51,6 +53,8 @@ public class OSCParser {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public static final char TYPE_ARRAY_END = (byte) ']';
+
+	private final Logger log = LoggerFactory.getLogger(OSCParser.class);
 
 	private final Map<Character, ArgumentHandler> identifierToType;
 	private final Map<String, Object> properties;
@@ -142,7 +146,7 @@ public class OSCParser {
 				//   in the OSC specification. OSC applications are not required to recognize
 				//   these types; an OSC application should discard any message whose
 				//   OSC Type Tag string contains any unrecognized OSC Type Tags.
-				System.err.println("Package ignored because: " + ex.getMessage());
+				log.warn("Package ignored because: {}", ex.getMessage());
 			}
 			packet = tmpPacket;
 		}

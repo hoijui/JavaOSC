@@ -45,10 +45,14 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OSCPortTest {
 
 	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
+
+	private final Logger log = LoggerFactory.getLogger(OSCPortTest.class);
 
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
@@ -429,7 +433,7 @@ public class OSCPortTest {
 			final InetAddress loopbackAddress = InetAddress.getByName("::1");
 			testReceivingLoopback(loopbackAddress);
 		} else {
-			System.err.println("WARNING: Skipping IPv6 test because: No IPv6 support available on this system");
+			log.warn("Skipping IPv6 test because: No IPv6 support available on this system");
 		}
 	}
 

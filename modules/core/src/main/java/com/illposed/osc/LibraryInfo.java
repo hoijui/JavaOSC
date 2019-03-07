@@ -10,6 +10,9 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCImpulse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -270,7 +273,9 @@ public final class LibraryInfo {
 	public static void main(final String[] args) throws IOException {
 
 		final LibraryInfo libraryInfo = new LibraryInfo();
-		System.out.println(libraryInfo.createLibrarySummary());
-//		System.out.println(libraryInfo.createManifestPropertiesString());
+
+		final Logger log = LoggerFactory.getLogger(LibraryInfo.class);
+		log.info(libraryInfo.createLibrarySummary());
+//		log.info(libraryInfo.createManifestPropertiesString());
 	}
 }

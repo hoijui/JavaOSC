@@ -8,6 +8,8 @@
 
 package com.illposed.osc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +23,8 @@ import java.util.Random;
  * an OSC Type indicator char.
  */
 public class BenchmarkHashMapVsElseIf {
+
+	private static final Logger LOG = LoggerFactory.getLogger(BenchmarkHashMapVsElseIf.class);
 
 	private static final Map<Class, Character> JAVA_CLASS_TO_OSC_TYPE;
 	static {
@@ -50,13 +54,13 @@ public class BenchmarkHashMapVsElseIf {
 	@SuppressWarnings("WeakerAccess")
 	public static void runBenchmark(final int numDataPoints, final int numTestRuns) {
 
-		System.err.printf("Generating %d data-points\n", numDataPoints);
+		LOG.info("Generating {} data-points", numDataPoints);
 		long start = System.currentTimeMillis();
 		final List<Class> generateRandomTypes = generateRandomTypes(numDataPoints);
 		final long timeGenerateData = System.currentTimeMillis() - start;
-		System.err.printf("Time data generation: %d ms\n", timeGenerateData);
+		LOG.info("Time data generation: {} ms", timeGenerateData);
 
-		System.err.printf("Running '... else if ...' benchmark %d times ...\n", numTestRuns);
+		LOG.info("Running '... else if ...' benchmark {} times ...", numTestRuns);
 		start = System.currentTimeMillis();
 		for (int tri = 0; tri < numTestRuns; tri++) {
 			for (Class type : generateRandomTypes) {
@@ -64,9 +68,9 @@ public class BenchmarkHashMapVsElseIf {
 			}
 		}
 		final long timeElseIf = (System.currentTimeMillis() - start) / numTestRuns;
-		System.err.printf("Average time '... else if ...': %d ms\n", timeElseIf);
+		LOG.info("Average time '... else if ...': {} ms", timeElseIf);
 
-		System.err.printf("Running 'HashMap' benchmark %d times ...\n", numTestRuns);
+		LOG.info("Running 'HashMap' benchmark {} times ...", numTestRuns);
 		start = System.currentTimeMillis();
 		for (int tri = 0; tri < numTestRuns; tri++) {
 			for (Class type : generateRandomTypes) {
@@ -74,7 +78,7 @@ public class BenchmarkHashMapVsElseIf {
 			}
 		}
 		final long timeHashMap = (System.currentTimeMillis() - start) / numTestRuns;
-		System.err.printf("Average time 'HashMap':         %d ms\n", timeHashMap);
+		LOG.info("Average time 'HashMap':         {} ms", timeHashMap);
 	}
 
 	private static Class generateRandomType() {

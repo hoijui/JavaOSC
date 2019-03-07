@@ -8,11 +8,11 @@
 
 package com.illposed.osc;
 
-import java.io.PrintStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Prints out received messages to a {@link PrintStream},
- * most commonly {@link System#out}.
+ * Prints out received messages to a {@link Logger}.
  * Messages are printed in this format:
  * <blockquote><pre>{@code
  * address
@@ -43,30 +43,30 @@ import java.io.PrintStream;
  */
 public class EchoOSCMessageListener implements OSCMessageListener {
 
-	private final PrintStream out;
+	private final Logger log;
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
-	public EchoOSCMessageListener(final PrintStream out) {
+	public EchoOSCMessageListener(final Logger log) {
 
-		this.out = out;
+		this.log = log;
 	}
 
 	// Public API
 	@SuppressWarnings("unused")
 	public EchoOSCMessageListener() {
-		this(System.out);
+		this(LoggerFactory.getLogger(EchoOSCMessageListener.class));
 	}
 
 	@Override
 	public void acceptMessage(final OSCMessageEvent event) {
 
 		final OSCMessage message = event.getMessage();
-		out.println(message.getAddress());
-		out.printf("  %s%n", message.getInfo().getArgumentTypeTags());
+		log.info(message.getAddress());
+		log.info("  {}", message.getInfo().getArgumentTypeTags());
 		for (final Object arg : message.getArguments()) {
-			out.printf("    %s%n", arg.toString());
+			log.info("    {}", arg.toString());
 		}
-		out.println();
+		log.info("");
 	}
 }

@@ -12,10 +12,15 @@ import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import java.util.Random;
+import com.illposed.osc.transport.udp.OSCPortTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MidiMessageArgumentHandlerTest {
+
+	private final Logger log = LoggerFactory.getLogger(MidiMessageArgumentHandlerTest.class);
 
 	private static OSCMidiMessage reparse(final OSCMidiMessage orig)
 			throws OSCSerializeException, OSCParseException
@@ -92,8 +97,8 @@ public class MidiMessageArgumentHandlerTest {
 	public void testReparseRandom() throws Exception {
 
 		final long contentRandomSeed = new Random().nextLong();
-		System.out.println(MidiMessageArgumentHandlerTest.class.getSimpleName()
-				+ "#testReparseRandom:contentRandomSeed: " + contentRandomSeed);
+		log.debug("{}#testReparseRandom:contentRandomSeed: {}",
+				MidiMessageArgumentHandlerTest.class.getSimpleName(), contentRandomSeed);
 		final Random contentRandom = new Random(contentRandomSeed);
 		final byte[] content = new byte[4];
 		contentRandom.nextBytes(content);
