@@ -64,7 +64,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		private final MessageSelector selector;
 		private final OSCMessageListener listener;
 
-		PacketListener(
+		public PacketListener(
 				final MessageSelector selector,
 				final OSCMessageListener listener)
 		{
@@ -72,11 +72,11 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 			this.listener = listener;
 		}
 
-		MessageSelector getSelector() {
+		public MessageSelector getSelector() {
 			return selector;
 		}
 
-		OSCMessageListener getListener() {
+		public OSCMessageListener getListener() {
 			return listener;
 		}
 

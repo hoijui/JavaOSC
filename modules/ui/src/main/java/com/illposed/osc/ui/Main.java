@@ -14,16 +14,13 @@ import javax.swing.JFrame;
 
 public class Main extends JFrame {
 
-	private OscUI myUi;
-
-	public void addOscUI() {
-		myUi = new OscUI(this);
-		setBounds(10, 10, 500, 350);
-		setContentPane(myUi);
-	}
-
 	public Main() {
 		super("OSC");
+
+		final OscUI myUi = new OscUI(this);
+		setBounds(10, 10, 500, 350);
+		setContentPane(myUi);
+
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(final WindowEvent evt) {
 				myUi.doSendGlobalOff(1000, 1001, 1002);
@@ -31,7 +28,6 @@ public class Main extends JFrame {
 			}
 		});
 
-		addOscUI();
 		setVisible(true);
 	}
 
