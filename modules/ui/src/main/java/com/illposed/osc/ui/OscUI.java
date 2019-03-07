@@ -44,7 +44,9 @@ public class OscUI extends JPanel {
 	private static final int FREQ_MIN = 20;
 	private static final int FREQ_MAX = 10000;
 
-	private final Logger log = LoggerFactory.getLogger(OscUI.class);
+	// NOTE We make this static, because Logger is not Serializable,
+	//   but JPanel (our super) is, and thus fields have to be too
+	private static final Logger LOG = LoggerFactory.getLogger(OscUI.class);
 
 	// declare some variables
 	private final JFrame parent;
@@ -72,7 +74,7 @@ public class OscUI extends JPanel {
 			oscPort = new OSCPortOut();
 		} catch (final Exception ex) {
 			// this is just a demo program, so this is acceptable behavior
-			log.error("Failed to create test OSC UDP out port", ex);
+			LOG.error("Failed to create test OSC UDP out port", ex);
 		}
 	}
 
