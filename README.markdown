@@ -7,6 +7,13 @@
 
 <!-- The title was created with: `figlet -k -f big JavaOSC` -->
 
+[![Build Status](https://travis-ci.org/hoijui/JavaOSC.svg?branch=master)](https://travis-ci.org/hoijui/JavaOSC)
+[![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.illposed.osc:javaosc) 
+[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=com.illposed.osc:javaosc)
+[![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=bugs)](https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=com.illposed.osc:javaosc)
+[![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=vulnerabilities)](https://sonarcloud.io/component_measures/metric/security_rating/list?id=com.illposed.osc:javaosc)
+(for branch `master`)
+
 _Open Sound Control_ (OSC) is a _content format_,
 though it is often though of as a protocol for the transmission of data over a network.
 Its main use and origin is that of a _replacement for MIDI_
