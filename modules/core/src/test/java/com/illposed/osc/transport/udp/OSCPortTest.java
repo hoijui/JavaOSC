@@ -163,23 +163,23 @@ public class OSCPortTest {
 				receiver.disconnect();
 			}
 		} catch (final IOException ex) {
-			ex.printStackTrace();
+			log.error("Failed to disconnect test OSC UDP in port", ex);
 		}
 		try {
 			sender.disconnect();
 		} catch (final IOException ex) {
-			ex.printStackTrace();
+			log.error("Failed to disconnect test OSC UDP out port", ex);
 		}
 
 		try {
 			receiver.close();
 		} catch (final IOException ex) {
-			ex.printStackTrace();
+			log.error("Failed to close test OSC UDP in port", ex);
 		}
 		try {
 			sender.close();
 		} catch (final IOException ex) {
-			ex.printStackTrace();
+			log.error("Failed to close test OSC UDP out port", ex);
 		}
 
 		// wait a bit after closing the receiver,
@@ -322,14 +322,14 @@ public class OSCPortTest {
 				try {
 					receiverChannel.close();
 				} catch (final IOException ex) {
-					ex.printStackTrace();
+					log.error("Failed to close test OSC UDP in channel", ex);
 				}
 			}
 			if (senderChannel != null) {
 				try {
 					senderChannel.close();
 				} catch (final IOException ex) {
-					ex.printStackTrace();
+					log.error("Failed to close test OSC UDP out channel", ex);
 				}
 			}
 

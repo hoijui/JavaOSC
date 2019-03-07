@@ -15,6 +15,8 @@ import com.illposed.osc.OSCPacket;
 import com.illposed.osc.transport.udp.OSCPort;
 import com.illposed.osc.transport.udp.OSCPortOut;
 import com.illposed.osc.argument.OSCTimeTag64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -42,6 +44,8 @@ public class OscUI extends JPanel {
 	private static final int FREQ_MIN = 20;
 	private static final int FREQ_MAX = 10000;
 
+	private final Logger log = LoggerFactory.getLogger(OscUI.class);
+
 	// declare some variables
 	private final JFrame parent;
 	private JTextField addressWidget;
@@ -68,7 +72,7 @@ public class OscUI extends JPanel {
 			oscPort = new OSCPortOut();
 		} catch (final Exception ex) {
 			// this is just a demo program, so this is acceptable behavior
-			ex.printStackTrace();
+			log.error("Failed to create test OSC UDP out port", ex);
 		}
 	}
 

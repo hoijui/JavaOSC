@@ -271,7 +271,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				getChannel().close();
 			} catch (final IOException ex) {
-				ex.printStackTrace();
+				log.error("Failed to close OSC UDP channel", ex);
 			}
 		}
 	}
