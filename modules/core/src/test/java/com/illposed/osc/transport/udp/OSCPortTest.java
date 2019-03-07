@@ -24,14 +24,21 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
 import java.net.SocketAddress;
+import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -49,6 +56,15 @@ public class OSCPortTest {
 	private OSCPortOut sender;
 	private OSCPortIn receiver;
 	private OSCPacketListener listener;
+
+	private static boolean supportsIPv6() throws SocketException {
+		return Stream.of(NetworkInterface.getNetworkInterfaces().nextElement())
+				.map(NetworkInterface::getInterfaceAddresses)
+				.flatMap(Collection::stream)
+				.map(InterfaceAddress::getAddress)
+				.anyMatch(((Predicate<InetAddress>) InetAddress::isLoopbackAddress).negate().and(address -> address instanceof Inet6Address));
+
+	}
 
 	private void reSetUp(
 			final int portSenderOut,
@@ -409,8 +425,12 @@ public class OSCPortTest {
 	@Test
 	public void testReceivingLoopbackIPv6() throws Exception {
 
-		final InetAddress loopbackAddress = InetAddress.getByName("::1");
-		testReceivingLoopback(loopbackAddress);
+		if (supportsIPv6()) {
+			final InetAddress loopbackAddress = InetAddress.getByName("::1");
+			testReceivingLoopback(loopbackAddress);
+		} else {
+			System.err.println("WARNING: Skipping IPv6 test because: No IPv6 support available on this system");
+		}
 	}
 
 	@Test
