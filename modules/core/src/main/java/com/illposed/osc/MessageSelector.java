@@ -22,8 +22,8 @@ public interface MessageSelector {
 
 	/**
 	 * Checks whether the OSC <i>Message</i> in question matches this selector.
-	 * @param message to be checked if it matches
+	 * @param messageEvent the message and meta-data to be checked if it matches
 	 * @return {@code true} if this matcher selects the message in question
 	 */
-	boolean matches(OSCMessage message);
+	boolean matches(OSCMessageEvent messageEvent);
 }

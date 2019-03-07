@@ -9,7 +9,8 @@
 package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
-import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageEvent;
+
 import java.util.regex.Pattern;
 
 /**
@@ -53,7 +54,7 @@ public class JavaRegexAddressMessageSelector implements MessageSelector {
 	}
 
 	@Override
-	public boolean matches(final OSCMessage message) {
-		return selector.matcher(message.getAddress()).matches();
+	public boolean matches(final OSCMessageEvent messageEvent) {
+		return selector.matcher(messageEvent.getMessage().getAddress()).matches();
 	}
 }

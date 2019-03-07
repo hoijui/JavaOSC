@@ -10,13 +10,14 @@ package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageEvent;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class OSCPatternAddressMessageSelectorTest {
 
-	private static boolean matches(final MessageSelector matcher, final String address) {
-		return matcher.matches(new OSCMessage(address));
+	private boolean matches(final MessageSelector matcher, final String address) {
+		return matcher.matches(new OSCMessageEvent(this, null, new OSCMessage(address)));
 	}
 
 	@Test

@@ -9,7 +9,8 @@
 package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
-import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageEvent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -100,9 +101,9 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	}
 
 	@Override
-	public boolean matches(final OSCMessage message) {
+	public boolean matches(final OSCMessageEvent messageEvent) {
 
-		final List<String> messageAddressParts = splitIntoParts(message.getAddress());
+		final List<String> messageAddressParts = splitIntoParts(messageEvent.getMessage().getAddress());
 		return matches(patternParts, 0, messageAddressParts, 0);
 	}
 

@@ -369,8 +369,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		ensureMetaInfo(event.getMessage());
 
 		for (final SelectiveMessageListener selectiveMessageListener : selectiveMessageListeners) {
-			// TODO Maybe also supply the message event instead of only the message?
-			if (selectiveMessageListener.getSelector().matches(event.getMessage())) {
+			if (selectiveMessageListener.getSelector().matches(event)) {
 				selectiveMessageListener.getListener().acceptMessage(event);
 			}
 		}

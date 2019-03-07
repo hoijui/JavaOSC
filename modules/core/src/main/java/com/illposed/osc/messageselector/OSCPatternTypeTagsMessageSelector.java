@@ -9,7 +9,7 @@
 package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
-import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageEvent;
 
 /**
  * Checks whether an OSC <i>Argument Type Tags</i> string matches a given wildcard expression,
@@ -61,9 +61,9 @@ public class OSCPatternTypeTagsMessageSelector implements MessageSelector {
 	}
 
 	@Override
-	public boolean matches(final OSCMessage message) {
+	public boolean matches(final OSCMessageEvent messageEvent) {
 		return OSCPatternAddressMessageSelector.matches(
-				message.getInfo().getArgumentTypeTags().toString(),
+				messageEvent.getMessage().getInfo().getArgumentTypeTags().toString(),
 				selector);
 	}
 }

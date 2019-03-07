@@ -9,7 +9,7 @@
 package com.illposed.osc.messageselector;
 
 import com.illposed.osc.MessageSelector;
-import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCMessageEvent;
 
 /**
  * Checks whether a certain logical combination of two message selectors matches.
@@ -76,7 +76,7 @@ public class CombinedMessageSelector implements MessageSelector {
 	}
 
 	@Override
-	public boolean matches(final OSCMessage message) {
-		return logicOperator.matches(selector1.matches(message), selector2.matches(message));
+	public boolean matches(final OSCMessageEvent messageEvent) {
+		return logicOperator.matches(selector1.matches(messageEvent), selector2.matches(messageEvent));
 	}
 }
