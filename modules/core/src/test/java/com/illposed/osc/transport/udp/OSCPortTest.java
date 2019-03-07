@@ -159,7 +159,7 @@ public class OSCPortTest {
 	public void tearDown() throws Exception {
 
 		try {
-			if (receiver.isConnected()) { // HACK This should not be required, as DatagramChannel#disconnect() is supposed to have no effect if a it is not connected, but in certain tests, removing this if clause makes the disconnect cal hang forever; coudl even be a JVM bug -> we should report that (requires a minimal example first, though)
+			if (receiver.isConnected()) { // HACK This should not be required, as DatagramChannel#disconnect() is supposed to have no effect if a it is not connected, but in certain tests, removing this if clause makes the disconnect call hang forever; could even be a JVM bug -> we should report that (requires a minimal example first, though)
 				receiver.disconnect();
 			}
 		} catch (final IOException ex) {
