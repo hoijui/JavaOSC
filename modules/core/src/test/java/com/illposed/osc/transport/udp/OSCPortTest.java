@@ -12,9 +12,7 @@ import com.illposed.osc.OSCBundle;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCPacketListener;
-import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializerFactory;
 import com.illposed.osc.SimpleOSCMessageListener;
@@ -337,7 +335,7 @@ public class OSCPortTest {
 		// read
 		final ByteBuffer targetBuf = ByteBuffer.wrap(targetArray);
 
-		int count = 0;
+		int count;
 		int total = 0;
 		final long beginTime = System.currentTimeMillis();
 		while (total < dataSize && (count = receiver.read(targetBuf)) != -1) {
