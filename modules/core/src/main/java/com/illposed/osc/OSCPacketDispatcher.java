@@ -40,7 +40,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
-	private final List<PacketListener> packetListeners;
+	private final List<SelectiveMessageListener> selectiveMessageListeners;
 	private final List<OSCBadDataListener> badDataListeners;
 	private boolean metaInfoRequired;
 	/**
@@ -59,12 +59,12 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 	}
 
-	private static final class PacketListener {
+	private static final class SelectiveMessageListener {
 
 		private final MessageSelector selector;
 		private final OSCMessageListener listener;
 
-		public PacketListener(
+		public SelectiveMessageListener(
 				final MessageSelector selector,
 				final OSCMessageListener listener)
 		{
@@ -84,8 +84,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		public boolean equals(final Object other) {
 
 			boolean equal = false;
-			if (other instanceof PacketListener) {
-				final PacketListener otherSelector = (PacketListener) other;
+			if (other instanceof SelectiveMessageListener) {
+				final SelectiveMessageListener otherSelector = (SelectiveMessageListener) other;
 				equal = this.selector.equals(otherSelector.selector)
 						&& this.listener.equals(otherSelector.listener);
 			}
@@ -148,7 +148,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		this.typeTagsCharset = (propertiesCharset == null)
 				? Charset.defaultCharset()
 				: propertiesCharset;
-		this.packetListeners = new ArrayList<>();
+		this.selectiveMessageListeners = new ArrayList<>();
 		this.badDataListeners = new ArrayList<>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediately = false;
@@ -214,7 +214,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
 	{
-		packetListeners.add(new PacketListener(messageSelector, listener));
+		selectiveMessageListeners.add(new SelectiveMessageListener(messageSelector, listener));
 		if (messageSelector.isInfoRequired()) {
 			metaInfoRequired = true;
 		}
@@ -233,12 +233,12 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 			final MessageSelector messageSelector,
 			final OSCMessageListener listener)
 	{
-		packetListeners.remove(new PacketListener(messageSelector, listener));
+		selectiveMessageListeners.remove(new SelectiveMessageListener(messageSelector, listener));
 		if (metaInfoRequired) {
 			// re-evaluate whether meta info is still required
 			boolean metaInfoRequiredTmp = false;
-			for (final PacketListener packetListener : packetListeners) {
-				if (packetListener.getSelector().isInfoRequired()) {
+			for (final SelectiveMessageListener selectiveMessageListener : selectiveMessageListeners) {
+				if (selectiveMessageListener.getSelector().isInfoRequired()) {
 					metaInfoRequiredTmp = true;
 					break;
 				}
@@ -368,10 +368,10 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 		ensureMetaInfo(event.getMessage());
 
-		for (final PacketListener packetListener : packetListeners) {
+		for (final SelectiveMessageListener selectiveMessageListener : selectiveMessageListeners) {
 			// TODO Maybe also supply the message event instead of only the message?
-			if (packetListener.getSelector().matches(event.getMessage())) {
-				packetListener.getListener().acceptMessage(event);
+			if (selectiveMessageListener.getSelector().matches(event.getMessage())) {
+				selectiveMessageListener.getListener().acceptMessage(event);
 			}
 		}
 	}
