@@ -176,7 +176,7 @@ public class OSCReparserTest {
 
 	@Test
 	public void testArgumentDateImmediate() throws Exception {
-		reparseSingleArgument(OSCTimeTag64.valueOf(OSCTimeTag64.IMMEDIATE_DATE));
+		reparseSingleArgument(OSCTimeTag64.valueOf(OSCTimeTag64.immediateDate()));
 	}
 
 	@Test

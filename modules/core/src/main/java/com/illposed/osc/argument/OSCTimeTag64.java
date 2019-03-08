@@ -70,13 +70,9 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	public static final long IMMEDIATE_RAW = 0x1L;
 	/**
 	 * The OSC time-tag with the semantics of "immediately"/"now".
+	 * @see #immediateDate()
 	 */
 	public static final OSCTimeTag64 IMMEDIATE = valueOf(IMMEDIATE_RAW);
-	/**
-	 * The Java representation of an OSC time-tag with the semantics of
-	 * "immediately"/"now".
-	 */
-	public static final Date IMMEDIATE_DATE = IMMEDIATE.toDate(new Date(EPOCH_START_JAVA_TIME_0));
 	/**
 	 * Filter for the 32 lower/least-significant bits of a long.
 	 */
@@ -315,5 +311,16 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 		final long fraction = Math.round(((millisecondsInEpoch % 1000L) * 0x100000000L) / 1000D);
 
 		return toNtpTimeTag(seconds, fraction);
+	}
+
+	/**
+	 * Creates the Java representation of an OSC time-tag with the semantics of
+	 * "immediately"/"now".
+	 *
+	 * @return the created Java <code>Date</code>
+	 * @see #IMMEDIATE
+	 */
+	public static Date immediateDate() {
+		return IMMEDIATE.toDate(new Date(EPOCH_START_JAVA_TIME_0));
 	}
 }
