@@ -61,7 +61,6 @@ public class OSCPort {
 		}
 		this.channel = tmpChannel;
 
-		// NOTE StandardSocketOptions is only available since Java 1.7
 		this.channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
 		this.channel.socket().bind(local);
 	}
