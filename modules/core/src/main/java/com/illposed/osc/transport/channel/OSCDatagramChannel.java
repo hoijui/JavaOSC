@@ -18,7 +18,6 @@ import com.illposed.osc.OSCSerializerFactory;
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.ByteChannel;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.DatagramChannel;
 import java.nio.channels.SelectableChannel;
@@ -41,7 +40,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 	private final OSCParser parser;
 	private final OSCSerializerFactory serializerFactory;
 
-	public <C extends ByteChannel, InterruptibleChannel> OSCDatagramChannel(
+	public OSCDatagramChannel(
 			final DatagramChannel underlyingChannel,
 			final OSCParserFactory parserFactory,
 			final OSCSerializerFactory serializerFactory
@@ -59,7 +58,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 	public OSCPacket read(final ByteBuffer buffer) throws IOException, OSCParseException {
 
 		boolean completed = false;
-		OSCPacket oscPacket = null;
+		OSCPacket oscPacket;
 		try {
 			begin();
 

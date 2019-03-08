@@ -11,6 +11,7 @@ package com.illposed.osc;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Arrays;
@@ -123,7 +124,7 @@ public class OSCSerializerTest {
 	@Test
 	public void testPrintString3OnStream() throws Exception {
 		checkPrintOnStream(
-				Charset.forName("UTF-8"),
+				StandardCharsets.UTF_8,
 				new byte[] {(byte) 0xc3, (byte) 0xa1, 0, 0},
 				"\u00e1"); // latin 'a' with an acute accent
 	}

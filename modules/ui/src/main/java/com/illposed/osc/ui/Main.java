@@ -22,6 +22,7 @@ public class Main extends JFrame {
 		setContentPane(myUi);
 
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(final WindowEvent evt) {
 				myUi.doSendGlobalOff(1000, 1001, 1002);
 				System.exit(0);

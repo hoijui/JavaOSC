@@ -17,7 +17,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Runs a basic OSC server, printing all received OSC content
@@ -46,11 +46,13 @@ public class ConsoleEchoServer extends OSCPortIn {
 		@Override
 		public void badDataReceived(final OSCBadDataEvent evt) {
 
-			log.warn("Bad packet received while listening on " + ConsoleEchoServer.this.toString() + " ...",
-					evt.getException());
-			log.warn(
-					"### Received data (bad): ###\n{}\n###\n\n",
-					new String(evt.getData().array(), Charset.forName("UTF-8")));
+			if (log.isWarnEnabled()) {
+				log.warn("Bad packet received while listening on " + ConsoleEchoServer.this.toString() + " ...",
+						evt.getException());
+				log.warn(
+						"### Received data (bad): ###\n{}\n###\n\n",
+						new String(evt.getData().array(), StandardCharsets.UTF_8));
+			}
 		}
 	}
 
@@ -76,8 +78,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 		setResilient(true);
 		setDaemonListener(false);
 		startListening();
-		log.info("# Listening for OSC Packets on {} ...",
-				getLocalAddress().toString());
+		log.info("# Listening for OSC Packets on {} ...", getLocalAddress());
 	}
 
 	// Public API

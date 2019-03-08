@@ -40,7 +40,7 @@ public class OSCMessage implements OSCPacket {
 	 * @param address  the recipient of this OSC message
 	 */
 	public OSCMessage(final String address) {
-		this(address, Collections.EMPTY_LIST);
+		this(address, Collections.emptyList());
 	}
 
 	/**

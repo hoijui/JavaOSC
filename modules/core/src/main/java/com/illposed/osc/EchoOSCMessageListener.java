@@ -65,7 +65,7 @@ public class EchoOSCMessageListener implements OSCMessageListener {
 		log.info(message.getAddress());
 		log.info("  {}", message.getInfo().getArgumentTypeTags());
 		for (final Object arg : message.getArguments()) {
-			log.info("    {}", arg.toString());
+			log.info("    {}", arg);
 		}
 		log.info("");
 	}

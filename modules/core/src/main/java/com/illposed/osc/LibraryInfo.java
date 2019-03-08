@@ -17,7 +17,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -64,7 +64,7 @@ public final class LibraryInfo {
 		final Properties manifestProps = new Properties();
 
 		try (final BufferedReader manifestBufferedIn = new BufferedReader(new InputStreamReader(manifestIn,
-				Charset.forName("UTF-8"))))
+				StandardCharsets.UTF_8)))
 		{
 			String manifestLine = manifestBufferedIn.readLine();
 			String currentKey = null;
@@ -272,10 +272,11 @@ public final class LibraryInfo {
 
 	public static void main(final String[] args) throws IOException {
 
-		final LibraryInfo libraryInfo = new LibraryInfo();
-
 		final Logger log = LoggerFactory.getLogger(LibraryInfo.class);
-		log.info(libraryInfo.createLibrarySummary());
-//		log.info(libraryInfo.createManifestPropertiesString());
+		if (log.isInfoEnabled()) {
+			final LibraryInfo libraryInfo = new LibraryInfo();
+			log.info(libraryInfo.createLibrarySummary());
+//			log.info(libraryInfo.createManifestPropertiesString());
+		}
 	}
 }

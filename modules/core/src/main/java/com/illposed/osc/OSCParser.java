@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,7 +42,7 @@ public class OSCParser {
 	@SuppressWarnings("WeakerAccess")
 	public static final String BUNDLE_START = "#bundle";
 	private static final byte[] BUNDLE_START_BYTES
-			= BUNDLE_START.getBytes(Charset.forName("UTF-8"));
+			= BUNDLE_START.getBytes(StandardCharsets.UTF_8);
 	private static final String NO_ARGUMENT_TYPES = "";
 	// Public API
 	@SuppressWarnings("WeakerAccess")
