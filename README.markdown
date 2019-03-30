@@ -21,15 +21,28 @@
 [![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=bugs)](https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=com.illposed.osc:javaosc)
 [![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=vulnerabilities)](https://sonarcloud.io/component_measures/metric/security_rating/list?id=com.illposed.osc:javaosc)
 
-_Open Sound Control_ (OSC) is a _content format_,
-though it is often though of as a protocol for the transmission of data over a network.
-Its main use and origin is that of a _replacement for MIDI_
-as a network-protocol for the exchange of musical control data between soft- and hardware over a UDP-IP network.
-Applications like SuperCollider, Max/MSP, and Reaktor (among others) use OSC for network communication.
-Nowadays it is also used in other fields, for example in robotics.
+## What is this?
 
-__JavaOSC__ is a library that gives Java programs the capability of sending and receiving OSC.
-It is not, in itself, a usable program.
+### JavaOSC
+
+is a library that gives JVM language programs the ability
+of serializing, parsing, sending and receiving data in the OSC content format.
+
+### Open Sound Control (OSC)
+
+is a simple _content format_,
+although it is often though of as a _protocol_ for the transmission of data over a network.
+Its main uses as of 2019, are:
+
+* as a **replacement for MIDI** - as a network-protocol for the exchange of musical control data between soft- and hardware over a UDP/IP network
+* in **robotics** - for different parts of a robot, or multiple robots to communicate with each other
+
+Its main strength is its simplicity.
+
+
+## How to
+
+### Get it
 
 The latest release version of the library is available on
 [Maven central](http://mvnrepository.com/artifact/com.illposed.osc/javaosc-core)
@@ -38,9 +51,6 @@ or
 
 Latest development sources can be found
 [on github](https://github.com/hoijui/JavaOSC).
-
-
-## How to
 
 ### Run the Demo UI
 
