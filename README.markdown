@@ -84,12 +84,11 @@ in the terminal.
 ### Use the library
 
 The classes that deal with sending OSC data are located in the `com.illposed.osc` package.
-The core classes are `com.illposed.osc.OSCPort{In,  Out}`,
+The core classes are `com.illposed.osc.transport.udp.OSCPort{In,  Out}`,
 `com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
 
-The common way to use the library is to instantiate an `OSCPort`
-connected to the receiving machine and then call the `send()` method
-on the port with the packet to send as the argument.
+The common way to use the library is to instantiate an `OSCPort{In,  Out}`
+connected to the receiving machine, and then call `port.send(myPacket)`.
 
 There are some associated JUnit tests, which also contain code that may illustrate
 how to use the library.
