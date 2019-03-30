@@ -7,12 +7,14 @@
 
 <!-- The title was created with: `figlet -k -f big JavaOSC` -->
 
+## Status
+
 [![License](https://img.shields.io/badge/license-BSD%203--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![Source Code Repository](https://img.shields.io/badge/source--repo-GitHub-blue.svg)](https://github.com/hoijui/JavaOSC)
+[![GitHub last commit](https://img.shields.io/github/last-commit/hoijui/JavaOSC.svg)](https://github.com/hoijui/JavaOSC)
 [![Issues](https://img.shields.io/badge/issues-GitHub-red.svg)](https://github.com/hoijui/JavaOSC/issues)
 [![Chat](https://img.shields.io/badge/chat-IRC-darkgreen.svg)](irc://irc.freenode.net/javaosc)
 
-for branch `master`:
+`master`:
 [![Build Status](https://travis-ci.org/hoijui/JavaOSC.svg?branch=master)](https://travis-ci.org/hoijui/JavaOSC)
 [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.illposed.osc:javaosc) 
 [![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=com.illposed.osc:javaosc)
