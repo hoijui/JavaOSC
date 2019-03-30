@@ -40,15 +40,6 @@ Latest development sources can be found
 [on github](https://github.com/hoijui/JavaOSC).
 
 
-## Folder structure
-
-* `modules/core/src/main/java/`                     JavaOSC core sources
-* `modules/ui/src/main/java/`                       JavaOSC UI sources
-* `modules/core/src/main/resources/puredata/`       PureData file for the PD example
-* `modules/core/src/main/resources/supercollider/`  SuperCollider files for the examples
-* `modules/*/target/`                               where build files end up
-
-
 ## How to
 
 ### Run the Demo UI
