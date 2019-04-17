@@ -429,6 +429,19 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	public void testSimple() {
+
+		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hello");
+
+		Assert.assertTrue( matches(matcher, "/hello"));
+		Assert.assertFalse(matches(matcher, "/hello/world"));
+		Assert.assertFalse(matches(matcher, "/hello/world/two"));
+		Assert.assertFalse(matches(matcher, "/bye"));
+		Assert.assertFalse(matches(matcher, "/bye/world"));
+		Assert.assertFalse(matches(matcher, "/bye/world/two"));
+	}
+
+	@Test
 	@SuppressWarnings("SpellCheckingInspection")
 	public void testPathTraversingWildcardComplex() {
 
