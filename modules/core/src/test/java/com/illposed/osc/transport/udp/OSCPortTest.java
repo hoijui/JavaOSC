@@ -770,6 +770,32 @@ public class OSCPortTest {
 		}
 	}
 
+	/**
+	 * Checks if simultaneous use of packet- and message-listeners works.
+	 * @throws Exception if anything goes wrong
+	 */
+	@Test
+	public void testReceivingMessageAndPacketListeners() throws Exception {
+
+		final OSCMessage msg = new OSCMessage("/msg/short");
+		final SimpleOSCPacketListener pkgListener = new SimpleOSCPacketListener();
+		final SimpleOSCMessageListener msgListener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector(
+				"/msg/short"),
+				msgListener);
+		receiver.addPacketListener(pkgListener);
+		receiver.startListening();
+		sender.send(msg);
+		Thread.sleep(100); // wait a bit
+		receiver.stopListening();
+		if (!pkgListener.isMessageReceived()) {
+			Assert.fail("Message was not received by the packet listener");
+		}
+		if (!msgListener.isMessageReceived()) {
+			Assert.fail("Message was not received by the message listener");
+		}
+	}
+
 	@Test
 	public void testStopListeningAfterReceivingBadAddress() throws Exception {
 
