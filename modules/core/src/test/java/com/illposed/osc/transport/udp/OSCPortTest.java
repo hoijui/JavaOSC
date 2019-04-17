@@ -234,19 +234,20 @@ public class OSCPortTest {
 				57120, OSCPort.defaultSCLangOSCPort());
 
 		InetSocketAddress remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals("Bad default port with ctor()",
+		Assert.assertEquals("Bad default port with " + OSCPortOut.class.getSimpleName() + "()",
 				57110, remoteAddress.getPort());
 
 		sender.close();
 		sender = new OSCPortOut(InetAddress.getLocalHost());
 		remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals("Bad default port with ctor(address)",
+		Assert.assertEquals("Bad default port with " + OSCPortOut.class.getSimpleName() + "(address)",
 				57110, remoteAddress.getPort());
 
 		sender.close();
 		sender = new OSCPortOut(InetAddress.getLocalHost(), 12345);
 		remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals("Bad port with ctor(address, port)",
+		Assert.assertEquals(
+				"Bad port with " + OSCPortOut.class.getSimpleName() + "(address, port)",
 				12345, remoteAddress.getPort());
 	}
 
@@ -291,9 +292,7 @@ public class OSCPortTest {
 		final int portSender = 6666;
 		final int portReceiver = 7777;
 
-//		final SocketAddress senderSocket = new InetSocketAddress(0);
 		final SocketAddress senderSocket = new InetSocketAddress(InetAddress.getLocalHost(), portSender);
-//		final SocketAddress receiverSocket = new InetSocketAddress(0);
 		final SocketAddress receiverSocket = new InetSocketAddress(InetAddress.getLocalHost(), portReceiver);
 
 
@@ -381,9 +380,9 @@ public class OSCPortTest {
 		final InetSocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
 
 		final DatagramChannel channel;
-		if (Inet4Address.class.isInstance(bindAddress.getAddress())) {
+		if (bindAddress.getAddress() instanceof Inet4Address) {
 			channel = DatagramChannel.open(StandardProtocolFamily.INET);
-		} else if (Inet6Address.class.isInstance(bindAddress.getAddress())) {
+		} else if (bindAddress.getAddress() instanceof Inet6Address) {
 			channel = DatagramChannel.open(StandardProtocolFamily.INET6);
 		} else {
 			throw new IllegalArgumentException(
@@ -450,8 +449,8 @@ public class OSCPortTest {
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
-		OSCMessage mesg = new OSCMessage("/foo/bar", args);
-		sender.send(mesg);
+		OSCMessage message = new OSCMessage("/foo/bar", args);
+		sender.send(message);
 	}
 
 	@Test
@@ -460,9 +459,9 @@ public class OSCPortTest {
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
-		List<OSCPacket> msgs = new ArrayList<>(1);
-		msgs.add(new OSCMessage("/foo/bar", args));
-		OSCBundle bundle = new OSCBundle(msgs);
+		List<OSCPacket> messages = new ArrayList<>(1);
+		messages.add(new OSCMessage("/foo/bar", args));
+		OSCBundle bundle = new OSCBundle(messages);
 		sender.send(bundle);
 	}
 
@@ -472,21 +471,21 @@ public class OSCPortTest {
 		final List<Object> arguments = new ArrayList<>(2);
 		arguments.add(3);
 		arguments.add("hello");
-		final OSCMessage mesg = new OSCMessage("/foo/bar", arguments);
+		final OSCMessage message = new OSCMessage("/foo/bar", arguments);
 		OSCBundle bundle = new OSCBundle();
-		bundle.addPacket(mesg);
+		bundle.addPacket(message);
 		sender.send(bundle);
 	}
 
 	@Test
 	public void testReceiving() throws Exception {
 
-		OSCMessage mesg = new OSCMessage("/message/receiving");
+		OSCMessage message = new OSCMessage("/message/receiving");
 		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/message/receiving"),
 				listener);
 		receiver.startListening();
-		sender.send(mesg);
+		sender.send(message);
 		Thread.sleep(100); // wait a bit
 		receiver.stopListening();
 		if (!listener.isMessageReceived()) {
@@ -758,7 +757,7 @@ public class OSCPortTest {
 		final OSCMessage msgLong = new OSCMessage("/message/with/very/long/address/receiving", someArgs);
 		final SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector(
-				"/message/with/very/long/address/receiving"),
+						"/message/with/very/long/address/receiving"),
 				listener);
 		receiver.startListening();
 		sender.send(msgShort);
