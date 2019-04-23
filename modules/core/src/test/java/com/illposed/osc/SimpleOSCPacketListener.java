@@ -1,7 +1,5 @@
 package com.illposed.osc;
 
-import com.illposed.osc.argument.OSCTimeTag64;
-
 public class SimpleOSCPacketListener implements OSCPacketListener {
 
 	private int packetReceivedCount;

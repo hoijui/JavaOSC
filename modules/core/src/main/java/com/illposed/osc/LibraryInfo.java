@@ -188,7 +188,7 @@ public final class LibraryInfo {
 				final String markerValueStr = (markerValue == null) ? "null"
 						: markerValue.toString();
 				classOrMarkerValue = extractPrettyClassName(type.getJavaClass())
-						+ ":" + markerValueStr;
+						+ ':' + markerValueStr;
 			} catch (OSCParseException ex) {
 				throw new IllegalStateException("Developer error; This should never happen", ex);
 			}

@@ -49,7 +49,7 @@ public class OSCMessageTest {
 	{
 		if ((result.length != expected.length) && (result.length != (expected.length - optBytes))) {
 			Assert.fail(createErrorString("Result and expected answer aren't the same length, "
-					+ result.length + " vs " + expected.length + ".", result, expected));
+					+ result.length + " vs " + expected.length + '.', result, expected));
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] != expected[i]) {
@@ -83,10 +83,10 @@ public class OSCMessageTest {
 			final byte[] expected)
 	{
 		return description
-				+ "\n result   (str): \"" + new String(result) + "\""
-				+ "\n expected (str): \"" + new String(expected) + "\""
-				+ "\n result   (raw): \"" + convertByteArrayToJavaCode(result) + "\""
-				+ "\n expected (raw): \"" + convertByteArrayToJavaCode(expected) + "\"";
+				+ "\n result   (str): \"" + new String(result) + '"'
+				+ "\n expected (str): \"" + new String(expected) + '"'
+				+ "\n result   (raw): \"" + convertByteArrayToJavaCode(result) + '"'
+				+ "\n expected (raw): \"" + convertByteArrayToJavaCode(expected) + '"';
 	}
 
 	/**

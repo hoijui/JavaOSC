@@ -150,7 +150,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public OSCPortIn(final OSCParserFactory parserFactory, final int port)
-	throws IOException
+			throws IOException
 	{
 		this(parserFactory, new InetSocketAddress(port));
 	}
@@ -187,7 +187,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	/**
 	 * Run the loop that listens for OSC on a socket until
 	 * {@link #isListening()} becomes false.
-	 * @see java.lang.Runnable#run()
+	 * @see Runnable#run()
 	 */
 	@Override
 	public void run() {
@@ -305,7 +305,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Probably the only feasible reason to set this to <code>false</code>,
 	 * is if the code in the listener is very small,
 	 * and the application consists of nothing more then this listening thread.
-	 * @see java.lang.Thread#setDaemon(boolean)
+	 * @see Thread#setDaemon(boolean)
 	 * @param daemonListener whether this ports listening thread should be in daemon mode
 	 */
 	@SuppressWarnings("WeakerAccess")

@@ -357,10 +357,10 @@ public class OSCPortTest {
 		int count;
 		int total = 0;
 		final long beginTime = System.currentTimeMillis();
-		while (total < dataSize && (count = receiver.read(targetBuf)) != -1) {
+		while ((total < dataSize) && (count = receiver.read(targetBuf)) != -1) {
 			total = total + count;
 			// 3s timeout to avoid dead loop
-			if (System.currentTimeMillis() - beginTime > 3000) {
+			if ((System.currentTimeMillis() - beginTime) > 3000) {
 				break;
 			}
 		}
@@ -439,8 +439,8 @@ public class OSCPortTest {
 	@Test
 	public void testStart() throws Exception {
 
-		OSCMessage mesg = new OSCMessage("/sc/stop");
-		sender.send(mesg);
+		OSCMessage message = new OSCMessage("/sc/stop");
+		sender.send(message);
 	}
 
 	@Test
@@ -533,14 +533,14 @@ public class OSCPortTest {
 		}
 
 		OSCBundle packet = (OSCBundle)simpleListener.getReceivedPacket();
-		OSCTimeTag64 timetag = packet.getTimestamp();
+		OSCTimeTag64 timeTag = packet.getTimestamp();
 
-		if (!timetag.equals(bundle.getTimestamp())) {
+		if (!timeTag.equals(bundle.getTimestamp())) {
 			Assert.fail(
 				"Message should have timestamp " +
 				bundle.getTimestamp() +
 				" but has " +
-				timetag
+				timeTag
 			);
 		}
 	}
@@ -631,7 +631,7 @@ public class OSCPortTest {
 					+ message.getArguments().get(numIntegerArgs - 1)
 					+ "' differs from the sent one '"
 					+ listener.getReceivedEvent().getMessage().getArguments().get(numIntegerArgs - 1)
-					+ "'");
+					+ '\'');
 		}
 	}
 
