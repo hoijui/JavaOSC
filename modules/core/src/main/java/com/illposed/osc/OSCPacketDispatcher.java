@@ -267,20 +267,12 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		badDataListeners.remove(listener);
 	}
 
-	public void dispatchBadData(final OSCBadDataEvent badDataEvent) {
-
-		for (final OSCBadDataListener listener : badDataListeners) {
-			listener.badDataReceived(badDataEvent);
-		}
-	}
-
 	@Override
 	public void handleBadData(final OSCBadDataEvent event) {
-		dispatchBadData(event);
-	}
 
-	public void dispatchPacket(final OSCPacketEvent event) {
-		dispatchPacket(event.getSource(), event.getPacket(), OSCTimeTag64.IMMEDIATE);
+		for (final OSCBadDataListener listener : badDataListeners) {
+			listener.badDataReceived(event);
+		}
 	}
 
 	private void dispatchPacket(final Object source, final OSCPacket packet, final OSCTimeTag64 timestamp) {
@@ -293,7 +285,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 	@Override
 	public void handlePacket(final OSCPacketEvent event) {
-		dispatchPacket(event);
+		dispatchPacket(event.getSource(), event.getPacket(), OSCTimeTag64.IMMEDIATE);
 	}
 
 	private class BundleDispatcher implements Runnable {
