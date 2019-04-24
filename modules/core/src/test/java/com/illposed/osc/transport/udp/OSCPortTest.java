@@ -92,8 +92,9 @@ public class OSCPortTest {
 			.setLocalSocketAddress(receiverInAddress)
 			.setRemoteSocketAddress(senderInAddress);
 
-		if (packetListener != null)
+		if (packetListener != null) {
 			builder.setPacketListener(packetListener);
+		}
 
 		receiver = builder.build();
 		listener = packetListener;
@@ -358,7 +359,7 @@ public class OSCPortTest {
 		int count;
 		int total = 0;
 		final long beginTime = System.currentTimeMillis();
-		while ((total < dataSize) && (count = receiver.read(targetBuf)) != -1) {
+		while ((total < dataSize) && (((count = receiver.read(targetBuf))) != -1)) {
 			total = total + count;
 			// 3s timeout to avoid dead loop
 			if ((System.currentTimeMillis() - beginTime) > 3000) {
