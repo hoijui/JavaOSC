@@ -157,20 +157,14 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	@Override
 	public boolean equals(final Object other) {
 
-		final boolean equal;
-		if (other instanceof OSCTimeTag64) {
-			equal = (getNtpTime() == ((OSCTimeTag64) other).getNtpTime());
-		} else {
-			equal = false;
-		}
-
-		return equal;
+		return (other instanceof OSCTimeTag64)
+				&& (getNtpTime() == ((OSCTimeTag64) other).getNtpTime());
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 5;
-		hash = 89 * hash + (int) (this.ntpTime ^ (this.ntpTime >>> 32));
+		hash = (89 * hash) + (int) (this.ntpTime ^ (this.ntpTime >>> 32));
 		return hash;
 	}
 

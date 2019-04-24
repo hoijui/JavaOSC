@@ -83,10 +83,10 @@ public class OSCMidiMessage implements Cloneable, Serializable, Comparable<OSCMi
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 97 * hash + this.portId;
-		hash = 97 * hash + this.status;
-		hash = 97 * hash + this.data1;
-		hash = 97 * hash + this.data2;
+		hash = (97 * hash) + this.portId;
+		hash = (97 * hash) + this.status;
+		hash = (97 * hash) + this.data1;
+		hash = (97 * hash) + this.data2;
 		return hash;
 	}
 

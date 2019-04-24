@@ -47,20 +47,14 @@ public final class OSCUnsigned implements Cloneable, Serializable, Comparable<OS
 	@Override
 	public boolean equals(final Object other) {
 
-		final boolean equal;
-		if (other instanceof OSCUnsigned) {
-			equal = (toLong() == ((OSCUnsigned) other).toLong());
-		} else {
-			equal = false;
-		}
-
-		return equal;
+		return (other instanceof OSCUnsigned)
+				&& (toLong() == ((OSCUnsigned) other).toLong());
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 5;
-		hash = 89 * hash + (int) (this.value ^ (this.value >>> 32));
+		hash = (89 * hash) + (int) (this.value ^ (this.value >>> 32));
 		return hash;
 	}
 

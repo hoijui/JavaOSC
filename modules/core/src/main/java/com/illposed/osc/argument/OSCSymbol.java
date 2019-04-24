@@ -30,20 +30,14 @@ public class OSCSymbol implements Cloneable, Serializable, Comparable<OSCSymbol>
 	@Override
 	public boolean equals(final Object other) {
 
-		final boolean equal;
-		if (other instanceof OSCSymbol) {
-			equal = toString().equals(other.toString());
-		} else {
-			equal = false;
-		}
-
-		return equal;
+		return (other instanceof OSCSymbol)
+				&& toString().equals(other.toString());
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 37 * hash + (this.value == null ? 0 : this.value.hashCode());
+		hash = (37 * hash) + ((this.value == null) ? 0 : this.value.hashCode());
 		return hash;
 	}
 
