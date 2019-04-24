@@ -75,16 +75,11 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public static OSCPacketDispatcher getDispatcher(
 			final List<OSCPacketListener> listeners)
 	{
-		OSCPacketDispatcher dispatcher = null;
-
-		for (final OSCPacketListener listener : listeners) {
-			if (listener instanceof OSCPacketDispatcher) {
-				dispatcher = (OSCPacketDispatcher)listener;
-				break;
-			}
-		}
-
-		return dispatcher;
+		return listeners.stream()
+				.filter(OSCPacketDispatcher.class::isInstance)
+				.findFirst()
+				.map(OSCPacketDispatcher.class::cast)
+				.orElse(null);
 	}
 
 	public static OSCPacketListener defaultPacketListener() {
