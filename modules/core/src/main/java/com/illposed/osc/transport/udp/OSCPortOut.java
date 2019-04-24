@@ -32,7 +32,7 @@ import java.nio.channels.DatagramChannel;
  * List<Object> args = new ArrayList<Object>(2);
  * args.add(3);
  * args.add("hello");
- * OSCMessage msg = new OSCMessage("/sayhello", args);
+ * OSCMessage msg = new OSCMessage("/sayHello", args);
  * try {
  * 	sender.send(msg);
  * } catch (Exception ex) {

@@ -15,6 +15,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
 
@@ -37,7 +38,7 @@ public class OSCPort {
 		this.local = local;
 		this.remote = remote;
 		final DatagramChannel tmpChannel;
-		if (InetSocketAddress.class.isInstance(local)) {
+		if (local instanceof InetSocketAddress) {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
 			if (!localIsa.getAddress().getClass().equals(
@@ -47,9 +48,9 @@ public class OSCPort {
 						"local and remote addresses are not of the same family"
 						+ " (IP v4 vs v6)");
 			}
-			if (Inet4Address.class.isInstance(localIsa.getAddress())) {
+			if (localIsa.getAddress() instanceof Inet4Address) {
 				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
-			} else if (Inet6Address.class.isInstance(localIsa.getAddress())) {
+			} else if (localIsa.getAddress() instanceof Inet6Address) {
 				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
 			} else {
 				throw new IllegalArgumentException(
@@ -61,7 +62,7 @@ public class OSCPort {
 		}
 		this.channel = tmpChannel;
 
-		this.channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
+		this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		this.channel.socket().bind(local);
 	}
 
@@ -110,11 +111,11 @@ public class OSCPort {
 	public static int extractFamily(final SocketAddress address) {
 
 		final int family;
-		if (InetSocketAddress.class.isInstance(address)) {
-			final InetSocketAddress inetAddress = (InetSocketAddress) address;
-			if (Inet4Address.class.isInstance(inetAddress.getAddress())) {
+		if (address instanceof InetSocketAddress) {
+			final InetSocketAddress iNetAddress = (InetSocketAddress) address;
+			if (iNetAddress.getAddress() instanceof Inet4Address) {
 				family = 4;
-			} else if (Inet6Address.class.isInstance(inetAddress.getAddress())) {
+			} else if (iNetAddress.getAddress() instanceof Inet6Address) {
 				family = 6;
 			} else {
 				family = 0;

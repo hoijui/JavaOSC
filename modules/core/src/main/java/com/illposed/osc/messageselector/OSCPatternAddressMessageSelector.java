@@ -212,14 +212,14 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 		int si = 0;
 		int pi = 0;
 		while (pi < p.length()) {
-			if ((si == str.length()) && p.charAt(pi) != '*') {
+			if ((si == str.length()) && (p.charAt(pi) != '*')) {
 				return false;
 			}
 
 			c = p.charAt(pi++);
 			switch (c) {
 				case '*':
-					while ((pi < p.length()) && p.charAt(pi) == '*' && p.charAt(pi) != '/') {
+					while ((pi < p.length()) && (p.charAt(pi) == '*') && (p.charAt(pi) != '/')) {
 						pi++;
 					}
 
@@ -228,8 +228,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 					}
 
 //					if (p.charAt(pi) != '?' && p.charAt(pi) != '[' && p.charAt(pi) != '\\')
-					if (p.charAt(pi) != '?' && p.charAt(pi) != '[' && p.charAt(pi) != '{') {
-						while (si < str.length() && p.charAt(pi) != str.charAt(si)) {
+					if ((p.charAt(pi) != '?') && (p.charAt(pi) != '[') && (p.charAt(pi) != '{')) {
+						while ((si < str.length()) && (p.charAt(pi) != str.charAt(si))) {
 							si++;
 						}
 					}
@@ -275,8 +275,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 								return false;
 							}
 							if (p.charAt(pi) != ']') {
-								if (str.charAt(si) == c || str.charAt(si) == p.charAt(pi)
-										|| (str.charAt(si) > c && str.charAt(si) < p.charAt(pi)))
+								if ((str.charAt(si) == c) || (str.charAt(si) == p.charAt(pi))
+										|| ((str.charAt(si) > c) && (str.charAt(si) < p.charAt(pi))))
 								{
 									match = true;
 								}
@@ -306,7 +306,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 						return false;
 					}
 					// if there is a match, skip past the cSet and continue on
-					while (pi < p.length() && p.charAt(pi) != ']') {
+					while ((pi < p.length()) && (p.charAt(pi) != ']')) {
 						pi++;
 					}
 					if (pi++ == p.length()) {
@@ -340,7 +340,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 							if (matches(str.substring(si), p.substring(remainder))) {
 								return true;
 							} else {
-								// backtrack on test string
+								// back-track on test string
 								si = place;
 								// continue testing,
 								// skip comma

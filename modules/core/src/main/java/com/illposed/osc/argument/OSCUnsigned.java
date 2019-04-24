@@ -93,16 +93,16 @@ public final class OSCUnsigned implements Cloneable, Serializable, Comparable<OS
 			throw new IllegalArgumentException("We need exactly 4 bytes");
 		}
 		final long value
-				= ((long) bytes[0] & 0xFF) << (3 * Byte.SIZE)
-				| ((long) bytes[1] & 0xFF) << (2 * Byte.SIZE)
-				| ((long) bytes[2] & 0xFF) << (Byte.SIZE)
-				| ((long) bytes[3] & 0xFF);
+				= (((long) bytes[0] & 0xFF) << (3 * Byte.SIZE))
+				| (((long) bytes[1] & 0xFF) << (2 * Byte.SIZE))
+				| (((long) bytes[2] & 0xFF) << (Byte.SIZE))
+				|  ((long) bytes[3] & 0xFF);
 		return valueOf(value);
 	}
 
 	public static OSCUnsigned valueOf(final long value) {
 
-		if (value < MIN_VALUE.value || value > MAX_VALUE.value) {
+		if ((value < MIN_VALUE.value) || (value > MAX_VALUE.value)) {
 			throw new IllegalArgumentException(
 					"Value " + value + " lies not within 32bit unsigned integer range ("
 					+ MIN_VALUE.value + " - " + MAX_VALUE.value + ").");

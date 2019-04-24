@@ -16,7 +16,7 @@ import java.util.Date;
  * This represents an OSC <i>Time-tag</i>.
  * It uses the NTP (Network Time Protocol) time-tag format,
  * and supports a different time range (smaller) and resolution (more precise)
- * then {@link java.util.Date}.
+ * then {@link Date}.
  * See <a href="http://opensoundcontrol.org/node/3/#timetags">
  * the OSC specification for Time-tags</a>
  * and <a href="https://en.wikipedia.org/wiki/Network_Time_Protocol#Timestamps">
@@ -49,8 +49,8 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	public static final long EPOCH_LENGTH_JAVA_TIME = 0x100000000L * 1000L;
 	/**
 	 * Start of the first epoch expressed in Java time
-	 * (as used by {@link java.util.Date#Date(long)}
-	 * and {@link java.util.Date#getTime()}).
+	 * (as used by {@link Date#Date(long)}
+	 * and {@link Date#getTime()}).
 	 * This is "1-Jan-1900 @ 00:00:00", and we use UTC as time-zone.
 	 * Dates before this can not be represented with an OSC Time-tag.
 	 */
@@ -177,7 +177,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	@Override
 	public int compareTo(final OSCTimeTag64 other) {
 
-		return 10 * Long.signum(Long.compare(getSeconds(), other.getSeconds()))
+		return (10 * Long.signum(Long.compare(getSeconds(), other.getSeconds())))
 				+ Long.signum(Long.compare(getFraction(), other.getFraction()));
 	}
 
@@ -227,7 +227,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 
 		final long secondsInMs = getSeconds() * 1000L;
 		// use round-off on the fractional part to preserve going to lower precision
-		final long fractionInMs = Math.round(1000D * getFraction() / 0x100000000L);
+		final long fractionInMs = Math.round((1000D * getFraction()) / 0x100000000L);
 
 		return epochStart + (secondsInMs | fractionInMs);
 	}
@@ -245,12 +245,12 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	}
 
 	private static long toNtpTimeTag(final long seconds, final long fraction) {
-		return seconds << NTP_SECONDS_BITS | fraction;
+		return (seconds << NTP_SECONDS_BITS) | fraction;
 	}
 
 	/**
 	 * Returns the Java instant closest to this time-tags value.
-	 * {@link java.time.Instant} covers the range of the OSC time tag,
+	 * {@link Instant} covers the range of the OSC time tag,
 	 * and nearly covers the precision
 	 * (1 nanosecond accuracy instead of 233 picoseconds).
 	 * @see #valueOf(Instant)
@@ -262,7 +262,7 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 
 	/**
 	 * Returns the Java instant closest to this time-tags value.
-	 *  {@link java.time.Instant} covers the range of the OSC time tag,
+	 *  {@link Instant} covers the range of the OSC time tag,
 	 *  and nearly covers the precision
 	 *  (1 nanosecond accuracy instead of 233 picoseconds).
 	 * @param instant to be converted to an OSC time tag
