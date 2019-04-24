@@ -506,12 +506,7 @@ public class OSCReparserTest {
 	public void testArgumentNull() throws Exception {
 
 		final Comparator<byte[]> nullComparator
-				= new Comparator<byte[]>() {
-					@Override
-					public int compare(final byte[] obj1, final byte[] obj2) {
-						return ((obj1 == null) && (obj2 == null)) ? 0 : 1;
-					}
-				};
+				= (obj1, obj2) -> ((obj1 == null) && (obj2 == null)) ? 0 : 1;
 
 		reparseSingleArgument(null, nullComparator);
 	}
