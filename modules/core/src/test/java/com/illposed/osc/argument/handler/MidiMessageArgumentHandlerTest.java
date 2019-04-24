@@ -12,7 +12,6 @@ import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import java.util.Random;
-import com.illposed.osc.transport.udp.OSCPortTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
