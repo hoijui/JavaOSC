@@ -30,14 +30,13 @@ import java.util.List;
  * Listens for OSC packets on a UDP/IP port.
  *
  * An example:<br>
- * (loosely based on {com.illposed.osc.OSCPortTest#testReceiving()})
  * <blockquote><pre>{@code
  * // listens on the wildcard address (all local network interfaces)
  * // on the given port (the default one)
  * OSCPortIn receiver = new OSCPortIn(OSCPort.DEFAULT_SC_OSC_PORT);
  * OSCMessageListener listener = new OSCMessageListener() {
- *   public void acceptMessage(OSCTimeStamp time, OSCMessage message) {
- *     System.out.println("Message received!");
+ *   public void acceptMessage(OSCMessageEvent event) {
+ *     System.out.println("Message received: " + event.getMessage().getAddress());
  *   }
  * };
  * MessageSelector selector = new OSCPatternAddressMessageSelector(
