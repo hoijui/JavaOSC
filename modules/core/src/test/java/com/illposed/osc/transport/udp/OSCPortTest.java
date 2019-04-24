@@ -29,6 +29,7 @@ import java.net.NetworkInterface;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.StandardProtocolFamily;
+import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
@@ -389,7 +390,7 @@ public class OSCPortTest {
 					"Unknown address type: "
 					+ bindAddress.getAddress().getClass().getCanonicalName());
 		}
-		channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
+		channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		channel.socket().bind(bindAddress);
 
 		Assert.assertEquals(bindAddress, channel.getLocalAddress());
