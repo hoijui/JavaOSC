@@ -29,7 +29,7 @@ public class OSCMessage implements OSCPacket {
 	 * ' ', '#', '*', ',', '?', '[', ']', '{', '}'
 	 */
 	private static final Pattern ILLEGAL_ADDRESS_CHAR
-			= Pattern.compile("[ \\#\\*\\,\\?\\[\\]\\{\\}]");
+			= Pattern.compile("[ #*,?\\[\\]{}]");
 
 	private final String address;
 	private final List<Object> arguments;
