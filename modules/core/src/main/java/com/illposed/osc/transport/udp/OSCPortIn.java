@@ -43,6 +43,10 @@ import java.util.List;
  * MessageSelector selector = new OSCPatternAddressMessageSelector(
  *     "/message/receiving");
  * receiver.getDispatcher().addListener(selector, listener);
+ * // NOTE You might want to use this code, in case you have bundles
+ * //      with time-stamps in the future, which you still want
+ * //      to process immediately.
+ * //receiver.getDispatcher().setAlwaysDispatchingImmediately(true);
  * receiver.startListening();
  * }</pre></blockquote>
  *
