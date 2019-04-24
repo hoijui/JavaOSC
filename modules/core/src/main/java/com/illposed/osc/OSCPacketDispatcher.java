@@ -236,14 +236,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		selectiveMessageListeners.remove(new SelectiveMessageListener(messageSelector, listener));
 		if (metaInfoRequired) {
 			// re-evaluate whether meta info is still required
-			boolean metaInfoRequiredTmp = false;
-			for (final SelectiveMessageListener selectiveMessageListener : selectiveMessageListeners) {
-				if (selectiveMessageListener.getSelector().isInfoRequired()) {
-					metaInfoRequiredTmp = true;
-					break;
-				}
-			}
-			metaInfoRequired = metaInfoRequiredTmp;
+			metaInfoRequired = selectiveMessageListeners.stream()
+					.anyMatch(selMsgListener -> selMsgListener.getSelector().isInfoRequired());
 		}
 	}
 
