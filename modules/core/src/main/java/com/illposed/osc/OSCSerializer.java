@@ -332,10 +332,8 @@ public class OSCSerializer {
 
 	private Class findSuperType(final Class argumentClass) throws OSCSerializeException {
 
-		Class superType;
-
 		// check if we already found the base-class for this argument-class before
-		superType = subToSuperTypes.get(argumentClass);
+		Class superType = subToSuperTypes.get(argumentClass);
 		// ... if we did not, ...
 		if ((superType == null)
 				// check if we already know this argument-class to not be supported
