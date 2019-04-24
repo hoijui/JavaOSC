@@ -87,7 +87,7 @@ public final class LibraryInfo {
 						}
 						final String[] keyAndValue = manifestLine.split(": ", KEY_PLUS_VALUE_COUNT);
 						if (keyAndValue.length < KEY_PLUS_VALUE_COUNT) {
-							throw new IOException("Invalid manifest line: \"" + manifestLine + "\"");
+							throw new IOException("Invalid manifest line: \"" + manifestLine + '"');
 						}
 						currentKey = keyAndValue[0];
 						currentValue.setLength(0);

@@ -30,7 +30,7 @@ public class OSCBundleTest {
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
 			Assert.fail("Send Bundle did not receive the correct timestamp "
 					+ reparsedBundle.getTimestamp().getNtpTime()
-					+ " (should be " + expectedTimestamp.getNtpTime() + ")");
+					+ " (should be " + expectedTimestamp.getNtpTime() + ')');
 		}
 		List<OSCPacket> packets = reparsedBundle.getPackets();
 		OSCMessage msg = (OSCMessage) packets.get(0);

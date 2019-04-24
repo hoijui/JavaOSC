@@ -64,7 +64,7 @@ public class OSCParser {
 
 		UnknownArgumentTypeParseException(final char argumentType) {
 			super("No " + ArgumentHandler.class.getSimpleName() + " registered for type '"
-					+ argumentType + "'");
+					+ argumentType + '\'');
 		}
 	}
 
