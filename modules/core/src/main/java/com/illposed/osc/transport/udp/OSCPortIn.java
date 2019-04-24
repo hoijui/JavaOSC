@@ -102,7 +102,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	/**
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
-	 * using a parser created with the given factory.
+	 * using a parser created with the given factory,
+	 * and with {@link #isResilient() resilient} set to true.
 	 * @param parserFactory to create the internal parser from
 	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
@@ -120,7 +121,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		this.listening = false;
 		this.daemonListener = true;
-		this.resilient = false;
+		this.resilient = true;
 		this.parserFactory = parserFactory;
 		this.packetListeners = packetListeners;
 	}
