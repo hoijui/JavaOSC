@@ -389,11 +389,9 @@ public class OSCPortTest {
 					"Unknown address type: "
 					+ bindAddress.getAddress().getClass().getCanonicalName());
 		}
-		// NOTE StandardSocketOptions is only available since Java 1.7
 		channel.setOption(java.net.StandardSocketOptions.SO_REUSEADDR, true);
 		channel.socket().bind(bindAddress);
 
-		// NOTE DatagramChannel#getLocalAddress() is only available since Java 1.7
 		Assert.assertEquals(bindAddress, channel.getLocalAddress());
 	}
 
