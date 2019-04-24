@@ -25,7 +25,6 @@ import java.nio.channels.DatagramChannel;
  * To send an OSC message, call {@link #send(OSCPacket)}.
  *
  * An example:<br>
- * (loosely based on {com.illposed.osc.OSCPortTest#testMessageWithArgs()})
  * <blockquote><pre>{@code
  * // sends from "localhost"
  * OSCPortOut sender = new OSCPortOut();

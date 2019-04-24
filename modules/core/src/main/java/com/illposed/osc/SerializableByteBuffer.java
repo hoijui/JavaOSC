@@ -17,7 +17,7 @@ import java.nio.ByteOrder;
 
 // Public API
 /**
- * Allows to serialize and deserialize a {@link java.nio.ByteBuffer}.
+ * Allows to serialize and deserialize a {@link ByteBuffer}.
  */
 @SuppressWarnings("WeakerAccess")
 public class SerializableByteBuffer implements Serializable {

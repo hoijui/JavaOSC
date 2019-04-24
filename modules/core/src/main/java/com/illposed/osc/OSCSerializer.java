@@ -85,7 +85,7 @@ public class OSCSerializer {
 	 * Creates a new serializer with all the required ingredients.
 	 * @param types all of these, and only these arguments will be serializable
 	 *   by this object, that are supported by these handlers
-	 * @param properties see {@link ArgumentHandler#setProperties(java.util.Map)}
+	 * @param properties see {@link ArgumentHandler#setProperties(Map)}
 	 * @param output the output buffer, where raw OSC data is written to
 	 */
 	public OSCSerializer(
@@ -163,7 +163,7 @@ public class OSCSerializer {
 	/**
 	 * Returns the set of properties this parser was created with.
 	 * @return the set of properties to adhere to
-	 * @see ArgumentHandler#setProperties(java.util.Map)
+	 * @see ArgumentHandler#setProperties(Map)
 	 */
 	public Map<String, Object> getProperties() {
 		return properties;

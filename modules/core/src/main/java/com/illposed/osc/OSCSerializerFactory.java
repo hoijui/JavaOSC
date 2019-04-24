@@ -80,7 +80,7 @@ public class OSCSerializerFactory {
 	 * Returns the current set of properties.
 	 * These will be propagated to created serializers and to the argument-handlers.
 	 * @return the set of properties to adhere to
-	 * @see ArgumentHandler#setProperties(java.util.Map)
+	 * @see ArgumentHandler#setProperties(Map)
 	 */
 	public Map<String, Object> getProperties() {
 		return Collections.unmodifiableMap(properties);

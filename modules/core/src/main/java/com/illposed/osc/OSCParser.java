@@ -73,7 +73,7 @@ public class OSCParser {
 	 * Creates a new parser with all the required ingredients.
 	 * @param identifierToType all of these, and only these arguments will be
 	 *   parsable by this object, that are supported by these handlers
-	 * @param properties see {@link ArgumentHandler#setProperties(java.util.Map)}
+	 * @param properties see {@link ArgumentHandler#setProperties(Map)}
 	 */
 	@SuppressWarnings("WeakerAccess")
 	public OSCParser(
@@ -117,7 +117,7 @@ public class OSCParser {
 	/**
 	 * Returns the set of properties this parser was created with.
 	 * @return the set of properties to adhere to
-	 * @see ArgumentHandler#setProperties(java.util.Map)
+	 * @see ArgumentHandler#setProperties(Map)
 	 */
 	public Map<String, Object> getProperties() {
 		return properties;
