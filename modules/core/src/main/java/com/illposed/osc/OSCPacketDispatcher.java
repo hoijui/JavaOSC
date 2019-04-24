@@ -96,8 +96,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		@Override
 		public int hashCode() {
 			int hash = 7;
-			hash = 89 * hash + this.selector.hashCode();
-			hash = 89 * hash + this.listener.hashCode();
+			hash = (89 * hash) + this.selector.hashCode();
+			hash = (89 * hash) + this.listener.hashCode();
 			return hash;
 		}
 	}
@@ -275,11 +275,11 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 	}
 
-	private void dispatchPacket(final Object source, final OSCPacket packet, final OSCTimeTag64 timestamp) {
+	private void dispatchPacket(final Object source, final OSCPacket packet, final OSCTimeTag64 timeStamp) {
 		if (packet instanceof OSCBundle) {
 			dispatchBundle(source, (OSCBundle) packet);
 		} else {
-			dispatchMessageNow(new OSCMessageEvent(source, timestamp, (OSCMessage) packet));
+			dispatchMessageNow(new OSCMessageEvent(source, timeStamp, (OSCMessage) packet));
 		}
 	}
 
@@ -304,19 +304,19 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 	}
 
-	private long calculateDelayFromNow(final OSCTimeTag64 timestamp) {
-		return timestamp.toDate(null).getTime() - System.currentTimeMillis();
+	private long calculateDelayFromNow(final OSCTimeTag64 timeStamp) {
+		return timeStamp.toDate(null).getTime() - System.currentTimeMillis();
 	}
 
 	private void dispatchBundle(final Object source, final OSCBundle bundle) {
-		final OSCTimeTag64 timestamp = bundle.getTimestamp();
-		if (isAlwaysDispatchingImmediately() || timestamp.isImmediate()) {
+		final OSCTimeTag64 timeStamp = bundle.getTimestamp();
+		if (isAlwaysDispatchingImmediately() || timeStamp.isImmediate()) {
 			dispatchBundleNow(source, bundle);
 		} else {
 			// NOTE This scheduling accuracy is only to at most the accuracy of the
 			//   default system clock, and thus might not be enough in some use-cases.
 			//   It can never be more accurate then 1ms, and on many systems will be ~ 10ms.
-			final long delayMs = calculateDelayFromNow(timestamp);
+			final long delayMs = calculateDelayFromNow(timeStamp);
 			dispatchScheduler.schedule(
 					new BundleDispatcher(source, bundle),
 					delayMs,
@@ -325,10 +325,10 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	}
 
 	private void dispatchBundleNow(final Object source, final OSCBundle bundle) {
-		final OSCTimeTag64 timestamp = bundle.getTimestamp();
+		final OSCTimeTag64 timeStamp = bundle.getTimestamp();
 		final List<OSCPacket> packets = bundle.getPackets();
 		for (final OSCPacket packet : packets) {
-			dispatchPacket(source, packet, timestamp);
+			dispatchPacket(source, packet, timeStamp);
 		}
 	}
 
