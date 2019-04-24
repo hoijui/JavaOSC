@@ -10,7 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import com.illposed.osc.transport.udp.OSCPortIn;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -278,7 +277,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 	/**
 	 * The work-horse of {@link #handlePacket(OSCPacketEvent)}.
-	 * @param source the origin of the packet, usually an instance of {@link OSCPortIn}
+	 * @param source the origin of the packet, usually an instance of
+	 *   {@link com.illposed.osc.transport.udp.OSCPortIn}
 	 * @param packet to be dispatched
 	 * @param timeStamp the associated time-stamp
 	 */
@@ -330,7 +330,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	 * Dispatches the bundle, either immediately or at the time indicated by its associated time-stamp,
 	 * depending on whether it has an associated {@link OSCBundle#getTimestamp() time-stamp},
 	 * and whether we are {@link #isAlwaysDispatchingImmediately() always dispatching immediately}.
-	 * @param source the origin of the packet, usually an instance of {@link OSCPortIn}
+	 * @param source the origin of the packet, usually an instance of
+	 *   {@link com.illposed.osc.transport.udp.OSCPortIn}
 	 * @param bundle the bundle to be dispatched
 	 */
 	private void dispatchBundle(final Object source, final OSCBundle bundle) {
@@ -355,7 +356,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	 * but contained sub-bundles might still be dispatched later,
 	 * depending on whether they have an associated {@link OSCBundle#getTimestamp() time-stamp},
 	 * and whether we are {@link #isAlwaysDispatchingImmediately() always dispatching immediately}.
-	 * @param source the origin of the packet, usually an instance of {@link OSCPortIn}
+	 * @param source the origin of the packet, usually an instance of
+	 *   {@link com.illposed.osc.transport.udp.OSCPortIn}
 	 * @param bundle the bundle to be dispatched immediately
 	 */
 	private void dispatchBundleNow(final Object source, final OSCBundle bundle) {
