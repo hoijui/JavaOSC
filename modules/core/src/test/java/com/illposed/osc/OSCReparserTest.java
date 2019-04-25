@@ -46,7 +46,7 @@ public class OSCReparserTest {
 	{
 		final ByteBuffer serialized = ByteBuffer.allocate(1024);
 		final OSCSerializer serializer
-				= OSCSerializerFactory.createDefaultFactory().create(serialized);
+				= new OSCSerializerAndParserBuilder().buildSerializer(serialized);
 		serializer.write(packet);
 		serialized.flip();
 		return serialized;
@@ -55,7 +55,7 @@ public class OSCReparserTest {
 	private static OSCPacket parse(final ByteBuffer packetBytes)
 			throws OSCParseException
 	{
-		final OSCParser parser = OSCParserFactory.createDefaultFactory().create();
+		final OSCParser parser = new OSCSerializerAndParserBuilder().buildParser();
 		return parser.convert(packetBytes);
 	}
 

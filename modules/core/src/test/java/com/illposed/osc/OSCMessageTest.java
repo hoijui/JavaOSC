@@ -111,7 +111,7 @@ public class OSCMessageTest {
 	private ByteBuffer convertMessageToBytes(final OSCMessage message) {
 
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
-		final OSCSerializer stream = OSCSerializerFactory.createDefaultFactory().create(buffer);
+		final OSCSerializer stream = new OSCSerializerAndParserBuilder().buildSerializer(buffer);
 		try {
 			stream.write(message);
 		} catch (final OSCSerializeException ex) {
@@ -515,7 +515,7 @@ public class OSCMessageTest {
 		final List<?> origArguments = Collections.singletonList(one001);
 		OSCMessage message = new OSCMessage("/dummy", origArguments);
 		byte[] byteArray = convertMessageToByteArray(message);
-		OSCParser converter = OSCParserFactory.createDefaultFactory().create();
+		OSCParser converter = new OSCSerializerAndParserBuilder().buildParser();
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
@@ -541,7 +541,7 @@ public class OSCMessageTest {
 		final List<?> origArguments = Collections.singletonList(floats);
 		final OSCMessage message = new OSCMessage("/dummy", origArguments);
 		final byte[] byteArray = convertMessageToByteArray(message);
-		final OSCParser converter = OSCParserFactory.createDefaultFactory().create();
+		final OSCParser converter = new OSCSerializerAndParserBuilder().buildParser();
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {

@@ -26,7 +26,7 @@ public class OSCParserTest {
 
 	@Before
 	public void setUp() {
-		converter = OSCParserFactory.createDefaultFactory().create();
+		converter = new OSCSerializerAndParserBuilder().buildParser();
 	}
 
 	@After

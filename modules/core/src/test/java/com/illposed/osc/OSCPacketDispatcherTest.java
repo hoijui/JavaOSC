@@ -27,7 +27,7 @@ public class OSCPacketDispatcherTest {
 
 	@Before
 	public void setUp() {
-		dispatcher = new OSCPacketDispatcher(OSCSerializerFactory.createDefaultFactory());
+		dispatcher = new OSCPacketDispatcher(new OSCSerializerAndParserBuilder());
 		listener1 = new SimpleOSCMessageListener();
 		dispatcher.addListener(new OSCPatternAddressMessageSelector("/listener1"), listener1);
 		listener2 = new SimpleOSCMessageListener();

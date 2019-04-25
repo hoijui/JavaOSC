@@ -119,9 +119,9 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 	}
 
-	private static class NullOSCSerializerFactory extends OSCSerializerFactory {
+	private static class NullOSCSerializerBuilder extends OSCSerializerAndParserBuilder {
 		@Override
-		public OSCSerializer create(final ByteBuffer output) {
+		public OSCSerializer buildSerializer(final ByteBuffer output) {
 			return new NullOSCSerializer();
 		}
 	}
@@ -129,20 +129,20 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public OSCPacketDispatcher(
-			final OSCSerializerFactory serializerFactory,
+			final OSCSerializerAndParserBuilder serializerBuilder,
 			final ScheduledExecutorService dispatchScheduler)
 	{
-		final OSCSerializerFactory nonNullSerializerFactory;
-		if (serializerFactory == null) {
+		final OSCSerializerAndParserBuilder nonNullSerializerBuilder;
+		if (serializerBuilder == null) {
 			this.argumentTypesBuffer = ByteBuffer.allocate(0);
-			nonNullSerializerFactory = new NullOSCSerializerFactory();
+			nonNullSerializerBuilder = new NullOSCSerializerBuilder();
 		} else {
 			this.argumentTypesBuffer = ByteBuffer.allocate(MAX_ARGUMENTS);
-			nonNullSerializerFactory = serializerFactory;
+			nonNullSerializerBuilder = serializerBuilder;
 		}
-		this.serializer = nonNullSerializerFactory.create(argumentTypesBuffer);
+		this.serializer = nonNullSerializerBuilder.buildSerializer(argumentTypesBuffer);
 		final Map<String, Object> serializationProperties
-				= nonNullSerializerFactory.getProperties();
+				= nonNullSerializerBuilder.getProperties();
 		final Charset propertiesCharset
 				= (Charset) serializationProperties.get(StringArgumentHandler.PROP_NAME_CHARSET);
 		this.typeTagsCharset = (propertiesCharset == null)
@@ -157,8 +157,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
-	public OSCPacketDispatcher(final OSCSerializerFactory serializerFactory) {
-		this(serializerFactory, createDefaultDispatchScheduler());
+	public OSCPacketDispatcher(final OSCSerializerAndParserBuilder serializerBuilder) {
+		this(serializerBuilder, createDefaultDispatchScheduler());
 	}
 
 	public OSCPacketDispatcher() {

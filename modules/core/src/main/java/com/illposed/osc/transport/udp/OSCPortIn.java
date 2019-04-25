@@ -14,7 +14,7 @@ import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCPacketEvent;
 import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCParserFactory;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private boolean daemonListener;
 	private boolean resilient;
 	private Thread listeningThread;
-	private final OSCParserFactory parserFactory;
+	private final OSCSerializerAndParserBuilder parserBuilder;
 	private final List<OSCPacketListener> packetListeners;
 
 	public static OSCPacketDispatcher getDispatcher(
@@ -104,14 +104,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
 	 * using a parser created with the given factory,
 	 * and with {@link #isResilient() resilient} set to true.
-	 * @param parserFactory to create the internal parser from
+	 * @param parserBuilder to create the internal parser from
 	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(
-			final OSCParserFactory parserFactory,
+			final OSCSerializerAndParserBuilder parserBuilder,
 			final List<OSCPacketListener> packetListeners,
 			final SocketAddress local,
 			final SocketAddress remote)
@@ -122,18 +122,18 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		this.listening = false;
 		this.daemonListener = true;
 		this.resilient = true;
-		this.parserFactory = parserFactory;
+		this.parserBuilder = parserBuilder;
 		this.packetListeners = packetListeners;
 	}
 
 	public OSCPortIn(
-			final OSCParserFactory parserFactory,
+			final OSCSerializerAndParserBuilder parserBuilder,
 			final List<OSCPacketListener> packetListeners,
 			final SocketAddress local)
 			throws IOException
 	{
 		this(
-			parserFactory,
+			parserBuilder,
 			packetListeners,
 			local,
 			new InetSocketAddress(OSCPort.generateWildcard(local), 0)
@@ -141,17 +141,17 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	public OSCPortIn(
-			final OSCParserFactory parserFactory,
+			final OSCSerializerAndParserBuilder parserBuilder,
 			final SocketAddress local)
 			throws IOException
 	{
-		this(parserFactory, defaultPacketListeners(), local);
+		this(parserBuilder, defaultPacketListeners(), local);
 	}
 
-	public OSCPortIn(final OSCParserFactory parserFactory, final int port)
+	public OSCPortIn(final OSCSerializerAndParserBuilder parserBuilder, final int port)
 			throws IOException
 	{
-		this(parserFactory, new InetSocketAddress(port));
+		this(parserBuilder, new InetSocketAddress(port));
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(final SocketAddress local) throws IOException {
-		this(OSCParserFactory.createDefaultFactory(), local);
+		this(new OSCSerializerAndParserBuilder(), local);
 	}
 
 	/**
@@ -193,7 +193,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 		final DatagramChannel channel = getChannel();
-		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, parserFactory, null);
+		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, parserBuilder);
 		while (listening) {
 			try {
 				final OSCPacket oscPacket = oscChannel.read(buffer);

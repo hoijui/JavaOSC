@@ -12,7 +12,8 @@ import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessageListener;
 import com.illposed.osc.OSCPacketDispatcher;
 import com.illposed.osc.OSCPacketListener;
-import com.illposed.osc.OSCParserFactory;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -21,7 +22,7 @@ import java.util.List;
 
 public class OSCPortInBuilder {
 
-	private OSCParserFactory parserFactory;
+	private OSCSerializerAndParserBuilder parserBuilder;
 	private List<OSCPacketListener> packetListeners;
 	private SocketAddress local;
 	private SocketAddress remote;
@@ -48,15 +49,15 @@ public class OSCPortInBuilder {
 				"Missing remote socket address / port.");
 		}
 
-		if (parserFactory == null) {
-			parserFactory = OSCParserFactory.createDefaultFactory();
+		if (parserBuilder == null) {
+			parserBuilder = new OSCSerializerAndParserBuilder();
 		}
 
 		if (packetListeners == null) {
 			addDefaultPacketListener();
 		}
 
-		return new OSCPortIn(parserFactory, packetListeners, local, remote);
+		return new OSCPortIn(parserBuilder, packetListeners, local, remote);
 	}
 
 	public OSCPortInBuilder setPort(final int port) {

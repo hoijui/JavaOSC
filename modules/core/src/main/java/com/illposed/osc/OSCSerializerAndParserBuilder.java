@@ -10,22 +10,27 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.Activator;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * Factory class to create parsers.
+ * Builder to create serializers and parsers.
  */
-public final class OSCParserFactory {
+public class OSCSerializerAndParserBuilder {
 
 	private final Map<String, Object> properties;
 	private final Map<Character, ArgumentHandler> identifierToType;
+	private boolean usingDefaultHandlers;
 
-	private OSCParserFactory() {
+	public OSCSerializerAndParserBuilder() {
 
 		this.properties = new HashMap<>();
 		this.identifierToType = new HashMap<>();
+		this.usingDefaultHandlers = true;
 	}
 
 	// Public API
@@ -34,25 +39,32 @@ public final class OSCParserFactory {
 		return Collections.unmodifiableMap(identifierToType);
 	}
 
-	// Public API
-	@SuppressWarnings("WeakerAccess")
-	public static OSCParserFactory createEmptyFactory() {
-		return new OSCParserFactory();
-	}
+	public OSCSerializer buildSerializer(final ByteBuffer output) {
 
-	public static OSCParserFactory createDefaultFactory() {
+		final Map<String, Object> currentProperties = getProperties();
+		final List<ArgumentHandler> typeCopies
+				= new ArrayList<>(identifierToType.size());
+		for (final ArgumentHandler<?> type : identifierToType.values()) {
+			final ArgumentHandler<?> typeClone;
+			try {
+				typeClone = type.clone();
+			} catch (final CloneNotSupportedException ex) {
+				throw new IllegalStateException("Does not support cloning: " + type.getClass(), ex);
+			}
+			typeClone.setProperties(currentProperties);
 
-		final OSCParserFactory factory = createEmptyFactory();
-
-		final Map<Character, ArgumentHandler> defaultParserTypes = Activator.createParserTypes();
-		for (final Map.Entry<Character, ArgumentHandler> parserType : defaultParserTypes.entrySet()) {
-			factory.registerArgumentHandler(parserType.getValue(), parserType.getKey());
+			typeCopies.add(typeClone);
 		}
 
-		return factory;
+		if (usingDefaultHandlers) {
+			final List<ArgumentHandler> defaultParserTypes = Activator.createSerializerTypes();
+			typeCopies.addAll(defaultParserTypes);
+		}
+
+		return new OSCSerializer(typeCopies, currentProperties, output);
 	}
 
-	public OSCParser create() {
+	public OSCParser buildParser() {
 
 		// first create a shallow copy
 		final Map<Character, ArgumentHandler> identifierToTypeCopy
@@ -72,12 +84,24 @@ public final class OSCParserFactory {
 			typeClone.setProperties(currentProperties);
 		}
 
+		if (usingDefaultHandlers) {
+			final Map<Character, ArgumentHandler> defaultParserTypes = Activator.createParserTypes();
+			identifierToTypeCopy.putAll(defaultParserTypes);
+		}
+
 		return new OSCParser(identifierToTypeCopy, currentProperties);
+	}
+
+	public OSCSerializerAndParserBuilder setUsingDefaultHandlers(final boolean usingDefaultHandlers) {
+
+		this.usingDefaultHandlers = usingDefaultHandlers;
+		return this;
 	}
 
 	/**
 	 * Returns the current set of properties.
-	 * These will be propagated to created parsers and to the argument-handlers.
+	 * These will be propagated to created serializers and parsers
+	 * and to the argument-handlers.
 	 * @return the set of properties to adhere to
 	 * @see ArgumentHandler#setProperties(Map)
 	 */
@@ -87,55 +111,61 @@ public final class OSCParserFactory {
 
 	/**
 	 * Sets a new set of properties after clearing the current ones.
-	 * Properties will be propagated to created parsers
+	 * Properties will be propagated to created serializers and parsers
 	 * and to the argument-handlers.
-	 * This will only have an effect for parsers and argument-handlers
+	 * This will only have an effect for serializers, parsers and argument-handlers
 	 * being created in the future.
 	 * @param properties the new set of properties to adhere to
 	 */
-	public void setProperties(final Map<String, Object> properties) {
+	public OSCSerializerAndParserBuilder setProperties(final Map<String, Object> properties) {
 
 		clearProperties();
 		addProperties(properties);
+		return this;
 	}
 
 	// Public API
 	/**
 	 * Adds a new set of properties, extending,
 	 * possibly overriding the current ones.
-	 * Properties will be propagated to created parsers
+	 * Properties will be propagated to created serializers and parsers
 	 * and to the argument-handlers.
-	 * This will only have an effect for parsers and argument-handlers
+	 * This will only have an effect for serializers, parsers and argument-handlers
 	 * being created in the future.
 	 * @param additionalProperties the new set of properties to adhere to
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public void addProperties(final Map<String, Object> additionalProperties) {
+	public OSCSerializerAndParserBuilder addProperties(final Map<String, Object> additionalProperties) {
+
 		properties.putAll(additionalProperties);
+		return this;
 	}
 
 	// Public API
 	/**
 	 * Clears all currently stored properties.
-	 * Properties will be propagated to created parsers
+	 * Properties will be propagated to created serializers and parsers
 	 * and to the argument-handlers.
-	 * This will only have an effect for parsers and argument-handlers
+	 * This will only have an effect for serializers, parsers and argument-handlers
 	 * being created in the future.
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public void clearProperties() {
+	public OSCSerializerAndParserBuilder clearProperties() {
+
 		properties.clear();
+		return this;
 	}
 
 	// Public API
-	@SuppressWarnings("unused")
-	public void registerArgumentHandler(final ArgumentHandler argumentHandler) {
+	public OSCSerializerAndParserBuilder registerArgumentHandler(final ArgumentHandler argumentHandler) {
+
 		registerArgumentHandler(argumentHandler, argumentHandler.getDefaultIdentifier());
+		return this;
 	}
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
-	public void registerArgumentHandler(
+	public OSCSerializerAndParserBuilder registerArgumentHandler(
 			final ArgumentHandler argumentHandler,
 			final char typeIdentifier)
 	{
@@ -146,17 +176,22 @@ public final class OSCParserFactory {
 					+ previousArgumentHandler.getClass().getCanonicalName());
 		}
 		identifierToType.put(typeIdentifier, argumentHandler);
+		return this;
 	}
 
 	// Public API
 	@SuppressWarnings("unused")
-	public void unregisterArgumentHandler(final ArgumentHandler argumentHandler) {
+	public OSCSerializerAndParserBuilder unregisterArgumentHandler(final ArgumentHandler argumentHandler) {
+
 		unregisterArgumentHandler(argumentHandler.getDefaultIdentifier());
+		return this;
 	}
 
 	// Public API
 	@SuppressWarnings({"WeakerAccess", "UnusedReturnValue"})
-	public ArgumentHandler unregisterArgumentHandler(final char typeIdentifier) {
-		return identifierToType.remove(typeIdentifier);
+	public OSCSerializerAndParserBuilder unregisterArgumentHandler(final char typeIdentifier) {
+
+		identifierToType.remove(typeIdentifier);
+		return this;
 	}
 }

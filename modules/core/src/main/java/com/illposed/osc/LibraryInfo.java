@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -159,13 +160,13 @@ public final class LibraryInfo {
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public List<ArgumentHandler> getEncodingArgumentHandlers() {
-		return OSCSerializerFactory.createDefaultFactory().getArgumentHandlers();
+		return new ArrayList<>(getDecodingArgumentHandlers().values());
 	}
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
 	public Map<Character, ArgumentHandler> getDecodingArgumentHandlers() {
-		return OSCParserFactory.createDefaultFactory().getIdentifierToTypeMapping();
+		return new OSCSerializerAndParserBuilder().getIdentifierToTypeMapping();
 	}
 
 	private static String extractPrettyClassName(final Class javaClass) {

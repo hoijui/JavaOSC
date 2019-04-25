@@ -11,10 +11,10 @@ package com.illposed.osc.transport.channel;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
-import com.illposed.osc.OSCParserFactory;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
-import com.illposed.osc.OSCSerializerFactory;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
+
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -38,21 +38,20 @@ public class OSCDatagramChannel extends SelectableChannel {
 
 	private final DatagramChannel underlyingChannel;
 	private final OSCParser parser;
-	private final OSCSerializerFactory serializerFactory;
+	private final OSCSerializerAndParserBuilder serializerBuilder;
 
 	public OSCDatagramChannel(
 			final DatagramChannel underlyingChannel,
-			final OSCParserFactory parserFactory,
-			final OSCSerializerFactory serializerFactory
+			final OSCSerializerAndParserBuilder serializerAndParserBuilder
 			)
 	{
 		this.underlyingChannel = underlyingChannel;
 		OSCParser tmpParser = null;
-		if (parserFactory != null) {
-			tmpParser = parserFactory.create();
+		if (serializerAndParserBuilder != null) {
+			tmpParser = serializerAndParserBuilder.buildParser();
 		}
 		this.parser = tmpParser;
-		this.serializerFactory = serializerFactory;
+		this.serializerBuilder = serializerAndParserBuilder;
 	}
 
 	public OSCPacket read(final ByteBuffer buffer) throws IOException, OSCParseException {
@@ -96,7 +95,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 		try {
 			begin();
 
-			final OSCSerializer serializer = serializerFactory.create(buffer);
+			final OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
 			buffer.rewind();
 			serializer.write(packet);
 			buffer.flip();

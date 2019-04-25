@@ -14,7 +14,7 @@ import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializerFactory;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
@@ -103,7 +103,7 @@ public class OSCPortTest {
 			sender.close();
 		}
 		sender = new OSCPortOut(
-				OSCSerializerFactory.createDefaultFactory(),
+				new OSCSerializerAndParserBuilder(),
 				receiverOutAddress,
 				senderOutAddress);
 	}

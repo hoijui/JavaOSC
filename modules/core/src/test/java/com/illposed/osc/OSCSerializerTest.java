@@ -43,13 +43,13 @@ public class OSCSerializerTest {
 			throws OSCSerializeException
 	{
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
-		final OSCSerializerFactory serializerFactory = OSCSerializerFactory.createDefaultFactory();
+		final OSCSerializerAndParserBuilder serializerBuilder = new OSCSerializerAndParserBuilder();
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
-			serializerFactory.addProperties(properties);
+			serializerBuilder.addProperties(properties);
 		}
-		final OSCSerializer stream = serializerFactory.create(buffer);
+		final OSCSerializer stream = serializerBuilder.buildSerializer(buffer);
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
 		stream.write(oscMessage);
 		buffer.flip();

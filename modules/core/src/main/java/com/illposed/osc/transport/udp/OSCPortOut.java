@@ -10,7 +10,7 @@ package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializerFactory;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -42,13 +42,13 @@ import java.nio.channels.DatagramChannel;
 public class OSCPortOut extends OSCPort {
 
 	private final ByteBuffer outputBuffer;
-	private final OSCSerializerFactory serializerFactory;
+	private final OSCSerializerAndParserBuilder serializerBuilder;
 
 	/**
 	 * Creates an OSC-Port that sends to {@code remote} from the specified local socket,
 	 * using an {@link com.illposed.osc.OSCSerializer}
 	 * created from the given factory for converting the packets.
-	 * @param serializerFactory used to create a single
+	 * @param serializerBuilder used to create a single
 	 *   {@link com.illposed.osc.OSCSerializer} that is used to convert
 	 *   all packets to be sent from this port,
 	 *   from Java objects to their OSC byte array representations
@@ -57,7 +57,7 @@ public class OSCPortOut extends OSCPort {
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortOut(
-			final OSCSerializerFactory serializerFactory,
+			final OSCSerializerAndParserBuilder serializerBuilder,
 			final SocketAddress remote,
 			final SocketAddress local)
 			throws IOException
@@ -65,11 +65,11 @@ public class OSCPortOut extends OSCPort {
 		super(local, remote);
 
 		this.outputBuffer = ByteBuffer.allocate(OSCPortIn.BUFFER_SIZE);
-		this.serializerFactory = serializerFactory;
+		this.serializerBuilder = serializerBuilder;
 	}
 
 	public OSCPortOut(
-			final OSCSerializerFactory serializerFactory,
+			final OSCSerializerAndParserBuilder serializerFactory,
 			final SocketAddress remote)
 			throws IOException
 	{
@@ -78,7 +78,7 @@ public class OSCPortOut extends OSCPort {
 	}
 
 	public OSCPortOut(final SocketAddress remote) throws IOException {
-		this(OSCSerializerFactory.createDefaultFactory(), remote);
+		this(new OSCSerializerAndParserBuilder(), remote);
 	}
 
 	/**
@@ -119,7 +119,7 @@ public class OSCPortOut extends OSCPort {
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
 
 		final DatagramChannel channel = getChannel();
-		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, null, serializerFactory);
+		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, serializerBuilder);
 		oscChannel.send(outputBuffer, packet, getRemoteAddress());
 	}
 
