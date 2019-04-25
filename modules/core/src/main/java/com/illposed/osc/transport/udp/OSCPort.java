@@ -87,7 +87,7 @@ public class OSCPort {
 	}
 
 	/**
-	 * Generates an wildcard IP address (matches all (local) IPs) of the same
+	 * Generates a wildcard IP address (matches all IPs) of the same
 	 * family as the given address.
 	 * @param address from this we figure out the IP address family (IP v4 or v6)
 	 * @return
