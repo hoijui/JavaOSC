@@ -79,14 +79,19 @@ public class OSCPatternAddressMessageSelectorTest {
 	}
 
 	@Test
+	@SuppressWarnings("SpellCheckingInspection")
 	public void testGroupForwards() {
 
 		OSCPatternAddressMessageSelector matcher = new OSCPatternAddressMessageSelector("/hel[a-z]o");
 
 		Assert.assertTrue( matches(matcher, "/hello"));
+		Assert.assertTrue( matches(matcher, "/helao"));
+		Assert.assertTrue( matches(matcher, "/helzo"));
 		Assert.assertFalse(matches(matcher, "/hellos"));
 		Assert.assertFalse(matches(matcher, "/hel_o"));
 		Assert.assertFalse(matches(matcher, "/helLo"));
+		Assert.assertFalse(matches(matcher, "/helAo"));
+		Assert.assertFalse(matches(matcher, "/helZo"));
 	}
 
 	@Test
