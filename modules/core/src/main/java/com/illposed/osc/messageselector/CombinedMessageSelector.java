@@ -13,6 +13,15 @@ import com.illposed.osc.OSCMessageEvent;
 
 /**
  * Checks whether a certain logical combination of two message selectors matches.
+ *
+ * An example:<br>
+ * <blockquote><pre>{@code
+ * // matches only if both the address and the argument tags match
+ * MessageSelector matcher = new CombinedMessageSelector(
+ *         new OSCPatternAddressMessageSelector("/hello/*"),
+ *         new OSCPatternTypeTagsMessageSelector("tiff"),
+ *         CombinedMessageSelector.LogicOperator.AND);
+ * }</pre></blockquote>
  */
 public class CombinedMessageSelector implements MessageSelector {
 
