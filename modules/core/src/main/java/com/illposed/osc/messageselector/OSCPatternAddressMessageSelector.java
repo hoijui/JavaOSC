@@ -197,7 +197,8 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	 * a selector.
 	 * This code was copied and adapted from LibLo,
 	 * and is licensed under the Public Domain.
-	 * For more details see: {@link OSCPatternAddressMessageSelector}.
+	 * For more details see:
+	 * {@link OSCPatternAddressMessageSelector the class comment}.
 	 * @param str address part
 	 * @param p pattern part
 	 * @return true if the address part matches, false otherwise
@@ -205,7 +206,6 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 	@SuppressWarnings("WeakerAccess")
 	public static boolean matches(final String str, final String p) {
 
-		boolean negate;
 		boolean match;
 		char c;
 
@@ -217,6 +217,7 @@ public class OSCPatternAddressMessageSelector implements MessageSelector {
 			}
 
 			c = p.charAt(pi++);
+			boolean negate;
 			switch (c) {
 				case '*':
 					while ((pi < p.length()) && (p.charAt(pi) == '*') && (p.charAt(pi) != '/')) {
