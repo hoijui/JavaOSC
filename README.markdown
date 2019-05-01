@@ -57,7 +57,7 @@ Latest development sources can be found
 #### ... with SuperCollider
 
 JavaOSC is not a standalone application, but designed to be used in other applications.
-Though, there is a very basic application, created by John Thompson, for demonstration purposes.
+Though there is a very basic application for demonstration purposes.
 
 To _run the demo app_, make sure you have all parts packaged and installed:
 
@@ -68,13 +68,13 @@ Then start the UI:
 	cd modules/ui
 	mvn exec:java
 
-Next, launch SuperCollider, open the file located in the
+Next, launch SuperCollider (SC), open the file located in the
 `modules/core/src/main/resources/supercollider/` directory,
 and load the synthdef into SuperCollider.
 Start the SC local server. 
 In the JavaOSC Demo UI, click the "All On" button and start moving the sliders.
 You should hear the sounds change.
-To see what messages the UI is sending, run either the CNMAT dumpOSC,
+To see what messages the UI is sending, run either the CNMAT `dumpOSC`,
 or turn on dumpOSC in SuperCollider.
 
 #### ... with PD
