@@ -25,32 +25,50 @@
 
 ### JavaOSC
 
-is a library that gives JVM language programs the ability
+JavaOSC is primarily a library that gives JVM language programs the ability
 of serializing, parsing, sending and receiving data in the OSC content format.
+It is written in Java 8, and its only runtime dependency is a logging facade (_SLF4J_).
+It is also an [OSGi](https://www.osgi.org/developer/what-is-osgi/)
+(a dynamic module system for Java) bundle.
+
+In a separate package,
+it also contains a sample GUI that allows to send OSC messages to SuperCollider.
 
 ### Open Sound Control (OSC)
 
 is a simple _content format_,
 although it is often though of as a _protocol_ for the transmission of data over a network.
-Its main uses as of 2019, are:
 
-* as a **replacement for MIDI** - as a network-protocol for the exchange of musical control data between soft- and hardware over a UDP/IP network
-* in **robotics** - for different parts of a robot, or multiple robots to communicate with each other
+#### Application domains
+
+* as a **replacement for MIDI** -
+  a network-protocol for the exchange of musical control data between soft- and hardware,
+  usually over a UDP/IP network
+* in **robotics** -
+  for communication between the parts of a robot,
+  or multiple robots amongst each other
 
 Its main strength is its simplicity.
-
 
 ## How to
 
 ### Get it
 
 The latest release version of the library is available on
-[Maven central](http://mvnrepository.com/artifact/com.illposed.osc/javaosc-core)
-or
-[the project homepage](http://www.illposed.com/software/javaosc.html).
+[GitHub for manual download](https://github.com/hoijui/JavaOSC/releases)
+or on
+[Maven central](https://search.maven.org/search?q=a:javaosc-core)
 
-Latest development sources can be found
-[on github](https://github.com/hoijui/JavaOSC).
+```xml
+<dependency>
+	<groupId>com.illposed.osc</groupId>
+	<artifactId>javaosc-core</artifactId>
+	<version>0.6</version>
+</dependency>
+```
+
+The latest development sources can be found
+[on GithHub](https://github.com/hoijui/JavaOSC).
 
 ### Run the Demo UI
 
