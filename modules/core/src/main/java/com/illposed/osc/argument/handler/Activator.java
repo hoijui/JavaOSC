@@ -27,7 +27,7 @@ public final class Activator {
 		types.add(BooleanFalseArgumentHandler.INSTANCE);
 		types.add(BooleanTrueArgumentHandler.INSTANCE);
 		types.add(CharArgumentHandler.INSTANCE);
-		types.add(ColorArgumentHandler.INSTANCE);
+		types.add(AwtColorArgumentHandler.INSTANCE);
 		types.add(DoubleArgumentHandler.INSTANCE);
 		types.add(FloatArgumentHandler.INSTANCE);
 		types.add(ImpulseArgumentHandler.INSTANCE);

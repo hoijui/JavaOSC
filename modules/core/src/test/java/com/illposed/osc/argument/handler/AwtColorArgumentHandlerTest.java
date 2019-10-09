@@ -20,9 +20,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ColorArgumentHandlerTest {
+public class AwtColorArgumentHandlerTest {
 
-	private final Logger log = LoggerFactory.getLogger(ColorArgumentHandlerTest.class);
+	private final Logger log = LoggerFactory.getLogger(AwtColorArgumentHandlerTest.class);
 
 	private static final Color[] DEFAULT_COLORS = new Color[] {
 		Color.BLACK,
@@ -54,7 +54,7 @@ public class ColorArgumentHandlerTest {
 	private static Color reparse(final Color orig)
 			throws OSCSerializeException, OSCParseException
 	{
-		return reparse(ColorArgumentHandler.INSTANCE, 4, orig);
+		return reparse(AwtColorArgumentHandler.INSTANCE, 4, orig);
 	}
 
 	@Test
@@ -79,10 +79,10 @@ public class ColorArgumentHandlerTest {
 			final byte origByte = testBytes[tni];
 			final int origInt = testInts[tni];
 
-			final int createdInt = ColorArgumentHandler.toUnsignedInt(origByte);
+			final int createdInt = AwtColorArgumentHandler.toUnsignedInt(origByte);
 			Assert.assertEquals(origInt, createdInt);
 
-			final byte createdByte = ColorArgumentHandler.toSignedByte(createdInt);
+			final byte createdByte = AwtColorArgumentHandler.toSignedByte(createdInt);
 			Assert.assertEquals(origByte, createdByte);
 		}
 	}
@@ -106,7 +106,7 @@ public class ColorArgumentHandlerTest {
 
 		final long alphaRandomSeed = new Random().nextLong();
 		log.debug("{}#testReparseDefaultColorsAlphaed:alphaRandomSeed: {}",
-				ColorArgumentHandlerTest.class.getSimpleName(), alphaRandomSeed);
+				AwtColorArgumentHandlerTest.class.getSimpleName(), alphaRandomSeed);
 		final Random alphaRandom = new Random(alphaRandomSeed);
 		final Color[] alphaedDefaultColors = Arrays.copyOf(DEFAULT_COLORS, DEFAULT_COLORS.length);
 		for (int tci = 0; tci < alphaedDefaultColors.length; tci++) {

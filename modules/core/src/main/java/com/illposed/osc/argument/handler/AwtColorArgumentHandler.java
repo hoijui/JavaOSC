@@ -16,14 +16,14 @@ import java.util.Map;
 /**
  * Parses and serializes an OSC 1.1 optional <i>32bit RGBA color</i> type.
  */
-public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
+public class AwtColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 
-	public static final ArgumentHandler<Color> INSTANCE = new ColorArgumentHandler();
+	public static final ArgumentHandler<Color> INSTANCE = new AwtColorArgumentHandler();
 
 	// Public API
 	/** Allow overriding, but somewhat enforce the ugly singleton. */
 	@SuppressWarnings("WeakerAccess")
-	protected ColorArgumentHandler() {
+	protected AwtColorArgumentHandler() {
 		// declared only for setting the access level
 	}
 
@@ -49,8 +49,8 @@ public class ColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public ColorArgumentHandler clone() throws CloneNotSupportedException {
-		return (ColorArgumentHandler) super.clone();
+	public AwtColorArgumentHandler clone() throws CloneNotSupportedException {
+		return (AwtColorArgumentHandler) super.clone();
 	}
 
 	// Public API
