@@ -92,9 +92,9 @@ public class OSCSerializerAndParserBuilder {
 		return new OSCParser(identifierToTypeCopy, currentProperties);
 	}
 
-	public OSCSerializerAndParserBuilder setUsingDefaultHandlers(final boolean usingDefaultHandlers) {
+	public OSCSerializerAndParserBuilder setUsingDefaultHandlers(final boolean newUsingDefaultHandlers) {
 
-		this.usingDefaultHandlers = usingDefaultHandlers;
+		this.usingDefaultHandlers = newUsingDefaultHandlers;
 		return this;
 	}
 
@@ -115,12 +115,12 @@ public class OSCSerializerAndParserBuilder {
 	 * and to the argument-handlers.
 	 * This will only have an effect for serializers, parsers and argument-handlers
 	 * being created in the future.
-	 * @param properties the new set of properties to adhere to
+	 * @param newProperties the new set of properties to adhere to
 	 */
-	public OSCSerializerAndParserBuilder setProperties(final Map<String, Object> properties) {
+	public OSCSerializerAndParserBuilder setProperties(final Map<String, Object> newProperties) {
 
 		clearProperties();
-		addProperties(properties);
+		addProperties(newProperties);
 		return this;
 	}
 
