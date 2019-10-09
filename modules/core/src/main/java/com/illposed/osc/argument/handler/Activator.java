@@ -9,6 +9,10 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.ArgumentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +24,8 @@ import java.util.Map;
  */
 public final class Activator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(Activator.class);
+
 	private static final List<ArgumentHandler> TYPES_STATIC_COMMON;
 	static {
 		final ArrayList<ArgumentHandler> types = new ArrayList<>();
@@ -27,7 +33,7 @@ public final class Activator {
 		types.add(BooleanFalseArgumentHandler.INSTANCE);
 		types.add(BooleanTrueArgumentHandler.INSTANCE);
 		types.add(CharArgumentHandler.INSTANCE);
-		types.add(AwtColorArgumentHandler.INSTANCE);
+		types.add(ColorArgumentHandler.INSTANCE);
 		types.add(DoubleArgumentHandler.INSTANCE);
 		types.add(FloatArgumentHandler.INSTANCE);
 		types.add(ImpulseArgumentHandler.INSTANCE);
@@ -77,6 +83,20 @@ public final class Activator {
 
 		final SymbolArgumentHandler symbolArgumentHandler = new SymbolArgumentHandler();
 		serializerTypes.add(symbolArgumentHandler);
+
+		// NOTE As not all JRE's support AWT (for example headless ones and Android)),
+		//      we handle it this way.
+		try {
+			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandlerTest";
+			final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
+			final Field instance = awtColorArgumentHandler.getDeclaredField("INSTANCE");
+			instance.setAccessible(true);
+			serializerTypes.add((ArgumentHandler) instance.get(null));
+		} catch (final ClassNotFoundException ex) {
+			LOG.debug("Not supporting AWT color serialization", ex);
+		} catch (final NoSuchFieldException | SecurityException | IllegalAccessException ex) {
+			LOG.error("Failed to add AWT Color serializer", ex);
+		}
 
 		// NOTE We add this for legacy support, though it is recommended
 		//   to use ByteBuffer over byte[], as it may be handled more efficiently by some code.

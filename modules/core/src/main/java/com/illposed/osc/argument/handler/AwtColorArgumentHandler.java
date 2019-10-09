@@ -8,7 +8,11 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
+import com.illposed.osc.argument.OSCColor;
+
 import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -53,46 +57,29 @@ public class AwtColorArgumentHandler implements ArgumentHandler<Color>, Cloneabl
 		return (AwtColorArgumentHandler) super.clone();
 	}
 
-	// Public API
-	/**
-	 * Converts the argument to an {@code int} by an unsigned conversion.
-	 *
-	 * @param signedByte the value to convert to an unsigned {@code int}
-	 * @return the argument converted to {@code int} by an unsigned conversion NOTE Since Java 8,
-	 * one could use Byte#toUnsignedInt
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public static int toUnsignedInt(final byte signedByte) {
-		return ((int) signedByte) & 0xff;
-	}
-
-	// Public API
-	/**
-	 * Converts the argument to an {@code byte} by a sign introducing conversion.
-	 *
-	 * @param unsignedInt the value to convert to a signed {@code byte}; has to be in range [0, 255]
-	 * @return the argument converted to {@code byte} by a sign introducing conversion
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public static byte toSignedByte(final int unsignedInt) {
-		return (byte) unsignedInt;
-	}
-
-	@Override
-	public Color parse(final ByteBuffer input) {
+	public static Color toAwt(final OSCColor color) {
 		return new Color(
-				toUnsignedInt(input.get()),
-				toUnsignedInt(input.get()),
-				toUnsignedInt(input.get()),
-				toUnsignedInt(input.get()));
+				color.getRedInt(),
+				color.getGreenInt(),
+				color.getBlueInt(),
+				color.getAlphaInt());
+	}
+
+	public static OSCColor toOsc(final Color color) {
+		return new OSCColor(
+				color.getRed(),
+				color.getGreen(),
+				color.getBlue(),
+				color.getAlpha());
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Color value) {
+	public Color parse(final ByteBuffer input) throws OSCParseException {
+		return toAwt(ColorArgumentHandler.INSTANCE.parse(input));
+	}
 
-		output.put(toSignedByte(value.getRed()));
-		output.put(toSignedByte(value.getGreen()));
-		output.put(toSignedByte(value.getBlue()));
-		output.put(toSignedByte(value.getAlpha()));
+	@Override
+	public void serialize(final ByteBuffer output, final Color value) throws OSCSerializeException {
+		ColorArgumentHandler.INSTANCE.serialize(output, toOsc(value));
 	}
 }

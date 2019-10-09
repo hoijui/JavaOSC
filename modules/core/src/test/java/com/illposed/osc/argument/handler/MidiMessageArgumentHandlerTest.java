@@ -24,7 +24,7 @@ public class MidiMessageArgumentHandlerTest {
 	private static OSCMidiMessage reparse(final OSCMidiMessage orig)
 			throws OSCSerializeException, OSCParseException
 	{
-		return AwtColorArgumentHandlerTest.reparse(
+		return ColorArgumentHandlerTest.reparse(
 				MidiMessageArgumentHandler.INSTANCE,
 				OSCMidiMessage.NUM_CONTENT_BYTES,
 				orig);

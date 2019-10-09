@@ -15,6 +15,8 @@ import java.awt.Color;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Random;
+
+import com.illposed.osc.argument.OSCColor;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,7 +26,7 @@ public class AwtColorArgumentHandlerTest {
 
 	private final Logger log = LoggerFactory.getLogger(AwtColorArgumentHandlerTest.class);
 
-	private static final Color[] DEFAULT_COLORS = new Color[] {
+	public static final Color[] DEFAULT_COLORS = new Color[] {
 		Color.BLACK,
 		Color.BLUE,
 		Color.CYAN,
@@ -39,52 +41,11 @@ public class AwtColorArgumentHandlerTest {
 		Color.WHITE,
 		Color.YELLOW};
 
-	static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
-			throws OSCSerializeException, OSCParseException
-	{
-		// serialize
-		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-		type.serialize(buffer, orig);
-		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
-
-		// re-parse
-		return type.parse(reparsableBuffer);
-	}
-
 	private static Color reparse(final Color orig)
 			throws OSCSerializeException, OSCParseException
 	{
-		return reparse(AwtColorArgumentHandler.INSTANCE, 4, orig);
-	}
-
-	@Test
-	public void testReconvertBytes() {
-
-		final byte[] testBytes = new byte[] {
-			-128,
-			-1,
-			0,
-			1,
-			127
-		};
-		final int[] testInts = new int[] {
-			128,
-			255,
-			0,
-			1,
-			127
-		};
-
-		for (int tni = 0; tni < testBytes.length; tni++) {
-			final byte origByte = testBytes[tni];
-			final int origInt = testInts[tni];
-
-			final int createdInt = AwtColorArgumentHandler.toUnsignedInt(origByte);
-			Assert.assertEquals(origInt, createdInt);
-
-			final byte createdByte = AwtColorArgumentHandler.toSignedByte(createdInt);
-			Assert.assertEquals(origByte, createdByte);
-		}
+		return ColorArgumentHandlerTest.reparse(
+				AwtColorArgumentHandler.INSTANCE, OSCColor.NUM_CONTENT_BYTES, orig);
 	}
 
 	@Test

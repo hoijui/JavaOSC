@@ -20,7 +20,7 @@ public class SymbolArgumentHandlerTest {
 			throws OSCSerializeException, OSCParseException
 	{
 		final int strLength = (orig.toString() == null) ? 0 : orig.toString().length();
-		return AwtColorArgumentHandlerTest.reparse(new SymbolArgumentHandler(), strLength + 4, orig);
+		return ColorArgumentHandlerTest.reparse(new SymbolArgumentHandler(), strLength + 4, orig);
 	}
 
 	@Test(expected = NullPointerException.class)
