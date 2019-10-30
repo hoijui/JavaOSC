@@ -437,6 +437,19 @@ public class OSCPortTest {
 	}
 
 	@Test
+	public void testReceivingBroadcast() throws Exception {
+		sender.close();
+
+		// make sure the old receiver is gone for good
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+
+		InetAddress broadcastAddress = InetAddress.getByName("255.255.255.255");
+		sender = new OSCPortOut(broadcastAddress);
+
+		testReceiving();
+	}
+
+	@Test
 	public void testStart() throws Exception {
 
 		OSCMessage message = new OSCMessage("/sc/stop");

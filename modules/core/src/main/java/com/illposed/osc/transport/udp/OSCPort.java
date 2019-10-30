@@ -63,6 +63,7 @@ public class OSCPort {
 		this.channel = tmpChannel;
 
 		this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
 		this.channel.socket().bind(local);
 	}
 
