@@ -32,6 +32,7 @@ import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -304,6 +305,7 @@ public class OSCPortTest {
 			senderChannel = DatagramChannel.open();
 			senderChannel.socket().bind(senderSocket);
 			senderChannel.socket().setReuseAddress(true);
+			senderChannel.socket().setSendBufferSize(OSCPortIn.BUFFER_SIZE);
 
 			receiverChannel = DatagramChannel.open();
 			receiverChannel.socket().bind(receiverSocket);
