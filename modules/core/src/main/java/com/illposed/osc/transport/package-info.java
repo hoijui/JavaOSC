@@ -7,6 +7,6 @@
  */
 
 /**
- * Provides means to send and receive OSC content over the UDP(/IP) protocol.
+ * Provides means to send and receive OSC content over a network.
  */
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;

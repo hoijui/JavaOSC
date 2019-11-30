@@ -32,7 +32,7 @@ public class OSCBadDataEvent extends EventObject {
 	 * Returns the bad/unrecognized bunch of data,
 	 * which we expected to be OSC protocol formatted.
 	 * @return the unrecognized, raw data, as received from
-	 *   {@link com.illposed.osc.transport.udp.OSCPortIn}, for example
+	 *   {@link com.illposed.osc.transport.OSCPortIn}, for example
 	 */
 	public ByteBuffer getData() {
 		return data.getBuffer();

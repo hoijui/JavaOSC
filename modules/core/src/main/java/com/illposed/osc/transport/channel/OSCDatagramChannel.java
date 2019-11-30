@@ -30,9 +30,9 @@ import java.nio.channels.spi.SelectorProvider;
  * over a DatagramChannel.
  * It is mostly for internal use,
  * and will probably not be used directly by users of this library.
- * To send OSC messages, use {@link com.illposed.osc.transport.udp.OSCPortOut}.
+ * To send OSC messages, use {@link com.illposed.osc.transport.OSCPortOut}.
  * To listen for OSC messages,
- * use {@link com.illposed.osc.transport.udp.OSCPortIn}.
+ * use {@link com.illposed.osc.transport.OSCPortIn}.
  */
 public class OSCDatagramChannel extends SelectableChannel {
 

@@ -6,7 +6,7 @@
  * See file LICENSE (or LICENSE.html) for more information.
  */
 
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;
 
 import com.illposed.osc.OSCBadDataEvent;
 import com.illposed.osc.OSCPacket;
