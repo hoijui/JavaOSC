@@ -111,7 +111,9 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 		try {
 			res = charset.newDecoder().decode(strBuffer).toString();
 		} catch (final CharacterCodingException ex) {
-			throw new OSCParseException("Failed decoding a string argument", ex);
+			throw new OSCParseException(
+				"Failed decoding a string argument", ex, input
+			);
 		}
 		input.position(input.position() + strLen);
 		// because strings are always padded with at least one zero,

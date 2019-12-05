@@ -77,7 +77,9 @@ public class OSCDatagramChannel extends SelectableChannel {
 //			}
 			buffer.flip();
 			if (buffer.limit() == 0) {
-				throw new OSCParseException("Received a packet without any data");
+				throw new OSCParseException(
+					"Received a packet without any data", buffer
+				);
 			} else {
 				oscPacket = parser.convert(buffer);
 				completed = true;

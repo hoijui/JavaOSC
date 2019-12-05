@@ -209,7 +209,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 					stopListening();
 				}
 			} catch (final OSCParseException ex) {
-				badPacketReceived(ex, buffer);
+				badPacketReceived(ex);
 			}
 		}
 	}
@@ -227,8 +227,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		stopListening();
 	}
 
-	private void badPacketReceived(final OSCParseException exception, final ByteBuffer data) {
-
+	private void badPacketReceived(final OSCParseException exception) {
+		final ByteBuffer data = exception.getData();
 		final OSCBadDataEvent badDataEvt = new OSCBadDataEvent(this, data, exception);
 
 		for (final OSCPacketListener listener : packetListeners) {

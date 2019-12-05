@@ -61,10 +61,12 @@ public class OSCParser {
 	private final byte[] bundleStartChecker;
 
 	private static class UnknownArgumentTypeParseException extends OSCParseException {
-
-		UnknownArgumentTypeParseException(final char argumentType) {
+		UnknownArgumentTypeParseException(
+			final char argumentType,
+			ByteBuffer data)
+		{
 			super("No " + ArgumentHandler.class.getSimpleName() + " registered for type '"
-					+ argumentType + '\'');
+					+ argumentType + '\'', data);
 		}
 	}
 
@@ -247,7 +249,7 @@ public class OSCParser {
 		try {
 			return new OSCMessage(address, arguments, new OSCMessageInfo(typeIdentifiers));
 		} catch (final IllegalArgumentException ex) {
-			throw new OSCParseException(ex);
+			throw new OSCParseException(ex, rawInput);
 		}
 	}
 
@@ -279,7 +281,8 @@ public class OSCParser {
 				// data format is invalid
 				throw new OSCParseException(
 						"No '" + TYPES_VALUES_SEPARATOR + "' present after the address, "
-								+ "but there is still more data left in the message");
+								+ "but there is still more data left in the message",
+						rawInput);
 			}
 		} else {
 			// NOTE Strictly speaking, it is invalid for a message to omit the "OSC Type Tag String",
@@ -309,7 +312,7 @@ public class OSCParser {
 
 		final ArgumentHandler type = identifierToType.get(typeIdentifier);
 		if (type == null) {
-			throw new UnknownArgumentTypeParseException(typeIdentifier);
+			throw new UnknownArgumentTypeParseException(typeIdentifier, rawInput);
 		} else {
 			argumentValue = type.parse(rawInput);
 		}
