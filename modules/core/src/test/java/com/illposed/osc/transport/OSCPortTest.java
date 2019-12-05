@@ -228,32 +228,6 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testPorts() throws Exception {
-
-		Assert.assertEquals("Bad default SuperCollider OSC port",
-				57110, OSCPort.defaultSCOSCPort());
-		Assert.assertEquals("Bad default SuperCollider Language OSC port",
-				57120, OSCPort.defaultSCLangOSCPort());
-
-		InetSocketAddress remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals("Bad default port with " + OSCPortOut.class.getSimpleName() + "()",
-				57110, remoteAddress.getPort());
-
-		sender.close();
-		sender = new OSCPortOut(InetAddress.getLocalHost());
-		remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals("Bad default port with " + OSCPortOut.class.getSimpleName() + "(address)",
-				57110, remoteAddress.getPort());
-
-		sender.close();
-		sender = new OSCPortOut(InetAddress.getLocalHost(), 12345);
-		remoteAddress = ((InetSocketAddress) sender.getRemoteAddress());
-		Assert.assertEquals(
-				"Bad port with " + OSCPortOut.class.getSimpleName() + "(address, port)",
-				12345, remoteAddress.getPort());
-	}
-
-	@Test
 	public void readWriteReadData400() throws Exception {
 		readWriteReadData(400);
 	}
