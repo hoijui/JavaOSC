@@ -78,7 +78,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 		setResilient(true);
 		setDaemonListener(false);
 		startListening();
-		log.info("# Listening for OSC Packets on {} ...", getLocalAddress());
+		log.info("# Listening for OSC Packets via {} ...", transport);
 	}
 
 	// Public API
