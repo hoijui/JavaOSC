@@ -19,6 +19,7 @@ import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
+import com.illposed.osc.transport.udp.UDPTransport;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -278,7 +279,7 @@ public class OSCPortTest {
 			senderChannel = DatagramChannel.open();
 			senderChannel.socket().bind(senderSocket);
 			senderChannel.socket().setReuseAddress(true);
-			senderChannel.socket().setSendBufferSize(OSCPortIn.BUFFER_SIZE);
+			senderChannel.socket().setSendBufferSize(UDPTransport.BUFFER_SIZE);
 
 			receiverChannel = DatagramChannel.open();
 			receiverChannel.socket().bind(receiverSocket);
