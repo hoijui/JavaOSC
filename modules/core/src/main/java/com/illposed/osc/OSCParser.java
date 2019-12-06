@@ -63,7 +63,7 @@ public class OSCParser {
 	private static class UnknownArgumentTypeParseException extends OSCParseException {
 		UnknownArgumentTypeParseException(
 			final char argumentType,
-			ByteBuffer data)
+			final ByteBuffer data)
 		{
 			super("No " + ArgumentHandler.class.getSimpleName() + " registered for type '"
 					+ argumentType + '\'', data);

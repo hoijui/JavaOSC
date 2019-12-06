@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2004-2019, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc.transport;
 
 import com.illposed.osc.OSCPacket;
@@ -32,13 +40,13 @@ public interface Transport {
 	 */
 	OSCPacket receive() throws IOException, OSCParseException;
 
-	public boolean isBlocking();
+	boolean isBlocking();
 
-	public void connect() throws IOException;
+	void connect() throws IOException;
 
-	public void disconnect() throws IOException;
+	void disconnect() throws IOException;
 
-	public boolean isConnected();
+	boolean isConnected();
 
 	/**
 	 * Close the socket and free-up resources.
@@ -46,5 +54,5 @@ public interface Transport {
 	 * port.
 	 * @throws IOException If an I/O error occurs
 	 */
-	public void close() throws IOException;
+	void close() throws IOException;
 }

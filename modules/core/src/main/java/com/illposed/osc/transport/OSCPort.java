@@ -24,7 +24,11 @@ import java.net.UnknownHostException;
  * To listen for OSC messages, use {@link OSCPortIn}.
  */
 public class OSCPort {
-	protected final Transport transport;
+	private final Transport transport;
+
+	public Transport getTransport() {
+		return transport;
+	}
 
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;

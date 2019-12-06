@@ -180,7 +180,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void run() {
 		while (listening) {
 			try {
-				final OSCPacket oscPacket = transport.receive();
+				final OSCPacket oscPacket = getTransport().receive();
 				final OSCPacketEvent event = new OSCPacketEvent(this, oscPacket);
 				for (final OSCPacketListener listener : packetListeners) {
 					listener.handlePacket(event);
@@ -248,9 +248,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	public void stopListening() {
 		listening = false;
 		// NOTE This is not thread-save
-		if (transport.isBlocking()) {
+		if (getTransport().isBlocking()) {
 			try {
-				transport.close();
+				getTransport().close();
 			} catch (final IOException ex) {
 				log.error("Failed to close OSC transport", ex);
 			}
@@ -343,7 +343,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		if (isListening()) {
 			rep
 					.append("listening via \"")
-					.append(transport.toString())
+					.append(getTransport().toString())
 					.append('\"');
 		} else {
 			rep.append("stopped");

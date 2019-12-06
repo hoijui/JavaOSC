@@ -1,3 +1,11 @@
+/*
+ * Copyright (C) 2004-2019, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * See file LICENSE (or LICENSE.html) for more information.
+ */
+
 package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
@@ -22,29 +30,30 @@ import java.nio.channels.DatagramChannel;
  */
 public class UDPTransport implements Transport {
 	/**
-	 * Buffers were 1500 bytes in size, but were increased to 1536, as this is a common MTU,
-	 * and then increased to 65507, as this is the maximum incoming datagram data size.
-	 */
+		* Buffers were 1500 bytes in size, but were increased to 1536, as this
+		* is a common MTU, and then increased to 65507, as this is the maximum
+		* incoming datagram data size.
+		*/
 	public static final int BUFFER_SIZE = 65507;
 	private final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
 	private final SocketAddress local;
 	private final SocketAddress remote;
 	private final DatagramChannel channel;
-  private final OSCDatagramChannel oscChannel;
+	private final OSCDatagramChannel oscChannel;
 
 	public UDPTransport(
-		SocketAddress local,
-		SocketAddress remote)
+		final SocketAddress local,
+		final SocketAddress remote)
 		throws IOException
 	{
 		this(local, remote, new OSCSerializerAndParserBuilder());
 	}
 
 	public UDPTransport(
-		SocketAddress local,
-		SocketAddress remote,
-		OSCSerializerAndParserBuilder serializerAndParserBuilder)
+		final SocketAddress local,
+		final SocketAddress remote,
+		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
 		throws IOException
 	{
 		this.local = local;
@@ -54,20 +63,20 @@ public class UDPTransport implements Transport {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
 			if (!localIsa.getAddress().getClass().equals(
-					remoteIsa.getAddress().getClass()))
+			remoteIsa.getAddress().getClass()))
 			{
-				throw new IllegalArgumentException(
-						"local and remote addresses are not of the same family"
-						+ " (IP v4 vs v6)");
+	throw new IllegalArgumentException(
+			"local and remote addresses are not of the same family"
+			+ " (IP v4 vs v6)");
 			}
 			if (localIsa.getAddress() instanceof Inet4Address) {
-				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
+	tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
 			} else if (localIsa.getAddress() instanceof Inet6Address) {
-				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
+	tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
 			} else {
-				throw new IllegalArgumentException(
-						"Unknown address type: "
-						+ localIsa.getAddress().getClass().getCanonicalName());
+	throw new IllegalArgumentException(
+			"Unknown address type: "
+			+ localIsa.getAddress().getClass().getCanonicalName());
 			}
 		} else {
 			tmpChannel = DatagramChannel.open();
@@ -79,12 +88,13 @@ public class UDPTransport implements Transport {
 		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
 		this.channel.socket().bind(local);
 		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
-	}
+		}
 
 	public void connect() throws IOException {
 		if (remote == null) {
 			throw new IllegalStateException(
-					"Can not connect a socket without a remote address specified");
+	"Can not connect a socket without a remote address specified"
+			);
 		}
 		channel.connect(remote);
 	}
@@ -106,11 +116,10 @@ public class UDPTransport implements Transport {
 	}
 
 	/**
-	 * Close the socket and free-up resources.
-	 * It is recommended that clients call this when they are done with the
-	 * port.
-	 * @throws IOException If an I/O error occurs on the channel
-	 */
+		* Close the socket and free-up resources.
+		* It is recommended that clients call this when they are done with the port.
+		* @throws IOException If an I/O error occurs on the channel
+		*/
 	public void close() throws IOException {
 		channel.close();
 	}
