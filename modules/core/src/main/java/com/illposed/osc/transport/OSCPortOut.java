@@ -17,7 +17,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 /**
- * Sends OSC packets to a specific UDP/IP address and port.
+ * Sends OSC packets to a specific address and port.
  *
  * To send an OSC message, call {@link #send(OSCPacket)}.
  *

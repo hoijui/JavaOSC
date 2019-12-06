@@ -11,7 +11,6 @@ import java.io.IOException;
  * Implementations:
  * <ul>
  * <li>{@link UDPTransport}</li>
- * <li>{@link TCPTransport}</li>
  * </ul>
  */
 public interface Transport {

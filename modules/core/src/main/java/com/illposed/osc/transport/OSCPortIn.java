@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Listens for OSC packets on a UDP/IP port.
+ * Listens for OSC packets over a network.
  *
  * An example:<br>
  * <blockquote><pre>{@code
@@ -252,7 +252,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				transport.close();
 			} catch (final IOException ex) {
-				log.error("Failed to close OSC UDP channel", ex);
+				log.error("Failed to close OSC transport", ex);
 			}
 		}
 	}
