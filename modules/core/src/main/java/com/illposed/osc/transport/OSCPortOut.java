@@ -107,6 +107,6 @@ public class OSCPortOut extends OSCPort {
 	 * @throws OSCSerializeException if the packet fails to serialize
 	 */
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		transport.send(packet);
+		getTransport().send(packet);
 	}
 }
