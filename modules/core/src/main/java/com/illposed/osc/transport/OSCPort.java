@@ -39,7 +39,9 @@ public class OSCPort {
 		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
 		throws IOException
 	{
-		this.transport = new UDPTransport(local, remote);
+		this.transport = new UDPTransport(
+			local, remote, serializerAndParserBuilder
+		);
 	}
 
 	/**
