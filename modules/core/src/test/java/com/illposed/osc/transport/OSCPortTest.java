@@ -14,7 +14,6 @@ import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.OSCSerializerAndParserBuilder;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
@@ -63,7 +62,6 @@ public class OSCPortTest {
 				.flatMap(Collection::stream)
 				.map(InterfaceAddress::getAddress)
 				.anyMatch(((Predicate<InetAddress>) InetAddress::isLoopbackAddress).negate().and(address -> address instanceof Inet6Address));
-
 	}
 
 	private void reSetUp(
@@ -71,7 +69,8 @@ public class OSCPortTest {
 			final int portSenderIn,
 			final int portReceiverOut,
 			final int portReceiverIn,
-			final OSCPacketListener packetListener)
+			final OSCPacketListener packetListener,
+			final NetworkProtocol protocol)
 			throws Exception
 	{
 		final SocketAddress senderOutAddress = new InetSocketAddress(portSenderOut);
@@ -85,7 +84,8 @@ public class OSCPortTest {
 
 		OSCPortInBuilder builder = new OSCPortInBuilder()
 			.setLocalSocketAddress(receiverInAddress)
-			.setRemoteSocketAddress(senderInAddress);
+			.setRemoteSocketAddress(senderInAddress)
+			.setNetworkProtocol(protocol);
 
 		if (packetListener != null) {
 			builder.setPacketListener(packetListener);
@@ -97,10 +97,29 @@ public class OSCPortTest {
 		if (sender != null) {
 			sender.close();
 		}
-		sender = new OSCPortOut(
-				new OSCSerializerAndParserBuilder(),
-				receiverOutAddress,
-				senderOutAddress);
+		sender = new OSCPortOutBuilder()
+			.setRemoteSocketAddress(receiverOutAddress)
+			.setLocalSocketAddress(senderOutAddress)
+			.setNetworkProtocol(protocol)
+		  .build();
+	}
+
+	private void reSetUp(
+			final int portSenderOut,
+			final int portSenderIn,
+			final int portReceiverOut,
+			final int portReceiverIn,
+			final OSCPacketListener packetListener)
+			throws Exception
+	{
+		reSetUp(
+			portSenderOut,
+			portSenderIn,
+			portReceiverOut,
+			portReceiverIn,
+			packetListener,
+			NetworkProtocol.UDP
+		);
 	}
 
 	private void reSetUp(
@@ -244,7 +263,6 @@ public class OSCPortTest {
 
 	@Test
 	public void testReceivingLoopbackIPv4() throws Exception {
-
 		final InetAddress loopbackAddress = InetAddress.getByName("127.0.0.1");
 		testReceivingLoopback(loopbackAddress);
 	}

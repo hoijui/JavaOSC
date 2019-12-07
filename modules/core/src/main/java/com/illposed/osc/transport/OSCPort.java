@@ -36,12 +36,32 @@ public class OSCPort {
 	protected OSCPort(
 		final SocketAddress local,
 		final SocketAddress remote,
+		final OSCSerializerAndParserBuilder serializerAndParserBuilder,
+		final NetworkProtocol protocol)
+		throws IOException
+	{
+		switch (protocol) {
+			case UDP:
+				this.transport = new UDPTransport(local, remote, serializerAndParserBuilder);
+				break;
+			// case TCP:
+			// 	// TODO: implement TCPTransport
+			// 	this.transport = new TCPTransport(local, remote, serializerAndParserBuilder);
+			// 	break;
+			default:
+				throw new IllegalArgumentException(
+					"Unexpected NetworkProtocol: " + protocol
+				);
+		}
+	}
+
+	protected OSCPort(
+		final SocketAddress local,
+		final SocketAddress remote,
 		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
 		throws IOException
 	{
-		this.transport = new UDPTransport(
-			local, remote, serializerAndParserBuilder
-		);
+		this(local, remote, serializerAndParserBuilder, NetworkProtocol.UDP);
 	}
 
 	/**

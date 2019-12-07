@@ -97,8 +97,25 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
+	 * @param networkProtocol the network protocol by which to receive OSC packets
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
+	public OSCPortIn(
+			final OSCSerializerAndParserBuilder parserBuilder,
+			final List<OSCPacketListener> packetListeners,
+			final SocketAddress local,
+			final SocketAddress remote,
+			final NetworkProtocol protocol)
+			throws IOException
+	{
+		super(local, remote, parserBuilder, protocol);
+
+		this.listening = false;
+		this.daemonListener = true;
+		this.resilient = true;
+		this.packetListeners = packetListeners;
+	}
+
 	public OSCPortIn(
 			final OSCSerializerAndParserBuilder parserBuilder,
 			final List<OSCPacketListener> packetListeners,
@@ -106,12 +123,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			final SocketAddress remote)
 			throws IOException
 	{
-		super(local, remote, parserBuilder);
-
-		this.listening = false;
-		this.daemonListener = true;
-		this.resilient = true;
-		this.packetListeners = packetListeners;
+		this(parserBuilder, packetListeners, local, remote, NetworkProtocol.UDP);
 	}
 
 	public OSCPortIn(

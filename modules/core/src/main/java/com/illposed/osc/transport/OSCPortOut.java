@@ -47,15 +47,26 @@ public class OSCPortOut extends OSCPort {
 	 *   from Java objects to their OSC byte array representations
 	 * @param remote where we will send the OSC byte array data to
 	 * @param local the local address we use to connect to the remote
+	 * @param networkProtocol the network protocol by which to send OSC packets
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
+	public OSCPortOut(
+			final OSCSerializerAndParserBuilder serializerBuilder,
+			final SocketAddress remote,
+			final SocketAddress local,
+			final NetworkProtocol protocol)
+			throws IOException
+	{
+		super(local, remote, serializerBuilder, protocol);
+	}
+
 	public OSCPortOut(
 			final OSCSerializerAndParserBuilder serializerBuilder,
 			final SocketAddress remote,
 			final SocketAddress local)
 			throws IOException
 	{
-		super(local, remote, serializerBuilder);
+		this(serializerBuilder, remote, local, NetworkProtocol.UDP);
 	}
 
 	public OSCPortOut(

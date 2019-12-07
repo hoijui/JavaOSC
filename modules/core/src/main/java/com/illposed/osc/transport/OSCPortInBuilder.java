@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OSCPortInBuilder {
-
 	private OSCSerializerAndParserBuilder parserBuilder;
 	private List<OSCPacketListener> packetListeners;
 	private SocketAddress local;
 	private SocketAddress remote;
+	private NetworkProtocol networkProtocol = NetworkProtocol.UDP;
 
 	private OSCPacketListener addDefaultPacketListener() {
 		if (packetListeners == null) {
@@ -57,7 +57,9 @@ public class OSCPortInBuilder {
 			addDefaultPacketListener();
 		}
 
-		return new OSCPortIn(parserBuilder, packetListeners, local, remote);
+		return new OSCPortIn(
+			parserBuilder, packetListeners, local, remote, networkProtocol
+		);
 	}
 
 	public OSCPortInBuilder setPort(final int port) {
@@ -90,6 +92,11 @@ public class OSCPortInBuilder {
 
 	public OSCPortInBuilder setRemoteSocketAddress(final SocketAddress address) {
 		remote = address;
+		return this;
+	}
+
+	public OSCPortInBuilder setNetworkProtocol(final NetworkProtocol protocol) {
+		networkProtocol = protocol;
 		return this;
 	}
 
