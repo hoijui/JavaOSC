@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -64,7 +63,7 @@ public class OSCPortTest {
 				.anyMatch(((Predicate<InetAddress>) InetAddress::isLoopbackAddress).negate().and(address -> address instanceof Inet6Address));
 	}
 
-	private void reSetUp(
+	private void setUp(
 			final int portSenderOut,
 			final int portSenderIn,
 			final int portReceiverOut,
@@ -104,7 +103,7 @@ public class OSCPortTest {
 		  .build();
 	}
 
-	private void reSetUp(
+	private void setUp(
 			final int portSenderOut,
 			final int portSenderIn,
 			final int portReceiverOut,
@@ -112,7 +111,7 @@ public class OSCPortTest {
 			final OSCPacketListener packetListener)
 			throws Exception
 	{
-		reSetUp(
+		setUp(
 			portSenderOut,
 			portSenderIn,
 			portReceiverOut,
@@ -122,49 +121,44 @@ public class OSCPortTest {
 		);
 	}
 
-	private void reSetUp(
+	private void setUp(
 			final int portSenderOut,
 			final int portSenderIn,
 			final int portReceiverOut,
 			final int portReceiverIn)
 			throws Exception
 	{
-		reSetUp(portSenderOut, portSenderIn, portReceiverOut, portReceiverIn, null);
+		setUp(portSenderOut, portSenderIn, portReceiverOut, portReceiverIn, null);
 	}
 
-	private void reSetUp(final int portSender, final int portReceiver) throws Exception {
-		reSetUp(portSender, portSender, portReceiver, portReceiver, null);
+	private void setUp(final int portSender, final int portReceiver) throws Exception {
+		setUp(portSender, portSender, portReceiver, portReceiver, null);
 	}
 
-	private void reSetUp(final int portReceiver) throws Exception {
-		reSetUp(0, portReceiver);
+	private void setUp(final int portReceiver) throws Exception {
+		setUp(0, portReceiver);
 	}
 
-	@Before
-	public void setUp() throws Exception {
-		reSetUp(OSCPort.defaultSCOSCPort());
-	}
-
-	private void reSetUpWithSimplePacketListener() throws Exception {
+	private void setUpWithSimplePacketListener() throws Exception {
 		int sender = 0;
 		int receiver = OSCPort.defaultSCOSCPort();
-		reSetUp(sender, sender, receiver, receiver, new SimpleOSCPacketListener());
+		setUp(sender, sender, receiver, receiver, new SimpleOSCPacketListener());
 	}
 
-	private void reSetUpDifferentPorts() throws Exception {
-		reSetUp(OSCPort.defaultSCOSCPort(), OSCPort.defaultSCOSCPort() + 1);
+	private void setUpDifferentPorts() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort(), OSCPort.defaultSCOSCPort() + 1);
 	}
 
-	private void reSetUpDifferentSender() throws Exception {
-		reSetUp(
+	private void setUpDifferentSender() throws Exception {
+		setUp(
 				OSCPort.defaultSCOSCPort(),
 				OSCPort.defaultSCOSCPort() + 1,
 				OSCPort.defaultSCOSCPort() + 2,
 				OSCPort.defaultSCOSCPort() + 2);
 	}
 
-	private void reSetUpDifferentReceiver() throws Exception {
-		reSetUp(
+	private void setUpDifferentReceiver() throws Exception {
+		setUp(
 				OSCPort.defaultSCOSCPort(),
 				OSCPort.defaultSCOSCPort(),
 				OSCPort.defaultSCOSCPort() + 1,
@@ -173,6 +167,13 @@ public class OSCPortTest {
 
 	@After
 	public void tearDown() throws Exception {
+		// There is at least one test that sets `sender` and `receiver` to null for
+		// testing purposes. To avoid a NPE, we check for null here and return
+		// early.
+		if (receiver == null && sender == null) {
+			return;
+		}
+
 		try {
 			if (receiver.isConnected()) { // HACK This should not be required, as DatagramChannel#disconnect() is supposed to have no effect if a it is not connected, but in certain tests, removing this if clause makes the disconnect call hang forever; could even be a JVM bug -> we should report that (requires a minimal example first, though)
 				receiver.disconnect();
@@ -205,24 +206,24 @@ public class OSCPortTest {
 
 	@Test
 	public void testSocketClose() throws Exception {
-
 		// close the underlying sockets
+		setUp(OSCPort.defaultSCOSCPort());
 		receiver.close();
 		sender.close();
-
 		// make sure the old receiver is gone for good
 		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
-
 		// check if the underlying sockets were closed
 		// NOTE We can have many (out-)sockets sending
 		//   on the same address and port,
 		//   but only one receiving per each such tuple.
 		sender = new OSCPortOut();
 		receiver = new OSCPortIn(OSCPort.defaultSCOSCPort());
+
 	}
 
 	@Test
 	public void testSocketAutoClose() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		// DANGEROUS! here we forget to close the underlying sockets!
 		receiver = null;
@@ -241,24 +242,10 @@ public class OSCPortTest {
 	}
 
 	private void testReceivingLoopback(final InetAddress loopbackAddress) throws Exception {
-
 		final InetSocketAddress loopbackSocket = new InetSocketAddress(loopbackAddress, OSCPort.defaultSCOSCPort());
-
-		// close the underlying sockets
-		receiver.close();
-		sender.close();
-
-		// make sure the old receiver is gone for good
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
-
-		// check if the underlying sockets were closed
-		// NOTE We can have many (out-)sockets sending
-		//   on the same address and port,
-		//   but only one receiving per each such tuple.
 		sender = new OSCPortOut(loopbackAddress, OSCPort.defaultSCOSCPort());
 		receiver = new OSCPortIn(loopbackSocket);
-
-		testReceiving();
+		testReceivingImpl();
 	}
 
 	@Test
@@ -269,7 +256,6 @@ public class OSCPortTest {
 
 	@Test
 	public void testReceivingLoopbackIPv6() throws Exception {
-
 		if (supportsIPv6()) {
 			final InetAddress loopbackAddress = InetAddress.getByName("::1");
 			testReceivingLoopback(loopbackAddress);
@@ -280,19 +266,14 @@ public class OSCPortTest {
 
 	@Test
 	public void testReceivingBroadcast() throws Exception {
-		sender.close();
-
-		// make sure the old receiver is gone for good
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
-
 		InetAddress broadcastAddress = InetAddress.getByName("255.255.255.255");
 		sender = new OSCPortOut(broadcastAddress);
-
-		testReceiving();
+		testReceivingImpl();
 	}
 
 	@Test
 	public void testStart() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		OSCMessage message = new OSCMessage("/sc/stop");
 		sender.send(message);
@@ -300,6 +281,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testMessageWithArgs() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
@@ -310,6 +292,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
@@ -322,6 +305,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle2() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		final List<Object> arguments = new ArrayList<>(2);
 		arguments.add(3);
@@ -332,9 +316,7 @@ public class OSCPortTest {
 		sender.send(bundle);
 	}
 
-	@Test
-	public void testReceiving() throws Exception {
-
+	private void testReceivingImpl() throws Exception {
 		OSCMessage message = new OSCMessage("/message/receiving");
 		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/message/receiving"),
@@ -349,7 +331,14 @@ public class OSCPortTest {
 	}
 
 	@Test
+	public void testReceiving() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
+		testReceivingImpl();
+	}
+
+	@Test
 	public void testBundleReceiving() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
@@ -371,7 +360,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testLowLevelBundleReceiving() throws Exception {
-		reSetUpWithSimplePacketListener();
+		setUpWithSimplePacketListener();
 		SimpleOSCPacketListener simpleListener = (SimpleOSCPacketListener)listener;
 
 		receiver.startListening();
@@ -402,7 +391,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testLowLevelMessageReceiving() throws Exception {
-		reSetUpWithSimplePacketListener();
+		setUpWithSimplePacketListener();
 		SimpleOSCPacketListener simpleListener = (SimpleOSCPacketListener)listener;
 
 		receiver.startListening();
@@ -434,6 +423,8 @@ public class OSCPortTest {
 
 	@Test
 	public void testLowLevelRemovingPacketListener() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
+
 		SimpleOSCPacketListener listener = new SimpleOSCPacketListener();
 		receiver.addPacketListener(listener);
 		receiver.removePacketListener(listener);
@@ -492,6 +483,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testReceivingBig() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 1500 bytes,
 		// so the resulting UDP packet size is sure to be bigger then the default maximum,
@@ -501,6 +493,7 @@ public class OSCPortTest {
 
 	@Test(expected=OSCSerializeException.class)
 	public void testReceivingHuge() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 66000 bytes,
 		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
@@ -510,6 +503,7 @@ public class OSCPortTest {
 
 	@Test(expected=OSCSerializeException.class)
 	public void testReceivingHugeConnectedOut() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 66000 bytes,
 		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
@@ -519,7 +513,6 @@ public class OSCPortTest {
 	}
 
 	private void testBundleReceiving(final boolean shouldReceive) throws Exception {
-
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
 		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
@@ -542,7 +535,8 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedOut() throws Exception {
-//		reSetUpDifferentPorts();
+		setUp(OSCPort.defaultSCOSCPort());
+		// setUpDifferentPorts();
 
 		sender.connect();
 		testBundleReceiving(true);
@@ -550,7 +544,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedOutDifferentSender() throws Exception {
-		reSetUpDifferentSender();
+		setUpDifferentSender();
 
 		sender.connect();
 		testBundleReceiving(true);
@@ -558,7 +552,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedOutDifferentReceiver() throws Exception {
-		reSetUpDifferentReceiver();
+		setUpDifferentReceiver();
 
 		sender.connect();
 		testBundleReceiving(false);
@@ -566,7 +560,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedIn() throws Exception {
-		reSetUpDifferentPorts();
+		setUpDifferentPorts();
 
 		receiver.connect();
 		testBundleReceiving(true);
@@ -574,7 +568,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedInDifferentSender() throws Exception {
-		reSetUpDifferentSender();
+		setUpDifferentSender();
 
 		receiver.connect();
 		testBundleReceiving(false);
@@ -582,7 +576,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedInDifferentReceiver() throws Exception {
-		reSetUpDifferentReceiver();
+		setUpDifferentReceiver();
 
 		receiver.connect();
 		testBundleReceiving(false);
@@ -590,7 +584,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingConnectedBoth() throws Exception {
-		reSetUpDifferentPorts();
+		setUpDifferentPorts();
 
 		receiver.connect();
 		sender.connect();
@@ -603,6 +597,7 @@ public class OSCPortTest {
 	 */
 	@Test
 	public void testReceivingLongAfterShort() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		final OSCMessage msgShort = new OSCMessage("/msg/short");
 		final List<Object> someArgs = new ArrayList<>(3);
@@ -630,6 +625,7 @@ public class OSCPortTest {
 	 */
 	@Test
 	public void testReceivingMessageAndPacketListeners() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		final OSCMessage msg = new OSCMessage("/msg/short");
 		final SimpleOSCPacketListener pkgListener = new SimpleOSCPacketListener();
@@ -652,6 +648,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testStopListeningAfterReceivingBadAddress() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
 				"bad", Collections.emptyList(), null);
@@ -673,6 +670,7 @@ public class OSCPortTest {
 
 	@Test
 	public void testListeningAfterBadAddress() throws Exception {
+		setUp(OSCPort.defaultSCOSCPort());
 
 		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
 				"bad", Collections.emptyList(), null);
