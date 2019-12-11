@@ -62,11 +62,10 @@ public class UDPTransport implements Transport {
 		if (local instanceof InetSocketAddress) {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
+			final Class<?> localClass = localIsa.getAddress().getClass();
+			final Class<?> remoteClass = remoteIsa.getAddress().getClass();
 
-			if (!localIsa.getAddress()
-					         .getClass()
-									 .equals(remoteIsa.getAddress().getClass()))
-			{
+			if (!localClass.equals(remoteClass)) {
 				throw new IllegalArgumentException(
 					"local and remote addresses are not of the same family"
 					+ " (IP v4 vs v6)");
