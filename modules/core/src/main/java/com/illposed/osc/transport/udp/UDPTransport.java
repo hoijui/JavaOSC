@@ -62,21 +62,23 @@ public class UDPTransport implements Transport {
 		if (local instanceof InetSocketAddress) {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
-			if (!localIsa.getAddress().getClass().equals(
-			remoteIsa.getAddress().getClass()))
+
+			if (!localIsa.getAddress()
+					         .getClass()
+									 .equals(remoteIsa.getAddress().getClass()))
 			{
-	throw new IllegalArgumentException(
-			"local and remote addresses are not of the same family"
-			+ " (IP v4 vs v6)");
+				throw new IllegalArgumentException(
+					"local and remote addresses are not of the same family"
+					+ " (IP v4 vs v6)");
 			}
 			if (localIsa.getAddress() instanceof Inet4Address) {
-	tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
+				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
 			} else if (localIsa.getAddress() instanceof Inet6Address) {
-	tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
+				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
 			} else {
-	throw new IllegalArgumentException(
-			"Unknown address type: "
-			+ localIsa.getAddress().getClass().getCanonicalName());
+				throw new IllegalArgumentException(
+					"Unknown address type: "
+					+ localIsa.getAddress().getClass().getCanonicalName());
 			}
 		} else {
 			tmpChannel = DatagramChannel.open();
