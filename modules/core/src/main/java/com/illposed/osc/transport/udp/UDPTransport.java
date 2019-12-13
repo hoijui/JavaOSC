@@ -91,6 +91,15 @@ public class UDPTransport implements Transport {
 		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
 		}
 
+	public SocketAddress getLocalAddress() {
+		return local;
+	}
+
+	public SocketAddress getRemoteAddress() {
+		return remote;
+	}
+
+	@Override
 	public void connect() throws IOException {
 		if (remote == null) {
 			throw new IllegalStateException(
@@ -100,20 +109,14 @@ public class UDPTransport implements Transport {
 		channel.connect(remote);
 	}
 
+	@Override
 	public void disconnect() throws IOException {
 		channel.disconnect();
 	}
 
+	@Override
 	public boolean isConnected() {
 		return channel.isConnected();
-	}
-
-	public SocketAddress getLocalAddress() {
-		return local;
-	}
-
-	public SocketAddress getRemoteAddress() {
-		return remote;
 	}
 
 	/**
@@ -121,6 +124,7 @@ public class UDPTransport implements Transport {
 		* It is recommended that clients call this when they are done with the port.
 		* @throws IOException If an I/O error occurs on the channel
 		*/
+	@Override
 	public void close() throws IOException {
 		channel.close();
 	}
@@ -135,6 +139,7 @@ public class UDPTransport implements Transport {
 		return oscChannel.read(buffer);
 	}
 
+	@Override
 	public boolean isBlocking() {
 		return channel.isBlocking();
 	}
