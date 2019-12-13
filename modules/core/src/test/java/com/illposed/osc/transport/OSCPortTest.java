@@ -388,7 +388,7 @@ public class OSCPortTest {
 	@Test
 	@Ignore
 	public void testReceivingBroadcastTCP() throws Exception {
-		testReceivingBroadcast(NetworkProtocol.UDP);
+		testReceivingBroadcast(NetworkProtocol.TCP);
 	}
 
 	private void testStart(NetworkProtocol protocol) throws Exception {
