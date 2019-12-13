@@ -89,7 +89,7 @@ public class UDPTransport implements Transport {
 		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
 		this.channel.socket().bind(local);
 		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
-		}
+	}
 
 	public SocketAddress getLocalAddress() {
 		return local;
