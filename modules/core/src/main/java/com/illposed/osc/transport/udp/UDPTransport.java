@@ -91,14 +91,6 @@ public class UDPTransport implements Transport {
 		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
 	}
 
-	public SocketAddress getLocalAddress() {
-		return local;
-	}
-
-	public SocketAddress getRemoteAddress() {
-		return remote;
-	}
-
 	@Override
 	public void connect() throws IOException {
 		if (remote == null) {
@@ -131,7 +123,7 @@ public class UDPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		oscChannel.send(buffer, packet, getRemoteAddress());
+		oscChannel.send(buffer, packet, remote);
 	}
 
 	@Override
