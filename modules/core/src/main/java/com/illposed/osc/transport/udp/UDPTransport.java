@@ -95,7 +95,7 @@ public class UDPTransport implements Transport {
 	public void connect() throws IOException {
 		if (remote == null) {
 			throw new IllegalStateException(
-	"Can not connect a socket without a remote address specified"
+				"Can not connect a socket without a remote address specified"
 			);
 		}
 		channel.connect(remote);
