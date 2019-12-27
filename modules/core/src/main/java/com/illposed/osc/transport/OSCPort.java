@@ -9,6 +9,7 @@
 package com.illposed.osc.transport;
 
 import com.illposed.osc.transport.udp.UDPTransport;
+import com.illposed.osc.transport.tcp.TCPTransport;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -44,10 +45,20 @@ public class OSCPort {
 			case UDP:
 				this.transport = new UDPTransport(local, remote, serializerAndParserBuilder);
 				break;
-			// case TCP:
-			// 	// TODO: implement TCPTransport
-			// 	this.transport = new TCPTransport(local, remote, serializerAndParserBuilder);
-			// 	break;
+			case TCP:
+				if (!(local instanceof InetSocketAddress &&
+							remote instanceof InetSocketAddress)) {
+					throw new IllegalArgumentException(
+						"Only InetSocketAddress is supported for TCP transport."
+					);
+				}
+
+				this.transport = new TCPTransport(
+					(InetSocketAddress)local,
+					(InetSocketAddress)remote,
+					serializerAndParserBuilder
+				);
+				break;
 			default:
 				throw new IllegalArgumentException(
 					"Unexpected NetworkProtocol: " + protocol
