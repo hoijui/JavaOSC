@@ -18,17 +18,21 @@ import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
+import com.illposed.osc.transport.tcp.TCPTransport;
 import java.io.IOException;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.ServerSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.TimeoutException;
+import java.util.function.BooleanSupplier;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
@@ -56,6 +60,15 @@ public class OSCPortTest {
 	private OSCPortIn receiver;
 	private OSCPacketListener listener;
 
+  private void sleep(long ms) {
+    try {
+      Thread.sleep(ms);
+    } catch (InterruptedException ie) {
+      Thread.currentThread().interrupt();
+      throw new RuntimeException(ie);
+    }
+  }
+
 	private static boolean supportsIPv6() throws SocketException {
 		return Stream.of(NetworkInterface.getNetworkInterfaces().nextElement())
 				.map(NetworkInterface::getInterfaceAddresses)
@@ -63,6 +76,88 @@ public class OSCPortTest {
 				.map(InterfaceAddress::getAddress)
 				.anyMatch(((Predicate<InetAddress>) InetAddress::isLoopbackAddress).negate().and(address -> address instanceof Inet6Address));
 	}
+
+  private int findAvailablePort() throws IOException {
+    try (ServerSocket socket = new ServerSocket(0)) {
+      return socket.getLocalPort();
+    }
+  }
+
+  private void retryUntilTrue(
+    int interval, int timeout, String timeoutMsg, BooleanSupplier test)
+    throws TimeoutException
+  {
+    long deadline = System.currentTimeMillis() + timeout;
+    while (System.currentTimeMillis() < deadline) {
+      if (test.getAsBoolean()) {
+        return;
+      }
+      sleep(interval);
+    }
+
+    throw new TimeoutException(timeoutMsg);
+  }
+
+  private void assertEventuallyTrue(
+    int interval, int timeout, String failureMsg, BooleanSupplier test)
+  {
+    try {
+      retryUntilTrue(interval, timeout, "", test);
+    } catch (TimeoutException te) {
+      Assert.fail(failureMsg);
+    }
+  }
+
+  private void assertNeverTrue(
+    int interval, int timeout, String failureMsg, BooleanSupplier test)
+  {
+    try {
+      retryUntilTrue(interval, timeout, "", test);
+      Assert.fail(failureMsg);
+    } catch (TimeoutException te) {
+      // Reaching the timeout without `test` ever returning true is the success
+      // condition, so we return successfully here.
+    }
+  }
+
+  private boolean isTcpTransportListening(TCPTransport transport) {
+    try {
+      return transport.isListening();
+    } catch (IOException ex) {
+      return false;
+    }
+  }
+
+  private void waitForSocketState(boolean open)
+  throws IOException, TimeoutException
+  {
+    if (receiver.getTransport() instanceof TCPTransport) {
+      // Wait until the receiver is listening.
+      TCPTransport transport = (TCPTransport)receiver.getTransport();
+      retryUntilTrue(
+        100,
+        5000,
+        open
+          ? "Transport not listening."
+          : "Transport still listening.",
+        open
+          ? () -> isTcpTransportListening(transport)
+          : () -> !isTcpTransportListening(transport)
+      );
+    } else {
+      // wait a bit after closing the receiver, because (some) operating systems
+      // need some time to actually close the underlying socket
+      sleep(WAIT_FOR_SOCKET_CLOSE);
+    }
+  }
+
+  private void waitForSocketOpen() throws IOException, TimeoutException {
+    waitForSocketState(true);
+  }
+
+  private void waitForSocketClose() throws IOException, TimeoutException {
+    waitForSocketState(false);
+  }
 
 	private void setUp(
 			final int portSenderOut,   // sender.local
@@ -79,7 +174,8 @@ public class OSCPortTest {
 		final SocketAddress receiverInAddress = new InetSocketAddress(portReceiverIn);
 
 		if (receiver != null) {
-			receiver.close();
+      receiver.close();
+      waitForSocketClose();
 		}
 
 		OSCPortInBuilder builder = new OSCPortInBuilder()
@@ -93,6 +189,11 @@ public class OSCPortTest {
 
 		receiver = builder.build();
 		listener = packetListener;
+
+		if (protocol == NetworkProtocol.TCP) {
+      receiver.startListening();
+      waitForSocketOpen();
+		}
 
 		if (sender != null) {
 			sender.close();
@@ -163,40 +264,31 @@ public class OSCPortTest {
 			log.error("Failed to close test OSC out port", ex);
 		}
 
-		// wait a bit after closing the receiver,
-		// because (some) operating systems need some time
-		// to actually close the underlying socket
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+    waitForSocketClose();
 	}
 
-	private void testSocketClose(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+	private void testSocketClose(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		receiver.close();
 		sender.close();
 
-		// make sure the old receiver is gone for good
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+    waitForSocketClose();
 
 		// check if the underlying sockets were closed
 		// NOTE We can have many (out-)sockets sending
 		//   on the same address and port,
 		//   but only one receiving per each such tuple.
 		sender = new OSCPortOutBuilder()
-			.setRemotePort(OSCPort.defaultSCOSCPort())
+			.setRemotePort(receiverPort)
 			.setLocalPort(0)
 			.setNetworkProtocol(protocol)
 			.build();
 
 		receiver = new OSCPortInBuilder()
-			.setLocalPort(OSCPort.defaultSCOSCPort())
+			.setLocalPort(receiverPort)
 			.setRemotePort(0)
 			.setNetworkProtocol(protocol)
 			.build();
@@ -204,23 +296,23 @@ public class OSCPortTest {
 
 	@Test
 	public void testSocketCloseUDP() throws Exception {
-		testSocketClose(NetworkProtocol.UDP);
+		testSocketClose(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testSocketCloseTCP() throws Exception {
-		testSocketClose(NetworkProtocol.TCP);
+		testSocketClose(NetworkProtocol.TCP, findAvailablePort());
 	}
 
-	private void testSocketAutoClose(NetworkProtocol protocol) throws Exception {
+  @Test
+  public void testSocketAutoClose() throws Exception {
 		setUp(
 			0,
 			0,
 			OSCPort.defaultSCOSCPort(),
 			OSCPort.defaultSCOSCPort(),
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		// DANGEROUS! here we forget to close the underlying sockets!
@@ -229,7 +321,7 @@ public class OSCPortTest {
 
 		// make sure the old receiver is gone for good
 		System.gc();
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+    Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
 
 		// check if the underlying sockets were closed
 		// NOTE We can have many (out-)sockets sending
@@ -238,25 +330,58 @@ public class OSCPortTest {
 		sender = new OSCPortOutBuilder()
 			.setRemotePort(OSCPort.defaultSCOSCPort())
 			.setLocalPort(0)
-			.setNetworkProtocol(protocol)
+			.setNetworkProtocol(NetworkProtocol.UDP)
 			.build();
 
 		receiver = new OSCPortInBuilder()
 			.setLocalPort(OSCPort.defaultSCOSCPort())
 			.setRemotePort(0)
-			.setNetworkProtocol(protocol)
+			.setNetworkProtocol(NetworkProtocol.UDP)
 			.build();
 	}
 
-	@Test
-	public void testSocketAutoCloseUDP() throws Exception {
-		testSocketAutoClose(NetworkProtocol.UDP);
+	private void assertMessageReceived(
+		SimpleOSCMessageListener listener, int timeout)
+	{
+    assertEventuallyTrue(
+      100,
+      timeout,
+      "Message was not received.",
+      () -> listener.isMessageReceived()
+    );
 	}
 
-	@Test
-	@Ignore
-	public void testSocketAutoCloseTCP() throws Exception {
-		testSocketAutoClose(NetworkProtocol.TCP);
+	private void assertMessageNotReceived(
+		SimpleOSCMessageListener listener, int timeout, String failMessage)
+	{
+    assertNeverTrue(
+      100,
+      timeout,
+      failMessage,
+      () -> listener.isMessageReceived()
+    );
+	}
+
+	private void assertPacketReceived(
+		SimpleOSCPacketListener listener, int timeout)
+	{
+    assertEventuallyTrue(
+      100,
+      timeout,
+      "Packet was not received.",
+      () -> listener.isMessageReceived()
+    );
+	}
+
+	private void assertPacketNotReceived(
+		SimpleOSCPacketListener listener, int timeout, String failMessage)
+	{
+    assertNeverTrue(
+      100,
+      timeout,
+      failMessage,
+      () -> listener.isMessageReceived()
+    );
 	}
 
 	private void testReceivingImpl() throws Exception {
@@ -266,43 +391,38 @@ public class OSCPortTest {
 				listener);
 		receiver.startListening();
 		sender.send(message);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
+		try {
+			assertMessageReceived(listener, 5000);
+		} finally {
+			receiver.stopListening();
 		}
 	}
 
-	private void testReceiving(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
-
+	private void testReceiving(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 		testReceivingImpl();
 	}
 
 	@Test
 	public void testReceivingUDP() throws Exception {
-		testReceiving(NetworkProtocol.UDP);
+		testReceiving(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testReceivingTCP() throws Exception {
-		testReceiving(NetworkProtocol.TCP);
+		testReceiving(NetworkProtocol.TCP, findAvailablePort());
 	}
 
 	private void testReceivingLoopback(
-		final InetAddress loopbackAddress, NetworkProtocol protocol)
+		final InetAddress loopbackAddress,
+    int loopbackPort,
+    NetworkProtocol protocol)
 		throws Exception
 	{
 		final InetSocketAddress loopbackSocket =
-			new InetSocketAddress(loopbackAddress, OSCPort.defaultSCOSCPort());
+			new InetSocketAddress(loopbackAddress, loopbackPort);
 
 		final InetSocketAddress wildcardSocket =
 			new InetSocketAddress(OSCPort.generateWildcard(loopbackSocket), 0);
@@ -319,47 +439,56 @@ public class OSCPortTest {
 			.setNetworkProtocol(protocol)
 			.build();
 
+    if (protocol == NetworkProtocol.TCP) {
+      receiver.startListening();
+      waitForSocketOpen();
+    }
+
 		testReceivingImpl();
 	}
 
 	@Test
 	public void testReceivingLoopbackIPv4UDP() throws Exception {
 		final InetAddress loopbackAddress = InetAddress.getByName("127.0.0.1");
-		testReceivingLoopback(loopbackAddress, NetworkProtocol.UDP);
+		testReceivingLoopback(
+      loopbackAddress, OSCPort.defaultSCOSCPort(), NetworkProtocol.UDP
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testReceivingLoopbackIPv4TCP() throws Exception {
 		final InetAddress loopbackAddress = InetAddress.getByName("127.0.0.1");
-		testReceivingLoopback(loopbackAddress, NetworkProtocol.TCP);
+		testReceivingLoopback(
+      loopbackAddress, findAvailablePort(), NetworkProtocol.TCP
+    );
 	}
 
 	@Test
 	public void testReceivingLoopbackIPv6UDP() throws Exception {
 		if (supportsIPv6()) {
 			final InetAddress loopbackAddress = InetAddress.getByName("::1");
-			testReceivingLoopback(loopbackAddress, NetworkProtocol.UDP);
+			testReceivingLoopback(
+        loopbackAddress, OSCPort.defaultSCOSCPort(), NetworkProtocol.UDP
+      );
 		} else {
 			log.warn("Skipping IPv6 test because: No IPv6 support available on this system");
 		}
 	}
 
 	@Test
-	@Ignore
 	public void testReceivingLoopbackIPv6TCP() throws Exception {
 		if (supportsIPv6()) {
 			final InetAddress loopbackAddress = InetAddress.getByName("::1");
-			testReceivingLoopback(loopbackAddress, NetworkProtocol.TCP);
+			testReceivingLoopback(
+        loopbackAddress, findAvailablePort(), NetworkProtocol.TCP
+      );
 		} else {
 			log.warn("Skipping IPv6 test because: No IPv6 support available on this system");
 		}
 	}
 
-	private void testReceivingBroadcast(
-		NetworkProtocol protocol)
-		throws Exception
-	{
+  @Test
+  public void testReceivingBroadcast() throws Exception {
 		sender = new OSCPortOutBuilder()
 			.setRemoteSocketAddress(
 				new InetSocketAddress(
@@ -368,64 +497,40 @@ public class OSCPortTest {
 				)
 			)
 			.setLocalPort(0)
-			.setNetworkProtocol(protocol)
+			.setNetworkProtocol(NetworkProtocol.UDP)
 			.build();
 
 		receiver = new OSCPortInBuilder()
 			.setLocalPort(OSCPort.defaultSCOSCPort())
 			.setRemotePort(0)
-			.setNetworkProtocol(protocol)
+			.setNetworkProtocol(NetworkProtocol.UDP)
 			.build();
 
 		testReceivingImpl();
 	}
 
-	@Test
-	public void testReceivingBroadcastUDP() throws Exception {
-		testReceivingBroadcast(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testReceivingBroadcastTCP() throws Exception {
-		testReceivingBroadcast(NetworkProtocol.TCP);
-	}
-
-	private void testStart(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
-
+	private void testStart(NetworkProtocol protocol, int receiverPort)
+    throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 		OSCMessage message = new OSCMessage("/sc/stop");
 		sender.send(message);
 	}
 
 	@Test
 	public void testStartUDP() throws Exception {
-		testStart(NetworkProtocol.UDP);
+		testStart(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testStartTCP() throws Exception {
-		testStart(NetworkProtocol.TCP);
+		testStart(NetworkProtocol.TCP, findAvailablePort());
 	}
 
-	private void testMessageWithArgs(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
-
+	private void testMessageWithArgs(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
@@ -435,25 +540,18 @@ public class OSCPortTest {
 
 	@Test
 	public void testMessageWithArgsUDP() throws Exception {
-		testMessageWithArgs(NetworkProtocol.UDP);
+		testMessageWithArgs(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testMessageWithArgsTCP() throws Exception {
-		testMessageWithArgs(NetworkProtocol.TCP);
+		testMessageWithArgs(NetworkProtocol.TCP, findAvailablePort());
 	}
 
-	private void testBundle(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
-
+	private void testBundle(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 		List<Object> args = new ArrayList<>(2);
 		args.add(3);
 		args.add("hello");
@@ -465,25 +563,18 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleUDP() throws Exception {
-		testBundle(NetworkProtocol.UDP);
+		testBundle(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testBundleTCP() throws Exception {
-		testBundle(NetworkProtocol.TCP);
+		testBundle(NetworkProtocol.TCP, findAvailablePort());
 	}
 
-	private void testBundle2(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
-
+	private void testBundle2(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp( 0, 0, receiverPort, receiverPort, null, protocol);
 		final List<Object> arguments = new ArrayList<>(2);
 		arguments.add(3);
 		arguments.add("hello");
@@ -495,24 +586,18 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundle2UDP() throws Exception {
-		testBundle2(NetworkProtocol.UDP);
+		testBundle2(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testBundle2TCP() throws Exception {
-		testBundle2(NetworkProtocol.TCP);
+		testBundle2(NetworkProtocol.TCP, findAvailablePort());
 	}
 
-	private void testBundleReceiving(NetworkProtocol protocol) throws Exception {
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+  private void testBundleReceiving(NetworkProtocol protocol, int receiverPort)
+  throws Exception
+  {
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/bundle/receiving"));
@@ -521,11 +606,13 @@ public class OSCPortTest {
 				listener);
 		receiver.startListening();
 		sender.send(bundle);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
+
+		try {
+			assertMessageReceived(listener, 5000);
+		} finally {
+			receiver.stopListening();
 		}
+
 		if (!listener.getReceivedEvent().getTime().equals(bundle.getTimestamp())) {
 			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
 					+ " but has " + listener.getReceivedEvent().getTime());
@@ -534,24 +621,23 @@ public class OSCPortTest {
 
 	@Test
 	public void testBundleReceivingUDP() throws Exception {
-		testBundleReceiving(NetworkProtocol.UDP);
+		testBundleReceiving(NetworkProtocol.UDP, OSCPort.defaultSCOSCPort());
 	}
 
 	@Test
-	@Ignore
 	public void testBundleReceivingTCP() throws Exception {
-		testBundleReceiving(NetworkProtocol.TCP);
+		testBundleReceiving(NetworkProtocol.TCP, findAvailablePort());
 	}
 
 	private void testLowLevelBundleReceiving(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
 		setUp(
 			0,
 			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
+			receiverPort,
+			receiverPort,
 			new SimpleOSCPacketListener(),
 			protocol
 		);
@@ -563,12 +649,11 @@ public class OSCPortTest {
 		OSCBundle bundle = new OSCBundle();
 		bundle.addPacket(new OSCMessage("/low-level/bundle/receiving"));
 		sender.send(bundle);
-		Thread.sleep(100); // wait a bit
 
-		receiver.stopListening();
-
-		if (!simpleListener.isMessageReceived()) {
-			Assert.fail("Message was not received");
+		try {
+			assertPacketReceived(simpleListener, 5000);
+		} finally {
+			receiver.stopListening();
 		}
 
 		OSCBundle packet = (OSCBundle)simpleListener.getReceivedPacket();
@@ -586,24 +671,25 @@ public class OSCPortTest {
 
 	@Test
 	public void testLowLevelBundleReceivingUDP() throws Exception {
-		testLowLevelBundleReceiving(NetworkProtocol.UDP);
+		testLowLevelBundleReceiving(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testLowLevelBundleReceivingTCP() throws Exception {
-		testLowLevelBundleReceiving(NetworkProtocol.TCP);
+		testLowLevelBundleReceiving(NetworkProtocol.TCP, findAvailablePort());
 	}
 
 	private void testLowLevelMessageReceiving(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
 		setUp(
 			0,
 			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
+			receiverPort,
+			receiverPort,
 			new SimpleOSCPacketListener(),
 			protocol
 		);
@@ -616,12 +702,11 @@ public class OSCPortTest {
 
 		OSCMessage message = new OSCMessage(expectedAddress);
 		sender.send(message);
-		Thread.sleep(100); // wait a bit
 
-		receiver.stopListening();
-
-		if (!simpleListener.isMessageReceived()) {
-			Assert.fail("Message was not received");
+		try {
+			assertPacketReceived(simpleListener, 5000);
+		} finally {
+			receiver.stopListening();
 		}
 
 		OSCMessage packet = (OSCMessage)simpleListener.getReceivedPacket();
@@ -639,27 +724,21 @@ public class OSCPortTest {
 
 	@Test
 	public void testLowLevelMessageReceivingUDP() throws Exception {
-		testLowLevelMessageReceiving(NetworkProtocol.UDP);
+		testLowLevelMessageReceiving(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testLowLevelMessageReceivingTCP() throws Exception {
-		testLowLevelMessageReceiving(NetworkProtocol.TCP);
+		testLowLevelMessageReceiving(NetworkProtocol.TCP, findAvailablePort());
 	}
 
 	private void testLowLevelRemovingPacketListener(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		SimpleOSCPacketListener listener = new SimpleOSCPacketListener();
 		receiver.addPacketListener(listener);
@@ -668,26 +747,30 @@ public class OSCPortTest {
 
 		OSCMessage message = new OSCMessage("/low-level/removing-packet-listener");
 		sender.send(message);
-		Thread.sleep(100); // wait a bit
 
-		receiver.stopListening();
-
-		if (listener.isMessageReceived()) {
-			Assert.fail(
-				"Message was received, despite removePacketListener having been called."
+		try {
+			assertPacketNotReceived(
+				listener,
+				5000,
+				"Packet was received, despite removePacketListener having been called."
 			);
+		} finally {
+			receiver.stopListening();
 		}
 	}
 
 	@Test
 	public void testLowLevelRemovingPacketListenerUDP() throws Exception {
-		testLowLevelRemovingPacketListener(NetworkProtocol.UDP);
+		testLowLevelRemovingPacketListener(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testLowLevelRemovingPacketListenerTCP() throws Exception {
-		testLowLevelRemovingPacketListener(NetworkProtocol.TCP);
+		testLowLevelRemovingPacketListener(
+      NetworkProtocol.TCP, findAvailablePort()
+    );
 	}
 
 	/**
@@ -708,11 +791,13 @@ public class OSCPortTest {
 				listener);
 		receiver.startListening();
 		sender.send(message);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
-		}
+
+    try {
+      assertMessageReceived(listener, 5000);
+    } finally {
+      receiver.stopListening();
+    }
+
 		if (message.getArguments().size() != listener.getReceivedEvent().getMessage().getArguments().size()) {
 			Assert.fail("Message received #arguments differs from #arguments sent");
 		}
@@ -765,24 +850,26 @@ public class OSCPortTest {
 		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/bundle/receiving"),
 				listener);
 		receiver.startListening();
-
 		sender.send(bundle);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
 
-//		receiver.disconnect();
-
-		if (shouldReceive && !listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
-		} else if (!shouldReceive && listener.isMessageReceived()) {
-			Assert.fail("Message was received while it should not have!");
-		}
+    try {
+      if (shouldReceive) {
+        assertMessageReceived(listener, 5000);
+      } else {
+        assertMessageNotReceived(
+          listener,
+          5000,
+          "Message was received while it should not have!"
+        );
+      }
+    } finally {
+      receiver.stopListening();
+      // receiver.disconnect();
+    }
 	}
 
-	private void testBundleReceivingConnectedOut(
-		NetworkProtocol protocol)
-		throws Exception
-	{
+	@Test
+	public void testBundleReceivingConnectedOut() throws Exception {
 		setUp(
 			0,
 			0,
@@ -793,7 +880,7 @@ public class OSCPortTest {
 			// OSCPort.defaultSCOSCPort() + 1,
 			// OSCPort.defaultSCOSCPort() + 1,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		sender.connect();
@@ -801,19 +888,8 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedOutUDP() throws Exception {
-		testBundleReceivingConnectedOut(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedOutTCP() throws Exception {
-		testBundleReceivingConnectedOut(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedOutDifferentSender(
-		NetworkProtocol protocol)
-		throws Exception
+	public void testBundleReceivingConnectedOutDifferentSender()
+	throws Exception
 	{
 		setUp(
 			// sender.local != receiver.remote
@@ -823,7 +899,7 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 2,
 			OSCPort.defaultSCOSCPort() + 2,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		sender.connect();
@@ -831,23 +907,8 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedOutDifferentSenderUDP()
+	public void testBundleReceivingConnectedOutDifferentReceiver()
 	throws Exception
-	{
-		testBundleReceivingConnectedOutDifferentSender(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedOutDifferentSenderTCP()
-	throws Exception
-	{
-		testBundleReceivingConnectedOutDifferentSender(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedOutDifferentReceiver(
-		NetworkProtocol protocol)
-		throws Exception
 	{
 		setUp(
 			// sender.local == receiver.remote
@@ -857,7 +918,7 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 1,
 			OSCPort.defaultSCOSCPort() + 2,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		sender.connect();
@@ -865,24 +926,7 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedOutDifferentReceiverUDP()
-	throws Exception
-	{
-		testBundleReceivingConnectedOutDifferentReceiver(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedOutDifferentReceiverTCP()
-	throws Exception
-	{
-		testBundleReceivingConnectedOutDifferentReceiver(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedIn(
-		NetworkProtocol protocol)
-		throws Exception
-	{
+	public void testBundleReceivingConnectedIn() throws Exception {
 		setUp(
 			// sender.local == receiver.remote
 			OSCPort.defaultSCOSCPort(),
@@ -891,7 +935,7 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 1,
 			OSCPort.defaultSCOSCPort() + 1,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		receiver.connect();
@@ -899,20 +943,7 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedInUDP() throws Exception {
-		testBundleReceivingConnectedIn(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedInTCP() throws Exception {
-		testBundleReceivingConnectedIn(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedInDifferentSender(
-		NetworkProtocol protocol)
-		throws Exception
-	{
+	public void testBundleReceivingConnectedInDifferentSender() throws Exception {
 		setUp(
 			// sender.local != receiver.remote
 			OSCPort.defaultSCOSCPort(),
@@ -921,7 +952,7 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 2,
 			OSCPort.defaultSCOSCPort() + 2,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		receiver.connect();
@@ -929,23 +960,8 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedInDifferentSenderUDP()
+	public void testBundleReceivingConnectedInDifferentReceiver()
 	throws Exception
-	{
-		testBundleReceivingConnectedInDifferentSender(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedInDifferentSenderTCP()
-	throws Exception
-	{
-		testBundleReceivingConnectedInDifferentSender(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedInDifferentReceiver(
-		NetworkProtocol protocol)
-		throws Exception
 	{
 		setUp(
 			// sender.local == receiver.remote
@@ -955,7 +971,7 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 1,
 			OSCPort.defaultSCOSCPort() + 2,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		receiver.connect();
@@ -963,24 +979,7 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testBundleReceivingConnectedInDifferentReceiverUDP()
-	throws Exception
-	{
-		testBundleReceivingConnectedInDifferentReceiver(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedInDifferentReceiverTCP()
-	throws Exception
-	{
-		testBundleReceivingConnectedInDifferentReceiver(NetworkProtocol.TCP);
-	}
-
-	private void testBundleReceivingConnectedBoth(
-		NetworkProtocol protocol)
-		throws Exception
-	{
+	public void testBundleReceivingConnectedBoth() throws Exception {
 		setUp(
 			// sender.local == receiver.remote
 			OSCPort.defaultSCOSCPort(),
@@ -989,23 +988,12 @@ public class OSCPortTest {
 			OSCPort.defaultSCOSCPort() + 1,
 			OSCPort.defaultSCOSCPort() + 1,
 			null,
-			protocol
+			NetworkProtocol.UDP
 		);
 
 		receiver.connect();
 		sender.connect();
 		testBundleReceiving(true);
-	}
-
-	@Test
-	public void testBundleReceivingConnectedBothUDP() throws Exception {
-		testBundleReceivingConnectedBoth(NetworkProtocol.UDP);
-	}
-
-	@Test
-	@Ignore
-	public void testBundleReceivingConnectedBothTCP() throws Exception {
-		testBundleReceivingConnectedBoth(NetworkProtocol.TCP);
 	}
 
 	/**
@@ -1013,17 +1001,10 @@ public class OSCPortTest {
 	 * @throws Exception if anything goes wrong
 	 */
 	private void testReceivingLongAfterShort(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		final OSCMessage msgShort = new OSCMessage("/msg/short");
 		final List<Object> someArgs = new ArrayList<>(3);
@@ -1038,22 +1019,24 @@ public class OSCPortTest {
 		receiver.startListening();
 		sender.send(msgShort);
 		sender.send(msgLong);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
-		}
+
+    try {
+      assertMessageReceived(listener, 5000);
+    } finally {
+      receiver.stopListening();
+    }
 	}
 
 	@Test
 	public void testReceivingLongAfterShortUDP() throws Exception {
-		testReceivingLongAfterShort(NetworkProtocol.UDP);
+		testReceivingLongAfterShort(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testReceivingLongAfterShortTCP() throws Exception {
-		testReceivingLongAfterShort(NetworkProtocol.TCP);
+		testReceivingLongAfterShort(NetworkProtocol.TCP, findAvailablePort());
 	}
 
 	/**
@@ -1061,17 +1044,10 @@ public class OSCPortTest {
 	 * @throws Exception if anything goes wrong
 	 */
 	private void testReceivingMessageAndPacketListeners(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		final OSCMessage msg = new OSCMessage("/msg/short");
 		final SimpleOSCPacketListener pkgListener = new SimpleOSCPacketListener();
@@ -1082,39 +1058,34 @@ public class OSCPortTest {
 		receiver.addPacketListener(pkgListener);
 		receiver.startListening();
 		sender.send(msg);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!pkgListener.isMessageReceived()) {
-			Assert.fail("Message was not received by the packet listener");
-		}
-		if (!msgListener.isMessageReceived()) {
-			Assert.fail("Message was not received by the message listener");
-		}
+
+    try {
+      assertPacketReceived(pkgListener, 5000);
+      assertMessageReceived(msgListener, 5000);
+    } finally {
+      receiver.stopListening();
+    }
 	}
 
 	@Test
 	public void testReceivingMessageAndPacketListenersUDP() throws Exception {
-		testReceivingMessageAndPacketListeners(NetworkProtocol.UDP);
+		testReceivingMessageAndPacketListeners(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testReceivingMessageAndPacketListenersTCP() throws Exception {
-		testReceivingMessageAndPacketListeners(NetworkProtocol.TCP);
+		testReceivingMessageAndPacketListeners(
+      NetworkProtocol.TCP, findAvailablePort()
+    );
 	}
 
 	private void testStopListeningAfterReceivingBadAddress(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
 				"bad", Collections.emptyList(), null);
@@ -1127,36 +1098,37 @@ public class OSCPortTest {
 		receiver.startListening();
 		sender.send(msgBad);
 		sender.send(msg);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (listener.isMessageReceived()) {
-			Assert.fail("Message was received, while it should not have been");
-		}
+
+    try {
+      assertMessageNotReceived(
+        listener,
+        5000,
+        "Message was received, while it should not have been"
+      );
+    } finally {
+      receiver.stopListening();
+    }
 	}
 
 	@Test
 	public void testStopListeningAfterReceivingBadAddressUDP() throws Exception {
-		testStopListeningAfterReceivingBadAddress(NetworkProtocol.UDP);
+		testStopListeningAfterReceivingBadAddress(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testStopListeningAfterReceivingBadAddressTCP() throws Exception {
-		testStopListeningAfterReceivingBadAddress(NetworkProtocol.TCP);
+		testStopListeningAfterReceivingBadAddress(
+      NetworkProtocol.TCP, findAvailablePort()
+    );
 	}
 
 	private void testListeningAfterBadAddress(
-		NetworkProtocol protocol)
+		NetworkProtocol protocol, int receiverPort)
 		throws Exception
 	{
-		setUp(
-			0,
-			0,
-			OSCPort.defaultSCOSCPort(),
-			OSCPort.defaultSCOSCPort(),
-			null,
-			protocol
-		);
+		setUp(0, 0, receiverPort, receiverPort, null, protocol);
 
 		final OSCMessage msgBad = OSCMessageTest.createUncheckedAddressMessage(
 				"bad", Collections.emptyList(), null);
@@ -1169,21 +1141,23 @@ public class OSCPortTest {
 		receiver.startListening();
 		sender.send(msgBad);
 		sender.send(msg);
-		Thread.sleep(100); // wait a bit
-		receiver.stopListening();
-		if (!listener.isMessageReceived()) {
-			Assert.fail("Message was not received");
-		}
+
+    try {
+      assertMessageReceived(listener, 5000);
+    } finally {
+      receiver.stopListening();
+    }
 	}
 
 	@Test
 	public void testListeningAfterBadAddressUDP() throws Exception {
-		testListeningAfterBadAddress(NetworkProtocol.UDP);
+		testListeningAfterBadAddress(
+      NetworkProtocol.UDP, OSCPort.defaultSCOSCPort()
+    );
 	}
 
 	@Test
-	@Ignore
 	public void testListeningAfterBadAddressTCP() throws Exception {
-		testListeningAfterBadAddress(NetworkProtocol.TCP);
+		testListeningAfterBadAddress(NetworkProtocol.TCP, findAvailablePort());
 	}
 }
