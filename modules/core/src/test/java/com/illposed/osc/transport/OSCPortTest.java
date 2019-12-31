@@ -825,7 +825,7 @@ public class OSCPortTest {
 	}
 
 	@Test
-	public void testReceivingBig() throws Exception {
+	public void testReceivingUDP1500() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 1500 bytes,
@@ -835,13 +835,34 @@ public class OSCPortTest {
 	}
 
 	@Test(expected=OSCSerializeException.class)
-	public void testReceivingHuge() throws Exception {
+	public void testReceivingUDP66K() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 66000 bytes,
 		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
 		// which is 65k bytes (including headers).
 		testReceivingBySize(66000);
+	}
+
+	@Test
+	public void testReceivingTCP1500() throws Exception {
+    int receiverPort = findAvailablePort();
+    setUp(0, 0, receiverPort, receiverPort, null, NetworkProtocol.TCP);
+    testReceivingBySize(1500);
+	}
+
+	@Test
+	public void testReceivingTCP100K() throws Exception {
+    int receiverPort = findAvailablePort();
+    setUp(0, 0, receiverPort, receiverPort, null, NetworkProtocol.TCP);
+    testReceivingBySize(100000);
+	}
+
+	@Test
+	public void testReceivingTCP1M() throws Exception {
+    int receiverPort = findAvailablePort();
+    setUp(0, 0, receiverPort, receiverPort, null, NetworkProtocol.TCP);
+    testReceivingBySize(1000000);
 	}
 
 	@Test(expected=OSCSerializeException.class)
