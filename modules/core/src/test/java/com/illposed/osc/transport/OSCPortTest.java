@@ -798,18 +798,30 @@ public class OSCPortTest {
       receiver.stopListening();
     }
 
-		if (message.getArguments().size() != listener.getReceivedEvent().getMessage().getArguments().size()) {
+    List<Object> sentArgs = message.getArguments();
+    List<Object> receivedArgs = listener.getReceivedEvent()
+                                        .getMessage()
+                                        .getArguments();
+
+		if (sentArgs.size() != receivedArgs.size()) {
 			Assert.fail("Message received #arguments differs from #arguments sent");
 		}
-		if (!message.getArguments().get(numIntegerArgs - 1).equals(
-				listener.getReceivedEvent().getMessage().getArguments().get(numIntegerArgs - 1)))
-		{
-			Assert.fail("Message received last argument '"
-					+ message.getArguments().get(numIntegerArgs - 1)
-					+ "' differs from the sent one '"
-					+ listener.getReceivedEvent().getMessage().getArguments().get(numIntegerArgs - 1)
-					+ '\'');
-		}
+
+    for (int i = 0; i < sentArgs.size(); i++) {
+      Object sentArg = sentArgs.get(i);
+      Object receivedArg = receivedArgs.get(i);
+      if (!sentArg.equals(receivedArg)) {
+        Assert.fail(
+          String.format(
+            "Message received argument #%d ('%s') " +
+            "differs from the one sent ('%s')",
+            i + 1,
+            receivedArg,
+            sentArg
+          )
+        );
+      }
+    }
 	}
 
 	@Test
