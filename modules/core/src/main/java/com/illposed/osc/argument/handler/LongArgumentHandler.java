@@ -67,8 +67,7 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Long value) {
-
+	public byte[] serialize(final Long value) {
 		long curValue = value;
 		final byte[] longIntBytes = new byte[8];
 		longIntBytes[7] = (byte)curValue; curValue >>>= 8;
@@ -80,6 +79,6 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 		longIntBytes[1] = (byte)curValue; curValue >>>= 8;
 		longIntBytes[0] = (byte)curValue;
 
-		output.put(longIntBytes);
+		return longIntBytes;
 	}
 }

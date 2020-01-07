@@ -33,7 +33,7 @@ public class TCPTransport implements Transport {
 	private final InetSocketAddress local;
 	private final InetSocketAddress remote;
 	private final OSCParser parser;
-	private final OSCSerializerAndParserBuilder serializerBuilder;
+	private final OSCSerializer serializer;
 
 	private Socket clientSocket = null;
 	private ServerSocket serverSocket = null;
@@ -64,16 +64,26 @@ public class TCPTransport implements Transport {
 		this(local, remote, new OSCSerializerAndParserBuilder());
 	}
 
+	private TCPTransport(
+		final InetSocketAddress local,
+		final InetSocketAddress remote,
+		final OSCSerializerAndParserBuilder builder)
+		throws IOException
+	{
+    this(local, remote, builder.buildParser(), builder.buildSerializer());
+	}
+
 	public TCPTransport(
 		final InetSocketAddress local,
 		final InetSocketAddress remote,
-		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
+    final OSCParser parser,
+    final OSCSerializer serializer)
 		throws IOException
 	{
 		this.local = local;
 		this.remote = remote;
-		this.parser = serializerAndParserBuilder.buildParser();
-		this.serializerBuilder = serializerAndParserBuilder;
+		this.parser = parser;
+		this.serializer = serializer;
 	}
 
 	@Override
@@ -119,27 +129,11 @@ public class TCPTransport implements Transport {
 	}
 
 	@Override
-	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		// FIXME: OSCSerializer is implemented specific to a ByteBuffer. You
-		// initialize it with a ByteBuffer (implying that there is max size, which
-		// there isn't you're using TCP) and the signature of the `write` method is
-		// `write(packet)` and it writes it to the ByteBuffer that you initialized
-		// it with.
-		//
-		// TCP is a stream-oriented protocol; we want to write the bytes to a stream
-		// instead.
-		//
-		// TODO: refactor OSCSerializer in some way to make this possible. Maybe the
-		// `write` method could return a byte array instead? Or maybe OSCSerializer
-		// could be made to work with streams at a lower level?
-		//
-		// As a workaround for now, we'll just use a byte buffer allocated to a
-		// really big amount.
-		ByteBuffer buffer = ByteBuffer.allocate(1000000);
-		OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
-		buffer.rewind();
-		serializer.write(packet);
-		buffer.flip();
+	public void send(final OSCPacket packet)
+  throws IOException, OSCSerializeException
+  {
+		byte[] packetBytes =
+      OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
 
     Socket clientSocket = getClientSocket();
     if (!clientSocket.isConnected()) {
@@ -156,7 +150,7 @@ public class TCPTransport implements Transport {
     // the socket is closed and create a new one. So, every message sent uses a
     // new client socket.
     try (OutputStream out = clientSocket.getOutputStream()) {
-      out.write(buffer.array(), 0, buffer.limit());
+      out.write(packetBytes, 0, packetBytes.length);
     }
 	}
 

@@ -41,15 +41,16 @@ public class OSCReparserTest {
 				}
 			};
 
+	private static final OSCSerializer serializer
+		= new OSCSerializerAndParserBuilder().buildSerializer();
+
 	private static ByteBuffer serialize(final OSCPacket packet)
 			throws OSCSerializeException
 	{
-		final ByteBuffer serialized = ByteBuffer.allocate(1024);
-		final OSCSerializer serializer
-				= new OSCSerializerAndParserBuilder().buildSerializer(serialized);
-		serializer.write(packet);
-		serialized.flip();
-		return serialized;
+		byte[] packetBytes =
+			OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
+
+		return ByteBuffer.wrap(packetBytes);
 	}
 
 	private static OSCPacket parse(final ByteBuffer packetBytes)

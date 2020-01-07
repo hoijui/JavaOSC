@@ -58,10 +58,10 @@ public class BooleanFalseArgumentHandler implements ArgumentHandler<Boolean>, Cl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Boolean value) {
-
-//		if (!value.equals(Boolean.FALSE)) {
-//			throw new OSCSerializeException();
-//		}
+	public byte[] serialize(final Boolean value) {
+		// if (!value.equals(Boolean.FALSE)) {
+		// 	throw new OSCSerializeException();
+		// }
+		return new byte[0];
 	}
 }

@@ -63,9 +63,9 @@ public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, 
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCTimeTag64 value)
-			throws OSCSerializeException
+	public byte[] serialize(final OSCTimeTag64 value)
+	throws OSCSerializeException
 	{
-		LongArgumentHandler.INSTANCE.serialize(output, value.getNtpTime());
+		return LongArgumentHandler.INSTANCE.serialize(value.getNtpTime());
 	}
 }

@@ -84,10 +84,11 @@ public interface ArgumentHandler<T> extends Cloneable {
 
 	/**
 	 * Converts from a Java objects to the OSC byte representation.
-	 * @param output where the OSC byte representation of value has to be written to
-	 * @param value the Java value to be serialized into its OSC byte representation
+	 * @param value the Java value to be serialized into its OSC byte
+	 * representation
+	 * @return the byte representation of the object, as a byte array
 	 * @throws OSCSerializeException if anything went wrong while serializing,
 	 *   for example an invalid value was given
 	 */
-	void serialize(ByteBuffer output, T value) throws OSCSerializeException;
+	byte[] serialize(T value) throws OSCSerializeException;
 }

@@ -9,7 +9,6 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -36,35 +35,32 @@ public class OSCSerializerTest {
 		return ((numArguments + 5) / 4) * 4;
 	}
 
-	private void checkPrintOnStream(
+	private void checkSerializedArguments(
 			final Charset charset,
 			final byte[] expected,
 			final Object... arguments)
 			throws OSCSerializeException
 	{
-		final ByteBuffer buffer = ByteBuffer.allocate(1024);
 		final OSCSerializerAndParserBuilder serializerBuilder = new OSCSerializerAndParserBuilder();
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
 			serializerBuilder.addProperties(properties);
 		}
-		final OSCSerializer stream = serializerBuilder.buildSerializer(buffer);
+		final OSCSerializer serializer = serializerBuilder.buildSerializer();
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
-		stream.write(oscMessage);
-		buffer.flip();
-		byte[] result = OSCSerializer.toByteArray(buffer);
+		byte[] result = serializer.serialize(oscMessage);
 		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);
 		result = Arrays.copyOfRange(result, toBeStrippedOffPrefixBytes, result.length);
 		checkResultEqualsAnswer(result, expected);
 	}
 
-	private void checkPrintOnStream(
+	private void checkSerializedArguments(
 			final byte[] expected,
 			final Object... arguments)
 			throws OSCSerializeException
 	{
-		checkPrintOnStream(null, expected, arguments);
+		checkSerializedArguments(null, expected, arguments);
 	}
 
 	/**
@@ -85,60 +81,60 @@ public class OSCSerializerTest {
 	 * @throws Exception because {@link OSCSerializer#write(Object)} may throw something
 	 */
 	@Test
-	public void testPrintFloat2OnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeFloat2() throws Exception {
+		checkSerializedArguments(
 				new byte[] {62, 76, -52, -51},
 				0.2f);
 	}
 
 	@Test
-	public void testPrintFloatOnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeFloat() throws Exception {
+		checkSerializedArguments(
 				new byte[] {65, 44, 27, 113},
 				10.7567f);
 	}
 
 	@Test
-	public void testPrintIntegerOnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeInteger() throws Exception {
+		checkSerializedArguments(
 				new byte[] {0, 0, 4, 100},
 				1124);
 	}
 
 	@Test
-	public void testPrintStringAndIntOnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeStringAndInt() throws Exception {
+		checkSerializedArguments(
 				new byte[] {47, 101, 120, 97, 109, 112, 108, 101, 49, 0, 0, 0, 0, 0, 0, 100},
 				"/example1",
 				100);
 	}
 
 	@Test
-	public void testPrintString2OnStream() throws Exception {
+	public void testSerializeString2() throws Exception {
 		//noinspection SpellCheckingInspection
-		checkPrintOnStream(
+		checkSerializedArguments(
 				new byte[] {97, 98, 99, 100, 0, 0, 0, 0},
 				"abcd");
 	}
 
 	@Test
-	public void testPrintString3OnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeString3() throws Exception {
+		checkSerializedArguments(
 				StandardCharsets.UTF_8,
 				new byte[] {(byte) 0xc3, (byte) 0xa1, 0, 0},
 				"\u00e1"); // latin 'a' with an acute accent
 	}
 
 	@Test
-	public void testPrintStringOnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeString() throws Exception {
+		checkSerializedArguments(
 				new byte[] {97, 98, 99, 0},
 				"abc");
 	}
 
 	@Test
-	public void testPrintLongOnStream() throws Exception {
-		checkPrintOnStream(
+	public void testSerializeLong() throws Exception {
+		checkSerializedArguments(
 				new byte[] {0, 0, 0, 0, 0, 0, 4, 100},
 				1124L);
 	}

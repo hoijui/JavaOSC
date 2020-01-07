@@ -30,12 +30,12 @@ public class ColorArgumentHandlerTest {
 			throws OSCSerializeException, OSCParseException
 	{
 		// serialize
-		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
-		type.serialize(buffer, orig);
-		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
+		final byte[] packetBytes = type.serialize(orig);
 
 		// re-parse
-		return type.parse(reparsableBuffer);
+		final ByteBuffer buffer = ByteBuffer.wrap(packetBytes);
+		buffer.rewind();
+		return type.parse(buffer);
 	}
 
 	private static OSCColor reparse(final OSCColor orig)

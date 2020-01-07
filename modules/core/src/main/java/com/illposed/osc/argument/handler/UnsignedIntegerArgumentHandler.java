@@ -69,12 +69,13 @@ public class UnsignedIntegerArgumentHandler implements ArgumentHandler<OSCUnsign
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCUnsigned value) {
-
+	public byte[] serialize(final OSCUnsigned value) {
 		final long asLong = value.toLong();
-		output.put((byte) (asLong >> 24 & 0xFFL));
-		output.put((byte) (asLong >> 16 & 0xFFL));
-		output.put((byte) (asLong >>  8 & 0xFFL));
-		output.put((byte) (asLong       & 0xFFL));
+		return new byte[]{
+			(byte) (asLong >> 24 & 0xFFL),
+			(byte) (asLong >> 16 & 0xFFL),
+			(byte) (asLong >>  8 & 0xFFL),
+			(byte) (asLong       & 0xFFL)
+		};
 	}
 }

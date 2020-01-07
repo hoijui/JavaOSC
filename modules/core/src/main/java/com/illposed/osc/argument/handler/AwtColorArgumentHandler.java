@@ -79,7 +79,7 @@ public class AwtColorArgumentHandler implements ArgumentHandler<Color>, Cloneabl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Color value) throws OSCSerializeException {
-		ColorArgumentHandler.INSTANCE.serialize(output, toOsc(value));
+	public byte[] serialize(final Color value) throws OSCSerializeException {
+		return ColorArgumentHandler.INSTANCE.serialize(toOsc(value));
 	}
 }

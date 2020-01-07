@@ -69,7 +69,7 @@ public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Clonea
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCSymbol value) {
-		stringArgumentHandler.serialize(output, value.toString());
+	public byte[] serialize(final OSCSymbol value) {
+		return stringArgumentHandler.serialize(value.toString());
 	}
 }

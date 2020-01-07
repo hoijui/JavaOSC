@@ -13,7 +13,6 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
-import com.illposed.osc.OSCSerializerAndParserBuilder;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -38,24 +37,19 @@ public class OSCDatagramChannel extends SelectableChannel {
 
 	private final DatagramChannel underlyingChannel;
 	private final OSCParser parser;
-	private final OSCSerializerAndParserBuilder serializerBuilder;
+	private final OSCSerializer serializer;
 
 	public OSCDatagramChannel(
 			final DatagramChannel underlyingChannel,
-			final OSCSerializerAndParserBuilder serializerAndParserBuilder
-			)
+			final OSCParser parser,
+			final OSCSerializer serializer)
 	{
 		this.underlyingChannel = underlyingChannel;
-		OSCParser tmpParser = null;
-		if (serializerAndParserBuilder != null) {
-			tmpParser = serializerAndParserBuilder.buildParser();
-		}
-		this.parser = tmpParser;
-		this.serializerBuilder = serializerAndParserBuilder;
+		this.parser = parser;
+		this.serializer = serializer;
 	}
 
 	public OSCPacket read(final ByteBuffer buffer) throws IOException, OSCParseException {
-
 		boolean completed = false;
 		OSCPacket oscPacket;
 		try {
@@ -91,16 +85,15 @@ public class OSCDatagramChannel extends SelectableChannel {
 		return oscPacket;
 	}
 
-	public void send(final ByteBuffer buffer, final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
+	public void send(final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
 
 		boolean completed = false;
 		try {
 			begin();
 
-			final OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
-			buffer.rewind();
-			serializer.write(packet);
-			buffer.flip();
+			byte[] packetBytes =
+				OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
+			ByteBuffer buffer = ByteBuffer.wrap(packetBytes);
 			if (underlyingChannel.isConnected()) {
 				underlyingChannel.write(buffer);
 			} else if (remoteAddress == null) {
@@ -114,7 +107,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 		}
 	}
 
-	public void write(final ByteBuffer buffer, final OSCPacket packet) throws IOException, OSCSerializeException {
+	public void write(final OSCPacket packet) throws IOException, OSCSerializeException {
 
 		boolean completed = false;
 		try {
@@ -122,7 +115,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 			if (!underlyingChannel.isConnected()) {
 				throw new IllegalStateException("Either connect the channel or use write()");
 			}
-			send(buffer, packet, null);
+			send(packet, null);
 			completed = true;
 		} finally {
 			end(completed);

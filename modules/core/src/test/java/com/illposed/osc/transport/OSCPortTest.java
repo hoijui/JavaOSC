@@ -13,7 +13,6 @@ import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageTest;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCPacketListener;
-import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
@@ -40,7 +39,6 @@ import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -834,7 +832,8 @@ public class OSCPortTest {
 		testReceivingBySize(1500);
 	}
 
-	@Test(expected=OSCSerializeException.class)
+  // DatagramChannelImpl throws java.net.SocketException: Message too long
+	@Test(expected=SocketException.class)
 	public void testReceivingUDP66K() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 
@@ -865,7 +864,8 @@ public class OSCPortTest {
     testReceivingBySize(1000000);
 	}
 
-	@Test(expected=OSCSerializeException.class)
+  // DatagramDispatcher throws java.io.IOException: Message too long
+	@Test(expected=IOException.class)
 	public void testReceivingHugeConnectedOut() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 

@@ -60,7 +60,7 @@ public class DoubleArgumentHandler implements ArgumentHandler<Double>, Cloneable
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Double value) throws OSCSerializeException {
-		LongArgumentHandler.INSTANCE.serialize(output, Double.doubleToRawLongBits(value));
+	public byte[] serialize(final Double value) throws OSCSerializeException {
+		return LongArgumentHandler.INSTANCE.serialize(Double.doubleToRawLongBits(value));
 	}
 }

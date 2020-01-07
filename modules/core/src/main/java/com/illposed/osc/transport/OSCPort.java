@@ -10,6 +10,8 @@ package com.illposed.osc.transport;
 
 import com.illposed.osc.transport.udp.UDPTransport;
 import com.illposed.osc.transport.tcp.TCPTransport;
+import com.illposed.osc.OSCParser;
+import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -41,9 +43,12 @@ public class OSCPort {
 		final NetworkProtocol protocol)
 		throws IOException
 	{
+		OSCParser parser = serializerAndParserBuilder.buildParser();
+		OSCSerializer serializer = serializerAndParserBuilder.buildSerializer();
+
 		switch (protocol) {
 			case UDP:
-				this.transport = new UDPTransport(local, remote, serializerAndParserBuilder);
+				this.transport = new UDPTransport(local, remote, parser, serializer);
 				break;
 			case TCP:
 				if (!(local instanceof InetSocketAddress &&
@@ -56,7 +61,8 @@ public class OSCPort {
 				this.transport = new TCPTransport(
 					(InetSocketAddress)local,
 					(InetSocketAddress)remote,
-					serializerAndParserBuilder
+					parser,
+					serializer
 				);
 				break;
 			default:

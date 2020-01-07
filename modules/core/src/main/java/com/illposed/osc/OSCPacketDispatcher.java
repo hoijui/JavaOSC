@@ -10,7 +10,6 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +36,6 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	@SuppressWarnings("WeakerAccess")
 	public static final int MAX_ARGUMENTS = 64;
 	private static final int DEFAULT_CORE_THREADS = 3;
-	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
 	private final List<SelectiveMessageListener> selectiveMessageListeners;
@@ -107,12 +105,11 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		NullOSCSerializer() {
 			super(
 					Collections.emptyList(),
-					Collections.emptyMap(),
-					null);
+					Collections.emptyMap());
 		}
 
 		@Override
-		public void writeOnlyTypeTags(final List<?> arguments) {
+		public byte[] serializedTypeTags(final List<?> arguments) {
 			throw new IllegalStateException(
 					"You need to either dispatch only packets containing meta-info, "
 					+ "or supply a serialization factory to the dispatcher");
@@ -121,7 +118,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 	private static class NullOSCSerializerBuilder extends OSCSerializerAndParserBuilder {
 		@Override
-		public OSCSerializer buildSerializer(final ByteBuffer output) {
+		public OSCSerializer buildSerializer() {
 			return new NullOSCSerializer();
 		}
 	}
@@ -134,13 +131,11 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	{
 		final OSCSerializerAndParserBuilder nonNullSerializerBuilder;
 		if (serializerBuilder == null) {
-			this.argumentTypesBuffer = ByteBuffer.allocate(0);
 			nonNullSerializerBuilder = new NullOSCSerializerBuilder();
 		} else {
-			this.argumentTypesBuffer = ByteBuffer.allocate(MAX_ARGUMENTS);
 			nonNullSerializerBuilder = serializerBuilder;
 		}
-		this.serializer = nonNullSerializerBuilder.buildSerializer(argumentTypesBuffer);
+		this.serializer = nonNullSerializerBuilder.buildSerializer();
 		final Map<String, Object> serializationProperties
 				= nonNullSerializerBuilder.getProperties();
 		final Charset propertiesCharset
@@ -365,15 +360,13 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	private CharSequence generateTypeTagsString(final List<?> arguments) {
 
 		try {
-			serializer.writeOnlyTypeTags(arguments);
+			byte[] bytes = serializer.serializedTypeTags(arguments);
+			return new String(bytes, typeTagsCharset);
 		} catch (final OSCSerializeException ex) {
 			throw new IllegalArgumentException(
 					"Failed generating Arguments Type Tag string while dispatching",
 					ex);
 		}
-		argumentTypesBuffer.flip();
-
-		return new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
 	}
 
 	private void ensureMetaInfo(final OSCMessage message) {

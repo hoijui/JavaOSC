@@ -87,7 +87,7 @@ public class DateTimeStampArgumentHandler implements ArgumentHandler<Date>, Clon
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Date value) throws OSCSerializeException {
-		TimeTag64ArgumentHandler.INSTANCE.serialize(output, OSCTimeTag64.valueOf(value));
+	public byte[] serialize(final Date value) throws OSCSerializeException {
+		return TimeTag64ArgumentHandler.INSTANCE.serialize(OSCTimeTag64.valueOf(value));
 	}
 }

@@ -125,10 +125,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final String value) {
-
-		final byte[] stringBytes = value.getBytes(charset);
-		output.put(stringBytes);
-		OSCSerializer.terminateAndAlign(output);
+	public byte[] serialize(final String value) {
+		return OSCSerializer.terminatedAndAligned(value.getBytes(charset));
 	}
 }

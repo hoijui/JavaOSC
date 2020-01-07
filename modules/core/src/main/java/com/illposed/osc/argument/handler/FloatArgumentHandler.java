@@ -60,7 +60,7 @@ public class FloatArgumentHandler implements ArgumentHandler<Float>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Float value) throws OSCSerializeException {
-		IntegerArgumentHandler.INSTANCE.serialize(output, Float.floatToRawIntBits(value));
+	public byte[] serialize(final Float value) throws OSCSerializeException {
+		return IntegerArgumentHandler.INSTANCE.serialize(Float.floatToRawIntBits(value));
 	}
 }

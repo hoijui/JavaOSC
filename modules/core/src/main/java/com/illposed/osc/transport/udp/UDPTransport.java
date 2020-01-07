@@ -10,8 +10,10 @@ package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParseException;
-import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.OSCParser;
+import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
+import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.transport.Transport;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import java.io.IOException;
@@ -50,10 +52,20 @@ public class UDPTransport implements Transport {
 		this(local, remote, new OSCSerializerAndParserBuilder());
 	}
 
+	private UDPTransport(
+		final SocketAddress local,
+		final SocketAddress remote,
+		final OSCSerializerAndParserBuilder builder)
+		throws IOException
+	{
+		this(local, remote, builder.buildParser(), builder.buildSerializer());
+	}
+
 	public UDPTransport(
 		final SocketAddress local,
 		final SocketAddress remote,
-		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
+		final OSCParser parser,
+		final OSCSerializer serializer)
 		throws IOException
 	{
 		this.local = local;
@@ -88,7 +100,7 @@ public class UDPTransport implements Transport {
 		this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
 		this.channel.socket().bind(local);
-		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
+		this.oscChannel = new OSCDatagramChannel(channel, parser, serializer);
 	}
 
 	@Override
@@ -123,7 +135,7 @@ public class UDPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		oscChannel.send(buffer, packet, remote);
+		oscChannel.send(packet, remote);
 	}
 
 	@Override

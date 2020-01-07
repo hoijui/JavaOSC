@@ -58,10 +58,10 @@ public class NullArgumentHandler implements ArgumentHandler<Object>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Object value) {
-
-//		if (value != null) {
-//			throw new OSCSerializeException();
-//		}
+	public byte[] serialize(final Object value) {
+		// if (value != null) {
+		// 	throw new OSCSerializeException();
+		// }
+		return new byte[0];
 	}
 }

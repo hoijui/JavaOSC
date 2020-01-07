@@ -63,7 +63,7 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCMidiMessage value) {
-		output.put(value.toContentArray());
+	public byte[] serialize(final OSCMidiMessage value) {
+		return value.toContentArray();
 	}
 }

@@ -67,8 +67,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Integer value) {
-
+	public byte[] serialize(final Integer value) {
 		int curValue = value;
 		final byte[] intBytes = new byte[4];
 		intBytes[3] = (byte)curValue; curValue >>>= 8;
@@ -76,6 +75,6 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 		intBytes[1] = (byte)curValue; curValue >>>= 8;
 		intBytes[0] = (byte)curValue;
 
-		output.put(intBytes);
+		return intBytes;
 	}
 }

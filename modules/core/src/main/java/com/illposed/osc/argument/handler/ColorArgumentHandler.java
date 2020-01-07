@@ -64,11 +64,12 @@ public class ColorArgumentHandler implements ArgumentHandler<OSCColor>, Cloneabl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCColor value) {
-
-		output.put(value.getRed());
-		output.put(value.getGreen());
-		output.put(value.getBlue());
-		output.put(value.getAlpha());
+	public byte[] serialize(final OSCColor value) {
+		return new byte[]{
+			value.getRed(),
+			value.getGreen(),
+			value.getBlue(),
+			value.getAlpha()
+		};
 	}
 }

@@ -59,10 +59,10 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCImpulse value) {
-
-//		if (value != OSCImpulse.INSTANCE) {
-//			throw new OSCSerializeException();
-//		}
+	public byte[] serialize(final OSCImpulse value) {
+		// if (value != OSCImpulse.INSTANCE) {
+		// 	throw new OSCSerializeException();
+		// }
+		return new byte[0];
 	}
 }
