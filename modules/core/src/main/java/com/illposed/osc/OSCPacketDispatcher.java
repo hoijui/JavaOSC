@@ -109,7 +109,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 
 		@Override
-		public byte[] serializedTypeTags(final List<?> arguments) {
+		public byte[] serializedTypeTags(final List<Object> arguments) {
 			throw new IllegalStateException(
 					"You need to either dispatch only packets containing meta-info, "
 					+ "or supply a serialization factory to the dispatcher");
@@ -357,8 +357,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		}
 	}
 
-	private CharSequence generateTypeTagsString(final List<?> arguments) {
-
+	private CharSequence generateTypeTagsString(final List<Object> arguments) {
 		try {
 			byte[] bytes = serializer.serializedTypeTags(arguments);
 			return new String(bytes, typeTagsCharset);

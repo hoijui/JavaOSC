@@ -157,6 +157,47 @@ public class OSCSerializer {
 		return properties;
 	}
 
+	private interface Transformer<A, B> {
+		public B transform(A thing) throws OSCSerializeException;
+	}
+
+  // A wrapper around Util.concat(Function<T, byte[]>, T...) that works around
+  // the limitation of Java functions that they can't throw checked exceptions.
+  //
+  // We use Util.concat with a function internally; the function does work that
+  // might throw an OSCSerializeException, and if an OSCSerializeException is
+  // thrown, we catch it and re-throw it as a RuntimeException, thereby avoiding
+  // a compilation error because functions can't throw checked exceptions. But
+  // we still want the OSCSerializeException to percolate upward, so we have an
+  // outer try/catch that catches RuntimeExceptions, checks to see if the cause
+  // was an OSCSerializeException, and if it was, then we throw the
+  // OSCSerializeException.
+	private <T> byte[] concat(Transformer<T, byte[]> transformer, List<T> things)
+	throws OSCSerializeException
+	{
+		try {
+			return Util.concat(
+				thing -> {
+					try {
+						return transformer.transform(thing);
+					} catch (OSCSerializeException ex) {
+						throw new RuntimeException(ex);
+					}
+				},
+				things
+			);
+		} catch (RuntimeException runtimeException) {
+			Throwable cause = runtimeException.getCause();
+
+			if (cause instanceof OSCSerializeException) {
+				throw (OSCSerializeException)cause;
+			}
+
+			throw runtimeException;
+		}
+	}
+
+
 	/**
 	 * Returns the "final" version of a serialized packet, which ends in at least
 	 * one {@code (byte) '0'} byte and has a size divisible by {@link OSCParser#ALIGNMENT_BYTES}.
@@ -188,83 +229,49 @@ public class OSCSerializer {
 	private byte[] serialize(final OSCBundle bundle)
 	throws OSCSerializeException
 	{
-		try {
-			return Util.concat(
-				serialize(OSCParser.BUNDLE_START),
-				serialize(bundle.getTimestamp()),
-				Util.concat(
-					packet -> {
-						// This try/catch is a hack to work around the fact that Java
-						// functions can't throw checked exceptions.
-						//
-						// Below, we retrieve the OSCSerializeException from the
-						// RuntimeException and throw it properly as a checked exception.
-						try {
-							byte[] packetBytes = serialize(packet);
+		return Util.concat(
+			serialize(OSCParser.BUNDLE_START),
+			serialize(bundle.getTimestamp()),
+			concat(
+        new Transformer<OSCPacket, byte[]>() {
+          public byte[] transform(OSCPacket packet) throws OSCSerializeException {
+            byte[] packetBytes = serialize(packet);
 
-							// Serialize the length of the packet followed by the data.
-							return Util.concat(
-								serialize(packetBytes.length),
-								packetBytes
-							);
-						} catch (OSCSerializeException ex) {
-							throw new RuntimeException(ex);
-						}
-					},
-					bundle.getPackets()
-				)
-			);
-		} catch (RuntimeException runtimeException) {
-			Throwable cause = runtimeException.getCause();
-
-			if (cause instanceof OSCSerializeException) {
-				throw (OSCSerializeException)cause;
-			}
-
-			throw runtimeException;
-		}
+            // Serialize the length of the packet followed by the data.
+            return Util.concat(
+              serialize(packetBytes.length),
+              packetBytes
+            );
+          }
+        },
+				bundle.getPackets()
+			)
+		);
 	}
 
 	private byte[] serialize(final OSCMessage message)
 	throws OSCSerializeException
 	{
-		try {
-			String address = message.getAddress();
-			List<Object> arguments = message.getArguments();
+    String address = message.getAddress();
+    List<Object> arguments = message.getArguments();
 
-			return Util.concat(
-				serialize(address),
-				terminatedAndAligned(
-					Util.concat(
-						new byte[]{OSCParser.TYPES_VALUES_SEPARATOR},
-						serializedTypeTags(arguments)
-					)
-				),
-				Util.concat(
-					argument -> {
-						// This try/catch is a hack to work around the fact that Java
-						// functions can't throw checked exceptions.
-						//
-						// Below, we retrieve the OSCSerializeException from the
-						// RuntimeException and throw it properly as a checked exception.
-						try {
-							return serialize(argument);
-						} catch (OSCSerializeException ex) {
-							throw new RuntimeException(ex);
-						}
-					},
-					arguments
-				)
-			);
-		} catch (RuntimeException runtimeException) {
-			Throwable cause = runtimeException.getCause();
-
-			if (cause instanceof OSCSerializeException) {
-				throw (OSCSerializeException)cause;
-			}
-
-			throw runtimeException;
-		}
+    return Util.concat(
+      serialize(address),
+      terminatedAndAligned(
+        Util.concat(
+          new byte[]{OSCParser.TYPES_VALUES_SEPARATOR},
+          serializedTypeTags(arguments)
+        )
+      ),
+      concat(
+        new Transformer<Object, byte[]>() {
+          public byte[] transform(Object argument) throws OSCSerializeException {
+            return serialize(argument);
+          }
+        },
+        arguments
+      )
+    );
 	}
 
 	public byte[] serialize(final OSCPacket packet)
@@ -380,36 +387,19 @@ public class OSCSerializer {
 	throws OSCSerializeException
 	{
 		if (anObject instanceof Collection) {
-			try {
-				// We can safely suppress the warning, as we already made sure the cast
-				// will not fail.
-				@SuppressWarnings("unchecked")
-				final Collection<?> theArray = (Collection<?>) anObject;
+      // We can safely suppress the warning, as we already made sure the cast
+      // will not fail.
+      @SuppressWarnings("unchecked")
+      final Collection<?> theArray = (Collection<?>) anObject;
 
-				return Util.concat(
-					entry -> {
-						// This try/catch is a hack to work around the fact that Java
-						// functions can't throw checked exceptions.
-						//
-						// Below, we retrieve the OSCSerializeException from the
-						// RuntimeException and throw it properly as a checked exception.
-						try {
-							return serialize(entry);
-						} catch (OSCSerializeException ex) {
-							throw new RuntimeException(ex);
-						}
-					},
-					theArray.stream().collect(Collectors.toList())
-				);
-			} catch (RuntimeException runtimeException) {
-				Throwable cause = runtimeException.getCause();
-
-				if (cause instanceof OSCSerializeException) {
-					throw (OSCSerializeException)cause;
-				}
-
-				throw runtimeException;
-			}
+      return concat(
+        new Transformer<Object, byte[]>() {
+          public byte[] transform(Object entry) throws OSCSerializeException {
+            return serialize(entry);
+          }
+        },
+        theArray.stream().collect(Collectors.toList())
+      );
 		}
 
 		@SuppressWarnings("unchecked")
@@ -428,48 +418,31 @@ public class OSCSerializer {
 	 * @return the serialized type tags as a byte array
 	 * @throws OSCSerializeException if the arguments failed to serialize
 	 */
-	public byte[] serializedTypeTags(final List<?> arguments)
+	public byte[] serializedTypeTags(final List<Object> arguments)
 	throws OSCSerializeException
 	{
-		try {
-			return Util.concat(
-				argument -> {
-					// This try/catch is a hack to work around the fact that Java
-					// functions can't throw checked exceptions.
-					//
-					// Below, we retrieve the OSCSerializeException from the
-					// RuntimeException and throw it properly as a checked exception.
-					try {
-						// Serialize nested arguments.
-						if (argument instanceof List) {
-							@SuppressWarnings("unchecked")
-							final List<?> argumentsArray = (List<?>) argument;
+    return concat(
+      new Transformer<Object, byte[]>() {
+        public byte[] transform(Object argument) throws OSCSerializeException {
+          // Serialize nested arguments.
+          if (argument instanceof List) {
+            @SuppressWarnings("unchecked")
+            final List<Object> argumentsArray = (List<Object>) argument;
 
-							return Util.concat(
-								new byte[]{OSCParser.TYPE_ARRAY_BEGIN},
-								serializedTypeTags(argumentsArray),
-								new byte[]{OSCParser.TYPE_ARRAY_END}
-							);
-						}
+            return Util.concat(
+              new byte[]{OSCParser.TYPE_ARRAY_BEGIN},
+              serializedTypeTags(argumentsArray),
+              new byte[]{OSCParser.TYPE_ARRAY_END}
+            );
+          }
 
-						// Serialize a single, simple arguments type.
-						return new byte[]{
-							(byte) findHandler(argument).getDefaultIdentifier()
-						};
-					} catch (OSCSerializeException ex) {
-						throw new RuntimeException(ex);
-					}
-				},
-				arguments
-			);
-		} catch (RuntimeException runtimeException) {
-			Throwable cause = runtimeException.getCause();
-
-			if (cause instanceof OSCSerializeException) {
-				throw (OSCSerializeException)cause;
-			}
-
-			throw runtimeException;
-		}
+          // Serialize a single, simple arguments type.
+          return new byte[]{
+            (byte) findHandler(argument).getDefaultIdentifier()
+          };
+        }
+      },
+      arguments
+    );
 	}
 }
