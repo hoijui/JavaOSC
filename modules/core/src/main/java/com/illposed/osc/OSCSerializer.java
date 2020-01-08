@@ -75,7 +75,7 @@ public class OSCSerializer {
 	/**
 	 * Creates a new serializer with all the required ingredients.
 	 * @param types all of these, and only these arguments will be serializable
-	 *   by this object, that are supported by these handlers
+	 *	 by this object, that are supported by these handlers
 	 * @param properties see {@link ArgumentHandler#setProperties(Map)}
 	 */
 	public OSCSerializer(
@@ -158,22 +158,23 @@ public class OSCSerializer {
 	}
 
 	private interface Transformer<A, B> {
-		public B transform(A thing) throws OSCSerializeException;
+		B transform(A thing) throws OSCSerializeException;
 	}
 
-  // A wrapper around Util.concat(Function<T, byte[]>, T...) that works around
-  // the limitation of Java functions that they can't throw checked exceptions.
-  //
-  // We use Util.concat with a function internally; the function does work that
-  // might throw an OSCSerializeException, and if an OSCSerializeException is
-  // thrown, we catch it and re-throw it as a RuntimeException, thereby avoiding
-  // a compilation error because functions can't throw checked exceptions. But
-  // we still want the OSCSerializeException to percolate upward, so we have an
-  // outer try/catch that catches RuntimeExceptions, checks to see if the cause
-  // was an OSCSerializeException, and if it was, then we throw the
-  // OSCSerializeException.
-	private <T> byte[] concat(Transformer<T, byte[]> transformer, List<T> things)
-	throws OSCSerializeException
+	// A wrapper around Util.concat(Function<T, byte[]>, T...) that works around
+	// the limitation of Java functions that they can't throw checked exceptions.
+	//
+	// We use Util.concat with a function internally; the function does work that
+	// might throw an OSCSerializeException, and if an OSCSerializeException is
+	// thrown, we catch it and re-throw it as a RuntimeException, thereby avoiding
+	// a compilation error because functions can't throw checked exceptions. But
+	// we still want the OSCSerializeException to percolate upward, so we have an
+	// outer try/catch that catches RuntimeExceptions, checks to see if the cause
+	// was an OSCSerializeException, and if it was, then we throw the
+	// OSCSerializeException.
+	private <T> byte[] concat(
+		final Transformer<T, byte[]> transformer, final List<T> things)
+		throws OSCSerializeException
 	{
 		try {
 			return Util.concat(
@@ -233,17 +234,19 @@ public class OSCSerializer {
 			serialize(OSCParser.BUNDLE_START),
 			serialize(bundle.getTimestamp()),
 			concat(
-        new Transformer<OSCPacket, byte[]>() {
-          public byte[] transform(OSCPacket packet) throws OSCSerializeException {
-            byte[] packetBytes = serialize(packet);
+				new Transformer<OSCPacket, byte[]>() {
+					public byte[] transform(final OSCPacket packet)
+					throws OSCSerializeException
+					{
+						byte[] packetBytes = serialize(packet);
 
-            // Serialize the length of the packet followed by the data.
-            return Util.concat(
-              serialize(packetBytes.length),
-              packetBytes
-            );
-          }
-        },
+						// Serialize the length of the packet followed by the data.
+						return Util.concat(
+							serialize(packetBytes.length),
+							packetBytes
+						);
+					}
+				},
 				bundle.getPackets()
 			)
 		);
@@ -252,26 +255,28 @@ public class OSCSerializer {
 	private byte[] serialize(final OSCMessage message)
 	throws OSCSerializeException
 	{
-    String address = message.getAddress();
-    List<Object> arguments = message.getArguments();
+		String address = message.getAddress();
+		List<Object> arguments = message.getArguments();
 
-    return Util.concat(
-      serialize(address),
-      terminatedAndAligned(
-        Util.concat(
-          new byte[]{OSCParser.TYPES_VALUES_SEPARATOR},
-          serializedTypeTags(arguments)
-        )
-      ),
-      concat(
-        new Transformer<Object, byte[]>() {
-          public byte[] transform(Object argument) throws OSCSerializeException {
-            return serialize(argument);
-          }
-        },
-        arguments
-      )
-    );
+		return Util.concat(
+			serialize(address),
+			terminatedAndAligned(
+				Util.concat(
+					new byte[]{OSCParser.TYPES_VALUES_SEPARATOR},
+					serializedTypeTags(arguments)
+				)
+			),
+			concat(
+				new Transformer<Object, byte[]>() {
+					public byte[] transform(final Object argument)
+					throws OSCSerializeException
+					{
+						return serialize(argument);
+					}
+				},
+				arguments
+			)
+		);
 	}
 
 	public byte[] serialize(final OSCPacket packet)
@@ -377,9 +382,9 @@ public class OSCSerializer {
 	/**
 	 * Returns the byte representation of an object.
 	 * @param anObject (usually) one of Float, Double, String, Character, Integer,
-	 *   Long, or a Collection of these.
-	 *   See {@link #getClassToTypeMapping()} for a complete list of which classes
-	 *   may be used here.
+	 *	 Long, or a Collection of these.
+	 *	 See {@link #getClassToTypeMapping()} for a complete list of which classes
+	 *	 may be used here.
 	 * @return the byte representation of the object
 	 * @throws OSCSerializeException if the argument object failed to serialize
 	 */
@@ -387,19 +392,21 @@ public class OSCSerializer {
 	throws OSCSerializeException
 	{
 		if (anObject instanceof Collection) {
-      // We can safely suppress the warning, as we already made sure the cast
-      // will not fail.
-      @SuppressWarnings("unchecked")
-      final Collection<?> theArray = (Collection<?>) anObject;
+			// We can safely suppress the warning, as we already made sure the cast
+			// will not fail.
+			@SuppressWarnings("unchecked")
+			final Collection<?> theArray = (Collection<?>) anObject;
 
-      return concat(
-        new Transformer<Object, byte[]>() {
-          public byte[] transform(Object entry) throws OSCSerializeException {
-            return serialize(entry);
-          }
-        },
-        theArray.stream().collect(Collectors.toList())
-      );
+			return concat(
+				new Transformer<Object, byte[]>() {
+					public byte[] transform(final Object entry)
+					throws OSCSerializeException
+					{
+						return serialize(entry);
+					}
+				},
+				theArray.stream().collect(Collectors.toList())
+			);
 		}
 
 		@SuppressWarnings("unchecked")
@@ -421,28 +428,30 @@ public class OSCSerializer {
 	public byte[] serializedTypeTags(final List<Object> arguments)
 	throws OSCSerializeException
 	{
-    return concat(
-      new Transformer<Object, byte[]>() {
-        public byte[] transform(Object argument) throws OSCSerializeException {
-          // Serialize nested arguments.
-          if (argument instanceof List) {
-            @SuppressWarnings("unchecked")
-            final List<Object> argumentsArray = (List<Object>) argument;
+		return concat(
+			new Transformer<Object, byte[]>() {
+				public byte[] transform(final Object argument)
+				throws OSCSerializeException
+				{
+					// Serialize nested arguments.
+					if (argument instanceof List) {
+						@SuppressWarnings("unchecked")
+						final List<Object> argumentsArray = (List<Object>) argument;
 
-            return Util.concat(
-              new byte[]{OSCParser.TYPE_ARRAY_BEGIN},
-              serializedTypeTags(argumentsArray),
-              new byte[]{OSCParser.TYPE_ARRAY_END}
-            );
-          }
+						return Util.concat(
+							new byte[]{OSCParser.TYPE_ARRAY_BEGIN},
+							serializedTypeTags(argumentsArray),
+							new byte[]{OSCParser.TYPE_ARRAY_END}
+						);
+					}
 
-          // Serialize a single, simple arguments type.
-          return new byte[]{
-            (byte) findHandler(argument).getDefaultIdentifier()
-          };
-        }
-      },
-      arguments
-    );
+					// Serialize a single, simple arguments type.
+					return new byte[]{
+						(byte) findHandler(argument).getDefaultIdentifier()
+					};
+				}
+			},
+			arguments
+		);
 	}
 }

@@ -51,8 +51,9 @@ public class OSCPort {
 				this.transport = new UDPTransport(local, remote, parser, serializer);
 				break;
 			case TCP:
-				if (!(local instanceof InetSocketAddress &&
-							remote instanceof InetSocketAddress)) {
+				if (!(local instanceof InetSocketAddress
+							&& remote instanceof InetSocketAddress))
+				{
 					throw new IllegalArgumentException(
 						"Only InetSocketAddress is supported for TCP transport."
 					);

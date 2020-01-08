@@ -13,8 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Util {
-	public static byte[] concat(List<byte[]> byteArrays) {
+public final class Util {
+	// Override the default constructor, preventing callers from instantiating a
+	// utility class, which would make no sense.
+	private Util() {}
+
+	public static byte[] concat(final List<byte[]> byteArrays) {
 		int totalLength = 0;
 
 		for (byte[] byteArray : byteArrays) {
@@ -32,13 +36,13 @@ public class Util {
 		return result;
 	}
 
-	public static byte[] concat(byte[]... byteArrays) {
+	public static byte[] concat(final byte[]... byteArrays) {
 		return concat(Arrays.asList(byteArrays));
 	}
 
 	public static <T> byte[] concat(
-    Function<T, byte[]> transform, List<T> things)
-  {
+		final Function<T, byte[]> transform, final List<T> things)
+	{
 		List<byte[]> byteArrays = new ArrayList<>();
 
 		for (T thing : things) {
@@ -48,7 +52,9 @@ public class Util {
 		return concat(byteArrays);
 	}
 
-	public static <T> byte[] concat(Function<T, byte[]> transform, T... things) {
+	public static <T> byte[] concat(
+		final Function<T, byte[]> transform, final T... things)
+	{
 		return concat(transform, Arrays.asList(things));
 	}
 }
