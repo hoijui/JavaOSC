@@ -9,6 +9,7 @@
 package com.illposed.osc.argument.handler;
 
 import com.illposed.osc.argument.ArgumentHandler;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	public Integer parse(final ByteBuffer input) {
 
 		final Integer value = input.asIntBuffer().get();
-		input.position(input.position() + BYTES);
+		((Buffer)input).position(input.position() + BYTES);
 		return value;
 	}
 

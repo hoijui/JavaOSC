@@ -12,6 +12,7 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -106,7 +107,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 
 		final int strLen = lengthOfCurrentString(input);
 		final ByteBuffer strBuffer = input.slice();
-		strBuffer.limit(strLen);
+		((Buffer)strBuffer).limit(strLen);
 		final String res;
 		try {
 			res = charset.newDecoder().decode(strBuffer).toString();
@@ -115,7 +116,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 				"Failed decoding a string argument", ex, input
 			);
 		}
-		input.position(input.position() + strLen);
+		((Buffer)input).position(input.position() + strLen);
 		// because strings are always padded with at least one zero,
 		// as their length is not given in advance, as is the case with blobs,
 		// we skip over the terminating zero byte (position++)

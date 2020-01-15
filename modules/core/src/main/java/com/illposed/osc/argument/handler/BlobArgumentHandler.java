@@ -13,6 +13,7 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -58,9 +59,9 @@ public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneab
 	public ByteBuffer parse(final ByteBuffer input) throws OSCParseException {
 		final int blobLen = IntegerArgumentHandler.INSTANCE.parse(input);
 		final int previousLimit = input.limit();
-		input.limit(input.position() + blobLen);
+		((Buffer)input).limit(input.position() + blobLen);
 		final ByteBuffer value = input.slice();
-		input.limit(previousLimit);
+		((Buffer)input).limit(previousLimit);
 		return value;
 	}
 
