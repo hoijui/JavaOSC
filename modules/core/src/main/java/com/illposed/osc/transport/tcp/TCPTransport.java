@@ -132,8 +132,7 @@ public class TCPTransport implements Transport {
 	public void send(final OSCPacket packet)
 	throws IOException, OSCSerializeException
 	{
-		byte[] packetBytes =
-			OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
+		byte[] packetBytes = serializer.serialize(packet);
 
 		Socket cs = getClientSocket();
 		if (!cs.isConnected()) {

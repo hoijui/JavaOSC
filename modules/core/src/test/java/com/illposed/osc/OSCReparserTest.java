@@ -47,10 +47,7 @@ public class OSCReparserTest {
 	private static ByteBuffer serialize(final OSCPacket packet)
 			throws OSCSerializeException
 	{
-		byte[] packetBytes =
-			OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
-
-		return ByteBuffer.wrap(packetBytes);
+		return ByteBuffer.wrap(serializer.serialize(packet));
 	}
 
 	private static OSCPacket parse(final ByteBuffer packetBytes)

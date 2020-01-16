@@ -91,8 +91,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 		try {
 			begin();
 
-			byte[] packetBytes =
-				OSCSerializer.terminatedAndAligned(serializer.serialize(packet));
+			byte[] packetBytes = serializer.serialize(packet);
 			ByteBuffer buffer = ByteBuffer.wrap(packetBytes);
 			if (underlyingChannel.isConnected()) {
 				underlyingChannel.write(buffer);
