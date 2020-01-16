@@ -21,14 +21,13 @@ public class OSCPortOutBuilder {
 	private NetworkProtocol networkProtocol = NetworkProtocol.UDP;
 
 	public OSCPortOut build() throws IOException {
-		if (local == null) {
-			throw new IllegalArgumentException(
-				"Missing local socket address / port.");
-		}
-
 		if (remote == null) {
 			throw new IllegalArgumentException(
 				"Missing remote socket address / port.");
+		}
+
+		if (local == null) {
+			local = new InetSocketAddress(OSCPort.generateWildcard(remote), 0);
 		}
 
 		if (serializerBuilder == null) {

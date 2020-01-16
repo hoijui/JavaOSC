@@ -109,7 +109,7 @@ public class DebugServer
 		OSCPortIn server =
 			new OSCPortInBuilder()
 				.setNetworkProtocol(protocol)
-				.setPort(port)
+				.setLocalPort(port)
 				.setPacketListener(debugger)
 				.build();
 

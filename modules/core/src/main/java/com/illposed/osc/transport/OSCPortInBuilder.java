@@ -45,8 +45,7 @@ public class OSCPortInBuilder {
 		}
 
 		if (remote == null) {
-			throw new IllegalArgumentException(
-				"Missing remote socket address / port.");
+			remote = new InetSocketAddress(OSCPort.generateWildcard(local), 0);
 		}
 
 		if (parserBuilder == null) {
