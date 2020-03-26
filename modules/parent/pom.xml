@@ -304,8 +304,8 @@
 									</requireJavaVersion>
 									<requireSameVersions>
 										<dependencies>
-											<dependency>${project.groupId}
-											</dependency> <!-- All artifacts with this groupID need to have the same version -->
+											<!-- All artifacts with this groupID need to have the same version -->
+											<dependency>${project.groupId}</dependency>
 										</dependencies>
 									</requireSameVersions>
 									<requireProperty>
