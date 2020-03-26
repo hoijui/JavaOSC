@@ -478,7 +478,7 @@
 										The `gpg.keyname` property is defined in settings.xml,
 										and needs to match the `uid` as displayed by `gpg2 \-\-list-keys`.
 										Example:
-											Firstname Lastname (Comment) &lt;user@email.org&gt;
+											First-name Last-name (Comment) &lt;user@email.org&gt;
 									-->
 									<keyname>${gpg.keyname}</keyname>
 									<passphraseServerId>${gpg.keyname}</passphraseServerId>
