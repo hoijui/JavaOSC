@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -61,7 +62,7 @@ public class FloatArgumentHandler implements ArgumentHandler<Float>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Float value) throws OSCSerializeException {
+	public void serialize(final BytesReceiver output, final Float value) throws OSCSerializeException {
 		IntegerArgumentHandler.INSTANCE.serialize(output, Float.floatToRawIntBits(value));
 	}
 }

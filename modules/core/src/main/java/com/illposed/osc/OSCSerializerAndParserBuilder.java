@@ -40,7 +40,7 @@ public class OSCSerializerAndParserBuilder {
 		return Collections.unmodifiableMap(identifierToType);
 	}
 
-	public OSCSerializer buildSerializer(final ByteBuffer output) {
+	public OSCSerializer buildSerializer(final BytesReceiver output) {
 
 		final Map<String, Object> currentProperties = getProperties();
 		final List<ArgumentHandler> typeCopies

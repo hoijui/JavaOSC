@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class BooleanTrueArgumentHandler implements ArgumentHandler<Boolean>, Clo
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Boolean value) {
+	public void serialize(final BytesReceiver output, final Boolean value) {
 
 //		if (!value.equals(Boolean.TRUE)) {
 //			throw new OSCSerializeException();

@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCSymbol;
 import com.illposed.osc.OSCParseException;
@@ -70,7 +71,7 @@ public class SymbolArgumentHandler implements ArgumentHandler<OSCSymbol>, Clonea
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCSymbol value) {
+	public void serialize(final BytesReceiver output, final OSCSymbol value) {
 		stringArgumentHandler.serialize(output, value.toString());
 	}
 }

@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class LongArgumentHandler implements ArgumentHandler<Long>, Cloneable {
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Long value) {
+	public void serialize(final BytesReceiver output, final Long value) {
 
 		long curValue = value;
 		final byte[] longIntBytes = new byte[8];

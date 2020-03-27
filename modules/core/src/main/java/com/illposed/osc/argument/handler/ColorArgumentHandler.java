@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCColor;
 
@@ -65,7 +66,7 @@ public class ColorArgumentHandler implements ArgumentHandler<OSCColor>, Cloneabl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCColor value) {
+	public void serialize(final BytesReceiver output, final OSCColor value) {
 
 		output.put(value.getRed());
 		output.put(value.getGreen());

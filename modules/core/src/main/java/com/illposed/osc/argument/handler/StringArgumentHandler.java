@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializer;
@@ -124,7 +125,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final String value) {
+	public void serialize(final BytesReceiver output, final String value) {
 
 		final byte[] stringBytes = value.getBytes(charset);
 		output.put(stringBytes);

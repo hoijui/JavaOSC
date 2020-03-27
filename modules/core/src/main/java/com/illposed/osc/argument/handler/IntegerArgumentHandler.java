@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class IntegerArgumentHandler implements ArgumentHandler<Integer>, Cloneab
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final Integer value) {
+	public void serialize(final BytesReceiver output, final Integer value) {
 
 		int curValue = value;
 		final byte[] intBytes = new byte[4];

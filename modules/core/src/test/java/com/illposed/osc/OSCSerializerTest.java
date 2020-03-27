@@ -44,17 +44,17 @@ public class OSCSerializerTest {
 			throws OSCSerializeException
 	{
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
+		final BufferBytesReceiver bytesReceiver = new BufferBytesReceiver(buffer);
 		final OSCSerializerAndParserBuilder serializerBuilder = new OSCSerializerAndParserBuilder();
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
 			serializerBuilder.addProperties(properties);
 		}
-		final OSCSerializer stream = serializerBuilder.buildSerializer(buffer);
+		final OSCSerializer stream = serializerBuilder.buildSerializer(bytesReceiver);
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
 		stream.write(oscMessage);
-		buffer.flip();
-		byte[] result = OSCSerializer.toByteArray(buffer);
+		byte[] result = bytesReceiver.toByteArray();
 		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);
 		result = Arrays.copyOfRange(result, toBeStrippedOffPrefixBytes, result.length);
 		checkResultEqualsAnswer(result, expected);

@@ -109,21 +109,21 @@ public class OSCMessageTest {
 		return javaCode.toString();
 	}
 
-	private ByteBuffer convertMessageToBytes(final OSCMessage message) {
+	private BytesReceiver convertMessageToBytes(final OSCMessage message) {
 
 		final ByteBuffer buffer = ByteBuffer.allocate(1024);
-		final OSCSerializer stream = new OSCSerializerAndParserBuilder().buildSerializer(buffer);
+		final BytesReceiver bytesReceiver = new BufferBytesReceiver(buffer);
+		final OSCSerializer stream = new OSCSerializerAndParserBuilder().buildSerializer(bytesReceiver);
 		try {
 			stream.write(message);
 		} catch (final OSCSerializeException ex) {
 			throw new RuntimeException(ex);
 		}
-		buffer.flip();
-		return buffer;
+		return bytesReceiver;
 	}
 
 	private byte[] convertMessageToByteArray(final OSCMessage message) {
-		return OSCSerializer.toByteArray(convertMessageToBytes(message));
+		return convertMessageToBytes(message).toByteArray();
 	}
 
 	@Test
