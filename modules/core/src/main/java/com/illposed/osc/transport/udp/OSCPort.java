@@ -8,6 +8,8 @@
 
 package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.LibraryInfo;
+
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -38,7 +40,7 @@ public class OSCPort {
 		this.local = local;
 		this.remote = remote;
 		final DatagramChannel tmpChannel;
-		if (local instanceof InetSocketAddress) {
+		if (local instanceof InetSocketAddress && LibraryInfo.hasStandardProtocolFamily()) {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
 			if (!localIsa.getAddress().getClass().equals(
@@ -62,9 +64,16 @@ public class OSCPort {
 		}
 		this.channel = tmpChannel;
 
-		this.channel.setOption(StandardSocketOptions.SO_SNDBUF, OSCPortIn.BUFFER_SIZE);
-		this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
+		if (LibraryInfo.hasStandardProtocolFamily()) {
+			this.channel.setOption(StandardSocketOptions.SO_SNDBUF, OSCPortIn.BUFFER_SIZE);
+			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
+		} else {
+			this.channel.socket().setSendBufferSize(OSCPortIn.BUFFER_SIZE);
+			this.channel.socket().setReuseAddress(true);
+			this.channel.socket().setBroadcast(true);
+		}
+
 		this.channel.socket().bind(local);
 	}
 
