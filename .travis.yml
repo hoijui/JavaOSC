@@ -18,7 +18,11 @@ script:
 # NOTE The SonarCube Community Edition (free plan) only allows branch "master".
   - |
     mvnExtra=""
-    if [ $TRAVIS_BRANCH = "master" ]
+    # We only run the sonarQube stuff for branch master,
+    # and only for the root repo,
+    # as others will likely not have a SONAR_TOKEN specified
+    # in the travis settings.
+    if [ $TRAVIS_BRANCH = "master" ] && [ "$TRAVIS_REPO_SLUG" = "hoijui/JavaOSC" ]
     then
         mvnExtra="sonar:sonar -Psonar -Dsonar.projectKey=hoijui_JavaOSC"
     fi
