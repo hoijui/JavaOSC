@@ -138,6 +138,18 @@ To release a development version to the Sonatype snapshot repository only:
 	# leave our "private" shell instance again
 	exit
 
+In the project you want to use the _SNAPSHOT_ release,
+you need to add this to your _pom.xml_:
+
+```
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+```
+
 
 ## Release (devs only)
 
