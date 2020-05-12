@@ -236,6 +236,7 @@ public class OSCSerializer {
 			serialize(bundle.getTimestamp()),
 			concat(
 				new Transformer<OSCPacket, byte[]>() {
+					@Override
 					public byte[] transform(final OSCPacket packet)
 					throws OSCSerializeException
 					{
@@ -269,6 +270,7 @@ public class OSCSerializer {
 			),
 			concat(
 				new Transformer<Object, byte[]>() {
+					@Override
 					public byte[] transform(final Object argument)
 					throws OSCSerializeException
 					{
@@ -400,6 +402,7 @@ public class OSCSerializer {
 
 			return concat(
 				new Transformer<Object, byte[]>() {
+					@Override
 					public byte[] transform(final Object entry)
 					throws OSCSerializeException
 					{
@@ -431,6 +434,7 @@ public class OSCSerializer {
 	{
 		return concat(
 			new Transformer<Object, byte[]>() {
+				@Override
 				public byte[] transform(final Object argument)
 				throws OSCSerializeException
 				{

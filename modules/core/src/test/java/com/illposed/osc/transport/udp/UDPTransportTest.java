@@ -1,3 +1,12 @@
+/*
+ * Copyright (C) 2020, C. Ramakrishnan / Illposed Software.
+ * All rights reserved.
+ *
+ * This code is licensed under the BSD 3-Clause license.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
+ */
+
 package com.illposed.osc.transport.udp;
 
 import com.illposed.osc.transport.OSCPort;

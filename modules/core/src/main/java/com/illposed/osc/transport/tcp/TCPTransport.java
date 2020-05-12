@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.transport.tcp;
@@ -30,6 +31,7 @@ import java.nio.ByteBuffer;
  * a network via TCP.
  */
 public class TCPTransport implements Transport {
+
 	private final InetSocketAddress local;
 	private final InetSocketAddress remote;
 	private final OSCParser parser;
@@ -39,7 +41,7 @@ public class TCPTransport implements Transport {
 	private ServerSocket serverSocket = null;
 
 	private Socket getClientSocket() throws IOException {
-		if (clientSocket == null || clientSocket.isClosed()) {
+		if ((clientSocket == null) || clientSocket.isClosed()) {
 			clientSocket = new Socket();
 		}
 
@@ -47,7 +49,7 @@ public class TCPTransport implements Transport {
 	}
 
 	private ServerSocket getServerSocket() throws IOException {
-		if (serverSocket == null || serverSocket.isClosed()) {
+		if ((serverSocket == null) || serverSocket.isClosed()) {
 			serverSocket = new ServerSocket();
 			serverSocket.setReuseAddress(true);
 			serverSocket.bind(local);
@@ -113,10 +115,10 @@ public class TCPTransport implements Transport {
 	}
 
 	/**
-		* Close the socket and free-up resources.
-		* It is recommended that clients call this when they are done with the port.
-		* @throws IOException If an I/O error occurs
-		*/
+	 * Close the socket and free-up resources.
+	 * It is recommended that clients call this when they are done with the port.
+	 * @throws IOException If an I/O error occurs
+	 */
 	@Override
 	public void close() throws IOException {
 		if (clientSocket != null) {
@@ -130,7 +132,7 @@ public class TCPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet)
-	throws IOException, OSCSerializeException
+			throws IOException, OSCSerializeException
 	{
 		byte[] packetBytes = serializer.serialize(packet);
 
@@ -162,7 +164,7 @@ public class TCPTransport implements Transport {
 	// it belongs to a ServerSocket and we don't want to close the stream because
 	// that would also close the socket.
 	private byte[] readAllBytes(final InputStream inputStream)
-	throws IOException
+			throws IOException
 	{
 		// 4 * 0x400 = 4 KB
 		final int bufLen = 4 * 0x400;

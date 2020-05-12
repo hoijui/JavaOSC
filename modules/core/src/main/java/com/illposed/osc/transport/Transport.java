@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.transport;
@@ -18,11 +19,12 @@ import java.io.IOException;
  *
  * Implementations:
  * <ul>
- * <li>{@link UDPTransport}</li>
- * <li>{@link TCPTransport}</li>
+ * <li>{@link com.illposed.osc.transport.udp.UDPTransport}</li>
+ * <li>{@link com.illposed.osc.transport.tcp.TCPTransport}</li>
  * </ul>
  */
 public interface Transport {
+
 	/**
 	 * Converts and sends an OSC packet (message or bundle) to the remote address.
 	 * @param packet the bundle or message to be converted and sent

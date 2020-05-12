@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.transport;
@@ -27,14 +28,11 @@ import java.net.UnknownHostException;
  * To listen for OSC messages, use {@link OSCPortIn}.
  */
 public class OSCPort {
-	private final Transport transport;
-
-	public Transport getTransport() {
-		return transport;
-	}
 
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;
+
+	private final Transport transport;
 
 	protected OSCPort(
 		final SocketAddress local,
@@ -51,8 +49,8 @@ public class OSCPort {
 				this.transport = new UDPTransport(local, remote, parser, serializer);
 				break;
 			case TCP:
-				if (!(local instanceof InetSocketAddress
-							&& remote instanceof InetSocketAddress))
+				if (!((local instanceof InetSocketAddress)
+							&& (remote instanceof InetSocketAddress)))
 				{
 					throw new IllegalArgumentException(
 						"Only InetSocketAddress is supported for TCP transport."
@@ -80,6 +78,10 @@ public class OSCPort {
 		throws IOException
 	{
 		this(local, remote, serializerAndParserBuilder, NetworkProtocol.UDP);
+	}
+
+	public Transport getTransport() {
+		return transport;
 	}
 
 	/**

@@ -1,9 +1,10 @@
 /*
- * Copyright (C) 2001, C. Ramakrishnan / Illposed Software.
+ * Copyright (C) 2001-2020, C. Ramakrishnan / Illposed Software.
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.transport;

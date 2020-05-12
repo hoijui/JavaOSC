@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.transport.udp;
@@ -33,11 +34,12 @@ import java.nio.channels.DatagramChannel;
  * a network via UDP.
  */
 public class UDPTransport implements Transport {
+
 	/**
-		* Buffers were 1500 bytes in size, but were increased to 1536, as this
-		* is a common MTU, and then increased to 65507, as this is the maximum
-		* incoming datagram data size.
-		*/
+	 * Buffers were 1500 bytes in size, but were increased to 1536, as this
+	 * is a common MTU, and then increased to 65507, as this is the maximum
+	 * incoming datagram data size.
+	 */
 	public static final int BUFFER_SIZE = 65507;
 	private final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
 
@@ -131,10 +133,10 @@ public class UDPTransport implements Transport {
 	}
 
 	/**
-		* Close the socket and free-up resources.
-		* It is recommended that clients call this when they are done with the port.
-		* @throws IOException If an I/O error occurs on the channel
-		*/
+	 * Close the socket and free-up resources.
+	 * It is recommended that clients call this when they are done with the port.
+	 * @throws IOException If an I/O error occurs on the channel
+	 */
 	@Override
 	public void close() throws IOException {
 		channel.close();

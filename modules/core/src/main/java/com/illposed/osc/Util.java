@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc;
@@ -14,11 +15,13 @@ import java.util.List;
 import java.util.function.Function;
 
 public final class Util {
+
 	// Override the default constructor, preventing callers from instantiating a
 	// utility class, which would make no sense.
 	private Util() {}
 
 	public static byte[] concat(final List<byte[]> byteArrays) {
+
 		int totalLength = 0;
 
 		for (byte[] byteArray : byteArrays) {
@@ -41,7 +44,7 @@ public final class Util {
 	}
 
 	public static <T> byte[] concat(
-		final Function<T, byte[]> transform, final List<T> things)
+			final Function<T, byte[]> transform, final List<T> things)
 	{
 		List<byte[]> byteArrays = new ArrayList<>();
 
@@ -53,7 +56,7 @@ public final class Util {
 	}
 
 	public static <T> byte[] concat(
-		final Function<T, byte[]> transform, final T... things)
+			final Function<T, byte[]> transform, final T... things)
 	{
 		return concat(transform, Arrays.asList(things));
 	}
