@@ -8,12 +8,14 @@
 
 package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.LibraryInfo;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
 import com.illposed.osc.OSCSerializeException;
+import com.illposed.osc.transport.OSCPortIn;
 import com.illposed.osc.transport.Transport;
 import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import java.io.IOException;
@@ -71,7 +73,7 @@ public class UDPTransport implements Transport {
 		this.local = local;
 		this.remote = remote;
 		final DatagramChannel tmpChannel;
-		if (local instanceof InetSocketAddress) {
+		if ((local instanceof InetSocketAddress) && LibraryInfo.hasStandardProtocolFamily()) {
 			final InetSocketAddress localIsa = (InetSocketAddress) local;
 			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
 			final Class<?> localClass = localIsa.getAddress().getClass();
@@ -95,10 +97,15 @@ public class UDPTransport implements Transport {
 			tmpChannel = DatagramChannel.open();
 		}
 		this.channel = tmpChannel;
-
-		this.channel.setOption(StandardSocketOptions.SO_SNDBUF, BUFFER_SIZE);
-		this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-		this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
+		if (LibraryInfo.hasStandardProtocolFamily()) {
+			this.channel.setOption(StandardSocketOptions.SO_SNDBUF, BUFFER_SIZE);
+			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+			this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
+		} else {
+			this.channel.socket().setSendBufferSize(BUFFER_SIZE);
+			this.channel.socket().setReuseAddress(true);
+			this.channel.socket().setBroadcast(true);
+		}
 		this.channel.socket().bind(local);
 		this.oscChannel = new OSCDatagramChannel(channel, parser, serializer);
 	}

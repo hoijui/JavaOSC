@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc.argument;
@@ -289,8 +290,8 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * to a 64-bit OSC time representation.
 	 * This code was copied from the "Apache Jakarta Commons - Net" library,
 	 * which is licensed under the
-	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">ASF 2.0 license
-	 * </a>.
+	 * <a href="http://www.apache.org/licenses/LICENSE-2.0.html">
+	 * Apache-2.0</a>.
 	 * The original source file can be found
 	 * <a href="http://svn.apache.org/viewvc/commons/proper/net/trunk/src/main/java/org/apache/commons/net/ntp/TimeStamp.java?view=co">
 	 * here</a>.

@@ -3,7 +3,8 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc;
@@ -50,7 +51,9 @@ public final class LibraryInfo {
 		tmpUninterestingPkgs.add(Package.getPackage("java.util"));
 		// NOTE We need to do it like this, because otherwise "java.awt" can not be found
 		//   by this classes class-loader.
-		tmpUninterestingPkgs.add(java.awt.Color.class.getPackage());
+		if (hasAwtColor()) {
+			tmpUninterestingPkgs.add(java.awt.Color.class.getPackage());
+		}
 		tmpUninterestingPkgs.add(OSCImpulse.class.getPackage());
 		UNINTERESTING_PKGS = Collections.unmodifiableSet(tmpUninterestingPkgs);
 	}
@@ -269,6 +272,38 @@ public final class LibraryInfo {
 		}
 
 		return summary.toString();
+	}
+
+	/**
+	 * Checks for StandardProtocolFamily Jdk8 compatibility of the runtime.
+	 * E.g. Android API 23 and lower has only a
+	 * java 8 subset without java.net.StandardProtocolFamily
+	 * @return true when the runtime supports java.net.StandardProtocolFamily
+	 * (e.g. Android API 23 and lower)
+	 */
+	public static boolean hasStandardProtocolFamily() {
+		try {
+			Class.forName("java.net.StandardProtocolFamily");
+			return true;
+		} catch (ClassNotFoundException ignore) {
+			return false;
+		}
+	}
+
+	/**
+	 * Checks if java.awt.Color is available.
+	 * It's not available on Android for example.
+	 * Some headless servers might also lack this class.
+	 * @return true when the runtime supports java.awt.Color
+	 * (e.g. Android)
+	 */
+	public static boolean hasAwtColor() {
+		try {
+			Class.forName("java.awt.Color");
+			return true;
+		} catch (ClassNotFoundException ignore) {
+			return false;
+		}
 	}
 
 	public static void main(final String[] args) throws IOException {

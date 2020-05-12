@@ -4,8 +4,7 @@ sudo: false # faster builds
 addons:
   sonarcloud:
     organization: "hoijui-github"
-    token:
-      secure: "6b0921904f3f9b1a695f964b912e9c93594c36a7"
+    token: ${SONAR_TOKEN}
 
 jdk:
 # Only test one JDK to save energy
@@ -17,7 +16,16 @@ jdk:
 script:
 # NOTE JaCoCo is used to have code coverage, the agent has to be activated
 # NOTE The SonarCube Community Edition (free plan) only allows branch "master".
-  - mvnExtra=""; if [ $TRAVIS_BRANCH = "master" ]; then mvnExtra="sonar:sonar"; fi; mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent package $mvnExtra
+# NOTE We only run the SonarQube stuff for the root repo,
+#      as others (forks) will likely not have a SONAR_TOKEN specified
+#      in the travis settings.
+  - |
+    mvnExtra=""
+    if [ $TRAVIS_BRANCH = "master" ] && [ "$TRAVIS_REPO_SLUG" = "hoijui/JavaOSC" ]
+    then
+        mvnExtra="sonar:sonar -Psonar -Dsonar.projectKey=hoijui_JavaOSC"
+    fi
+    mvn -B clean org.jacoco:jacoco-maven-plugin:prepare-agent package $mvnExtra
 
 cache:
   directories:

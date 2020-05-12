@@ -9,12 +9,12 @@
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.7-SNAPSHOT</version>
+		<version>0.8-SNAPSHOT</version>
 		<relativePath>modules/parent</relativePath>
 	</parent>
 
 	<artifactId>javaosc</artifactId>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 

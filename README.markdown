@@ -9,17 +9,44 @@
 
 ## Status
 
-[![License](https://img.shields.io/badge/license-BSD%203--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![GitHub last commit](https://img.shields.io/github/last-commit/hoijui/JavaOSC.svg)](https://github.com/hoijui/JavaOSC)
-[![Issues](https://img.shields.io/badge/issues-GitHub-red.svg)](https://github.com/hoijui/JavaOSC/issues)
-[![Chat](https://img.shields.io/badge/chat-IRC-darkgreen.svg)](irc://irc.freenode.net/javaosc)
+[![License](
+https://img.shields.io/github/license/hoijui/JavaOSC.svg?color=orange)](
+https://github.com/hoijui/JavaOSC/blob/master/LICENSE)
+[![Latest version at Maven Central](
+https://maven-badges.herokuapp.com/maven-central/com.illposed.osc/javaosc-core/badge.svg?color=blue)](
+https://maven-badges.herokuapp.com/maven-central/com.illposed.osc/javaosc-core/)
+[![Issues](
+https://img.shields.io/badge/issues-GitHub-red.svg)](
+https://github.com/hoijui/JavaOSC/issues)
+[![Chat](
+https://img.shields.io/badge/chat-IRC-darkgreen.svg)](
+irc://irc.freenode.net/javaosc)
 
-`master`:
-[![Build Status](https://travis-ci.org/hoijui/JavaOSC.svg?branch=master)](https://travis-ci.org/hoijui/JavaOSC)
-[![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.illposed.osc:javaosc) 
-[![SonarCloud Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=coverage)](https://sonarcloud.io/component_measures/metric/coverage/list?id=com.illposed.osc:javaosc)
-[![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=bugs)](https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=com.illposed.osc:javaosc)
-[![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=vulnerabilities)](https://sonarcloud.io/component_measures/metric/security_rating/list?id=com.illposed.osc:javaosc)
+[![GitHub last commit](
+https://img.shields.io/github/last-commit/hoijui/JavaOSC.svg)](
+https://github.com/hoijui/JavaOSC)
+[![Build Status](
+https://travis-ci.org/hoijui/JavaOSC.svg?branch=master)](
+https://travis-ci.org/hoijui/JavaOSC?branch=master)
+
+[![Code Quality (LGTM)](
+https://img.shields.io/lgtm/grade/java/g/hoijui/JavaOSC.svg?logo=lgtm&logoWidth=18)](
+https://lgtm.com/projects/g/hoijui/JavaOSC/context:java)
+[![Total alerts (LGTM)](
+https://img.shields.io/lgtm/alerts/g/hoijui/JavaOSC.svg?logo=lgtm&logoWidth=18)](
+https://lgtm.com/projects/g/hoijui/JavaOSC/alerts/)
+[![Status (SonarCloud)](
+https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=alert_status)](
+https://sonarcloud.io/dashboard?id=com.illposed.osc:javaosc)
+[![Coverage (SonarCloud)](
+https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=coverage)](
+https://sonarcloud.io/component_measures/metric/coverage/list?id=com.illposed.osc:javaosc)
+[![Bugs (SonarCloud)](
+https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=bugs)](
+https://sonarcloud.io/component_measures/metric/reliability_rating/list?id=com.illposed.osc:javaosc)
+[![Vulnerabilities (SonarCloud)](
+https://sonarcloud.io/api/project_badges/measure?project=com.illposed.osc:javaosc&metric=vulnerabilities)](
+https://sonarcloud.io/component_measures/metric/security_rating/list?id=com.illposed.osc:javaosc)
 
 ## What is this?
 
@@ -63,7 +90,7 @@ or on
 <dependency>
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-core</artifactId>
-	<version>0.6</version>
+	<version>0.7</version>
 </dependency>
 ```
 
@@ -137,6 +164,18 @@ To release a development version to the Sonatype snapshot repository only:
 	mvn clean deploy
 	# leave our "private" shell instance again
 	exit
+
+In the project you want to use the _SNAPSHOT_ release,
+you need to add this to your _pom.xml_:
+
+```
+	<repositories>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+```
 
 
 ## Release (devs only)

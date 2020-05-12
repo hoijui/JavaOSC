@@ -18,7 +18,7 @@
 
 	<groupId>com.illposed.osc</groupId>
 	<artifactId>javaosc-parent</artifactId>
-	<version>0.7-SNAPSHOT</version>
+	<version>0.8-SNAPSHOT</version>
 
 	<packaging>pom</packaging>
 
@@ -304,8 +304,8 @@
 									</requireJavaVersion>
 									<requireSameVersions>
 										<dependencies>
-											<dependency>${project.groupId}
-											</dependency> <!-- All artifacts with this groupID need to have the same version -->
+											<!-- All artifacts with this groupID need to have the same version -->
+											<dependency>${project.groupId}</dependency>
 										</dependencies>
 									</requireSameVersions>
 									<requireProperty>
@@ -358,6 +358,50 @@
 					<artifactId>findbugs-maven-plugin</artifactId>
 					<version>3.0.5</version> <!-- NOTE 2.5.5 is the latest version still compiled with Java 1.6 -->
 				</plugin>
+
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>0.8.3</version>
+					<configuration>
+						<append>true</append>
+					</configuration>
+					<executions>
+						<execution>
+							<id>prepare-agent</id>
+							<goals>
+								<goal>prepare-agent</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>prepare-agent-integration</id>
+							<goals>
+								<goal>prepare-agent-integration</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>jacoco-site</id>
+							<phase>test</phase>
+							<goals>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>3.6.0.1398</version>
+					<executions>
+						<execution>
+							<phase>verify</phase>
+							<goals>
+								<goal>sonar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -366,8 +410,12 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
 			</plugin>
-		</plugins>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 
 	<dependencyManagement>
@@ -404,6 +452,26 @@
 	</dependencyManagement>
 
 	<profiles>
+		<profile>
+			<id>sonar</id>
+			<properties>
+				<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+				<sonar.organization>hoijui-github</sonar.organization>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+					</plugin>
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>Extensive-Reports</id>
 			<!--
@@ -478,7 +546,7 @@
 										The `gpg.keyname` property is defined in settings.xml,
 										and needs to match the `uid` as displayed by `gpg2 \-\-list-keys`.
 										Example:
-											Firstname Lastname (Comment) &lt;user@email.org&gt;
+											First-name Last-name (Comment) &lt;user@email.org&gt;
 									-->
 									<keyname>${gpg.keyname}</keyname>
 									<passphraseServerId>${gpg.keyname}</passphraseServerId>
