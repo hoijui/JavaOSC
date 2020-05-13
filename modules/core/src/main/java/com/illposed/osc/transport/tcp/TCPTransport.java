@@ -135,9 +135,9 @@ public class TCPTransport implements Transport {
 	{
 		serializer.write(packet);
 
-		final Socket clientSocket = getClientSocket();
-		if (!clientSocket.isConnected()) {
-			clientSocket.connect(remote);
+		final Socket clientSock = getClientSocket();
+		if (!clientSock.isConnected()) {
+			clientSock.connect(remote);
 		}
 
 		// Closing the output stream is necessary in order for the receiving side to
@@ -149,7 +149,7 @@ public class TCPTransport implements Transport {
 		// well. The next time getClientSocket() is called, it will recognize that
 		// the socket is closed and create a new one. So, every message sent uses a
 		// new client socket.
-		try (OutputStream out = clientSocket.getOutputStream()) {
+		try (OutputStream out = clientSock.getOutputStream()) {
 			serializationBuffer.writeTo(out);
 		}
 	}
@@ -181,7 +181,7 @@ public class TCPTransport implements Transport {
 	@Override
 	public OSCPacket receive() throws IOException, OSCParseException {
 
-		final ServerSocket serverSocket = getServerSocket();
+		final ServerSocket serverSock = getServerSocket();
 
 		// Unlike UDP, TCP involves connections, and a valid use case is for a
 		// client socket to connect to a server socket simply to test whether the
@@ -191,7 +191,7 @@ public class TCPTransport implements Transport {
 		// scenario and move onto the next connection, and keep doing this until we
 		// receive a connection that sends > 0 bytes.
 		while (true) {
-			final Socket dataSocket = serverSocket.accept();
+			final Socket dataSocket = serverSock.accept();
 			final byte[] bytes = readAllBytes(dataSocket.getInputStream());
 
 			if (bytes.length == 0) {
