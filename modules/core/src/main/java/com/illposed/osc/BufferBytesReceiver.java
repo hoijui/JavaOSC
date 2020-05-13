@@ -28,9 +28,9 @@ public class BufferBytesReceiver implements BytesReceiver {
 	}
 
 	@Override
-	public BytesReceiver put(final byte b) {
+	public BytesReceiver put(final byte data) {
 
-		buffer.put(b);
+		buffer.put(data);
 		return this;
 	}
 

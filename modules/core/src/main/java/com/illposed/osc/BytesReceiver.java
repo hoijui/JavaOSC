@@ -34,7 +34,7 @@ public interface BytesReceiver {
 	 * <p> Writes the given byte into this buffer at the current
 	 * position, and then increments the position. </p>
 	 *
-	 * @param  b
+	 * @param  data
 	 *         The byte to be written
 	 *
 	 * @return  This buffer
@@ -45,7 +45,7 @@ public interface BytesReceiver {
 	 * @throws  java.nio.ReadOnlyBufferException
 	 *          If this buffer is read-only
 	 */
-	BytesReceiver put(byte b);
+	BytesReceiver put(byte data);
 
 	/**
 	 * Relative bulk <i>put</i> method&nbsp;&nbsp;<i>(optional operation)</i>.
@@ -144,8 +144,7 @@ public interface BytesReceiver {
 	 * A piece of data, stored in the buffer at the current location,
 	 * which can later be replaced with an other piece of data of the same length.
 	 */
-	public interface PlaceHolder {
-
+	interface PlaceHolder {
 		void replace(byte[] src) throws OSCSerializeException;
 	}
 

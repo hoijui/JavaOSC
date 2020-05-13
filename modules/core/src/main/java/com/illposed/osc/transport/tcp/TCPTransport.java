@@ -38,27 +38,8 @@ public class TCPTransport implements Transport {
 	private final OSCParser parser;
 	private final ByteArrayListBytesReceiver serializationBuffer;
 	private final OSCSerializer serializer;
-
-	private Socket clientSocket = null;
-	private ServerSocket serverSocket = null;
-
-	private Socket getClientSocket() throws IOException {
-		if ((clientSocket == null) || clientSocket.isClosed()) {
-			clientSocket = new Socket();
-		}
-
-		return clientSocket;
-	}
-
-	private ServerSocket getServerSocket() throws IOException {
-		if ((serverSocket == null) || serverSocket.isClosed()) {
-			serverSocket = new ServerSocket();
-			serverSocket.setReuseAddress(true);
-			serverSocket.bind(local);
-		}
-
-		return serverSocket;
-	}
+	private Socket clientSocket;
+	private ServerSocket serverSocket;
 
 	public TCPTransport(
 			final InetSocketAddress local,
@@ -79,6 +60,27 @@ public class TCPTransport implements Transport {
 		this.parser = builder.buildParser();
 		this.serializationBuffer = new ByteArrayListBytesReceiver();
 		this.serializer = builder.buildSerializer(serializationBuffer);
+		this.clientSocket = null;
+		this.serverSocket = null;
+	}
+
+	private Socket getClientSocket() throws IOException {
+
+		if ((clientSocket == null) || clientSocket.isClosed()) {
+			clientSocket = new Socket();
+		}
+
+		return clientSocket;
+	}
+
+	private ServerSocket getServerSocket() throws IOException {
+		if ((serverSocket == null) || serverSocket.isClosed()) {
+			serverSocket = new ServerSocket();
+			serverSocket.setReuseAddress(true);
+			serverSocket.bind(local);
+		}
+
+		return serverSocket;
 	}
 
 	@Override
@@ -99,12 +101,16 @@ public class TCPTransport implements Transport {
 	}
 
 	public boolean isListening() throws IOException {
+
+		boolean listening;
 		try {
 			new Socket(local.getAddress(), local.getPort()).close();
-			return true;
-		} catch (ConnectException ce) {
-			return false;
+			listening = true;
+		} catch (ConnectException cex) {
+			listening = false;
 		}
+
+		return listening;
 	}
 
 	/**
@@ -129,9 +135,9 @@ public class TCPTransport implements Transport {
 	{
 		serializer.write(packet);
 
-		Socket cs = getClientSocket();
-		if (!cs.isConnected()) {
-			cs.connect(remote);
+		final Socket clientSocket = getClientSocket();
+		if (!clientSocket.isConnected()) {
+			clientSocket.connect(remote);
 		}
 
 		// Closing the output stream is necessary in order for the receiving side to
@@ -143,7 +149,7 @@ public class TCPTransport implements Transport {
 		// well. The next time getClientSocket() is called, it will recognize that
 		// the socket is closed and create a new one. So, every message sent uses a
 		// new client socket.
-		try (OutputStream out = cs.getOutputStream()) {
+		try (OutputStream out = clientSocket.getOutputStream()) {
 			serializationBuffer.writeTo(out);
 		}
 	}
@@ -159,14 +165,13 @@ public class TCPTransport implements Transport {
 	private byte[] readAllBytes(final InputStream inputStream)
 			throws IOException
 	{
-		// 4 * 0x400 = 4 KB
-		final int bufLen = 4 * 0x400;
-		byte[] buf = new byte[bufLen];
-		int readLen;
-
 		try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-			while ((readLen = inputStream.read(buf, 0, bufLen)) != -1) {
-				outputStream.write(buf, 0, readLen);
+			// 4 * 0x400 = 4 KB
+			final int bufLen = 4 * 0x400;
+			int readLen;
+			final byte[] buffer = new byte[bufLen];
+			while ((readLen = inputStream.read(buffer, 0, bufLen)) != -1) {
+				outputStream.write(buffer, 0, readLen);
 			}
 
 			return outputStream.toByteArray();
@@ -175,7 +180,8 @@ public class TCPTransport implements Transport {
 
 	@Override
 	public OSCPacket receive() throws IOException, OSCParseException {
-		ServerSocket ss = getServerSocket();
+
+		final ServerSocket serverSocket = getServerSocket();
 
 		// Unlike UDP, TCP involves connections, and a valid use case is for a
 		// client socket to connect to a server socket simply to test whether the
@@ -185,8 +191,8 @@ public class TCPTransport implements Transport {
 		// scenario and move onto the next connection, and keep doing this until we
 		// receive a connection that sends > 0 bytes.
 		while (true) {
-			Socket dataSocket = ss.accept();
-			byte[] bytes = readAllBytes(dataSocket.getInputStream());
+			final Socket dataSocket = serverSocket.accept();
+			final byte[] bytes = readAllBytes(dataSocket.getInputStream());
 
 			if (bytes.length == 0) {
 				continue;

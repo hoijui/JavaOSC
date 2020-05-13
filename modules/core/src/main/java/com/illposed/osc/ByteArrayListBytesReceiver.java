@@ -28,19 +28,19 @@ import java.util.List;
 public class ByteArrayListBytesReceiver implements BytesReceiver {
 
 	private final List<byte[]> buffer;
-	private int position;
+	private int pos;
 
 	public ByteArrayListBytesReceiver() {
 
 		this.buffer = new LinkedList<>();
-		this.position = 0;
+		this.pos = 0;
 	}
 
 	@Override
-	public BytesReceiver put(final byte b) {
+	public BytesReceiver put(final byte data) {
 
-		buffer.add(new byte[] {b});
-		position += 1;
+		buffer.add(new byte[] {data});
+		pos += 1;
 		return this;
 	}
 
@@ -48,7 +48,7 @@ public class ByteArrayListBytesReceiver implements BytesReceiver {
 	public BytesReceiver put(final byte[] src) {
 
 		buffer.add(src);
-		position += src.length;
+		pos += src.length;
 		return this;
 	}
 
@@ -67,7 +67,7 @@ public class ByteArrayListBytesReceiver implements BytesReceiver {
 
 	@Override
 	public int position() {
-		return position;
+		return pos;
 	}
 
 	private static class PlaceHolderImpl implements PlaceHolder {
@@ -102,19 +102,19 @@ public class ByteArrayListBytesReceiver implements BytesReceiver {
 	@Override
 	public byte[] toByteArray() {
 
-		final byte[] bytes = new byte[position];
+		final byte[] bytes = new byte[pos];
 		int curPos = 0;
-		for (byte[] curPart : buffer) {
+		for (final byte[] curPart : buffer) {
 			System.arraycopy(curPart, 0, bytes, curPos, curPart.length);
 			curPos += curPart.length;
 		}
 		return bytes;
 	}
 
-	public void writeTo(final OutputStream out) throws IOException {
+	public void writeTo(final OutputStream dest) throws IOException {
 
 		for (final byte[] dataPiece : buffer) {
-			out.write(dataPiece);
+			dest.write(dataPiece);
 		}
 	}
 }
