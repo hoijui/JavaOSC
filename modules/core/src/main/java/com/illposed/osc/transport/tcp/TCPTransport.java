@@ -11,8 +11,8 @@ package com.illposed.osc.transport.tcp;
 
 import com.illposed.osc.ByteArrayListBytesReceiver;
 import com.illposed.osc.OSCPacket;
-import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerAndParserBuilder;

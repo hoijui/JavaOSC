@@ -3,12 +3,12 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 
 /**
@@ -102,7 +102,8 @@ public class BufferBytesReceiver implements BytesReceiver {
 	@Override
 	public byte[] toByteArray() {
 
-		buffer.flip(); // TODO check if this is always required
+		// TODO check if this flip is always required
+		buffer.flip();
 		final byte[] bytes = new byte[buffer.remaining()];
 		buffer.get(bytes);
 		return bytes;

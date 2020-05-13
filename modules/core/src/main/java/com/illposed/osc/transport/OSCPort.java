@@ -11,8 +11,6 @@ package com.illposed.osc.transport;
 
 import com.illposed.osc.transport.udp.UDPTransport;
 import com.illposed.osc.transport.tcp.TCPTransport;
-import com.illposed.osc.OSCParser;
-import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
 import java.io.IOException;
 import java.net.Inet4Address;

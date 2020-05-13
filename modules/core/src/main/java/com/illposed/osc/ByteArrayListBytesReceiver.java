@@ -3,14 +3,14 @@
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
- * See file LICENSE (or LICENSE.html) for more information.
+ * SPDX-License-Identifier: BSD-3-Clause
+ * See file LICENSE.md for more information.
  */
 
 package com.illposed.osc;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,7 +54,8 @@ public class ByteArrayListBytesReceiver implements BytesReceiver {
 
 	@Override
 	public BytesReceiver put(final ByteBuffer src) {
-		return put(src.array()); // HACK better get rid of this method altogether!
+		// HACK better get rid of this method altogether!
+		return put(src.array());
 	}
 
 	@Override
