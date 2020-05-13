@@ -70,7 +70,7 @@ public class ByteArrayListBytesReceiver implements BytesReceiver {
 		return position;
 	}
 
-	private class PlaceHolderImpl implements PlaceHolder {
+	private static class PlaceHolderImpl implements PlaceHolder {
 
 		private final byte[] part;
 
