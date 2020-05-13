@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -80,7 +81,7 @@ public class AwtColorArgumentHandler implements ArgumentHandler<Color>, Cloneabl
 	}
 
 	@Override
-	public byte[] serialize(final Color value) throws OSCSerializeException {
-		return ColorArgumentHandler.INSTANCE.serialize(toOsc(value));
+	public void serialize(final BytesReceiver output, final Color value) throws OSCSerializeException {
+		ColorArgumentHandler.INSTANCE.serialize(output, toOsc(value));
 	}
 }

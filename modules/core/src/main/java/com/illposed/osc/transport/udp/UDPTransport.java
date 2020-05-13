@@ -56,21 +56,11 @@ public class UDPTransport implements Transport {
 		this(local, remote, new OSCSerializerAndParserBuilder());
 	}
 
-	private UDPTransport(
-		final SocketAddress local,
-		final SocketAddress remote,
-		final OSCSerializerAndParserBuilder builder)
-		throws IOException
-	{
-		this(local, remote, builder.buildParser(), builder.buildSerializer());
-	}
-
 	public UDPTransport(
-		final SocketAddress local,
-		final SocketAddress remote,
-		final OSCParser parser,
-		final OSCSerializer serializer)
-		throws IOException
+			final SocketAddress local,
+			final SocketAddress remote,
+			final OSCSerializerAndParserBuilder serializerAndParserBuilder)
+			throws IOException
 	{
 		this.local = local;
 		this.remote = remote;
@@ -109,7 +99,7 @@ public class UDPTransport implements Transport {
 			this.channel.socket().setBroadcast(true);
 		}
 		this.channel.socket().bind(local);
-		this.oscChannel = new OSCDatagramChannel(channel, parser, serializer);
+		this.oscChannel = new OSCDatagramChannel(channel, serializerAndParserBuilder);
 	}
 
 	@Override
@@ -144,7 +134,7 @@ public class UDPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		oscChannel.send(packet, remote);
+		oscChannel.send(buffer, packet, remote);
 	}
 
 	@Override

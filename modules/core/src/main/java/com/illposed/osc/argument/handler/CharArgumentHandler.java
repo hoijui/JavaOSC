@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -66,15 +67,14 @@ public class CharArgumentHandler implements ArgumentHandler<Character>, Cloneabl
 	}
 
 	@Override
-	public byte[] serialize(final Character value) {
+	public void serialize(final BytesReceiver output, final Character value) {
+
 		// Put the char as 1 byte in the last 8 of 32bits
 		// to be compatible with liblo.
 		// This might later be expanded to support multi-byte encoded chars.
-		return new byte[]{
-			(byte)0,
-			(byte)0,
-			(byte)0,
-			(byte)(char)value
-		};
+		output.put((byte) 0);
+		output.put((byte) 0);
+		output.put((byte) 0);
+		output.put((byte) (char) value);
 	}
 }

@@ -41,12 +41,9 @@ public class OSCPort {
 		final NetworkProtocol protocol)
 		throws IOException
 	{
-		OSCParser parser = serializerAndParserBuilder.buildParser();
-		OSCSerializer serializer = serializerAndParserBuilder.buildSerializer();
-
 		switch (protocol) {
 			case UDP:
-				this.transport = new UDPTransport(local, remote, parser, serializer);
+				this.transport = new UDPTransport(local, remote, serializerAndParserBuilder);
 				break;
 			case TCP:
 				if (!((local instanceof InetSocketAddress)
@@ -60,8 +57,7 @@ public class OSCPort {
 				this.transport = new TCPTransport(
 					(InetSocketAddress)local,
 					(InetSocketAddress)remote,
-					parser,
-					serializer
+					serializerAndParserBuilder
 				);
 				break;
 			default:

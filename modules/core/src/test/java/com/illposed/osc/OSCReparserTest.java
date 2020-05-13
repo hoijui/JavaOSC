@@ -42,13 +42,15 @@ public class OSCReparserTest {
 				}
 			};
 
-	private static final OSCSerializer serializer
-		= new OSCSerializerAndParserBuilder().buildSerializer();
-
-	private static ByteBuffer serialize(final OSCPacket packet)
+	private static BufferBytesReceiver serialize(final OSCPacket packet)
 			throws OSCSerializeException
 	{
-		return ByteBuffer.wrap(serializer.serialize(packet));
+		final ByteBuffer serialized = ByteBuffer.allocate(1024);
+		final BufferBytesReceiver bytesReceiver = new BufferBytesReceiver(serialized);
+		final OSCSerializer serializer
+				= new OSCSerializerAndParserBuilder().buildSerializer(bytesReceiver);
+		serializer.write(packet);
+		return bytesReceiver;
 	}
 
 	private static OSCPacket parse(final ByteBuffer packetBytes)
@@ -61,7 +63,9 @@ public class OSCReparserTest {
 	static <T extends OSCPacket> T reparse(final T packet)
 			throws OSCParseException, OSCSerializeException
 	{
-		return (T) parse(serialize(packet));
+		final ByteBuffer serialized = serialize(packet).getBuffer();
+		serialized.flip();
+		return (T) parse(serialized);
 	}
 
 	private <C, I extends C, O extends C> void reparseSingleArgument(

@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BufferBytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -31,12 +32,13 @@ public class ColorArgumentHandlerTest {
 			throws OSCSerializeException, OSCParseException
 	{
 		// serialize
-		final byte[] packetBytes = type.serialize(orig);
+		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+		final BufferBytesReceiver bytesReceiver = new BufferBytesReceiver(buffer);
+		type.serialize(bytesReceiver, orig);
+		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
 
 		// re-parse
-		final ByteBuffer buffer = ByteBuffer.wrap(packetBytes);
-		buffer.rewind();
-		return type.parse(buffer);
+		return type.parse(reparsableBuffer);
 	}
 
 	private static OSCColor reparse(final OSCColor orig)

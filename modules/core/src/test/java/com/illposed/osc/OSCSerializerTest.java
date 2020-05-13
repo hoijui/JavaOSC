@@ -10,6 +10,7 @@
 package com.illposed.osc;
 
 import com.illposed.osc.argument.handler.StringArgumentHandler;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -42,15 +43,18 @@ public class OSCSerializerTest {
 			final Object... arguments)
 			throws OSCSerializeException
 	{
+		final ByteBuffer buffer = ByteBuffer.allocate(1024);
+		final BufferBytesReceiver bytesReceiver = new BufferBytesReceiver(buffer);
 		final OSCSerializerAndParserBuilder serializerBuilder = new OSCSerializerAndParserBuilder();
 		if (charset != null) {
 			final Map<String, Object> properties = new HashMap<>();
 			properties.put(StringArgumentHandler.PROP_NAME_CHARSET, charset);
 			serializerBuilder.addProperties(properties);
 		}
-		final OSCSerializer serializer = serializerBuilder.buildSerializer();
+		final OSCSerializer stream = serializerBuilder.buildSerializer(bytesReceiver);
 		final OSCMessage oscMessage = new OSCMessage("/ab", Arrays.asList(arguments));
-		byte[] result = serializer.serialize(oscMessage);
+		stream.write(oscMessage);
+		byte[] result = bytesReceiver.toByteArray();
 		final int toBeStrippedOffPrefixBytes = 4 + calcTypeIdentifiersStrLength(arguments.length);
 		result = Arrays.copyOfRange(result, toBeStrippedOffPrefixBytes, result.length);
 		checkResultEqualsAnswer(result, expected);

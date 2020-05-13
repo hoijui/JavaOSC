@@ -9,7 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
-import com.illposed.osc.Util;
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.OSCSerializer;
@@ -67,17 +67,12 @@ public class BlobArgumentHandler implements ArgumentHandler<ByteBuffer>, Cloneab
 	}
 
 	@Override
-	public byte[] serialize(final ByteBuffer value)
-	throws OSCSerializeException
+	public void serialize(final BytesReceiver output, final ByteBuffer value)
+			throws OSCSerializeException
 	{
-		final byte[] bytes = new byte[value.remaining()];
-		value.get(bytes);
-
-		return OSCSerializer.terminatedAndAligned(
-			Util.concat(
-				IntegerArgumentHandler.INSTANCE.serialize(bytes.length),
-				bytes
-			)
-		);
+		final int numBytes = value.remaining();
+		IntegerArgumentHandler.INSTANCE.serialize(output, numBytes);
+		output.put(value);
+		OSCSerializer.align(output);
 	}
 }

@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.OSCImpulse;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
@@ -60,10 +61,10 @@ public class ImpulseArgumentHandler implements ArgumentHandler<OSCImpulse>, Clon
 	}
 
 	@Override
-	public byte[] serialize(final OSCImpulse value) {
-		// if (value != OSCImpulse.INSTANCE) {
-		// 	throw new OSCSerializeException();
-		// }
-		return new byte[0];
+	public void serialize(final BytesReceiver output, final OSCImpulse value) {
+
+//		if (value != OSCImpulse.INSTANCE) {
+//			throw new OSCSerializeException();
+//		}
 	}
 }

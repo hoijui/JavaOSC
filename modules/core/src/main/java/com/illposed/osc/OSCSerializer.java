@@ -12,7 +12,8 @@ package com.illposed.osc;
 import com.illposed.osc.argument.ArgumentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Arrays;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Converts OSC packet Java objects to their byte stream representations,
@@ -42,8 +42,17 @@ public class OSCSerializer {
 	 */
 	private static final int MAX_IMPLEMENTED_ARGUMENT_TYPES = 1;
 
+	/**
+	 * Intermediate/Mock/Placeholder value indicating the size of a packet.
+	 * It will be used internally, as long as we do not yet know
+	 * the size of the packet in bytes.
+	 * The actual value is arbitrary.
+	 */
+	private static final Integer PACKET_SIZE_PLACEHOLDER = -1;
+
 	private final Logger log = LoggerFactory.getLogger(OSCSerializer.class);
 
+	private final BytesReceiver output;
 	/**
 	 * Cache for Java classes of which we know, that we have no argument handler
 	 * that supports serializing them.
@@ -76,12 +85,14 @@ public class OSCSerializer {
 	/**
 	 * Creates a new serializer with all the required ingredients.
 	 * @param types all of these, and only these arguments will be serializable
-	 *	 by this object, that are supported by these handlers
+	 *   by this object, that are supported by these handlers
 	 * @param properties see {@link ArgumentHandler#setProperties(Map)}
+	 * @param output the output buffer, where raw OSC data is written to
 	 */
 	public OSCSerializer(
 			final List<ArgumentHandler> types,
-			final Map<String, Object> properties)
+			final Map<String, Object> properties,
+			final BytesReceiver output)
 	{
 		final Map<Class, Boolean> classToMarkerTmp = new HashMap<>(types.size());
 		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<>();
@@ -121,6 +132,7 @@ public class OSCSerializer {
 			}
 		}
 
+		this.output = output;
 		// usually, we should not need a stack size of 16, which is the default initial size
 		this.unsupportedTypes = new HashSet<>(4);
 		this.subToSuperTypes = new HashMap<>(4);
@@ -158,144 +170,151 @@ public class OSCSerializer {
 		return properties;
 	}
 
-	private interface Transformer<A, B> {
-		B transform(A thing) throws OSCSerializeException;
+	// Public API
+	@SuppressWarnings("WeakerAccess")
+	public static byte[] toByteArray(final ByteBuffer buffer) {
+
+		final byte[] bytes = new byte[buffer.remaining()];
+		buffer.get(bytes);
+		return bytes;
 	}
 
-	// A wrapper around Util.concat(Function<T, byte[]>, T...) that works around
-	// the limitation of Java functions that they can't throw checked exceptions.
-	//
-	// We use Util.concat with a function internally; the function does work that
-	// might throw an OSCSerializeException, and if an OSCSerializeException is
-	// thrown, we catch it and re-throw it as a RuntimeException, thereby avoiding
-	// a compilation error because functions can't throw checked exceptions. But
-	// we still want the OSCSerializeException to percolate upward, so we have an
-	// outer try/catch that catches RuntimeExceptions, checks to see if the cause
-	// was an OSCSerializeException, and if it was, then we throw the
-	// OSCSerializeException.
-	private <T> byte[] concat(
-		final Transformer<T, byte[]> transformer, final List<T> things)
-		throws OSCSerializeException
-	{
-		try {
-			return Util.concat(
-				thing -> {
-					try {
-						return transformer.transform(thing);
-					} catch (OSCSerializeException ex) {
-						throw new RuntimeException(ex);
-					}
-				},
-				things
-			);
-		} catch (RuntimeException runtimeException) {
-			Throwable cause = runtimeException.getCause();
-
-			if (cause instanceof OSCSerializeException) {
-				throw (OSCSerializeException)cause;
-			}
-
-			throw runtimeException;
-		}
+	// Public API
+	/**
+	 * Terminates the previously written piece of data with a single {@code (byte) '0'}.
+	 * We always need to terminate with a zero, especially when the stream is already aligned.
+	 * @param output to receive the data-piece termination
+	 */
+	@SuppressWarnings("WeakerAccess")
+	public static void terminate(final BytesReceiver output) {
+		output.put((byte) 0);
 	}
-
 
 	/**
-	 * Returns the "final" version of a serialized packet, which ends in at least
-	 * one {@code (byte) '0'} byte and has a size divisible by {@link OSCParser#ALIGNMENT_BYTES}.
-	 * We always need to terminate with a zero, especially when the stream is
-	 * already aligned.
-	 * @param packet the array of bytes that have been serialized so far
-	 * @return a slightly longer byte array that is the input followed by 1 or
-	 * more 0 bytes
+	 * Align a buffer by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by {@link OSCParser#ALIGNMENT_BYTES}.
+	 * @param output to be aligned
+	 * @see OSCParser#align
 	 */
-	public static byte[] terminatedAndAligned(final byte[] packet) {
-		// Unless `packet` already ends with a 0 byte, we need at least 1 of them.
-		int numZeroBytes =
-			packet.length == 0 || packet[packet.length - 1] != 0
-			? 1
-			: 0;
-
-		// Add additional 0 bytes to ensure that the packet length is divisible by
-		// OSCParser.ALIGNMENT_BYTES.
-		final int ab = OSCParser.ALIGNMENT_BYTES;
-		final int overlap = (packet.length + numZeroBytes) % ab;
-		numZeroBytes += ((ab - overlap) % ab);
-
-		final byte[] zeroBytes = new byte[numZeroBytes];
-		Arrays.fill(zeroBytes, (byte)0);
-
-		return Util.concat(packet, zeroBytes);
+	public static void align(final BytesReceiver output) {
+		final int alignmentOverlap = output.position() % OSCParser.ALIGNMENT_BYTES;
+		final int padLen = (OSCParser.ALIGNMENT_BYTES - alignmentOverlap) % OSCParser.ALIGNMENT_BYTES;
+		for (int pci = 0; pci < padLen; pci++) {
+			output.put((byte) 0);
+		}
 	}
 
-	private byte[] serialize(final OSCBundle bundle)
-	throws OSCSerializeException
-	{
-		return Util.concat(
-			serialize(OSCParser.BUNDLE_START),
-			serialize(bundle.getTimestamp()),
-			concat(
-				new Transformer<OSCPacket, byte[]>() {
-					@Override
-					public byte[] transform(final OSCPacket packet)
-					throws OSCSerializeException
-					{
-						byte[] packetBytes = serialize(packet);
-
-						// Serialize the length of the packet followed by the data.
-						return Util.concat(
-							serialize(packetBytes.length),
-							packetBytes
-						);
-					}
-				},
-				bundle.getPackets()
-			)
-		);
+	/**
+	 * Terminates the previously written piece of data with a single {@code (byte) '0'},
+	 * and then aligns the stream by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by {@link OSCParser#ALIGNMENT_BYTES}.
+	 * We always need to terminate with a zero, especially when the stream is already aligned.
+	 * @param output to receive the data-piece termination and alignment
+	 */
+	public static void terminateAndAlign(final BytesReceiver output) {
+		terminate(output);
+		align(output);
 	}
 
-	private byte[] serialize(final OSCMessage message)
-	throws OSCSerializeException
-	{
-		String address = message.getAddress();
-		List<Object> arguments = message.getArguments();
-
-		return Util.concat(
-			serialize(address),
-			terminatedAndAligned(
-				Util.concat(
-					new byte[]{OSCParser.TYPES_VALUES_SEPARATOR},
-					serializedTypeTags(arguments)
-				)
-			),
-			concat(
-				new Transformer<Object, byte[]>() {
-					@Override
-					public byte[] transform(final Object argument)
-					throws OSCSerializeException
-					{
-						return serialize(argument);
-					}
-				},
-				arguments
-			)
-		);
+	private void write(final OSCBundle bundle) throws OSCSerializeException {
+		write(OSCParser.BUNDLE_START);
+		write(bundle.getTimestamp());
+		for (final OSCPacket pkg : bundle.getPackets()) {
+			writeSizeAndData(pkg);
+		}
 	}
 
-	public byte[] serialize(final OSCPacket packet)
-	throws OSCSerializeException
-	{
+	/**
+	 * Serializes a messages address.
+	 * @param message the address of this message will be serialized
+	 * @throws OSCSerializeException if the message failed to serialize
+	 */
+	private void writeAddress(final OSCMessage message) throws OSCSerializeException {
+		write(message.getAddress());
+	}
+
+	/**
+	 * Serializes the arguments of a message.
+	 * @param message the arguments of this message will be serialized
+	 * @throws OSCSerializeException if the message arguments failed to serialize
+	 */
+	private void writeArguments(final OSCMessage message) throws OSCSerializeException {
+
+		output.put(OSCParser.TYPES_VALUES_SEPARATOR);
+		writeTypeTags(message.getArguments());
+		for (final Object argument : message.getArguments()) {
+			write(argument);
+		}
+	}
+
+	private void write(final OSCMessage message) throws OSCSerializeException {
+		writeAddress(message);
+		writeArguments(message);
+	}
+
+	/**
+	 * Converts the packet into its OSC compliant byte array representation,
+	 * then writes the number of bytes to the stream, followed by the actual data bytes.
+	 * @param packet to be converted and written to the stream
+	 * @throws OSCSerializeException if the packet failed to serialize
+	 */
+	private void writeSizeAndData(final OSCPacket packet) throws OSCSerializeException {
+
+		final ByteBuffer serializedPacketBuffer = ByteBuffer.allocate(4);
+		final BufferBytesReceiver serializedPacketSize = new BufferBytesReceiver(serializedPacketBuffer);
+		final ArgumentHandler<Integer> type = findType(PACKET_SIZE_PLACEHOLDER);
+
+		final int sizePosition = output.position();
+		// write place-holder size (will be overwritten later)
+		type.serialize(serializedPacketSize, PACKET_SIZE_PLACEHOLDER);
+		final BytesReceiver.PlaceHolder packetSizePlaceholder = output.putPlaceHolder(serializedPacketBuffer.array());
+		writePacket(packet);
+		final int afterPacketPosition = output.position();
+		final int packetSize = afterPacketPosition - sizePosition - OSCParser.ALIGNMENT_BYTES;
+
+		serializedPacketSize.clear();
+		type.serialize(serializedPacketSize, packetSize);
+		packetSizePlaceholder.replace(serializedPacketBuffer.array());
+	}
+
+	private void writePacket(final OSCPacket packet) throws OSCSerializeException {
+
 		if (packet instanceof OSCBundle) {
-			return serialize((OSCBundle) packet);
+			write((OSCBundle) packet);
+		} else if (packet instanceof OSCMessage) {
+			write((OSCMessage) packet);
+		} else {
+			throw new UnsupportedOperationException("We do not support writing packets of type: "
+					+ packet.getClass());
 		}
+	}
 
-		if (packet instanceof OSCMessage) {
-			return serialize((OSCMessage) packet);
+	public void write(final OSCPacket packet) throws OSCSerializeException {
+
+		// reset position, limit and mark
+		output.clear();
+		try {
+			writePacket(packet);
+		} catch (final BufferOverflowException ex) {
+			throw new OSCSerializeException("Packet is too large for the buffer in use", ex);
 		}
+	}
 
-		throw new UnsupportedOperationException(
-			"We do not support writing packets of type: " + packet.getClass()
-		);
+	/**
+	 * Write only the type tags for a given list of arguments.
+	 * This is primarily used by the packet dispatcher.
+	 * @param arguments to write the type tags from
+	 * @throws OSCSerializeException if the arguments failed to serialize
+	 */
+	public void writeOnlyTypeTags(final List<?> arguments) throws OSCSerializeException {
+
+		// reset position, limit and mark
+		output.clear();
+		try {
+			writeTypeTagsRaw(arguments);
+		} catch (final BufferOverflowException ex) {
+			throw new OSCSerializeException("Type tags are too large for the buffer in use", ex);
+		}
 	}
 
 	private Set<ArgumentHandler> findSuperTypes(final Class argumentClass) {
@@ -359,63 +378,46 @@ public class OSCSerializer {
 		return superType;
 	}
 
-	private ArgumentHandler findHandler(
-		final Object argumentValue, final Class argumentClass)
-		throws OSCSerializeException
+	private ArgumentHandler findType(final Object argumentValue, final Class argumentClass)
+			throws OSCSerializeException
 	{
+		final ArgumentHandler type;
+
 		final Boolean markerType = classToMarker.get(argumentClass);
-
 		if (markerType == null) {
-			return findHandler(argumentValue, findSuperType(argumentClass));
+			type = findType(argumentValue, findSuperType(argumentClass));
+		} else if (markerType) {
+			type = markerValueToType.get(argumentValue);
+		} else {
+			type = classToType.get(argumentClass);
 		}
 
-		if (markerType) {
-			return markerValueToType.get(argumentValue);
-		}
-
-		return classToType.get(argumentClass);
+		return type;
 	}
 
-	private ArgumentHandler findHandler(final Object argumentValue)
-	throws OSCSerializeException
-	{
-		return findHandler(argumentValue, extractTypeClass(argumentValue));
+	private ArgumentHandler findType(final Object argumentValue) throws OSCSerializeException {
+		return findType(argumentValue, extractTypeClass(argumentValue));
 	}
 
 	/**
-	 * Returns the byte representation of an object.
-	 * @param anObject (usually) one of Float, Double, String, Character, Integer,
-	 *	 Long, or a Collection of these.
-	 *	 See {@link #getClassToTypeMapping()} for a complete list of which classes
-	 *	 may be used here.
-	 * @return the byte representation of the object
+	 * Write an object into the byte stream.
+	 * @param anObject (usually) one of Float, Double, String, Character, Integer, Long,
+	 *   or a Collection of these.
+	 *   See {@link #getClassToTypeMapping()} for a complete list of which classes may be used here.
 	 * @throws OSCSerializeException if the argument object failed to serialize
 	 */
-	private byte[] serialize(final Object anObject)
-	throws OSCSerializeException
-	{
+	private void write(final Object anObject) throws OSCSerializeException {
+
 		if (anObject instanceof Collection) {
-			// We can safely suppress the warning, as we already made sure the cast
-			// will not fail.
-			@SuppressWarnings("unchecked")
-			final Collection<?> theArray = (Collection<?>) anObject;
-
-			return concat(
-				new Transformer<Object, byte[]>() {
-					@Override
-					public byte[] transform(final Object entry)
-					throws OSCSerializeException
-					{
-						return serialize(entry);
-					}
-				},
-				theArray.stream().collect(Collectors.toList())
-			);
+			// We can safely suppress the warning, as we already made sure the cast will not fail.
+			@SuppressWarnings("unchecked") final Collection<?> theArray = (Collection<?>) anObject;
+			for (final Object entry : theArray) {
+				write(entry);
+			}
+		} else {
+			@SuppressWarnings("unchecked") final ArgumentHandler<Object> type = findType(anObject);
+			type.serialize(output, anObject);
 		}
-
-		@SuppressWarnings("unchecked")
-		final ArgumentHandler<Object> handler = findHandler(anObject);
-		return handler.serialize(anObject);
 	}
 
 	private static Class extractTypeClass(final Object value) {
@@ -423,40 +425,49 @@ public class OSCSerializer {
 	}
 
 	/**
-	 * Serializes the type tags for a given list of arguments.
-	 * This is primarily used by the packet dispatcher.
-	 * @param arguments to write the type tags from
-	 * @return the serialized type tags as a byte array
+	 * Write the OSC specification type tag for the type a certain Java type
+	 * converts to.
+	 * @param value of this argument, we need to write the type identifier
+	 * @throws OSCSerializeException if the value failed to serialize
+	 */
+	private void writeType(final Object value) throws OSCSerializeException {
+
+		final ArgumentHandler type = findType(value);
+		output.put((byte) type.getDefaultIdentifier());
+	}
+
+	/**
+	 * Write the type tags for a given list of arguments.
+	 * @param arguments array of base Objects
 	 * @throws OSCSerializeException if the arguments failed to serialize
 	 */
-	public byte[] serializedTypeTags(final List<Object> arguments)
-	throws OSCSerializeException
-	{
-		return concat(
-			new Transformer<Object, byte[]>() {
-				@Override
-				public byte[] transform(final Object argument)
-				throws OSCSerializeException
-				{
-					// Serialize nested arguments.
-					if (argument instanceof List) {
-						@SuppressWarnings("unchecked")
-						final List<Object> argumentsArray = (List<Object>) argument;
+	private void writeTypeTagsRaw(final List<?> arguments) throws OSCSerializeException {
 
-						return Util.concat(
-							new byte[]{OSCParser.TYPE_ARRAY_BEGIN},
-							serializedTypeTags(argumentsArray),
-							new byte[]{OSCParser.TYPE_ARRAY_END}
-						);
-					}
+		for (final Object argument : arguments) {
+			if (argument instanceof List) {
+				@SuppressWarnings("unchecked") final List<?> argumentsArray = (List<?>) argument;
+				// This is used for nested arguments.
+				// open the array
+				output.put((byte) OSCParser.TYPE_ARRAY_BEGIN);
+				// fill the [] with the nested argument types
+				writeTypeTagsRaw(argumentsArray);
+				// close the array
+				output.put((byte) OSCParser.TYPE_ARRAY_END);
+			} else {
+				// write a single, simple arguments type
+				writeType(argument);
+			}
+		}
+	}
 
-					// Serialize a single, simple arguments type.
-					return new byte[]{
-						(byte) findHandler(argument).getDefaultIdentifier()
-					};
-				}
-			},
-			arguments
-		);
+	/**
+	 * Write the type tags for a given list of arguments, and cleanup the stream.
+	 * @param arguments  the arguments to an OSCMessage
+	 * @throws OSCSerializeException if the arguments failed to serialize
+	 */
+	private void writeTypeTags(final List<?> arguments) throws OSCSerializeException {
+
+		writeTypeTagsRaw(arguments);
+		terminateAndAlign(output);
 	}
 }

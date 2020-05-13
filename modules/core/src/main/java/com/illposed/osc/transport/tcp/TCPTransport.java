@@ -9,6 +9,7 @@
 
 package com.illposed.osc.transport.tcp;
 
+import com.illposed.osc.ByteArrayListBytesReceiver;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCParseException;
@@ -35,6 +36,7 @@ public class TCPTransport implements Transport {
 	private final InetSocketAddress local;
 	private final InetSocketAddress remote;
 	private final OSCParser parser;
+	private final ByteArrayListBytesReceiver serializationBuffer;
 	private final OSCSerializer serializer;
 
 	private Socket clientSocket = null;
@@ -59,33 +61,24 @@ public class TCPTransport implements Transport {
 	}
 
 	public TCPTransport(
-		final InetSocketAddress local,
-		final InetSocketAddress remote)
-		throws IOException
+			final InetSocketAddress local,
+			final InetSocketAddress remote)
+			throws IOException
 	{
 		this(local, remote, new OSCSerializerAndParserBuilder());
 	}
 
-	private TCPTransport(
-		final InetSocketAddress local,
-		final InetSocketAddress remote,
-		final OSCSerializerAndParserBuilder builder)
-		throws IOException
-	{
-		this(local, remote, builder.buildParser(), builder.buildSerializer());
-	}
-
 	public TCPTransport(
-		final InetSocketAddress local,
-		final InetSocketAddress remote,
-		final OSCParser parser,
-		final OSCSerializer serializer)
-		throws IOException
+			final InetSocketAddress local,
+			final InetSocketAddress remote,
+			final OSCSerializerAndParserBuilder builder)
+			throws IOException
 	{
 		this.local = local;
 		this.remote = remote;
-		this.parser = parser;
-		this.serializer = serializer;
+		this.parser = builder.buildParser();
+		this.serializationBuffer = new ByteArrayListBytesReceiver();
+		this.serializer = builder.buildSerializer(serializationBuffer);
 	}
 
 	@Override
@@ -134,7 +127,7 @@ public class TCPTransport implements Transport {
 	public void send(final OSCPacket packet)
 			throws IOException, OSCSerializeException
 	{
-		byte[] packetBytes = serializer.serialize(packet);
+		serializer.write(packet);
 
 		Socket cs = getClientSocket();
 		if (!cs.isConnected()) {
@@ -151,7 +144,7 @@ public class TCPTransport implements Transport {
 		// the socket is closed and create a new one. So, every message sent uses a
 		// new client socket.
 		try (OutputStream out = cs.getOutputStream()) {
-			out.write(packetBytes, 0, packetBytes.length);
+			serializationBuffer.writeTo(out);
 		}
 	}
 

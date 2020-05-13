@@ -11,6 +11,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.handler.Activator;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +40,8 @@ public class OSCSerializerAndParserBuilder {
 		return Collections.unmodifiableMap(identifierToType);
 	}
 
-	public OSCSerializer buildSerializer() {
+	public OSCSerializer buildSerializer(final BytesReceiver output) {
+
 		final Map<String, Object> currentProperties = getProperties();
 		final List<ArgumentHandler> typeCopies
 				= new ArrayList<>(identifierToType.size());
@@ -60,7 +62,7 @@ public class OSCSerializerAndParserBuilder {
 			typeCopies.addAll(defaultParserTypes);
 		}
 
-		return new OSCSerializer(typeCopies, currentProperties);
+		return new OSCSerializer(typeCopies, currentProperties, output);
 	}
 
 	public OSCParser buildParser() {

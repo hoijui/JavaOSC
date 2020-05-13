@@ -115,9 +115,9 @@ public class OSCPortOut extends OSCPort {
 	/**
 	 * Converts and sends an OSC packet (message or bundle) to the remote address.
 	 * @param packet the bundle or message to be converted and sent
-	 * @throws IOException if we run out of memory while converting,
-	 *   or a socket I/O error occurs while sending
-	 * @throws OSCSerializeException if the packet fails to serialize
+	 * @throws IOException if a socket I/O error occurs while sending
+	 * @throws OSCSerializeException if the packet fails to serialize,
+	 *   including when the buffer overruns
 	 */
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
 		getTransport().send(packet);

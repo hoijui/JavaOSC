@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -61,7 +62,7 @@ public class DoubleArgumentHandler implements ArgumentHandler<Double>, Cloneable
 	}
 
 	@Override
-	public byte[] serialize(final Double value) throws OSCSerializeException {
-		return LongArgumentHandler.INSTANCE.serialize(Double.doubleToRawLongBits(value));
+	public void serialize(final BytesReceiver output, final Double value) throws OSCSerializeException {
+		LongArgumentHandler.INSTANCE.serialize(output, Double.doubleToRawLongBits(value));
 	}
 }
