@@ -73,6 +73,20 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	private final OSCSerializerAndParserBuilder parserBuilder;
 	private final List<OSCPacketListener> packetListeners;
 
+	public static class OSCPortInSource {
+	  private OSCPortIn port;
+	  private SocketAddress sender;
+
+	  OSCPortInSource(OSCPortIn port, SocketAddress sender) {
+	    this.port = port;
+	    this.sender = sender;
+    }
+
+    OSCPortInSource(OSCPortIn port, DatagramChannel channel) throws IOException {
+      this(port, channel.getRemoteAddress());
+    }
+  }
+
 	public static OSCPacketDispatcher getDispatcher(
 			final List<OSCPacketListener> listeners)
 	{
@@ -199,7 +213,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			try {
 				final OSCPacket oscPacket = oscChannel.read(buffer);
 
-				final OSCPacketEvent event = new OSCPacketEvent(this, oscPacket);
+				final OSCPacketEvent event = new OSCPacketEvent(new OSCPortInSource(this, channel), oscPacket);
 				for (final OSCPacketListener listener : packetListeners) {
 					listener.handlePacket(event);
 				}
