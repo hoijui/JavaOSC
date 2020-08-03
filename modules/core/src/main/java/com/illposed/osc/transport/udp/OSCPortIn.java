@@ -85,6 +85,14 @@ public class OSCPortIn extends OSCPort implements Runnable {
     OSCPortInSource(OSCPortIn port, DatagramChannel channel) throws IOException {
       this(port, channel.getRemoteAddress());
     }
+
+    public OSCPortIn getPort() {
+      return port;
+    }
+
+    public SocketAddress getSender() {
+      return sender;
+    }
   }
 
 	public static OSCPacketDispatcher getDispatcher(
