@@ -37,30 +37,54 @@ import java.nio.channels.spi.SelectorProvider;
  */
 public class OSCDatagramChannel extends SelectableChannel {
 
-	private final DatagramChannel underlyingChannel;
-	private final OSCParser parser;
-	private final OSCSerializerAndParserBuilder serializerBuilder;
+  private final DatagramChannel underlyingChannel;
+  private final OSCParser parser;
+  private final OSCSerializerAndParserBuilder serializerBuilder;
 
-	public OSCDatagramChannel(
-			final DatagramChannel underlyingChannel,
-			final OSCSerializerAndParserBuilder serializerAndParserBuilder
-			)
-	{
-		this.underlyingChannel = underlyingChannel;
-		OSCParser tmpParser = null;
-		if (serializerAndParserBuilder != null) {
-			tmpParser = serializerAndParserBuilder.buildParser();
-		}
-		this.parser = tmpParser;
-		this.serializerBuilder = serializerAndParserBuilder;
-	}
+  public static class OSCPacketWithSource {
+    private OSCPacket packet;
+    private SocketAddress source;
 
-	public OSCPacket read(final ByteBuffer buffer) throws IOException, OSCParseException {
+    public OSCPacketWithSource(OSCPacket packet, SocketAddress source) {
+      this.packet = packet;
+      this.source = source;
+    }
 
-		boolean completed = false;
-		OSCPacket oscPacket;
-		try {
-			begin();
+    public OSCPacket getPacket() {
+      return packet;
+    }
+
+    public SocketAddress getSource() {
+      return source;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      return ((obj instanceof OSCPacketWithSource))
+          && (((OSCPacketWithSource) obj).packet == packet
+          && ((OSCPacketWithSource) obj).source == source);
+    }
+  }
+
+  public OSCDatagramChannel(
+      final DatagramChannel underlyingChannel,
+      final OSCSerializerAndParserBuilder serializerAndParserBuilder
+  ) {
+    this.underlyingChannel = underlyingChannel;
+    OSCParser tmpParser = null;
+    if (serializerAndParserBuilder != null) {
+      tmpParser = serializerAndParserBuilder.buildParser();
+    }
+    this.parser = tmpParser;
+    this.serializerBuilder = serializerAndParserBuilder;
+  }
+
+  public OSCPacketWithSource read(final ByteBuffer buffer) throws IOException, OSCParseException {
+    boolean completed = false;
+    OSCPacket oscPacket;
+    SocketAddress peer;
+    try {
+      begin();
 
 			buffer.clear();
 			// NOTE From the doc of `read()` and `receive()`:
@@ -68,109 +92,111 @@ public class OSCDatagramChannel extends SelectableChannel {
 			// than are required to hold the datagram
 			// then the remainder of the datagram is silently discarded."
 			if (underlyingChannel.isConnected()) {
+			  peer = underlyingChannel.getRemoteAddress();
 				underlyingChannel.read(buffer);
 			} else {
-				underlyingChannel.receive(buffer);
+				peer = underlyingChannel.receive(buffer);
 			}
 //			final int readBytes = buffer.position();
 //			if (readBytes == buffer.capacity()) {
 //				// TODO In this case it is very likely that the buffer was actually too small, and the remainder of the datagram/packet was silently discarded. We might want to give a warning, like throw an exception in this case, but whether this happens should probably be user configurable.
 //			}
-			buffer.flip();
-			if (buffer.limit() == 0) {
-				throw new OSCParseException("Received a packet without any data");
-			} else {
-				oscPacket = parser.convert(buffer);
-				completed = true;
-			}
-		} finally {
-			end(completed);
-		}
+      buffer.flip();
+      if (buffer.limit() == 0) {
+        throw new OSCParseException("Received a packet without any data");
+      } else {
+        oscPacket = parser.convert(buffer);
+        completed = true;
+      }
+    } finally {
+      end(completed);
+    }
 
-		return oscPacket;
-	}
+    return new OSCPacketWithSource(oscPacket, peer);
+  }
 
-	public void send(final ByteBuffer buffer, final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
 
-		boolean completed = false;
-		try {
-			begin();
+  public void send(final ByteBuffer buffer, final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
 
-			final OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
-			buffer.rewind();
-			serializer.write(packet);
-			buffer.flip();
-			if (underlyingChannel.isConnected()) {
-				underlyingChannel.write(buffer);
-			} else if (remoteAddress == null) {
-				throw new IllegalStateException("Not connected and no remote address is given");
-			} else {
-				underlyingChannel.send(buffer, remoteAddress);
-			}
-			completed = true;
-		} finally {
-			end(completed);
-		}
-	}
+    boolean completed = false;
+    try {
+      begin();
 
-	public void write(final ByteBuffer buffer, final OSCPacket packet) throws IOException, OSCSerializeException {
+      final OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
+      buffer.rewind();
+      serializer.write(packet);
+      buffer.flip();
+      if (underlyingChannel.isConnected()) {
+        underlyingChannel.write(buffer);
+      } else if (remoteAddress == null) {
+        throw new IllegalStateException("Not connected and no remote address is given");
+      } else {
+        underlyingChannel.send(buffer, remoteAddress);
+      }
+      completed = true;
+    } finally {
+      end(completed);
+    }
+  }
 
-		boolean completed = false;
-		try {
-			begin();
-			if (!underlyingChannel.isConnected()) {
-				throw new IllegalStateException("Either connect the channel or use write()");
-			}
-			send(buffer, packet, null);
-			completed = true;
-		} finally {
-			end(completed);
-		}
-	}
+  public void write(final ByteBuffer buffer, final OSCPacket packet) throws IOException, OSCSerializeException {
 
-	@Override
-	public SelectorProvider provider() {
-		return underlyingChannel.provider();
-	}
+    boolean completed = false;
+    try {
+      begin();
+      if (!underlyingChannel.isConnected()) {
+        throw new IllegalStateException("Either connect the channel or use write()");
+      }
+      send(buffer, packet, null);
+      completed = true;
+    } finally {
+      end(completed);
+    }
+  }
 
-	@Override
-	public boolean isRegistered() {
-		return underlyingChannel.isRegistered();
-	}
+  @Override
+  public SelectorProvider provider() {
+    return underlyingChannel.provider();
+  }
 
-	@Override
-	public SelectionKey keyFor(final Selector sel) {
-		return underlyingChannel.keyFor(sel);
-	}
+  @Override
+  public boolean isRegistered() {
+    return underlyingChannel.isRegistered();
+  }
 
-	@Override
-	public SelectionKey register(final Selector sel, final int ops, final Object att) throws ClosedChannelException {
-		return underlyingChannel.register(sel, ops, att);
-	}
+  @Override
+  public SelectionKey keyFor(final Selector sel) {
+    return underlyingChannel.keyFor(sel);
+  }
 
-	@Override
-	public SelectableChannel configureBlocking(final boolean block) throws IOException {
-		return underlyingChannel.configureBlocking(block);
-	}
+  @Override
+  public SelectionKey register(final Selector sel, final int ops, final Object att) throws ClosedChannelException {
+    return underlyingChannel.register(sel, ops, att);
+  }
 
-	@Override
-	public boolean isBlocking() {
-		return underlyingChannel.isBlocking();
-	}
+  @Override
+  public SelectableChannel configureBlocking(final boolean block) throws IOException {
+    return underlyingChannel.configureBlocking(block);
+  }
 
-	@Override
-	public Object blockingLock() {
-		return underlyingChannel.blockingLock();
-	}
+  @Override
+  public boolean isBlocking() {
+    return underlyingChannel.isBlocking();
+  }
 
-	@Override
-	protected void implCloseChannel() throws IOException {
-		// XXX is this ok?
-		underlyingChannel.close();
-	}
+  @Override
+  public Object blockingLock() {
+    return underlyingChannel.blockingLock();
+  }
 
-	@Override
-	public int validOps() {
-		return underlyingChannel.validOps();
-	}
+  @Override
+  protected void implCloseChannel() throws IOException {
+    // XXX is this ok?
+    underlyingChannel.close();
+  }
+
+  @Override
+  public int validOps() {
+    return underlyingChannel.validOps();
+  }
 }
