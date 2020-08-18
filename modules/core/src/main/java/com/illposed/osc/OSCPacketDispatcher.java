@@ -13,14 +13,8 @@ import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * Dispatches {@link OSCPacket}s to registered listeners (<i>Method</i>s).
@@ -41,8 +35,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	private final ByteBuffer argumentTypesBuffer;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
-	private final List<SelectiveMessageListener> selectiveMessageListeners;
-	private final List<OSCBadDataListener> badDataListeners;
+	private final Queue<SelectiveMessageListener> selectiveMessageListeners;
+	private final Queue<OSCBadDataListener> badDataListeners;
 	private boolean metaInfoRequired;
 	/**
 	 * Whether to disregard bundle time-stamps for dispatch-scheduling.
@@ -149,8 +143,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		this.typeTagsCharset = (propertiesCharset == null)
 				? Charset.defaultCharset()
 				: propertiesCharset;
-		this.selectiveMessageListeners = new ArrayList<>();
-		this.badDataListeners = new ArrayList<>();
+		this.selectiveMessageListeners = new ConcurrentLinkedQueue<>();
+		this.badDataListeners = new ConcurrentLinkedQueue<>();
 		this.metaInfoRequired = false;
 		this.alwaysDispatchingImmediately = false;
 		this.dispatchScheduler = dispatchScheduler;
