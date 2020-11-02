@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 
 public class OSCPortTest {
 
-	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
+	private static final long WAIT_FOR_SOCKET_CLOSE_MS = 30;
 
 	private final Logger log = LoggerFactory.getLogger(OSCPortTest.class);
 
@@ -144,7 +144,7 @@ public class OSCPortTest {
 		} else {
 			// wait a bit after closing the receiver, because (some) operating systems
 			// need some time to actually close the underlying socket
-			sleep(WAIT_FOR_SOCKET_CLOSE);
+			sleep(WAIT_FOR_SOCKET_CLOSE_MS);
 		}
 	}
 
@@ -315,7 +315,7 @@ public class OSCPortTest {
 
 		// make sure the old receiver is gone for good
 		System.gc();
-		Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
+		Thread.sleep(WAIT_FOR_SOCKET_CLOSE_MS);
 
 		// check if the underlying sockets were closed
 		// NOTE We can have many (out-)sockets sending
