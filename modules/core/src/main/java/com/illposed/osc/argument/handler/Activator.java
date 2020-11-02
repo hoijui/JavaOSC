@@ -88,7 +88,7 @@ public final class Activator {
 		// NOTE As not all JRE's support AWT (for example headless ones and Android)),
 		//      we handle it this way.
 		try {
-			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandlerTest";
+			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandler";
 			final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
 			final Field instance = awtColorArgumentHandler.getDeclaredField("INSTANCE");
 			instance.setAccessible(true);
