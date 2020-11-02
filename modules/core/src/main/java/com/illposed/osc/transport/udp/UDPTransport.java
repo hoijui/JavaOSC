@@ -88,10 +88,14 @@ public class UDPTransport implements Transport {
 		this.channel = tmpChannel;
 		if (LibraryInfo.hasStandardProtocolFamily()) {
 			this.channel.setOption(StandardSocketOptions.SO_SNDBUF, BUFFER_SIZE);
+			// NOTE So far, we never saw an issue with the receive-buffer size,
+			//      thus we leave it at its default.
 			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 			this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
 		} else {
 			this.channel.socket().setSendBufferSize(BUFFER_SIZE);
+			// NOTE So far, we never saw an issue with the receive-buffer size,
+			//      thus we leave it at its default.
 			this.channel.socket().setReuseAddress(true);
 			this.channel.socket().setBroadcast(true);
 		}
