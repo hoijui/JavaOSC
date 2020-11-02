@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -58,7 +59,7 @@ public class SerializableByteBuffer implements Serializable {
 		} else {
 			final byte[] bufferArray = new byte[buffer.capacity()];
 			buffer.rewind();
-			buffer.limit(buffer.capacity());
+			((Buffer)buffer).limit(buffer.capacity());
 			buffer.get(bufferArray);
 			serializer.write(buffer.array());
 		}
@@ -89,9 +90,9 @@ public class SerializableByteBuffer implements Serializable {
 		}
 		buffer = ByteBuffer.wrap(bufferArray, 0, capacity);
 		buffer.order(order);
-		buffer.position(mark);
+		((Buffer)buffer).position(mark);
 		buffer.mark();
-		buffer.limit(limit);
-		buffer.position(position);
+		((Buffer)buffer).limit(limit);
+		((Buffer)buffer).position(position);
 	}
 }

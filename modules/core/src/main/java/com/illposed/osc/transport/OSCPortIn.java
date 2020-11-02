@@ -7,7 +7,7 @@
  * See file LICENSE.md for more information.
  */
 
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;
 
 import com.illposed.osc.OSCBadDataEvent;
 import com.illposed.osc.OSCPacket;
@@ -16,19 +16,17 @@ import com.illposed.osc.OSCPacketEvent;
 import com.illposed.osc.OSCPacketListener;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializerAndParserBuilder;
-import com.illposed.osc.transport.channel.OSCDatagramChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Listens for OSC packets on a UDP/IP port.
+ * Listens for OSC packets over a network.
  *
  * An example:<br>
  * <blockquote><pre>{@code
@@ -58,19 +56,10 @@ public class OSCPortIn extends OSCPort implements Runnable {
 
 	private final Logger log = LoggerFactory.getLogger(OSCPortIn.class);
 
-	// Public API
-	/**
-	 * Buffers were 1500 bytes in size, but were increased to 1536, as this is a common MTU,
-	 * and then increased to 65507, as this is the maximum incoming datagram data size.
-	 */
-	@SuppressWarnings("WeakerAccess")
-	public static final int BUFFER_SIZE = 65507;
-
 	private volatile boolean listening;
 	private boolean daemonListener;
 	private boolean resilient;
 	private Thread listeningThread;
-	private final OSCSerializerAndParserBuilder parserBuilder;
 	private final List<OSCPacketListener> packetListeners;
 
 	public static OSCPacketDispatcher getDispatcher(
@@ -109,8 +98,25 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
+	 * @param networkProtocol the network protocol by which to receive OSC packets
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
+	public OSCPortIn(
+			final OSCSerializerAndParserBuilder parserBuilder,
+			final List<OSCPacketListener> packetListeners,
+			final SocketAddress local,
+			final SocketAddress remote,
+			final NetworkProtocol protocol)
+			throws IOException
+	{
+		super(local, remote, parserBuilder, protocol);
+
+		this.listening = false;
+		this.daemonListener = true;
+		this.resilient = true;
+		this.packetListeners = packetListeners;
+	}
+
 	public OSCPortIn(
 			final OSCSerializerAndParserBuilder parserBuilder,
 			final List<OSCPacketListener> packetListeners,
@@ -118,13 +124,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 			final SocketAddress remote)
 			throws IOException
 	{
-		super(local, remote);
-
-		this.listening = false;
-		this.daemonListener = true;
-		this.resilient = true;
-		this.parserBuilder = parserBuilder;
-		this.packetListeners = packetListeners;
+		this(parserBuilder, packetListeners, local, remote, NetworkProtocol.UDP);
 	}
 
 	public OSCPortIn(
@@ -191,14 +191,9 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	@Override
 	public void run() {
-
-		final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-		final DatagramChannel channel = getChannel();
-		final OSCDatagramChannel oscChannel = new OSCDatagramChannel(channel, parserBuilder);
 		while (listening) {
 			try {
-				final OSCPacket oscPacket = oscChannel.read(buffer);
-
+				final OSCPacket oscPacket = getTransport().receive();
 				final OSCPacketEvent event = new OSCPacketEvent(this, oscPacket);
 				for (final OSCPacketListener listener : packetListeners) {
 					listener.handlePacket(event);
@@ -210,7 +205,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 					stopListening();
 				}
 			} catch (final OSCParseException ex) {
-				badPacketReceived(ex, buffer);
+				badPacketReceived(ex);
 			}
 		}
 	}
@@ -228,8 +223,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 		stopListening();
 	}
 
-	private void badPacketReceived(final OSCParseException exception, final ByteBuffer data) {
-
+	private void badPacketReceived(final OSCParseException exception) {
+		final ByteBuffer data = exception.getData();
 		final OSCBadDataEvent badDataEvt = new OSCBadDataEvent(this, data, exception);
 
 		for (final OSCPacketListener listener : packetListeners) {
@@ -264,14 +259,13 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 */
 	@SuppressWarnings("WeakerAccess")
 	public void stopListening() {
-
 		listening = false;
 		// NOTE This is not thread-save
-		if (getChannel().isBlocking()) {
+		if (getTransport().isBlocking()) {
 			try {
-				getChannel().close();
+				getTransport().close();
 			} catch (final IOException ex) {
-				log.error("Failed to close OSC UDP channel", ex);
+				log.error("Failed to close OSC transport", ex);
 			}
 		}
 	}
@@ -361,8 +355,8 @@ public class OSCPortIn extends OSCPort implements Runnable {
 				.append(": ");
 		if (isListening()) {
 			rep
-					.append("listening on \"")
-					.append(getLocalAddress().toString())
+					.append("listening via \"")
+					.append(getTransport().toString())
 					.append('\"');
 		} else {
 			rep.append("stopped");

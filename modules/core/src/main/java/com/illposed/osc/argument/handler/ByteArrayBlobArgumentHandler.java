@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
@@ -65,7 +66,7 @@ public class ByteArrayBlobArgumentHandler implements ArgumentHandler<byte[]>, Cl
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final byte[] value) throws OSCSerializeException {
+	public void serialize(final BytesReceiver output, final byte[] value) throws OSCSerializeException {
 
 		final ByteBuffer bufferValue = ByteBuffer.wrap(value).asReadOnlyBuffer();
 		BlobArgumentHandler.INSTANCE.serialize(output, bufferValue);

@@ -7,20 +7,18 @@
  * See file LICENSE.md for more information.
  */
 
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;
 
-import com.illposed.osc.LibraryInfo;
-
+import com.illposed.osc.transport.udp.UDPTransport;
+import com.illposed.osc.transport.tcp.TCPTransport;
+import com.illposed.osc.OSCSerializerAndParserBuilder;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.StandardProtocolFamily;
-import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
-import java.nio.channels.DatagramChannel;
 
 /**
  * An abstract superclass.
@@ -29,53 +27,55 @@ import java.nio.channels.DatagramChannel;
  */
 public class OSCPort {
 
-	private final SocketAddress local;
-	private final SocketAddress remote;
-	private final DatagramChannel channel;
-
 	public static final int DEFAULT_SC_OSC_PORT = 57110;
 	public static final int DEFAULT_SC_LANG_OSC_PORT = 57120;
 
-	protected OSCPort(final SocketAddress local, final SocketAddress remote) throws IOException {
+	private final Transport transport;
 
-		this.local = local;
-		this.remote = remote;
-		final DatagramChannel tmpChannel;
-		if (local instanceof InetSocketAddress && LibraryInfo.hasStandardProtocolFamily()) {
-			final InetSocketAddress localIsa = (InetSocketAddress) local;
-			final InetSocketAddress remoteIsa = (InetSocketAddress) remote;
-			if (!localIsa.getAddress().getClass().equals(
-					remoteIsa.getAddress().getClass()))
-			{
+	protected OSCPort(
+		final SocketAddress local,
+		final SocketAddress remote,
+		final OSCSerializerAndParserBuilder serializerAndParserBuilder,
+		final NetworkProtocol protocol)
+		throws IOException
+	{
+		switch (protocol) {
+			case UDP:
+				this.transport = new UDPTransport(local, remote, serializerAndParserBuilder);
+				break;
+			case TCP:
+				if (!((local instanceof InetSocketAddress)
+							&& (remote instanceof InetSocketAddress)))
+				{
+					throw new IllegalArgumentException(
+						"Only InetSocketAddress is supported for TCP transport."
+					);
+				}
+
+				this.transport = new TCPTransport(
+					(InetSocketAddress)local,
+					(InetSocketAddress)remote,
+					serializerAndParserBuilder
+				);
+				break;
+			default:
 				throw new IllegalArgumentException(
-						"local and remote addresses are not of the same family"
-						+ " (IP v4 vs v6)");
-			}
-			if (localIsa.getAddress() instanceof Inet4Address) {
-				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET);
-			} else if (localIsa.getAddress() instanceof Inet6Address) {
-				tmpChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
-			} else {
-				throw new IllegalArgumentException(
-						"Unknown address type: "
-						+ localIsa.getAddress().getClass().getCanonicalName());
-			}
-		} else {
-			tmpChannel = DatagramChannel.open();
+					"Unexpected NetworkProtocol: " + protocol
+				);
 		}
-		this.channel = tmpChannel;
+	}
 
-		if (LibraryInfo.hasStandardProtocolFamily()) {
-			this.channel.setOption(StandardSocketOptions.SO_SNDBUF, OSCPortIn.BUFFER_SIZE);
-			this.channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-			this.channel.setOption(StandardSocketOptions.SO_BROADCAST, true);
-		} else {
-			this.channel.socket().setSendBufferSize(OSCPortIn.BUFFER_SIZE);
-			this.channel.socket().setReuseAddress(true);
-			this.channel.socket().setBroadcast(true);
-		}
+	protected OSCPort(
+		final SocketAddress local,
+		final SocketAddress remote,
+		final OSCSerializerAndParserBuilder serializerAndParserBuilder)
+		throws IOException
+	{
+		this(local, remote, serializerAndParserBuilder, NetworkProtocol.UDP);
+	}
 
-		this.channel.socket().bind(local);
+	public Transport getTransport() {
+		return transport;
 	}
 
 	/**
@@ -121,7 +121,6 @@ public class OSCPort {
 	 *   <code>0</code> otherwise
 	 */
 	public static int extractFamily(final SocketAddress address) {
-
 		final int family;
 		if (address instanceof InetSocketAddress) {
 			final InetSocketAddress iNetAddress = (InetSocketAddress) address;
@@ -139,38 +138,16 @@ public class OSCPort {
 		return family;
 	}
 
-
-	/**
-	 * Returns the channel associated with this port.
-	 * @return this ports channel
-	 */
-	protected DatagramChannel getChannel() {
-		return channel;
-	}
-
 	public void connect() throws IOException {
-
-		if (getRemoteAddress() == null) {
-			throw new IllegalStateException(
-					"Can not connect a socket without a remote address specified");
-		}
-		getChannel().connect(getRemoteAddress());
+		transport.connect();
 	}
 
 	public void disconnect() throws IOException {
-		getChannel().disconnect();
+		transport.disconnect();
 	}
 
 	public boolean isConnected() {
-		return getChannel().isConnected();
-	}
-
-	public SocketAddress getLocalAddress() {
-		return local;
-	}
-
-	public SocketAddress getRemoteAddress() {
-		return remote;
+		return transport.isConnected();
 	}
 
 	/**
@@ -180,6 +157,11 @@ public class OSCPort {
 	 * @throws IOException If an I/O error occurs on the channel
 	 */
 	public void close() throws IOException {
-		channel.close();
+		transport.close();
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[%s (%s)]", getClass().getSimpleName(), transport);
 	}
 }

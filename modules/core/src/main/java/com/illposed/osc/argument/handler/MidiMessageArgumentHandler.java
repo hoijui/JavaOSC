@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.argument.ArgumentHandler;
 import java.nio.ByteBuffer;
@@ -64,7 +65,7 @@ public class MidiMessageArgumentHandler implements ArgumentHandler<OSCMidiMessag
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCMidiMessage value) {
+	public void serialize(final BytesReceiver output, final OSCMidiMessage value) {
 		output.put(value.toContentArray());
 	}
 }

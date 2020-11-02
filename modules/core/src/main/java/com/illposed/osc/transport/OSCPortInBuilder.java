@@ -7,7 +7,7 @@
  * See file LICENSE.md for more information.
  */
 
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;
 
 import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessageListener;
@@ -27,6 +27,7 @@ public class OSCPortInBuilder {
 	private List<OSCPacketListener> packetListeners;
 	private SocketAddress local;
 	private SocketAddress remote;
+	private NetworkProtocol networkProtocol = NetworkProtocol.UDP;
 
 	private OSCPacketListener addDefaultPacketListener() {
 		if (packetListeners == null) {
@@ -46,8 +47,7 @@ public class OSCPortInBuilder {
 		}
 
 		if (remote == null) {
-			throw new IllegalArgumentException(
-				"Missing remote socket address / port.");
+			remote = new InetSocketAddress(OSCPort.generateWildcard(local), 0);
 		}
 
 		if (parserBuilder == null) {
@@ -58,7 +58,9 @@ public class OSCPortInBuilder {
 			addDefaultPacketListener();
 		}
 
-		return new OSCPortIn(parserBuilder, packetListeners, local, remote);
+		return new OSCPortIn(
+			parserBuilder, packetListeners, local, remote, networkProtocol
+		);
 	}
 
 	public OSCPortInBuilder setPort(final int port) {
@@ -91,6 +93,11 @@ public class OSCPortInBuilder {
 
 	public OSCPortInBuilder setRemoteSocketAddress(final SocketAddress address) {
 		remote = address;
+		return this;
+	}
+
+	public OSCPortInBuilder setNetworkProtocol(final NetworkProtocol protocol) {
+		networkProtocol = protocol;
 		return this;
 	}
 

@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
@@ -64,7 +65,7 @@ public class TimeTag64ArgumentHandler implements ArgumentHandler<OSCTimeTag64>, 
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final OSCTimeTag64 value)
+	public void serialize(final BytesReceiver output, final OSCTimeTag64 value)
 			throws OSCSerializeException
 	{
 		LongArgumentHandler.INSTANCE.serialize(output, value.getNtpTime());

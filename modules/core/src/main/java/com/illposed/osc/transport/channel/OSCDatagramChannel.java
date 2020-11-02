@@ -9,6 +9,7 @@
 
 package com.illposed.osc.transport.channel;
 
+import com.illposed.osc.BufferBytesReceiver;
 import com.illposed.osc.OSCPacket;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
@@ -31,9 +32,9 @@ import java.nio.channels.spi.SelectorProvider;
  * over a DatagramChannel.
  * It is mostly for internal use,
  * and will probably not be used directly by users of this library.
- * To send OSC messages, use {@link com.illposed.osc.transport.udp.OSCPortOut}.
+ * To send OSC messages, use {@link com.illposed.osc.transport.OSCPortOut}.
  * To listen for OSC messages,
- * use {@link com.illposed.osc.transport.udp.OSCPortIn}.
+ * use {@link com.illposed.osc.transport.OSCPortIn}.
  */
 public class OSCDatagramChannel extends SelectableChannel {
 
@@ -78,7 +79,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 //			}
 			buffer.flip();
 			if (buffer.limit() == 0) {
-				throw new OSCParseException("Received a packet without any data");
+				throw new OSCParseException("Received a packet without any data", buffer);
 			} else {
 				oscPacket = parser.convert(buffer);
 				completed = true;
@@ -96,7 +97,7 @@ public class OSCDatagramChannel extends SelectableChannel {
 		try {
 			begin();
 
-			final OSCSerializer serializer = serializerBuilder.buildSerializer(buffer);
+			final OSCSerializer serializer = serializerBuilder.buildSerializer(new BufferBytesReceiver(buffer));
 			buffer.rewind();
 			serializer.write(packet);
 			buffer.flip();

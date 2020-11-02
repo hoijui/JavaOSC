@@ -52,7 +52,7 @@ public class OSCSerializer {
 
 	private final Logger log = LoggerFactory.getLogger(OSCSerializer.class);
 
-	private final ByteBuffer output;
+	private final BytesReceiver output;
 	/**
 	 * Cache for Java classes of which we know, that we have no argument handler
 	 * that supports serializing them.
@@ -92,7 +92,7 @@ public class OSCSerializer {
 	public OSCSerializer(
 			final List<ArgumentHandler> types,
 			final Map<String, Object> properties,
-			final ByteBuffer output)
+			final BytesReceiver output)
 	{
 		final Map<Class, Boolean> classToMarkerTmp = new HashMap<>(types.size());
 		final Map<Class, ArgumentHandler> classToTypeTmp = new HashMap<>();
@@ -186,7 +186,7 @@ public class OSCSerializer {
 	 * @param output to receive the data-piece termination
 	 */
 	@SuppressWarnings("WeakerAccess")
-	public static void terminate(final ByteBuffer output) {
+	public static void terminate(final BytesReceiver output) {
 		output.put((byte) 0);
 	}
 
@@ -196,7 +196,7 @@ public class OSCSerializer {
 	 * @param output to be aligned
 	 * @see OSCParser#align
 	 */
-	public static void align(final ByteBuffer output) {
+	public static void align(final BytesReceiver output) {
 		final int alignmentOverlap = output.position() % OSCParser.ALIGNMENT_BYTES;
 		final int padLen = (OSCParser.ALIGNMENT_BYTES - alignmentOverlap) % OSCParser.ALIGNMENT_BYTES;
 		for (int pci = 0; pci < padLen; pci++) {
@@ -211,7 +211,7 @@ public class OSCSerializer {
 	 * We always need to terminate with a zero, especially when the stream is already aligned.
 	 * @param output to receive the data-piece termination and alignment
 	 */
-	public static void terminateAndAlign(final ByteBuffer output) {
+	public static void terminateAndAlign(final BytesReceiver output) {
 		terminate(output);
 		align(output);
 	}
@@ -260,15 +260,21 @@ public class OSCSerializer {
 	 */
 	private void writeSizeAndData(final OSCPacket packet) throws OSCSerializeException {
 
+		final ByteBuffer serializedPacketBuffer = ByteBuffer.allocate(4);
+		final BufferBytesReceiver serializedPacketSize = new BufferBytesReceiver(serializedPacketBuffer);
+		final ArgumentHandler<Integer> type = findType(PACKET_SIZE_PLACEHOLDER);
+
 		final int sizePosition = output.position();
 		// write place-holder size (will be overwritten later)
-		write(PACKET_SIZE_PLACEHOLDER);
+		type.serialize(serializedPacketSize, PACKET_SIZE_PLACEHOLDER);
+		final BytesReceiver.PlaceHolder packetSizePlaceholder = output.putPlaceHolder(serializedPacketBuffer.array());
 		writePacket(packet);
 		final int afterPacketPosition = output.position();
 		final int packetSize = afterPacketPosition - sizePosition - OSCParser.ALIGNMENT_BYTES;
-		output.position(sizePosition);
-		write(packetSize);
-		output.position(afterPacketPosition);
+
+		serializedPacketSize.clear();
+		type.serialize(serializedPacketSize, packetSize);
+		packetSizePlaceholder.replace(serializedPacketBuffer.array());
 	}
 
 	private void writePacket(final OSCPacket packet) throws OSCSerializeException {

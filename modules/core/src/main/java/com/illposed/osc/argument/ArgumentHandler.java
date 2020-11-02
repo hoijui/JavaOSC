@@ -9,6 +9,7 @@
 
 package com.illposed.osc.argument;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import java.nio.ByteBuffer;
@@ -90,5 +91,5 @@ public interface ArgumentHandler<T> extends Cloneable {
 	 * @throws OSCSerializeException if anything went wrong while serializing,
 	 *   for example an invalid value was given
 	 */
-	void serialize(ByteBuffer output, T value) throws OSCSerializeException;
+	void serialize(BytesReceiver output, T value) throws OSCSerializeException;
 }

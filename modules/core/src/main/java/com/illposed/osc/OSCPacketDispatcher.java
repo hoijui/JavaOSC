@@ -11,6 +11,7 @@ package com.illposed.osc;
 
 import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.handler.StringArgumentHandler;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 	@SuppressWarnings("WeakerAccess")
 	public static final int MAX_ARGUMENTS = 64;
 	private static final int DEFAULT_CORE_THREADS = 3;
-	private final ByteBuffer argumentTypesBuffer;
+	private final BytesReceiver argumentTypesOutput;
 	private final OSCSerializer serializer;
 	private final Charset typeTagsCharset;
 	private final List<SelectiveMessageListener> selectiveMessageListeners;
@@ -122,7 +123,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 
 	private static class NullOSCSerializerBuilder extends OSCSerializerAndParserBuilder {
 		@Override
-		public OSCSerializer buildSerializer(final ByteBuffer output) {
+		public OSCSerializer buildSerializer(final BytesReceiver output) {
 			return new NullOSCSerializer();
 		}
 	}
@@ -134,14 +135,16 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 			final ScheduledExecutorService dispatchScheduler)
 	{
 		final OSCSerializerAndParserBuilder nonNullSerializerBuilder;
+		final ByteBuffer argumentTypesBuffer;
 		if (serializerBuilder == null) {
-			this.argumentTypesBuffer = ByteBuffer.allocate(0);
+			argumentTypesBuffer = ByteBuffer.allocate(0);
 			nonNullSerializerBuilder = new NullOSCSerializerBuilder();
 		} else {
-			this.argumentTypesBuffer = ByteBuffer.allocate(MAX_ARGUMENTS);
+			argumentTypesBuffer = ByteBuffer.allocate(MAX_ARGUMENTS);
 			nonNullSerializerBuilder = serializerBuilder;
 		}
-		this.serializer = nonNullSerializerBuilder.buildSerializer(argumentTypesBuffer);
+		this.argumentTypesOutput = new BufferBytesReceiver(argumentTypesBuffer);
+		this.serializer = nonNullSerializerBuilder.buildSerializer(argumentTypesOutput);
 		final Map<String, Object> serializationProperties
 				= nonNullSerializerBuilder.getProperties();
 		final Charset propertiesCharset
@@ -372,9 +375,8 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 					"Failed generating Arguments Type Tag string while dispatching",
 					ex);
 		}
-		argumentTypesBuffer.flip();
 
-		return new String(OSCSerializer.toByteArray(argumentTypesBuffer), typeTagsCharset);
+		return new String(argumentTypesOutput.toByteArray(), typeTagsCharset);
 	}
 
 	private void ensureMetaInfo(final OSCMessage message) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2019, C. Ramakrishnan / Illposed Software.
+ * Copyright (C) 2015-2017, C. Ramakrishnan / Illposed Software.
  * All rights reserved.
  *
  * This code is licensed under the BSD 3-Clause license.
@@ -8,6 +8,6 @@
  */
 
 /**
- * Provides means to send and receive OSC content via UDP.
+ * Provides means to send and receive OSC content over a network.
  */
-package com.illposed.osc.transport.udp;
+package com.illposed.osc.transport;

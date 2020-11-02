@@ -139,7 +139,7 @@ in the terminal.
 ### Use the library
 
 The classes that deal with sending OSC data are located in the `com.illposed.osc` package.
-The core classes are `com.illposed.osc.transport.udp.OSCPort{In,  Out}`,
+The core classes are `com.illposed.osc.transport.OSCPort{In,  Out}`,
 `com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
 
 The common way to use the library is to instantiate an `OSCPort{In,  Out}`

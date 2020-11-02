@@ -15,6 +15,7 @@ import com.illposed.osc.argument.handler.IntegerArgumentHandler;
 import com.illposed.osc.argument.handler.TimeTag64ArgumentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.nio.Buffer;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -62,10 +63,12 @@ public class OSCParser {
 	private final byte[] bundleStartChecker;
 
 	private static class UnknownArgumentTypeParseException extends OSCParseException {
-
-		UnknownArgumentTypeParseException(final char argumentType) {
+		UnknownArgumentTypeParseException(
+			final char argumentType,
+			final ByteBuffer data)
+		{
 			super("No " + ArgumentHandler.class.getSimpleName() + " registered for type '"
-					+ argumentType + '\'');
+					+ argumentType + '\'', data);
 		}
 	}
 
@@ -106,7 +109,7 @@ public class OSCParser {
 	public static void align(final ByteBuffer input) {
 		final int mod = input.position() % ALIGNMENT_BYTES;
 		final int padding = (ALIGNMENT_BYTES - mod) % ALIGNMENT_BYTES;
-		input.position(input.position() + padding);
+		((Buffer)input).position(input.position() + padding);
 	}
 
 	// Public API
@@ -186,7 +189,7 @@ public class OSCParser {
 			// the package is too short to even contain the bundle start indicator
 			bundle = false;
 		}
-		rawInput.position(positionStart);
+		((Buffer)rawInput).position(positionStart);
 		return bundle;
 	}
 
@@ -197,7 +200,7 @@ public class OSCParser {
 	 */
 	private OSCBundle convertBundle(final ByteBuffer rawInput) throws OSCParseException {
 		// skip the "#bundle " stuff
-		rawInput.position(BUNDLE_START.length() + 1);
+		((Buffer)rawInput).position(BUNDLE_START.length() + 1);
 		final OSCTimeTag64 timestamp = TimeTag64ArgumentHandler.INSTANCE.parse(rawInput);
 		final OSCBundle bundle = new OSCBundle(timestamp);
 		while (rawInput.hasRemaining()) {
@@ -211,8 +214,8 @@ public class OSCParser {
 								+ ", is:" + packetLength);
 			}
 			final ByteBuffer packetBytes = rawInput.slice();
-			packetBytes.limit(packetLength);
-			rawInput.position(rawInput.position() + packetLength);
+			((Buffer)packetBytes).limit(packetLength);
+			((Buffer)rawInput).position(rawInput.position() + packetLength);
 			final OSCPacket packet = convert(packetBytes);
 			bundle.addPacket(packet);
 		}
@@ -248,7 +251,7 @@ public class OSCParser {
 		try {
 			return new OSCMessage(address, arguments, new OSCMessageInfo(typeIdentifiers));
 		} catch (final IllegalArgumentException ex) {
-			throw new OSCParseException(ex);
+			throw new OSCParseException(ex, rawInput);
 		}
 	}
 
@@ -280,7 +283,8 @@ public class OSCParser {
 				// data format is invalid
 				throw new OSCParseException(
 						"No '" + TYPES_VALUES_SEPARATOR + "' present after the address, "
-								+ "but there is still more data left in the message");
+								+ "but there is still more data left in the message",
+						rawInput);
 			}
 		} else {
 			// NOTE Strictly speaking, it is invalid for a message to omit the "OSC Type Tag String",
@@ -310,7 +314,7 @@ public class OSCParser {
 
 		final ArgumentHandler type = identifierToType.get(typeIdentifier);
 		if (type == null) {
-			throw new UnknownArgumentTypeParseException(typeIdentifier);
+			throw new UnknownArgumentTypeParseException(typeIdentifier, rawInput);
 		} else {
 			argumentValue = type.parse(rawInput);
 		}

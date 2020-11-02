@@ -9,10 +9,12 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCParser;
 import com.illposed.osc.OSCSerializer;
 import com.illposed.osc.argument.ArgumentHandler;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
@@ -107,14 +109,16 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 
 		final int strLen = lengthOfCurrentString(input);
 		final ByteBuffer strBuffer = input.slice();
-		strBuffer.limit(strLen);
+		((Buffer)strBuffer).limit(strLen);
 		final String res;
 		try {
 			res = charset.newDecoder().decode(strBuffer).toString();
 		} catch (final CharacterCodingException ex) {
-			throw new OSCParseException("Failed decoding a string argument", ex);
+			throw new OSCParseException(
+				"Failed decoding a string argument", ex, input
+			);
 		}
-		input.position(input.position() + strLen);
+		((Buffer)input).position(input.position() + strLen);
 		// because strings are always padded with at least one zero,
 		// as their length is not given in advance, as is the case with blobs,
 		// we skip over the terminating zero byte (position++)
@@ -124,7 +128,7 @@ public class StringArgumentHandler implements ArgumentHandler<String>, Cloneable
 	}
 
 	@Override
-	public void serialize(final ByteBuffer output, final String value) {
+	public void serialize(final BytesReceiver output, final String value) {
 
 		final byte[] stringBytes = value.getBytes(charset);
 		output.put(stringBytes);

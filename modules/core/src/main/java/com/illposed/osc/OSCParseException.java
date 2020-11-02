@@ -9,21 +9,31 @@
 
 package com.illposed.osc;
 
+import java.nio.ByteBuffer;
+
 public class OSCParseException extends Exception {
+	private final ByteBuffer data;
 
-	public OSCParseException() {
-		super();
+	public ByteBuffer getData() {
+		return data;
 	}
 
-	public OSCParseException(final String message) {
+	public OSCParseException(final String message, final ByteBuffer data) {
 		super(message);
+		this.data = data;
 	}
 
-	public OSCParseException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
-
-	public OSCParseException(final Throwable cause) {
+	public OSCParseException(final Throwable cause, final ByteBuffer data) {
 		super(cause);
+		this.data = data;
+	}
+
+	public OSCParseException(
+		final String message,
+		final Throwable cause,
+		final ByteBuffer data)
+	{
+		super(message, cause);
+		this.data = data;
 	}
 }
