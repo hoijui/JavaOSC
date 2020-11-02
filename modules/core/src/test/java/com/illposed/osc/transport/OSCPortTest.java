@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 public class OSCPortTest {
 
 	private static final long WAIT_FOR_SOCKET_CLOSE_MS = 30;
+	private static final int WAIT_FOR_RECEIVE_MS = 5000;
 
 	private final Logger log = LoggerFactory.getLogger(OSCPortTest.class);
 
@@ -133,7 +134,7 @@ public class OSCPortTest {
 			TCPTransport transport = (TCPTransport) receiver.getTransport();
 			retryUntilTrue(
 					100,
-					5000,
+					WAIT_FOR_RECEIVE_MS,
 					open
 							? "Transport not listening."
 							: "Transport still listening.",
@@ -382,7 +383,7 @@ public class OSCPortTest {
 		receiver.startListening();
 		sender.send(message);
 		try {
-			assertMessageReceived(listener, 5000);
+			assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -591,7 +592,7 @@ public class OSCPortTest {
 		sender.send(bundle);
 
 		try {
-			assertMessageReceived(listener, 5000);
+			assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -633,7 +634,7 @@ public class OSCPortTest {
 		sender.send(bundle);
 
 		try {
-			assertPacketReceived(simpleListener, 5000);
+			assertPacketReceived(simpleListener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -685,7 +686,7 @@ public class OSCPortTest {
 		sender.send(message);
 
 		try {
-			assertPacketReceived(simpleListener, 5000);
+			assertPacketReceived(simpleListener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -731,7 +732,7 @@ public class OSCPortTest {
 		try {
 			assertPacketNotReceived(
 					listener,
-					5000,
+					WAIT_FOR_RECEIVE_MS,
 					"Packet was received, despite removePacketListener having been called."
 			);
 		} finally {
@@ -773,7 +774,7 @@ public class OSCPortTest {
 		sender.send(message);
 
 		try {
-			assertMessageReceived(listener, 5000);
+			assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -871,11 +872,11 @@ public class OSCPortTest {
 
 		try {
 			if (shouldReceive) {
-				assertMessageReceived(listener, 5000);
+				assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 			} else {
 				assertMessageNotReceived(
 						listener,
-						5000,
+						WAIT_FOR_RECEIVE_MS,
 						"Message was received while it should not have!"
 				);
 			}
@@ -1035,7 +1036,7 @@ public class OSCPortTest {
 		sender.send(msgLong);
 
 		try {
-			assertMessageReceived(listener, 5000);
+			assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -1074,8 +1075,8 @@ public class OSCPortTest {
 		sender.send(msg);
 
 		try {
-			assertPacketReceived(pkgListener, 5000);
-			assertMessageReceived(msgListener, 5000);
+			assertPacketReceived(pkgListener, WAIT_FOR_RECEIVE_MS);
+			assertMessageReceived(msgListener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
@@ -1115,7 +1116,7 @@ public class OSCPortTest {
 		try {
 			assertMessageNotReceived(
 					listener,
-					5000,
+					WAIT_FOR_RECEIVE_MS,
 					"Message was received, while it should not have been"
 			);
 		} finally {
@@ -1155,7 +1156,7 @@ public class OSCPortTest {
 		sender.send(msg);
 
 		try {
-			assertMessageReceived(listener, 5000);
+			assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
 		} finally {
 			receiver.stopListening();
 		}
