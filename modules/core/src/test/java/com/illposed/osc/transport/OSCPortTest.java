@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public class OSCPortTest {
 
 	private static final long WAIT_FOR_SOCKET_CLOSE_MS = 30;
-	private static final int WAIT_FOR_RECEIVE_MS = 5000;
+	private static final int WAIT_FOR_RECEIVE_MS = 1000;
 
 	private final Logger log = LoggerFactory.getLogger(OSCPortTest.class);
 
