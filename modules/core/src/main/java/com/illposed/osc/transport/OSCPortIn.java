@@ -98,7 +98,7 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	 * @param packetListeners to handle received and serialized OSC packets
 	 * @param local address to listen on
 	 * @param remote address to listen to
-	 * @param networkProtocol the network protocol by which to receive OSC packets
+	 * @param protocol the network protocol by which to receive OSC packets
 	 * @throws IOException if we fail to bind a channel to the local address
 	 */
 	public OSCPortIn(
