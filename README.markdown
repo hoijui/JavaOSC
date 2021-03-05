@@ -106,12 +106,16 @@ Though there is a very basic application for demonstration purposes.
 
 To _run the demo app_, make sure you have all parts packaged and installed:
 
-	mvn install
+```bash
+mvn install
+```
 
 Then start the UI:
 
-	cd modules/ui
-	mvn exec:java
+```bash
+cd modules/ui
+mvn exec:java
+```
 
 Next, launch SuperCollider (SC), open the file located in the
 `modules/core/src/main/resources/supercollider/` directory,
@@ -154,14 +158,16 @@ They can be run with `mvn test`.
 
 To release a development version to the Sonatype snapshot repository only:
 
-	# open a "private" shell, to not spill the changes in env vars
-	bash
-	# set env vars
-	export JAVA_HOME="${JAVA_8_HOME}"
-	# do the release
-	mvn clean deploy
-	# leave our "private" shell instance again
-	exit
+```bash
+# open a "private" shell, to not spill the changes in env vars
+bash
+# set env vars
+export JAVA_HOME="${JAVA_8_HOME}"
+# do the release
+mvn clean deploy
+# leave our "private" shell instance again
+exit
+```
 
 In the project you want to use the _SNAPSHOT_ release,
 you need to add this to your _pom.xml_:
@@ -180,7 +186,9 @@ you need to add this to your _pom.xml_:
 
 ### Prepare "target/" for the release process
 
-	mvn release:clean
+```bash
+mvn release:clean
+```
 
 ### Setup for signing the release
 
@@ -210,28 +218,30 @@ for further details about how to work with GPG keys.
 
 ### Prepare the release
 
-	# open a "private" shell, to not spill the changes in env vars
-	bash
-	# set env vars
-	export JAVA_HOME="${JAVA_8_HOME}"
-	# check if everything is in order
-	mvn \
-		clean \
-		package \
-		verify \
-		gpg:sign \
-		site
-	mvn release:clean
-	mvn \
-		-DdryRun=true \
-		release:prepare
-	# run the prepare phase for real
-	mvn release:clean
-	mvn \
-		-DdryRun=false \
-		release:prepare
-	# leave our "private" shell instance again
-	exit
+```bash
+# open a "private" shell, to not spill the changes in env vars
+bash
+# set env vars
+export JAVA_HOME="${JAVA_8_HOME}"
+# check if everything is in order
+mvn \
+	clean \
+	package \
+	verify \
+	gpg:sign \
+	site
+mvn release:clean
+mvn \
+	-DdryRun=true \
+	release:prepare
+# run the prepare phase for real
+mvn release:clean
+mvn \
+	-DdryRun=false \
+	release:prepare
+# leave our "private" shell instance again
+exit
+```
 
 This does the following:
 
@@ -245,16 +255,18 @@ use the oldest possible JDK version to compile (currently 1.8)
 
 ### Perform the release (main part)
 
-	# open a "private" shell, to not spill the changes in env vars
-	bash
-	# set env vars
-	export JAVA_HOME="${JAVA_8_HOME}"
-	# perform the release
-	git push origin master <release-tag>
-	mvn release:perform
-	mvn deploy -P release
-	# leave our "private" shell instance again
-	exit
+```bash
+# open a "private" shell, to not spill the changes in env vars
+bash
+# set env vars
+export JAVA_HOME="${JAVA_8_HOME}"
+# perform the release
+git push origin master <release-tag>
+mvn release:perform
+mvn deploy -P release
+# leave our "private" shell instance again
+exit
+```
 
 This does the following:
 
