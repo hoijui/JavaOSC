@@ -158,8 +158,6 @@ To release a development version to the Sonatype snapshot repository only:
 	bash
 	# set env vars
 	export JAVA_HOME="${JAVA_8_HOME}"
-	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
-	export PATH="${MAVEN_HOME}/bin/:${PATH}"
 	# do the release
 	mvn clean deploy
 	# leave our "private" shell instance again
@@ -216,8 +214,6 @@ for further details about how to work with GPG keys.
 	bash
 	# set env vars
 	export JAVA_HOME="${JAVA_8_HOME}"
-	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
-	export PATH="${MAVEN_HOME}/bin/:${PATH}"
 	# check if everything is in order
 	mvn \
 		clean \
@@ -253,8 +249,6 @@ use the oldest possible JDK version to compile (currently 1.8)
 	bash
 	# set env vars
 	export JAVA_HOME="${JAVA_8_HOME}"
-	export MAVEN_HOME="${MAVEN_3_2_5_HOME}"
-	export PATH="${MAVEN_HOME}/bin/:${PATH}"
 	# perform the release
 	git push origin master <release-tag>
 	mvn release:perform
