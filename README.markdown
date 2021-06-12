@@ -29,6 +29,9 @@ https://github.com/hoijui/JavaOSC/issues)
 https://img.shields.io/badge/chat-IRC-darkgreen.svg)](
 irc://irc.freenode.net/javaosc)
 
+[![REUSE status](
+https://api.reuse.software/badge/github.com/hoijui/JavaOSC)](
+https://api.reuse.software/info/github.com/hoijui/JavaOSC)
 [![GitHub last commit](
 https://img.shields.io/github/last-commit/hoijui/JavaOSC.svg)](
 https://github.com/hoijui/JavaOSC)
