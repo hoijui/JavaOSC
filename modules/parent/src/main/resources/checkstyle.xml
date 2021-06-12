@@ -82,6 +82,7 @@ SPDX-License-Identifier: CC0-1.0
 	<!-- NOTE the used variable is supplied by the invocation in maven! -->
 	<module name="RegexpHeader">
 		<property name="headerFile" value="${java.header.regex.template.file}"/>
+		<property name="multiLines" value="{2}"/>
 		<property name="fileExtensions" value="java"/>
 	</module>
 

@@ -1,9 +1,5 @@
-^/\*$
-^ \* Copyright \(C\) \d\d\d\d(-\d\d\d\d)?, C\. Ramakrishnan / (Auracle|Illposed Software)\.$
-^ \* All rights reserved\.$
-^ \*$
-^ \* This code is licensed under the BSD 3-Clause license\.$
-^ \* SPDX-License-Identifier: BSD-3-Clause$
-^ \* See file LICENSE\.md for more information\.$
-^ \*/$
+^// SPDX-FileCopyrightText: \d\d\d\d(-\d\d\d\d)? .+$
+^// SPDX-FileCopyrightText: \d\d\d\d(-\d\d\d\d)? .+$
+^//$
+^// SPDX-License-Identifier: BSD-3-Clause$
 ^$
