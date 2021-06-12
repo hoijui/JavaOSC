@@ -4,6 +4,12 @@
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
 <!--
+SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
+<!--
 
 	Custom Checkstyle configuration that checks coding conventions,
 	roughly following the SUN coding conventions from:

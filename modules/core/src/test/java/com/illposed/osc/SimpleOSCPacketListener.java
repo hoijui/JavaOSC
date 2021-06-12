@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
 package com.illposed.osc;
 
 public class SimpleOSCPacketListener implements OSCPacketListener {

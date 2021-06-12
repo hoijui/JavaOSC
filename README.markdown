@@ -7,6 +7,13 @@
 
 <!-- The title was created with: `figlet -k -f big JavaOSC` -->
 
+<!--
+SPDX-FileCopyrightText: 2012 C. Ramakrishnan / Illposed Software
+SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 ## Status
 
 [![License](

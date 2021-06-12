@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+SPDX-FileCopyrightText: 2019 Robin Vobruba <hoijui.quaero@gmail.com>
+
+SPDX-License-Identifier: CC0-1.0
+-->
+
 <ruleset
 		xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
