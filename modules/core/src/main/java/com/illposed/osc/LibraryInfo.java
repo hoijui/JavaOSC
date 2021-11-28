@@ -41,14 +41,14 @@ public final class LibraryInfo {
 	private final Properties manifestProperties;
 
 	static {
-
 		final Set<Package> tmpUninterestingPkgs = new HashSet<>();
 		tmpUninterestingPkgs.add(Package.getPackage("java.lang"));
 		tmpUninterestingPkgs.add(Package.getPackage("java.util"));
 		// NOTE We need to do it like this, because otherwise "java.awt" can not be found
 		//   by this classes class-loader.
-		if (hasAwtColor()) {
-			tmpUninterestingPkgs.add(java.awt.Color.class.getPackage());
+		final Class<?> javaAwtColorClass = getAwtColor();
+		if (javaAwtColorClass != null) {
+			tmpUninterestingPkgs.add(javaAwtColorClass.getPackage());
 		}
 		tmpUninterestingPkgs.add(OSCImpulse.class.getPackage());
 		UNINTERESTING_PKGS = Collections.unmodifiableSet(tmpUninterestingPkgs);
@@ -293,12 +293,11 @@ public final class LibraryInfo {
 	 * @return true when the runtime supports java.awt.Color
 	 * (e.g. Android)
 	 */
-	public static boolean hasAwtColor() {
+	static Class<?> getAwtColor() {
 		try {
-			Class.forName("java.awt.Color");
-			return true;
+			return Class.forName("java.awt.Color");
 		} catch (ClassNotFoundException ignore) {
-			return false;
+			return null;
 		}
 	}
 
