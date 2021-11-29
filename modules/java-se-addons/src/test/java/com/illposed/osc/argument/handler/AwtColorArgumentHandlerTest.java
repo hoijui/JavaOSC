@@ -5,6 +5,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.BufferBytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
@@ -38,11 +39,24 @@ public class AwtColorArgumentHandlerTest {
 		Color.WHITE,
 		Color.YELLOW};
 
+
+	private static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
+			throws OSCSerializeException, OSCParseException
+	{
+		// serialize
+		final ByteBuffer buffer = ByteBuffer.allocate(bufferSize);
+		final BufferBytesReceiver bytesReceiver = new BufferBytesReceiver(buffer);
+		type.serialize(bytesReceiver, orig);
+		final ByteBuffer reparsableBuffer = (ByteBuffer) buffer.flip();
+
+		// re-parse
+		return type.parse(reparsableBuffer);
+	}
+
 	private static Color reparse(final Color orig)
 			throws OSCSerializeException, OSCParseException
 	{
-		return ColorArgumentHandlerTest.reparse(
-				AwtColorArgumentHandler.INSTANCE, OSCColor.NUM_CONTENT_BYTES, orig);
+		return reparse(AwtColorArgumentHandler.INSTANCE, OSCColor.NUM_CONTENT_BYTES, orig);
 	}
 
 	@Test

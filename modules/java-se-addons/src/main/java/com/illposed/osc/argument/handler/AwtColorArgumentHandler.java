@@ -17,6 +17,18 @@ import java.util.Map;
 
 /**
  * Parses and serializes an OSC 1.1 optional <i>32bit RGBA color</i> type.
+ *
+ * Note That this class is not in javaosc-core,
+ * because it uses <code>java.awt.Color</code>,
+ * which is part of Java SE,
+ * but not part of the Java implementation on Android (Dalvik),
+ * and thus would make JavaOSC unusable on Android,
+ * if it were not separated.
+ * It was part of javaosc-core until version 0.8.
+ *
+ * As an alternative on Android,
+ * see <code>com.illposed.osc.argument.handler.ColorArgumentHandler</code>
+ * in javaosc-core.
  */
 public class AwtColorArgumentHandler implements ArgumentHandler<Color>, Cloneable {
 

@@ -39,6 +39,7 @@ SPDX-License-Identifier: CC0-1.0
 		<module>modules/parent</module>
 		<module>modules/core</module>
 		<module>modules/ui</module>
+		<module>modules/java-se-addons</module>
 	</modules>
 
 	<build>

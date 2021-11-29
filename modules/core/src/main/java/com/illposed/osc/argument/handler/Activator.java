@@ -82,7 +82,10 @@ public final class Activator {
 		serializerTypes.add(symbolArgumentHandler);
 
 		// NOTE As not all JRE's support AWT (for example headless ones and Android)),
-		//      we handle it this way.
+		//      we extracted `AwtColorArgumentHandler` into a separate maven-artifact
+		//      under the same groupId, with artifactId `java-se-addons`.
+		//      We try to load it through reflection here,
+		//      which will only succeed, if that class is in the classpath.
 		try {
 			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandler";
 			final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
