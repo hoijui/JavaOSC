@@ -15,14 +15,27 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.Random;
 
 public class ColorArgumentHandlerTest {
 
 	private final Logger log = LoggerFactory.getLogger(ColorArgumentHandlerTest.class);
+	private static final OSCColor[] DEFAULT_COLORS = {
+		OSCColor.BLACK,
+		OSCColor.BLUE,
+		OSCColor.CYAN,
+		OSCColor.DARK_GRAY,
+		OSCColor.GRAY,
+		OSCColor.GREEN,
+		OSCColor.LIGHT_GRAY,
+		OSCColor.MAGENTA,
+		OSCColor.ORANGE,
+		OSCColor.PINK,
+		OSCColor.RED,
+		OSCColor.WHITE,
+		OSCColor.YELLOW,
+	};
 
 	static <T> T reparse(final ArgumentHandler<T> type, final int bufferSize, final T orig)
 			throws OSCSerializeException, OSCParseException
@@ -76,8 +89,7 @@ public class ColorArgumentHandlerTest {
 	@Test
 	public void testReparseDefaultColors() throws Exception {
 
-		for (final Color origColorAwt : AwtColorArgumentHandlerTest.DEFAULT_COLORS) {
-			final OSCColor origColor = AwtColorArgumentHandler.toOsc(origColorAwt);
+		for (final OSCColor origColor: DEFAULT_COLORS) {
 			Assert.assertEquals(origColor, reparse(origColor));
 		}
 	}
@@ -95,19 +107,10 @@ public class ColorArgumentHandlerTest {
 		log.debug("{}#testReparseDefaultColorsAlphaed:alphaRandomSeed: {}",
 				ColorArgumentHandlerTest.class.getSimpleName(), alphaRandomSeed);
 		final Random alphaRandom = new Random(alphaRandomSeed);
-		final Color[] alphaedDefaultColors = Arrays.copyOf(
-				AwtColorArgumentHandlerTest.DEFAULT_COLORS,
-				AwtColorArgumentHandlerTest.DEFAULT_COLORS.length);
-		for (int tci = 0; tci < alphaedDefaultColors.length; tci++) {
-			final Color orig = alphaedDefaultColors[tci];
+		for (final OSCColor orig: DEFAULT_COLORS) {
 			final int alpha = alphaRandom.nextInt(256);
-			final Color alphaed = new Color(orig.getRed(), orig.getGreen(), orig.getBlue(), alpha);
-			alphaedDefaultColors[tci] = alphaed;
-		}
-
-		for (final Color origColorAwt : alphaedDefaultColors) {
-			final OSCColor origColor = AwtColorArgumentHandler.toOsc(origColorAwt);
-			Assert.assertEquals(origColor, reparse(origColor));
+			final OSCColor alphaed = new OSCColor(orig.getRed(), orig.getGreen(), orig.getBlue(), alpha);
+			Assert.assertEquals(alphaed, reparse(alphaed));
 		}
 	}
 }
