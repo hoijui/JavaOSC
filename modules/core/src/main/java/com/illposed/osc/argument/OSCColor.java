@@ -17,6 +17,19 @@ public class OSCColor implements Cloneable, Serializable, Comparable<OSCColor> {
 	 * Full opacity/no transparency.
 	 */
 	public static final byte DEFAULT_ALPHA = 1;
+	public static final OSCColor BLACK = new OSCColor((byte) 0, (byte) 0, (byte) 0);
+	public static final OSCColor BLUE = new OSCColor((byte) 0, (byte) 0, (byte) 255);
+	public static final OSCColor CYAN = new OSCColor((byte) 0, (byte) 255, (byte) 255);
+	public static final OSCColor DARK_GRAY = new OSCColor((byte) 64, (byte) 64, (byte) 64);
+	public static final OSCColor GRAY = new OSCColor((byte) 128, (byte) 128, (byte) 128);
+	public static final OSCColor GREEN = new OSCColor((byte) 0, (byte) 255, (byte) 0);
+	public static final OSCColor LIGHT_GRAY = new OSCColor((byte) 192, (byte) 192, (byte) 192);
+	public static final OSCColor MAGENTA = new OSCColor((byte) 255, (byte) 0, (byte) 255);
+	public static final OSCColor ORANGE = new OSCColor((byte) 255, (byte) 200, (byte) 0);
+	public static final OSCColor PINK = new OSCColor((byte) 255, (byte) 175, (byte) 175);
+	public static final OSCColor RED = new OSCColor((byte) 255, (byte) 0, (byte) 0);
+	public static final OSCColor WHITE = new OSCColor((byte) 255, (byte) 255, (byte) 255);
+	public static final OSCColor YELLOW = new OSCColor((byte) 255, (byte) 255, (byte) 0);
 	private static final long serialVersionUID = 1L;
 	private final byte red;
 	private final byte green;
