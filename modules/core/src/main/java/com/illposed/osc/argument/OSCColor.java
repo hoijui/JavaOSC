@@ -13,6 +13,10 @@ import java.io.Serializable;
 public class OSCColor implements Cloneable, Serializable, Comparable<OSCColor> {
 
 	public static final int NUM_CONTENT_BYTES = 4;
+	/**
+	 * Full opacity/no transparency.
+	 */
+	public static final byte DEFAULT_ALPHA = 1;
 	private static final long serialVersionUID = 1L;
 	private final byte red;
 	private final byte green;
@@ -52,6 +56,12 @@ public class OSCColor implements Cloneable, Serializable, Comparable<OSCColor> {
 		this.green = green;
 		this.blue = blue;
 		this.alpha = alpha;
+	}
+
+	// Public API
+	@SuppressWarnings("WeakerAccess")
+	public OSCColor(final byte red, final byte green, final byte blue) {
+		this(red, green, blue, DEFAULT_ALPHA);
 	}
 
 	// Public API
