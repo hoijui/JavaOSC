@@ -107,6 +107,11 @@ SPDX-License-Identifier: CC0-1.0
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-ext</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
 
