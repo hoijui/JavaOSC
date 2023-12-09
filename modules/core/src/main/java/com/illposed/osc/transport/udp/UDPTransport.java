@@ -24,7 +24,9 @@ import java.nio.channels.DatagramChannel;
 
 /**
  * A {@link Transport} implementation for sending and receiving OSC packets over
- * a network via UDP.
+ * a network via UDP. This implementation uses separate ByteBuffers for sending
+ * and receiving, making it possible to use the same UDP socket for sending packets
+ * and listening simultaneously.
  */
 public class UDPTransport implements Transport {
 
@@ -34,8 +36,8 @@ public class UDPTransport implements Transport {
 	 * incoming datagram data size.
 	 */
 	public static final int BUFFER_SIZE = 65507;
-	private final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
-
+	private final ByteBuffer sendBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+	private final ByteBuffer receiveBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 	private final SocketAddress local;
 	private final SocketAddress remote;
 	private final DatagramChannel channel;
@@ -131,12 +133,12 @@ public class UDPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		oscChannel.send(buffer, packet, remote);
+		oscChannel.send(sendBuffer, packet, remote);
 	}
 
 	@Override
 	public OSCPacket receive() throws IOException, OSCParseException {
-		return oscChannel.read(buffer);
+		return oscChannel.read(receiveBuffer);
 	}
 
 	@Override

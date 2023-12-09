@@ -70,6 +70,17 @@ public class OSCPort {
 		this(local, remote, serializerAndParserBuilder, NetworkProtocol.UDP);
 	}
 
+	protected OSCPort(
+		final Transport transport)
+	{
+		if (transport == null) {
+			throw new IllegalStateException(
+				"Can not use NULL as transport"
+			);
+		}
+		this.transport = transport;
+	}
+
 	public Transport getTransport() {
 		return transport;
 	}

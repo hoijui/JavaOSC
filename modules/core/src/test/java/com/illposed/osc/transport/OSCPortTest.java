@@ -331,6 +331,44 @@ public class OSCPortTest {
 				.build();
 	}
 
+	@Test
+	public void testUseSameTransportForOutAndIn() throws Exception {
+
+		if (sender != null) {
+			sender.close();
+		}
+
+		sender = new OSCPortOutBuilder()
+			.setRemoteSocketAddress(new InetSocketAddress(4711))
+			.setLocalSocketAddress(new InetSocketAddress( 4711))
+			.setNetworkProtocol(NetworkProtocol.UDP)
+			.build();
+
+		// create new receiver based on sender's transport implementation
+		receiver = new OSCPortInBuilder()
+			.setTransport(sender.getTransport())
+			.build();
+
+		Assert.assertEquals("expected same transport for both sender and receiver",
+			sender.getTransport(), receiver.getTransport());
+
+		// exchange simple message
+		OSCMessage message = new OSCMessage("/message/receiving");
+		SimpleOSCMessageListener listener = new SimpleOSCMessageListener();
+		receiver.getDispatcher().addListener(new OSCPatternAddressMessageSelector("/message/receiving"),
+			listener);
+
+		receiver.startListening();
+		sender.send(message);
+
+		// as the socket for sending is the same as for receiving, we will just produce an echo here
+		assertMessageReceived(listener, WAIT_FOR_RECEIVE_MS);
+
+		// manually close here before tearDown()
+		receiver.close();
+		sender.close();
+	}
+
 	private void assertMessageReceived(
 			SimpleOSCMessageListener listener, int timeout) {
 		assertEventuallyTrue(

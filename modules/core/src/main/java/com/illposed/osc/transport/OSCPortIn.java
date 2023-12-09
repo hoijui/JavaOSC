@@ -87,6 +87,28 @@ public class OSCPortIn extends OSCPort implements Runnable {
 	}
 
 	/**
+	 * Create an OSC-Port that uses a concrete {@code transport} given
+	 * as parameter and with {@link #isResilient() resilient} set to true.
+	 * One must make sure that the appropriate connection
+	 * has already been set up before using this instance, meaning
+	 * that local and remote address are set correctly.
+	 * @param transport the transport used for receiving OSC packets
+	 * @param packetListeners to handle received and serialized OSC packets
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortIn(
+		final Transport transport,
+		final List<OSCPacketListener> packetListeners)
+	{
+		super(transport);
+
+		this.listening = false;
+		this.daemonListener = true;
+		this.resilient = true;
+		this.packetListeners = packetListeners;
+	}
+
+	/**
 	 * Create an OSC-Port that listens on the given local socket for packets from {@code remote},
 	 * using a parser created with the given factory,
 	 * and with {@link #isResilient() resilient} set to true.

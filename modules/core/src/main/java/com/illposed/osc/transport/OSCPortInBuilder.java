@@ -24,6 +24,7 @@ public class OSCPortInBuilder {
 	private SocketAddress local;
 	private SocketAddress remote;
 	private NetworkProtocol networkProtocol = NetworkProtocol.UDP;
+	private Transport transport;
 
 	private OSCPacketListener addDefaultPacketListener() {
 		if (packetListeners == null) {
@@ -37,6 +38,33 @@ public class OSCPortInBuilder {
 	}
 
 	public OSCPortIn build() throws IOException {
+
+		if (packetListeners == null) {
+			addDefaultPacketListener();
+		}
+
+		// If transport is set, other settings cannot be used
+		if (transport != null) {
+			if (remote != null) {
+				throw new IllegalArgumentException(
+					"Cannot use remote socket address / port in conjunction with transport object.");
+			}
+
+			if (local != null) {
+				throw new IllegalArgumentException(
+					"Cannot use local socket address / port in conjunction with transport object.");
+			}
+
+			if (parserBuilder != null) {
+				throw new IllegalArgumentException(
+					"Cannot use parserBuilder in conjunction with transport object.");
+			}
+
+			return new OSCPortIn(
+				transport, packetListeners
+			);
+		}
+
 		if (local == null) {
 			throw new IllegalArgumentException(
 				"Missing local socket address / port.");
@@ -48,10 +76,6 @@ public class OSCPortInBuilder {
 
 		if (parserBuilder == null) {
 			parserBuilder = new OSCSerializerAndParserBuilder();
-		}
-
-		if (packetListeners == null) {
-			addDefaultPacketListener();
 		}
 
 		return new OSCPortIn(
@@ -94,6 +118,11 @@ public class OSCPortInBuilder {
 
 	public OSCPortInBuilder setNetworkProtocol(final NetworkProtocol protocol) {
 		networkProtocol = protocol;
+		return this;
+	}
+
+	public OSCPortInBuilder setTransport(final Transport networkTransport) {
+		transport = networkTransport;
 		return this;
 	}
 

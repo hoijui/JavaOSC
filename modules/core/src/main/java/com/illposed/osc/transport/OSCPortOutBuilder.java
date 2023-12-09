@@ -17,8 +17,32 @@ public class OSCPortOutBuilder {
 	private SocketAddress remote;
 	private SocketAddress local;
 	private NetworkProtocol networkProtocol = NetworkProtocol.UDP;
+	private Transport transport;
 
 	public OSCPortOut build() throws IOException {
+
+		// If transport is set, other settings cannot be used
+		if (transport != null) {
+			if (remote != null) {
+				throw new IllegalArgumentException(
+					"Cannot use remote socket address / port in conjunction with transport.");
+			}
+
+			if (local != null) {
+				throw new IllegalArgumentException(
+					"Cannot use local socket address / port in conjunction with transport.");
+			}
+
+			if (serializerBuilder != null) {
+				throw new IllegalArgumentException(
+					"Cannot use serializerBuilder in conjunction with transport.");
+			}
+
+			return new OSCPortOut(
+				transport
+			);
+		}
+
 		if (remote == null) {
 			throw new IllegalArgumentException(
 				"Missing remote socket address / port.");
@@ -72,6 +96,11 @@ public class OSCPortOutBuilder {
 
 	public OSCPortOutBuilder setNetworkProtocol(final NetworkProtocol protocol) {
 		networkProtocol = protocol;
+		return this;
+	}
+
+	public OSCPortOutBuilder setTransport(final Transport networkTransport) {
+		transport = networkTransport;
 		return this;
 	}
 }
