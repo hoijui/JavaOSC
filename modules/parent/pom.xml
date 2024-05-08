@@ -131,9 +131,18 @@ SPDX-License-Identifier: CC0-1.0
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>3.0.5</version>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<version>4.8.5.0</version>
+				<configuration>
+					<dependencies>
+						<dependency>
+							<groupId>com.github.spotbugs</groupId>
+							<artifactId>spotbugs</artifactId>
+							<version>4.8.5</version>
+						</dependency>
+					</dependencies>
+				</configuration>
 			</plugin>
 
 			<plugin>
@@ -359,9 +368,18 @@ SPDX-License-Identifier: CC0-1.0
 				</plugin>
 
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<version>3.0.5</version> <!-- NOTE 2.5.5 is the latest version still compiled with Java 1.6 -->
+					<groupId>com.github.spotbugs</groupId>
+					<artifactId>spotbugs-maven-plugin</artifactId>
+					<version>4.8.5.0</version>
+					<configuration>
+						<dependencies>
+							<dependency>
+								<groupId>com.github.spotbugs</groupId>
+								<artifactId>spotbugs</artifactId>
+								<version>4.8.5</version>
+							</dependency>
+						</dependencies>
+					</configuration>
 				</plugin>
 
 				<plugin>
