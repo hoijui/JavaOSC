@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-#        java: [ 8, 11, 14 ]
-        java: [ 8 ]
+#        java: [ 8, 11, 14, 17, 23 ]
+        java: [ 17 ]
     name: Java ${{ matrix.java }} compile
     steps:
       - uses: actions/checkout@v2
