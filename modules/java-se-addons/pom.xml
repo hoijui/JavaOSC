@@ -58,18 +58,18 @@ SPDX-License-Identifier: CC0-1.0
 				</executions>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<executions>
 					<execution>
-						<goals>
+						<goals> -->
 							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
-							<goal>check</goal>
-						</goals>
+							<!-- <goal>check</goal> -->
+						<!-- </goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>

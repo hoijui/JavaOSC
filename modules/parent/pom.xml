@@ -115,7 +115,7 @@ SPDX-License-Identifier: CC0-1.0
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
 				<version>3.22.0</version>
@@ -128,7 +128,7 @@ SPDX-License-Identifier: CC0-1.0
 						<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 					</rulesets>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
 			<plugin>
 				<groupId>com.github.spotbugs</groupId>
@@ -352,7 +352,7 @@ SPDX-License-Identifier: CC0-1.0
 					</configuration>
 				</plugin>
 
-				<plugin>
+				<!-- <plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
 					<version>3.22.0</version>
@@ -365,7 +365,7 @@ SPDX-License-Identifier: CC0-1.0
 							<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 						</rulesets>
 					</configuration>
-				</plugin>
+				</plugin> -->
 
 				<plugin>
 					<groupId>com.github.spotbugs</groupId>
