@@ -123,7 +123,7 @@ SPDX-License-Identifier: CC0-1.0
 					<aggregate>true</aggregate>
 					<linkXRef>true</linkXRef>
 					<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-					<targetJdk>1.${java.old.version}</targetJdk>
+					<targetJdk>${java.old.version}</targetJdk>
 					<rulesets>
 						<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 					</rulesets>
@@ -360,7 +360,7 @@ SPDX-License-Identifier: CC0-1.0
 						<aggregate>true</aggregate>
 						<linkXRef>true</linkXRef>
 						<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-						<targetJdk>1.${java.old.version}</targetJdk>
+						<targetJdk>${java.old.version}</targetJdk>
 						<rulesets>
 							<ruleset>${root.basedir}/src/main/resources/pmd.xml</ruleset>
 						</rulesets>
