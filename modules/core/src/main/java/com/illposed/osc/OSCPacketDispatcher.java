@@ -62,7 +62,7 @@ public class OSCPacketDispatcher implements OSCPacketListener {
 		private final MessageSelector selector;
 		private final OSCMessageListener listener;
 
-		public SelectiveMessageListener(
+		SelectiveMessageListener(
 				final MessageSelector selector,
 				final OSCMessageListener listener)
 		{

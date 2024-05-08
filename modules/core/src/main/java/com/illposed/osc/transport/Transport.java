@@ -28,7 +28,7 @@ public interface Transport {
 	 *   or a socket I/O error occurs while sending
 	 * @throws OSCSerializeException if the packet fails to serialize
 	 */
-	void send(final OSCPacket packet) throws IOException, OSCSerializeException;
+	void send(OSCPacket packet) throws IOException, OSCSerializeException;
 
 	/**
 	 * Receive an OSC packet.

@@ -21,11 +21,11 @@ public interface OSCPacketListener {
 	 * Process an incoming packet.
 	 * @param event contains the packet content and meta-data
 	 */
-	void handlePacket(final OSCPacketEvent event);
+	void handlePacket(OSCPacketEvent event);
 
 	/**
 	 * Process a bad data event.
 	 * @param event the bad data event to handle
 	 */
-	void handleBadData(final OSCBadDataEvent event);
+	void handleBadData(OSCBadDataEvent event);
 }

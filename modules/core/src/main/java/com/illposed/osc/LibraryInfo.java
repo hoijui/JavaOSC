@@ -42,8 +42,9 @@ public final class LibraryInfo {
 
 	static {
 		final Set<Package> tmpUninterestingPkgs = new HashSet<>();
-		tmpUninterestingPkgs.add(Package.getPackage("java.lang"));
-		tmpUninterestingPkgs.add(Package.getPackage("java.util"));
+		ClassLoader classLoader = LibraryInfo.class.getClassLoader();
+		tmpUninterestingPkgs.add(classLoader.getDefinedPackage("java.lang"));
+		tmpUninterestingPkgs.add(classLoader.getDefinedPackage("java.util"));
 		// NOTE We need to do it like this, because otherwise "java.awt" can not be found
 		//   by this classes class-loader.
 		final Class<?> javaAwtColorClass = getAwtColor();
@@ -63,7 +64,7 @@ public final class LibraryInfo {
 
 		final Properties manifestProps = new Properties();
 
-		try (final BufferedReader manifestBufferedIn = new BufferedReader(new InputStreamReader(manifestIn,
+		try (BufferedReader manifestBufferedIn = new BufferedReader(new InputStreamReader(manifestIn,
 				StandardCharsets.UTF_8)))
 		{
 			String manifestLine = manifestBufferedIn.readLine();
@@ -108,7 +109,7 @@ public final class LibraryInfo {
 
 		Properties mavenProps;
 
-		try (final InputStream manifestFileIn = LibraryInfo.class.getResourceAsStream(MANIFEST_FILE)) {
+		try (InputStream manifestFileIn = LibraryInfo.class.getResourceAsStream(MANIFEST_FILE)) {
 			if (manifestFileIn == null) {
 				throw new IOException("Failed locating resource in the classpath: " + MANIFEST_FILE);
 			}
