@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see OSCBundle
@@ -25,14 +25,14 @@ public class OSCBundleTest {
 	{
 		final OSCBundle reparsedBundle = OSCReparserTest.reparse(bundle);
 		if (!reparsedBundle.getTimestamp().equals(expectedTimestamp)) {
-			Assert.fail("Send Bundle did not receive the correct timestamp "
+			Assertions.fail("Send Bundle did not receive the correct timestamp "
 					+ reparsedBundle.getTimestamp().getNtpTime()
 					+ " (should be " + expectedTimestamp.getNtpTime() + ')');
 		}
 		List<OSCPacket> packets = reparsedBundle.getPackets();
 		OSCMessage msg = (OSCMessage) packets.get(0);
 		if (!msg.getAddress().equals("/dummy")) {
-			Assert.fail("Send Bundle's message did not receive the correct address");
+			Assertions.fail("Send Bundle's message did not receive the correct address");
 		}
 	}
 
@@ -65,15 +65,18 @@ public class OSCBundleTest {
 		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testSendBundleImmediateExplicitNull() throws Exception {
 		final Date timeNow = GregorianCalendar.getInstance().getTime();
 		final OSCTimeTag64 timestampNow = OSCTimeTag64.valueOf(timeNow);
 		List<OSCPacket> packetsSent = new ArrayList<>(1);
 		packetsSent.add(new OSCMessage("/dummy"));
 		OSCBundle bundle = new OSCBundle(packetsSent, timestampNow);
-		bundle.setTimestamp(null); // should throw IllegalArgumentException
-		sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> bundle.setTimestamp(null)
+		);
+		// sendBundleTimestampTestHelper(bundle, OSCTimeTag64.IMMEDIATE);
 	}
 
 	@Test

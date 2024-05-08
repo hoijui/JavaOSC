@@ -9,8 +9,8 @@ import com.illposed.osc.argument.OSCMidiMessage;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import java.util.Random;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,38 +30,53 @@ public class MidiMessageArgumentHandlerTest {
 	private static void testReparse(final OSCMidiMessage orig)
 			throws OSCSerializeException, OSCParseException
 	{
-		Assert.assertEquals(orig, reparse(orig));
+		Assertions.assertEquals(orig, reparse(orig));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testReparseNull() throws OSCSerializeException, OSCParseException {
 
 		final OSCMidiMessage orig = null;
-		Assert.assertEquals(orig, reparse(orig));
+		Assertions.assertThrows(
+			NullPointerException.class,
+			() -> Assertions.assertEquals(orig, reparse(orig))
+		);
 	}
 
 	private static void testContent(final byte[] content) {
 		OSCMidiMessage.valueOf(content);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testContentBytesZero() {
-		testContent(new byte[0]);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> testContent(new byte[0])
+		);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testContentBytesOne() {
-		testContent(new byte[1]);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> testContent(new byte[1])
+		);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testContentBytesTwo() {
-		testContent(new byte[2]);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> testContent(new byte[2])
+		);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testContentBytesThree() {
-		testContent(new byte[3]);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> testContent(new byte[3])
+		);
 	}
 
 	@Test
@@ -69,9 +84,12 @@ public class MidiMessageArgumentHandlerTest {
 		testContent(new byte[4]);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testContentBytesFive() {
-		testContent(new byte[5]);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> testContent(new byte[5])
+		);
 	}
 
 	@Test

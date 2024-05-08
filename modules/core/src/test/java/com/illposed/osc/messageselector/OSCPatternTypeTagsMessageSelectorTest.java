@@ -9,8 +9,8 @@ import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageEvent;
 import com.illposed.osc.OSCMessageInfo;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class OSCPatternTypeTagsMessageSelectorTest {
 
@@ -28,10 +28,10 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("");
 
-		Assert.assertTrue( matches(matcher, ""));
-		Assert.assertFalse(matches(matcher, "i"));
-		Assert.assertFalse(matches(matcher, "t"));
-		Assert.assertFalse(matches(matcher, "iiti"));
+		Assertions.assertTrue( matches(matcher, ""));
+		Assertions.assertFalse(matches(matcher, "i"));
+		Assertions.assertFalse(matches(matcher, "t"));
+		Assertions.assertFalse(matches(matcher, "iiti"));
 	}
 
 	@Test
@@ -40,10 +40,10 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("*");
 
-		Assert.assertTrue(matches(matcher, ""));
-		Assert.assertTrue(matches(matcher, "i"));
-		Assert.assertTrue(matches(matcher, "t"));
-		Assert.assertTrue(matches(matcher, "iiti"));
+		Assertions.assertTrue(matches(matcher, ""));
+		Assertions.assertTrue(matches(matcher, "i"));
+		Assertions.assertTrue(matches(matcher, "t"));
+		Assertions.assertTrue(matches(matcher, "iiti"));
 	}
 
 	@Test
@@ -52,21 +52,21 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i*f*");
 
-		Assert.assertFalse(matches(matcher, "i"));
-		Assert.assertFalse(matches(matcher, "it"));
-		Assert.assertFalse(matches(matcher, "fi"));
-		Assert.assertFalse(matches(matcher, "fit"));
-		Assert.assertFalse(matches(matcher, "fti"));
-		Assert.assertFalse(matches(matcher, "fiitiittt"));
-		Assert.assertFalse(matches(matcher, "tif"));
-		Assert.assertFalse(matches(matcher, "fif"));
-		Assert.assertFalse(matches(matcher, "ffffif"));
-		Assert.assertTrue( matches(matcher, "if"));
-		Assert.assertTrue( matches(matcher, "itf"));
-		Assert.assertTrue( matches(matcher, "ift"));
-		Assert.assertTrue( matches(matcher, "iftf"));
-		Assert.assertTrue( matches(matcher, "iiif"));
-		Assert.assertTrue( matches(matcher, "ifff"));
+		Assertions.assertFalse(matches(matcher, "i"));
+		Assertions.assertFalse(matches(matcher, "it"));
+		Assertions.assertFalse(matches(matcher, "fi"));
+		Assertions.assertFalse(matches(matcher, "fit"));
+		Assertions.assertFalse(matches(matcher, "fti"));
+		Assertions.assertFalse(matches(matcher, "fiitiittt"));
+		Assertions.assertFalse(matches(matcher, "tif"));
+		Assertions.assertFalse(matches(matcher, "fif"));
+		Assertions.assertFalse(matches(matcher, "ffffif"));
+		Assertions.assertTrue( matches(matcher, "if"));
+		Assertions.assertTrue( matches(matcher, "itf"));
+		Assertions.assertTrue( matches(matcher, "ift"));
+		Assertions.assertTrue( matches(matcher, "iftf"));
+		Assertions.assertTrue( matches(matcher, "iiif"));
+		Assertions.assertTrue( matches(matcher, "ifff"));
 	}
 
 	@Test
@@ -75,21 +75,21 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("*i*f");
 
-		Assert.assertFalse(matches(matcher, "i"));
-		Assert.assertFalse(matches(matcher, "it"));
-		Assert.assertFalse(matches(matcher, "fi"));
-		Assert.assertFalse(matches(matcher, "fit"));
-		Assert.assertFalse(matches(matcher, "fti"));
-		Assert.assertFalse(matches(matcher, "fiitiittt"));
-		Assert.assertTrue(matches(matcher, "tif"));
-		Assert.assertTrue(matches(matcher, "fif"));
-		Assert.assertTrue(matches(matcher, "ffffif"));
-		Assert.assertTrue( matches(matcher, "if"));
-		Assert.assertTrue( matches(matcher, "itf"));
-		Assert.assertFalse(matches(matcher, "ift"));
-		Assert.assertTrue( matches(matcher, "iftf"));
-		Assert.assertTrue( matches(matcher, "iiif"));
-		Assert.assertTrue( matches(matcher, "ifff"));
+		Assertions.assertFalse(matches(matcher, "i"));
+		Assertions.assertFalse(matches(matcher, "it"));
+		Assertions.assertFalse(matches(matcher, "fi"));
+		Assertions.assertFalse(matches(matcher, "fit"));
+		Assertions.assertFalse(matches(matcher, "fti"));
+		Assertions.assertFalse(matches(matcher, "fiitiittt"));
+		Assertions.assertTrue(matches(matcher, "tif"));
+		Assertions.assertTrue(matches(matcher, "fif"));
+		Assertions.assertTrue(matches(matcher, "ffffif"));
+		Assertions.assertTrue( matches(matcher, "if"));
+		Assertions.assertTrue( matches(matcher, "itf"));
+		Assertions.assertFalse(matches(matcher, "ift"));
+		Assertions.assertTrue( matches(matcher, "iftf"));
+		Assertions.assertTrue( matches(matcher, "iiif"));
+		Assertions.assertTrue( matches(matcher, "ifff"));
 	}
 
 	@Test
@@ -98,18 +98,18 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("?i?f");
 
-		Assert.assertTrue( matches(matcher, "iiff"));
-		Assert.assertTrue( matches(matcher, "fiif"));
-		Assert.assertTrue( matches(matcher, "titf"));
-		Assert.assertTrue( matches(matcher, "zizf"));
-		Assert.assertFalse(matches(matcher, "iff"));
-		Assert.assertFalse(matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "iiiff"));
-		Assert.assertFalse(matches(matcher, "iifff"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "itff"));
-		Assert.assertFalse(matches(matcher, "iifi"));
-		Assert.assertFalse(matches(matcher, "ifff"));
+		Assertions.assertTrue( matches(matcher, "iiff"));
+		Assertions.assertTrue( matches(matcher, "fiif"));
+		Assertions.assertTrue( matches(matcher, "titf"));
+		Assertions.assertTrue( matches(matcher, "zizf"));
+		Assertions.assertFalse(matches(matcher, "iff"));
+		Assertions.assertFalse(matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "iiiff"));
+		Assertions.assertFalse(matches(matcher, "iifff"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "itff"));
+		Assertions.assertFalse(matches(matcher, "iifi"));
+		Assertions.assertFalse(matches(matcher, "ifff"));
 	}
 
 	@Test
@@ -118,14 +118,14 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[f-i]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
 	}
 
 	@Test
@@ -134,14 +134,14 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[i-f]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
 	}
 
 	@Test
@@ -150,15 +150,15 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[fz]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertFalse(matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertTrue( matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiff"));
-		Assert.assertFalse(matches(matcher, "ifft"));
-		Assert.assertFalse(matches(matcher, "tifft"));
-		Assert.assertFalse(matches(matcher, "ifzf"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertFalse(matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertTrue( matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiff"));
+		Assertions.assertFalse(matches(matcher, "ifft"));
+		Assertions.assertFalse(matches(matcher, "tifft"));
+		Assertions.assertFalse(matches(matcher, "ifzf"));
 	}
 
 	@Test
@@ -167,15 +167,15 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[fi-z]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertTrue( matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiff"));
-		Assert.assertFalse(matches(matcher, "ifft"));
-		Assert.assertFalse(matches(matcher, "tifft"));
-		Assert.assertFalse(matches(matcher, "ifzf"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertTrue( matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiff"));
+		Assertions.assertFalse(matches(matcher, "ifft"));
+		Assertions.assertFalse(matches(matcher, "tifft"));
+		Assertions.assertFalse(matches(matcher, "ifzf"));
 	}
 
 	@Test
@@ -184,15 +184,15 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[-f-i]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
-		Assert.assertTrue( matches(matcher, "i-f"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertTrue( matches(matcher, "i-f"));
 	}
 
 	@Test
@@ -202,15 +202,15 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 		// '^' is just a character like any other, no special meaning!
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[^f-i]f");
 
-		Assert.assertTrue( matches(matcher, "iff"));
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
-		Assert.assertTrue( matches(matcher, "i^f"));
+		Assertions.assertTrue( matches(matcher, "iff"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertTrue( matches(matcher, "i^f"));
 	}
 
 	@Test
@@ -219,15 +219,15 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i[!f-i]f");
 
-		Assert.assertFalse(matches(matcher, "iff"));
-		Assert.assertFalse(matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "if"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertTrue( matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
-		Assert.assertTrue( matches(matcher, "i^f"));
+		Assertions.assertFalse(matches(matcher, "iff"));
+		Assertions.assertFalse(matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "if"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertTrue( matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertTrue( matches(matcher, "i^f"));
 	}
 
 	@Test
@@ -236,22 +236,22 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("{if,tz}");
 
-		Assert.assertTrue( matches(matcher, "if"));
-		Assert.assertTrue( matches(matcher, "tz"));
-		Assert.assertFalse(matches(matcher, "fi"));
-		Assert.assertFalse(matches(matcher, "zt"));
-		Assert.assertFalse(matches(matcher, "iz"));
-		Assert.assertFalse(matches(matcher, "tf"));
-		Assert.assertFalse(matches(matcher, "i^"));
-		Assert.assertFalse(matches(matcher, "-z"));
-		Assert.assertFalse(matches(matcher, "iff"));
-		Assert.assertFalse(matches(matcher, "iif"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
-		Assert.assertFalse(matches(matcher, "i^f"));
+		Assertions.assertTrue( matches(matcher, "if"));
+		Assertions.assertTrue( matches(matcher, "tz"));
+		Assertions.assertFalse(matches(matcher, "fi"));
+		Assertions.assertFalse(matches(matcher, "zt"));
+		Assertions.assertFalse(matches(matcher, "iz"));
+		Assertions.assertFalse(matches(matcher, "tf"));
+		Assertions.assertFalse(matches(matcher, "i^"));
+		Assertions.assertFalse(matches(matcher, "-z"));
+		Assertions.assertFalse(matches(matcher, "iff"));
+		Assertions.assertFalse(matches(matcher, "iif"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertFalse(matches(matcher, "i^f"));
 	}
 
 	@Test
@@ -260,19 +260,19 @@ public class OSCPatternTypeTagsMessageSelectorTest {
 
 		final MessageSelector matcher = new OSCPatternTypeTagsMessageSelector("i{if,tz}");
 
-		Assert.assertTrue( matches(matcher, "iif"));
-		Assert.assertTrue( matches(matcher, "itz"));
-		Assert.assertFalse(matches(matcher, "ifi"));
-		Assert.assertFalse(matches(matcher, "izt"));
-		Assert.assertFalse(matches(matcher, "iiz"));
-		Assert.assertFalse(matches(matcher, "itf"));
-		Assert.assertFalse(matches(matcher, "ii^"));
-		Assert.assertFalse(matches(matcher, "i-z"));
-		Assert.assertFalse(matches(matcher, "iiff"));
-		Assert.assertFalse(matches(matcher, "izf"));
-		Assert.assertFalse(matches(matcher, "tiif"));
-		Assert.assertFalse(matches(matcher, "iift"));
-		Assert.assertFalse(matches(matcher, "tiift"));
-		Assert.assertFalse(matches(matcher, "i^f"));
+		Assertions.assertTrue( matches(matcher, "iif"));
+		Assertions.assertTrue( matches(matcher, "itz"));
+		Assertions.assertFalse(matches(matcher, "ifi"));
+		Assertions.assertFalse(matches(matcher, "izt"));
+		Assertions.assertFalse(matches(matcher, "iiz"));
+		Assertions.assertFalse(matches(matcher, "itf"));
+		Assertions.assertFalse(matches(matcher, "ii^"));
+		Assertions.assertFalse(matches(matcher, "i-z"));
+		Assertions.assertFalse(matches(matcher, "iiff"));
+		Assertions.assertFalse(matches(matcher, "izf"));
+		Assertions.assertFalse(matches(matcher, "tiif"));
+		Assertions.assertFalse(matches(matcher, "iift"));
+		Assertions.assertFalse(matches(matcher, "tiift"));
+		Assertions.assertFalse(matches(matcher, "i^f"));
 	}
 }

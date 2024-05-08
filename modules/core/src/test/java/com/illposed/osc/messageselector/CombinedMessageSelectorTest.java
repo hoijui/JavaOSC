@@ -9,8 +9,8 @@ import com.illposed.osc.MessageSelector;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCMessageEvent;
 import com.illposed.osc.OSCMessageInfo;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CombinedMessageSelectorTest {
 
@@ -29,10 +29,10 @@ public class CombinedMessageSelectorTest {
 				new OSCPatternTypeTagsMessageSelector(""),
 				CombinedMessageSelector.LogicOperator.AND);
 
-		Assert.assertTrue( matches(matcher, "/", ""));
-		Assert.assertFalse(matches(matcher, "/hello", ""));
-		Assert.assertFalse(matches(matcher, "/", "i"));
-		Assert.assertFalse(matches(matcher, "/hello", "i"));
+		Assertions.assertTrue( matches(matcher, "/", ""));
+		Assertions.assertFalse(matches(matcher, "/hello", ""));
+		Assertions.assertFalse(matches(matcher, "/", "i"));
+		Assertions.assertFalse(matches(matcher, "/hello", "i"));
 	}
 
 	@Test
@@ -43,10 +43,10 @@ public class CombinedMessageSelectorTest {
 				new OSCPatternTypeTagsMessageSelector(""),
 				CombinedMessageSelector.LogicOperator.AND);
 
-		Assert.assertFalse( matches(matcher, "/", ""));
-		Assert.assertTrue(matches(matcher, "/hello", ""));
-		Assert.assertFalse(matches(matcher, "/", "i"));
-		Assert.assertFalse(matches(matcher, "/hello", "i"));
+		Assertions.assertFalse( matches(matcher, "/", ""));
+		Assertions.assertTrue(matches(matcher, "/hello", ""));
+		Assertions.assertFalse(matches(matcher, "/", "i"));
+		Assertions.assertFalse(matches(matcher, "/hello", "i"));
 	}
 
 	@Test
@@ -57,10 +57,10 @@ public class CombinedMessageSelectorTest {
 				new OSCPatternTypeTagsMessageSelector("i"),
 				CombinedMessageSelector.LogicOperator.AND);
 
-		Assert.assertFalse(matches(matcher, "/", ""));
-		Assert.assertFalse(matches(matcher, "/hello", ""));
-		Assert.assertFalse(matches(matcher, "/", "i"));
-		Assert.assertTrue( matches(matcher, "/hello", "i"));
+		Assertions.assertFalse(matches(matcher, "/", ""));
+		Assertions.assertFalse(matches(matcher, "/hello", ""));
+		Assertions.assertFalse(matches(matcher, "/", "i"));
+		Assertions.assertTrue( matches(matcher, "/hello", "i"));
 	}
 
 	@Test
@@ -71,10 +71,10 @@ public class CombinedMessageSelectorTest {
 				new OSCPatternTypeTagsMessageSelector("i"),
 				CombinedMessageSelector.LogicOperator.OR);
 
-		Assert.assertFalse(matches(matcher, "/", ""));
-		Assert.assertTrue( matches(matcher, "/hello", ""));
-		Assert.assertTrue( matches(matcher, "/", "i"));
-		Assert.assertTrue( matches(matcher, "/hello", "i"));
+		Assertions.assertFalse(matches(matcher, "/", ""));
+		Assertions.assertTrue( matches(matcher, "/hello", ""));
+		Assertions.assertTrue( matches(matcher, "/", "i"));
+		Assertions.assertTrue( matches(matcher, "/hello", "i"));
 	}
 
 }

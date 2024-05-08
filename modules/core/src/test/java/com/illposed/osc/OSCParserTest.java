@@ -9,10 +9,9 @@ import com.illposed.osc.argument.OSCTimeTag64;
 import com.illposed.osc.argument.OSCUnsigned;
 import java.nio.ByteBuffer;
 import java.util.List;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see OSCParser
@@ -21,19 +20,14 @@ public class OSCParserTest {
 
 	private OSCParser converter;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		converter = new OSCSerializerAndParserBuilder().buildParser();
 	}
 
-	@After
-	public void tearDown() {
-
-	}
-
 	private static void checkAddress(final String expectedAddress, final String observedAddress) {
 		if (!observedAddress.equals(expectedAddress)) {
-			Assert.fail("Address should be " + expectedAddress + ", but is " + observedAddress);
+			Assertions.fail("Address should be " + expectedAddress + ", but is " + observedAddress);
 		}
 	}
 
@@ -63,8 +57,8 @@ public class OSCParserTest {
 		final OSCMessage packet = convertToMessage(bytes);
 		final OSCUnsigned unsigned = (OSCUnsigned) packet.getArguments().get(0);
 		final long parsed32bitUnsigned = unsigned.toLong();
-		Assert.assertEquals("Failed parsing 32bit unsigned ('u') value",
-				given32bitUnsigned, parsed32bitUnsigned);
+		Assertions.assertEquals(given32bitUnsigned, parsed32bitUnsigned,
+			"Failed parsing 32bit unsigned ('u') value");
 	}
 
 	/**
@@ -120,19 +114,28 @@ public class OSCParserTest {
 		checkReadUnsignedInteger(0xFFFFFFFFL);
 	}
 
-	@Test(expected=AssertionError.class)
+	@Test
 	public void testReadUnsignedInteger100000000() {
-		checkReadUnsignedInteger(0x100000000L); // 33bit -> out of range!
+		Assertions.assertThrows(
+			AssertionError.class,
+			() -> checkReadUnsignedInteger(0x100000000L) // 33bit -> out of range!
+		);
 	}
 
-	@Test(expected=AssertionError.class)
+	@Test
 	public void testReadUnsignedInteger1FFFFFFFF() {
-		checkReadUnsignedInteger(0x1FFFFFFFFL); // 33bit -> out of range!
+		Assertions.assertThrows(
+			AssertionError.class,
+			() -> checkReadUnsignedInteger(0x1FFFFFFFFL) // 33bit -> out of range!
+		);
 	}
 
-	@Test(expected=AssertionError.class)
+	@Test
 	public void testReadUnsignedIntegerFFFFFFFFF() {
-		checkReadUnsignedInteger(0xFFFFFFFFFL); // 36bit -> out of range!
+		Assertions.assertThrows(
+			AssertionError.class,
+			() -> checkReadUnsignedInteger(0xFFFFFFFFFL) // 36bit -> out of range!
+		);
 	}
 
 	@Test
@@ -175,16 +178,16 @@ public class OSCParserTest {
 		checkAddress("/s_new", packet.getAddress());
 		final List<?> arguments = packet.getArguments();
 		if (arguments.size() != 3) {
-			Assert.fail("Num arguments should be 3, but is " + arguments.size());
+			Assertions.fail("Num arguments should be 3, but is " + arguments.size());
 		}
 		if (!(Integer.valueOf(1001).equals(arguments.get(0)))) {
-			Assert.fail("Argument 1 should be 1001, but is " + arguments.get(0));
+			Assertions.fail("Argument 1 should be 1001, but is " + arguments.get(0));
 		}
 		if (!("freq".equals(arguments.get(1)))) {
-			Assert.fail("Argument 2 should be freq, but is " + arguments.get(1));
+			Assertions.fail("Argument 2 should be freq, but is " + arguments.get(1));
 		}
 		if (!(Float.valueOf(440.0f).equals(arguments.get(2)))) {
-			Assert.fail("Argument 3 should be 440.0, but is " + arguments.get(2));
+			Assertions.fail("Argument 3 should be 440.0, but is " + arguments.get(2));
 		}
 	}
 
@@ -196,11 +199,11 @@ public class OSCParserTest {
 
 		final OSCBundle bundle = (OSCBundle) convertToPacket(bytes);
 		if (!bundle.getTimestamp().equals(OSCTimeTag64.IMMEDIATE)) {
-			Assert.fail("Timestamp should be IMMEDIATE, but is " + bundle.getTimestamp());
+			Assertions.fail("Timestamp should be IMMEDIATE, but is " + bundle.getTimestamp());
 		}
 		final List<OSCPacket> packets = bundle.getPackets();
 		if (packets.size() != 1) {
-			Assert.fail("Num packets should be 1, but is " + packets.size());
+			Assertions.fail("Num packets should be 1, but is " + packets.size());
 		}
 		final OSCMessage message = (OSCMessage) packets.get(0);
 		checkAddress("/test", message.getAddress());

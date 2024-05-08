@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2014 C. Ramakrishnan / Auracle
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
@@ -13,8 +13,8 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see OSCSerializer
@@ -76,7 +76,7 @@ public class OSCReparserTest {
 
 		final O reparsedArgument = (O) reparsedMessage.getArguments().iterator().next();
 		if (comparator.compare(argument, reparsedArgument) != 0) {
-			Assert.fail("Failed to reparse argument of type " + argument.getClass()
+			Assertions.fail("Failed to reparse argument of type " + argument.getClass()
 					+ ". The original was:\n" + argument.toString()
 					+ "\nwhile the re-parsed object is:\n" + reparsedArgument.toString());
 		}
@@ -426,34 +426,52 @@ public class OSCReparserTest {
 		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFL));
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedInteger100000000() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)); // 33bit -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(0x100000000L)) // 33bit -> out of range!
+		);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedInteger1FFFFFFFF() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)); // 33bit -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(0x1FFFFFFFFL)) // 33bit -> out of range!
+		);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedIntegerFFFFFFFFF() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)); // 36bit -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(0xFFFFFFFFFL)) // 36bit -> out of range!
+		);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedIntegerMinus1() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(-1L)); // negative/64bit -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(-1L)) // negative/64bit -> out of range!
+		);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedIntegerMinLong() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(Long.MIN_VALUE)); // negative -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(Long.MIN_VALUE)) // negative -> out of range!
+		);
 	}
 
-	@Test(expected=IllegalArgumentException.class)
+	@Test
 	public void testArgumentUnsignedIntegerMaxLong() throws Exception {
-		reparseSingleArgument(OSCUnsigned.valueOf(Long.MAX_VALUE)); // 64bit -> out of range!
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> reparseSingleArgument(OSCUnsigned.valueOf(Long.MAX_VALUE)) // 64bit -> out of range!
+		);
 	}
 
 	@Test

@@ -8,8 +8,8 @@ package com.illposed.osc.argument.handler;
 import com.illposed.osc.argument.OSCSymbol;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class SymbolArgumentHandlerTest {
 
@@ -20,11 +20,14 @@ public class SymbolArgumentHandlerTest {
 		return ColorArgumentHandlerTest.reparse(new SymbolArgumentHandler(), strLength + 4, orig);
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testReparseNull() throws Exception {
 
 		final OSCSymbol orig = OSCSymbol.valueOf(null);
-		Assert.assertEquals(orig, reparse(orig));
+		Assertions.assertThrows(
+			NullPointerException.class,
+			() -> Assertions.assertEquals(orig, reparse(orig))
+		);
 	}
 
 	@Test
@@ -39,7 +42,7 @@ public class SymbolArgumentHandlerTest {
 		};
 
 		for (final OSCSymbol orig : symbols) {
-			Assert.assertEquals(orig, reparse(orig));
+			Assertions.assertEquals(orig, reparse(orig));
 		}
 	}
 }

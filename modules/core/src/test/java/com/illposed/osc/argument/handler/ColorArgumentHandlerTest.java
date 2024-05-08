@@ -10,8 +10,8 @@ import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCColor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,10 +79,10 @@ public class ColorArgumentHandlerTest {
 			final int origInt = testInts[tni];
 
 			final int createdInt = OSCColor.toUnsignedInt(origByte);
-			Assert.assertEquals(origInt, createdInt);
+			Assertions.assertEquals(origInt, createdInt);
 
 			final byte createdByte = OSCColor.toSignedByte(createdInt);
-			Assert.assertEquals(origByte, createdByte);
+			Assertions.assertEquals(origByte, createdByte);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class ColorArgumentHandlerTest {
 	public void testReparseDefaultColors() throws Exception {
 
 		for (final OSCColor origColor: DEFAULT_COLORS) {
-			Assert.assertEquals(origColor, reparse(origColor));
+			Assertions.assertEquals(origColor, reparse(origColor));
 		}
 	}
 
@@ -110,7 +110,7 @@ public class ColorArgumentHandlerTest {
 		for (final OSCColor orig: DEFAULT_COLORS) {
 			final int alpha = alphaRandom.nextInt(256);
 			final OSCColor alphaed = new OSCColor(orig.getRed(), orig.getGreen(), orig.getBlue(), alpha);
-			Assert.assertEquals(alphaed, reparse(alphaed));
+			Assertions.assertEquals(alphaed, reparse(alphaed));
 		}
 	}
 }

@@ -5,6 +5,7 @@
 
 package com.illposed.osc.transport.udp;
 
+import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.transport.OSCPort;
 
 import java.io.IOException;
@@ -19,10 +20,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.Random;
 
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +30,6 @@ public class UDPTransportTest {
 	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
 
 	private final Logger log = LoggerFactory.getLogger(UDPTransportTest.class);
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 
 	@Test
 	public void readWriteReadData400() throws Exception {
@@ -62,10 +58,14 @@ public class UDPTransportTest {
 		readWriteReadData(50000);
 	}
 
-	@Test(expected=IOException.class)
+	@Test
 	public void readWriteReadData70000() throws Exception {
 		// theoretical maximum UDP buffer size (MTU) is 2^16 - 1 = 65535 Bytes
-		readWriteReadData(70000);
+		
+		Assertions.assertThrows(
+			IOException.class,
+			() -> readWriteReadData(70000)
+		);
 	}
 
 	private void readWriteReadData(final int sizeInBytes)
@@ -132,7 +132,7 @@ public class UDPTransportTest {
 	{
 		// write
 		final ByteBuffer sourceBuf = ByteBuffer.wrap(sourceArray);
-		Assert.assertEquals(dataSize, sender.write(sourceBuf));
+		Assertions.assertEquals(dataSize, sender.write(sourceBuf));
 
 		// read
 		final ByteBuffer targetBuf = ByteBuffer.wrap(targetArray);
@@ -148,12 +148,12 @@ public class UDPTransportTest {
 			}
 		}
 
-		Assert.assertEquals(dataSize, total);
-		Assert.assertEquals(targetBuf.position(), total);
+		Assertions.assertEquals(dataSize, total);
+		Assertions.assertEquals(targetBuf.position(), total);
 		targetBuf.flip();
 		targetArray = targetBuf.array();
 		for (int i = 0; i < targetArray.length; i++) {
-			Assert.assertEquals(sourceArray[i], targetArray[i]);
+			Assertions.assertEquals(sourceArray[i], targetArray[i]);
 		}
 	}
 
@@ -174,6 +174,6 @@ public class UDPTransportTest {
 		channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
 		channel.socket().bind(bindAddress);
 
-		Assert.assertEquals(bindAddress, channel.getLocalAddress());
+		Assertions.assertEquals(bindAddress, channel.getLocalAddress());
 	}
 }

@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Random;
 
 import com.illposed.osc.argument.OSCColor;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +63,7 @@ public class AwtColorArgumentHandlerTest {
 	public void testReparseDefaultColors() throws Exception {
 
 		for (final Color orig : DEFAULT_COLORS) {
-			Assert.assertEquals(orig, reparse(orig));
+			Assertions.assertEquals(orig, reparse(orig));
 		}
 	}
 
@@ -89,7 +89,7 @@ public class AwtColorArgumentHandlerTest {
 		}
 
 		for (final Color origColor : alphaedDefaultColors) {
-			Assert.assertEquals(origColor, reparse(origColor));
+			Assertions.assertEquals(origColor, reparse(origColor));
 		}
 	}
 }

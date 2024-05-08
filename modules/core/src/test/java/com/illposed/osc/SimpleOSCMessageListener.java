@@ -1,11 +1,9 @@
 // SPDX-FileCopyrightText: 2001 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
 package com.illposed.osc;
-
-import com.illposed.osc.argument.OSCTimeTag64;
 
 public class SimpleOSCMessageListener implements OSCMessageListener {
 

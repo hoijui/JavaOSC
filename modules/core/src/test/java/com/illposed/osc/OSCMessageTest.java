@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2003-2017 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
@@ -17,18 +17,13 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TimeZone;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @see OSCMessage
  */
 public class OSCMessageTest {
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 
 	public static OSCMessage createUncheckedAddressMessage(final String address, final List<?> arguments, final OSCMessageInfo info) {
 		return new OSCMessage(address, arguments, info, false);
@@ -45,12 +40,12 @@ public class OSCMessageTest {
 	private static void checkResultEqualsAnswer(byte[] result, byte[] expected, final int optBytes)
 	{
 		if ((result.length != expected.length) && (result.length != (expected.length - optBytes))) {
-			Assert.fail(createErrorString("Result and expected answer aren't the same length, "
+			Assertions.fail(createErrorString("Result and expected answer aren't the same length, "
 					+ result.length + " vs " + expected.length + '.', result, expected));
 		}
 		for (int i = 0; i < result.length; i++) {
 			if (result[i] != expected[i]) {
-				Assert.fail(createErrorString("Failed to convert correctly at position: " + i,
+				Assertions.fail(createErrorString("Failed to convert correctly at position: " + i,
 						result, expected));
 			}
 		}
@@ -516,17 +511,17 @@ public class OSCMessageTest {
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
-			Assert.fail("Send Big Integer did not receive the correct address");
+			Assertions.fail("Send Big Integer did not receive the correct address");
 		}
 		List<?> arguments = packet.getArguments();
 		if (arguments.size() != 1) {
-			Assert.fail("Send Big Integer should have 1 argument, not " + arguments.size());
+			Assertions.fail("Send Big Integer should have 1 argument, not " + arguments.size());
 		}
 		if (!(arguments.get(0) instanceof Long)) {
-			Assert.fail("arguments.get(0) should be a Long, not " + arguments.get(0).getClass());
+			Assertions.fail("arguments.get(0) should be a Long, not " + arguments.get(0).getClass());
 		}
-		if (!(new Long(1001L).equals(arguments.get(0)))) {
-			Assert.fail("Instead of Long(1001), received " + arguments.get(0));
+		if (!(Long.valueOf(1001L).equals(arguments.get(0)))) {
+			Assertions.fail("Instead of Long(1001), received " + arguments.get(0));
 		}
 	}
 
@@ -542,16 +537,16 @@ public class OSCMessageTest {
 		final ByteBuffer bytes = ByteBuffer.wrap(byteArray).asReadOnlyBuffer();
 		final OSCMessage packet = (OSCMessage) converter.convert(bytes);
 		if (!packet.getAddress().equals("/dummy")) {
-			Assert.fail("We did not receive the correct address");
+			Assertions.fail("We did not receive the correct address");
 		}
 		final List<?> arguments = packet.getArguments();
 		if (arguments.size() != origArguments.size()) {
-			Assert.fail("We should have received " + origArguments + " arguments, not "
+			Assertions.fail("We should have received " + origArguments + " arguments, not "
 					+ arguments.size());
 		}
 		final Object firstArgument = arguments.get(0);
 		if (!(firstArgument instanceof List)) {
-			Assert.fail("arguments.get(0) should be a List, not "
+			Assertions.fail("arguments.get(0) should be a List, not "
 					+ ((firstArgument == null)
 							? String.valueOf((Object) null)
 							: firstArgument.getClass().toString()));
@@ -559,12 +554,12 @@ public class OSCMessageTest {
 		// We can safely suppress the warning, as we already made sure the cast will not fail.
 		@SuppressWarnings("unchecked") final List<Object> theArray = (List<Object>) firstArgument;
 		if (theArray.size() != floats.size()) {
-			Assert.fail("arguments.get(0) should be a List of size " + floats.size() + " not "
+			Assertions.fail("arguments.get(0) should be a List of size " + floats.size() + " not "
 					+ theArray.size());
 		}
 		for (int i = 0; i < floats.size(); ++i) {
 			if (!floats.get(i).equals(theArray.get(i))) {
-				Assert.fail("List element " + i + " should be " + floats.get(i) + " not "
+				Assertions.fail("List element " + i + " should be " + floats.get(i) + " not "
 						+ theArray.get(i));
 			}
 		}
@@ -573,9 +568,10 @@ public class OSCMessageTest {
 	@Test
 	public void testAddressValidationFrontendConstructorNull() {
 
-		// expect no exception, as we could still set a valid address later on
-		expectedException.expect(IllegalArgumentException.class);
-		OSCMessage oscMessage = new OSCMessage(null);
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> new OSCMessage(null)
+		);
 	}
 
 	@Test
@@ -588,54 +584,56 @@ public class OSCMessageTest {
 	@Test
 	public void testAddressValidationFrontendConstructorInvalid() {
 
-		expectedException.expect(IllegalArgumentException.class);
-		OSCMessage oscMessage = new OSCMessage("/ hello/world");
+		Assertions.assertThrows(
+			IllegalArgumentException.class,
+			() -> new OSCMessage("/ hello/world")
+		);
 	}
 
 	@Test
 	public void testAddressValidation() {
-		Assert.assertFalse(OSCMessage.isValidAddress(null));
-		Assert.assertFalse(OSCMessage.isValidAddress(""));
-		Assert.assertFalse(OSCMessage.isValidAddress("hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/ hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/#hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/*hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/,hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/?hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/[hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/]hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/{hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("/}hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("//hello/world"));
-		Assert.assertFalse(OSCMessage.isValidAddress("#abc"));
-		Assert.assertFalse(OSCMessage.isValidAddress("#replyx"));
-		Assert.assertFalse(OSCMessage.isValidAddress("#replx"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/hello"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/123/world/two"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/!hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/~hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/`hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/@hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/$hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/%hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/€hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/^hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/&hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/(hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/)hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/-hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/_hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/+hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/=hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/.hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/<hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/>hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/;hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/:hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/'hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
-		Assert.assertTrue( OSCMessage.isValidAddress("#reply"));
+		Assertions.assertFalse(OSCMessage.isValidAddress(null));
+		Assertions.assertFalse(OSCMessage.isValidAddress(""));
+		Assertions.assertFalse(OSCMessage.isValidAddress("hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/ hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/#hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/*hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/,hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/?hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/[hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/]hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/{hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("/}hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("//hello/world"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("#abc"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("#replyx"));
+		Assertions.assertFalse(OSCMessage.isValidAddress("#replx"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/hello"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/hello/world/two"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/123/world/two"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/!hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/~hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/`hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/@hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/$hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/%hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/€hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/^hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/&hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/(hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/)hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/-hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/_hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/+hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/=hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/.hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/<hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/>hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/;hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/:hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/'hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("/\"hello/world"));
+		Assertions.assertTrue( OSCMessage.isValidAddress("#reply"));
 	}
 }

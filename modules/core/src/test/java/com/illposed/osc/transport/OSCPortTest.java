@@ -14,6 +14,7 @@ import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.SimpleOSCMessageListener;
 import com.illposed.osc.SimpleOSCPacketListener;
 import com.illposed.osc.argument.OSCTimeTag64;
+import com.illposed.osc.argument.OSCUnsigned;
 import com.illposed.osc.messageselector.OSCPatternAddressMessageSelector;
 import com.illposed.osc.transport.tcp.TCPTransport;
 
@@ -35,12 +36,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,9 +48,6 @@ public class OSCPortTest {
 	private static final int WAIT_FOR_RECEIVE_MS = 1000;
 
 	private final Logger log = LoggerFactory.getLogger(OSCPortTest.class);
-
-	@Rule
-	public ExpectedException expectedException = ExpectedException.none();
 
 	private OSCPortOut sender;
 	private OSCPortIn receiver;
@@ -100,7 +95,7 @@ public class OSCPortTest {
 		try {
 			retryUntilTrue(interval, timeout, "", test);
 		} catch (TimeoutException te) {
-			Assert.fail(failureMsg);
+			Assertions.fail(failureMsg);
 		}
 	}
 
@@ -108,7 +103,7 @@ public class OSCPortTest {
 			int interval, int timeout, String failureMsg, BooleanSupplier test) {
 		try {
 			retryUntilTrue(interval, timeout, "", test);
-			Assert.fail(failureMsg);
+			Assertions.fail(failureMsg);
 		} catch (TimeoutException te) {
 			// Reaching the timeout without `test` ever returning true is the success
 			// condition, so we return successfully here.
@@ -223,7 +218,7 @@ public class OSCPortTest {
 		setUp(0, portReceiver);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		// There is at least one test that sets `sender` and `receiver` to null for
 		// testing purposes. To avoid a NPE, we check for null here and return
@@ -594,7 +589,7 @@ public class OSCPortTest {
 		}
 
 		if (!listener.getReceivedEvent().getTime().equals(bundle.getTimestamp())) {
-			Assert.fail("Message should have timestamp " + bundle.getTimestamp()
+			Assertions.fail("Message should have timestamp " + bundle.getTimestamp()
 					+ " but has " + listener.getReceivedEvent().getTime());
 		}
 	}
@@ -639,7 +634,7 @@ public class OSCPortTest {
 		OSCTimeTag64 timeTag = packet.getTimestamp();
 
 		if (!timeTag.equals(bundle.getTimestamp())) {
-			Assert.fail(
+			Assertions.fail(
 					"Message should have timestamp " +
 							bundle.getTimestamp() +
 							" but has " +
@@ -691,7 +686,7 @@ public class OSCPortTest {
 		String actualAddress = packet.getAddress();
 
 		if (!expectedAddress.equals(actualAddress)) {
-			Assert.fail(
+			Assertions.fail(
 					"Message should have address " +
 							expectedAddress +
 							" but has address" +
@@ -781,14 +776,14 @@ public class OSCPortTest {
 				.getArguments();
 
 		if (sentArgs.size() != receivedArgs.size()) {
-			Assert.fail("Message received #arguments differs from #arguments sent");
+			Assertions.fail("Message received #arguments differs from #arguments sent");
 		}
 
 		for (int i = 0; i < sentArgs.size(); i++) {
 			Object sentArg = sentArgs.get(i);
 			Object receivedArg = receivedArgs.get(i);
 			if (!sentArg.equals(receivedArg)) {
-				Assert.fail(
+				Assertions.fail(
 						String.format(
 								"Message received argument #%d ('%s') " +
 										"differs from the one sent ('%s')",
@@ -813,14 +808,18 @@ public class OSCPortTest {
 
 	// OSCSerializer throws OSCSerializeException,
 	// caused by java.nio.BufferOverflowException
-	@Test(expected = OSCSerializeException.class)
+	@Test
 	public void testReceivingUDP66K() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 
 		// Create a list of arguments of size 66000 bytes,
 		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
 		// which is 65k bytes (including headers).
-		testReceivingBySize(66000);
+		
+		Assertions.assertThrows(
+			OSCSerializeException.class,
+			() -> testReceivingBySize(66000)
+		);
 	}
 
 	@Test
@@ -846,7 +845,7 @@ public class OSCPortTest {
 
 	// OSCSerializer throws OSCSerializeException,
 	// caused by java.nio.BufferOverflowException
-	@Test(expected = OSCSerializeException.class)
+	@Test
 	public void testReceivingHugeConnectedOut() throws Exception {
 		setUp(OSCPort.defaultSCOSCPort());
 
@@ -854,7 +853,10 @@ public class OSCPortTest {
 		// so the resulting UDP packet size is sure to be bigger then the theoretical maximum,
 		// which is 65k bytes (including headers).
 		sender.connect();
-		testReceivingBySize(66000);
+		Assertions.assertThrows(
+			OSCSerializeException.class,
+			() -> testReceivingBySize(66000)
+		);
 	}
 
 	private void testBundleReceiving(final boolean shouldReceive) throws Exception {
