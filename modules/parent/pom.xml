@@ -107,7 +107,7 @@ SPDX-License-Identifier: CC0-1.0
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.16</version>
+				<version>3.3.1</version>
 				<configuration>
 					<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 					<linkXRef>true</linkXRef>
@@ -118,7 +118,7 @@ SPDX-License-Identifier: CC0-1.0
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
-				<version>3.8</version>
+				<version>3.22.0</version>
 				<configuration>
 					<aggregate>true</aggregate>
 					<linkXRef>true</linkXRef>
@@ -139,7 +139,7 @@ SPDX-License-Identifier: CC0-1.0
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.22.0</version>
+				<version>3.2.5</version>
 			</plugin>
 
 			<plugin>
@@ -151,7 +151,7 @@ SPDX-License-Identifier: CC0-1.0
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.5.0</version>
 			</plugin>
 		</plugins>
 	</reporting>
@@ -162,7 +162,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
+					<version>3.13.0</version>
 					<configuration>
 						<source>1.${java.old.version}</source>
 						<target>1.${java.old.version}</target>
@@ -175,7 +175,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>3.3.1</version>
 					<configuration>
 						<encoding>${project.build.resourceEncoding}</encoding>
 					</configuration>
@@ -184,7 +184,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.6.3</version>
 					<configuration>
 						<charset>${project.build.sourceEncoding}</charset>
 						<encoding>${project.build.sourceEncoding}</encoding>
@@ -194,37 +194,37 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
+					<version>3.1.2</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
-					<version>3.0.1</version>
+					<version>3.3.1</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
-					<version>3.0.0</version>
+					<version>3.3.2</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>2.5.2</version>
+					<version>3.1.2</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.6</version>
+					<version>3.12.1</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5.3</version>
+					<version>3.0.1</version>
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<useReleaseProfile>false</useReleaseProfile>
@@ -241,7 +241,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>3.0.2</version>
+					<version>3.4.1</version>
 					<configuration>
 						<archive>
 							<manifestEntries>
@@ -255,13 +255,13 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>3.1.0</version>
+					<version>3.7.1</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.6.0</version>
+					<version>3.2.0</version>
 					<executions>
 						<execution>
 							<goals>
@@ -277,13 +277,13 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.0</version>
+					<version>3.2.5</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
-					<version>3.0.0-M2</version>
+					<version>3.4.1</version>
 					<executions>
 						<execution>
 							<id>enforce-versions</id>
@@ -329,13 +329,13 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.5.4</version>
+					<version>5.1.9</version>
 				</plugin>
 
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.16</version>
+					<version>3.3.1</version>
 					<configuration>
 						<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 						<linkXRef>true</linkXRef>
@@ -347,7 +347,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.6</version> <!-- NOTE 3.6 is the latest version still compiled with Java 1.6 -->
+					<version>3.22.0</version>
 					<configuration>
 						<aggregate>true</aggregate>
 						<linkXRef>true</linkXRef>
@@ -368,7 +368,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.3</version>
+					<version>0.8.12</version>
 					<configuration>
 						<append>true</append>
 					</configuration>
@@ -398,7 +398,7 @@ SPDX-License-Identifier: CC0-1.0
 				<plugin>
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
-					<version>3.6.0.1398</version>
+					<version>3.11.0.3922</version>
 					<executions>
 						<execution>
 							<phase>verify</phase>
@@ -436,27 +436,22 @@ SPDX-License-Identifier: CC0-1.0
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.7.25</version>
+				<version>2.0.13</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-ext</artifactId>
-				<version>1.7.26</version>
+				<version>2.0.13</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.7.25</version>
+				<version>2.0.13</version>
 			</dependency>
 			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.7.25</version>
-			</dependency>
-			<dependency>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				<version>1.2.17</version>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-slf4j2-impl</artifactId>
+				<version>2.23.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -495,7 +490,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jxr-plugin</artifactId>
-						<version>2.5</version>
+						<version>3.3.2</version>
 						<configuration>
 							<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
 						</configuration>
@@ -504,7 +499,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
+						<version>3.6.3</version>
 						<configuration>
 							<charset>${project.build.sourceEncoding}</charset>
 							<encoding>${project.build.sourceEncoding}</encoding>
@@ -526,7 +521,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>sonar-maven-plugin</artifactId>
-						<version>3.2</version>
+						<version>3.11.0.3922</version>
 					</plugin>
 				</plugins>
 			</reporting>
@@ -543,7 +538,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>1.6</version>
+						<version>3.2.4</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
@@ -568,7 +563,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
-						<version>1.6.7</version>
+						<version>1.6.13</version>
 						<extensions>true</extensions>
 						<configuration>
 							<serverId>ossrh</serverId>
@@ -580,7 +575,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
+						<version>3.6.3</version>
 						<configuration>
 							<failOnError>false</failOnError>
 							<charset>${project.build.sourceEncoding}</charset>
@@ -599,7 +594,7 @@ SPDX-License-Identifier: CC0-1.0
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>3.0.1</version>
+						<version>3.3.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>

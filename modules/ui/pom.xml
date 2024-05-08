@@ -84,13 +84,8 @@ SPDX-License-Identifier: CC0-1.0
 			<version>0.9-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j2-impl</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
