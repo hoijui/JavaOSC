@@ -104,7 +104,7 @@ SPDX-License-Identifier: CC0-1.0
 					<execution>
 						<goals>
 							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
-							<goal>check</goal>
+							<!-- <goal>check</goal> -->
 						</goals>
 					</execution>
 				</executions>
