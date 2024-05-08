@@ -271,7 +271,7 @@ bash
 # set env vars
 export JAVA_HOME="${JAVA_8_HOME}"
 # perform the release
-git push origin master <release-tag>
+git push origin master --tags
 mvn release:perform
 mvn deploy -P release
 # leave our "private" shell instance again
