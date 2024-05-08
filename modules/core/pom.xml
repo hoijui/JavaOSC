@@ -16,12 +16,12 @@ SPDX-License-Identifier: CC0-1.0
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.9</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
 	<artifactId>javaosc-core</artifactId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 
 	<packaging>bundle</packaging>
 

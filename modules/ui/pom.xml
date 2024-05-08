@@ -14,12 +14,12 @@ SPDX-License-Identifier: CC0-1.0
 	<parent>
 		<groupId>com.illposed.osc</groupId>
 		<artifactId>javaosc-parent</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.9</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 
 	<artifactId>javaosc-ui</artifactId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.9</version>
 
 	<packaging>jar</packaging>
 
@@ -81,7 +81,7 @@ SPDX-License-Identifier: CC0-1.0
 		<dependency>
 			<groupId>com.illposed.osc</groupId>
 			<artifactId>javaosc-core</artifactId>
-			<version>0.9-SNAPSHOT</version>
+			<version>0.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
