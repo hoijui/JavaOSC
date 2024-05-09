@@ -11,7 +11,7 @@
 
 <!--
 SPDX-FileCopyrightText: 2012 C. Ramakrishnan / Illposed Software
-SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+SPDX-FileCopyrightText: 2021 - 2024 Robin Vobruba <hoijui.quaero@gmail.com>
 
 SPDX-License-Identifier: CC0-1.0
 -->
@@ -76,7 +76,8 @@ it also contains a sample GUI that allows to send OSC messages to SuperCollider.
 ### Open Sound Control (OSC)
 
 is a simple _content format_,
-although it is often though of as a _protocol_ for the transmission of data over a network.
+although it is often though of as a _protocol_
+for the transmission of data over a network.
 
 #### Application domains
 
@@ -132,7 +133,7 @@ mvn exec:java
 Next, launch SuperCollider (SC), open the file located in the
 `modules/core/src/main/resources/supercollider/` directory,
 and load the synthdef into SuperCollider.
-Start the SC local server. 
+Start the SC local server.
 In the JavaOSC Demo UI, click the "All On" button and start moving the sliders.
 You should hear the sounds change.
 To see what messages the UI is sending, run either the CNMAT `dumpOSC`,
@@ -154,7 +155,8 @@ in the terminal.
 
 ### Use the library
 
-The classes that deal with sending OSC data are located in the `com.illposed.osc` package.
+The classes that deal with sending OSC data
+are located in the `com.illposed.osc` package.
 The core classes are `com.illposed.osc.transport.OSCPort{In,  Out}`,
 `com.illposed.osc.OSCMessage` and `com.illposed.osc.OSCBundle`.
 
@@ -258,7 +260,7 @@ exit
 This does the following:
 
 * _Important for backwards compatibility_:
-use the oldest possible JDK version to compile (currently 1.8)
+  use the oldest possible JDK version to compile (currently 1.8)
 * asks for the release and new snapshot versions to use (for all modules)
 * packages
 * signs with GPG
