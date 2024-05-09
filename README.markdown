@@ -165,7 +165,6 @@ There are some associated JUnit tests, which also contain code that may illustra
 how to use the library.
 They can be run with `mvn test`.
 
-
 ## Release a SNAPSHOT (devs only)
 
 To release a development version to the Sonatype snapshot repository only:
@@ -192,7 +191,6 @@ you need to add this to your _pom.xml_:
 		</repository>
 	</repositories>
 ```
-
 
 ## Release (devs only)
 
@@ -290,10 +288,8 @@ This does the following:
 * deploy into Sonatype staging repository
 * promote it on Maven Central repository (may have a delay of up to 4h)
 
-
 ## Thanks
 
 Thanks to John Thompson for writing the UI (demo application),
 Alexandre Quessy for the PD demo,
 and to Martin Kaltenbrunner and Alex Potsides for their contributions.
-
