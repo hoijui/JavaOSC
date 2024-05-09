@@ -1,9 +1,11 @@
-	      _                       ____    _____   _____
-	     | |                     / __ \  / ____| / ____|
-	     | |  __ _ __   __ __ _ | |  | || (___  | |
-	 _   | | / _` |\ \ / // _` || |  | | \___ \ | |
-	| |__| || (_| | \ V /| (_| || |__| | ____) || |____
-	 \____/  \__,_|  \_/  \__,_| \____/ |_____/  \_____|
+```text
+      _                       ____    _____   _____
+     | |                     / __ \  / ____| / ____|
+     | |  __ _ __   __ __ _ | |  | || (___  | |
+ _   | | / _` |\ \ / // _` || |  | | \___ \ | |
+| |__| || (_| | \ V /| (_| || |__| | ____) || |____
+ \____/  \__,_|  \_/  \__,_| \____/ |_____/  \_____|
+```
 
 <!-- The title was created with: `figlet -k -f big JavaOSC` -->
 
@@ -182,7 +184,7 @@ exit
 In the project you want to use the _SNAPSHOT_ release,
 you need to add this to your _pom.xml_:
 
-```
+```xml
 	<repositories>
 		<repository>
 			<id>ossrh</id>
@@ -205,6 +207,7 @@ mvn release:clean
 To be able to sign the release artifacts,
 make sure you have a section in your `~/.m2/settings.xml` that looks like this:
 
+```xml
 	<profiles>
 		<profile>
 			<id>ossrh</id>
@@ -221,6 +224,7 @@ make sure you have a section in your `~/.m2/settings.xml` that looks like this:
 			</properties>
 		</profile>
 	</profiles>
+```
 
 If you have not yet done so, generate and publish a key-pair.
 See [the Sonatype guide](http://central.sonatype.org/pages/working-with-pgp-signatures.html)
