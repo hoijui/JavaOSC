@@ -50,8 +50,10 @@ public class OSCTimeTag64 implements Cloneable, Serializable, Comparable<OSCTime
 	 * and {@link Date#getTime()}).
 	 * This is "1-Jan-1900 @ 00:00:00", and we use UTC as time-zone.
 	 * Dates before this can not be represented with an OSC Time-tag.
+	 * @see https://stackoverflow.com/questions/8805832/number-of-seconds-from-1st-january-1900-to-start-of-unix-epoch/8805949#8805949
+	 * @see https://github.com/adzialocha/osc-js/blob/d531474/src/atomic/timetag.js#L10
 	 */
-	public static final long EPOCH_START_JAVA_TIME_0 = -2208992400000L;
+	public static final long EPOCH_START_JAVA_TIME_0 = -2208988800000L;
 	// Public API
 	/**
 	 * Start of the current epoch expressed in Java time.

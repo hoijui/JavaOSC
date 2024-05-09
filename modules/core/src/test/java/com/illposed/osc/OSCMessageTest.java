@@ -250,7 +250,7 @@ public class OSCMessageTest {
 		args.add(OSCTimeTag64.valueOf(new Date(0L)));
 		final OSCMessage message = new OSCMessage("/ts/0", args);
 		final byte[] answer
-				= { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, -116, -112, 0, 0, 0, 0
+				= { 47, 116, 115, 47, 48, 0, 0, 0, 44, 116, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0
 				};
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
@@ -265,7 +265,7 @@ public class OSCMessageTest {
 		args.add(OSCTimeTag64.valueOf(calendar.getTime()));
 		final OSCMessage message = new OSCMessage("/ts/2000", args);
 		final byte[] answer
-				= { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 126, -112,
+				= { 47, 116, 115, 47, 50, 48, 48, 48, 0, 0, 0, 0, 44, 116, 0, 0, -68, 22, 112, -128,
 					0, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
@@ -281,7 +281,7 @@ public class OSCMessageTest {
 		final OSCMessage message = new OSCMessage("/ts/afterFeb2036", args);
 		final byte[] answer
 				= { 47, 116, 115, 47, 97, 102, 116, 101, 114, 70, 101, 98, 50, 48, 51, 54, 0, 0, 0,
-					0, 44, 116, 0, 0, 1, -80, 31, 16, 0, 0, 0, 0 };
+					0, 44, 116, 0, 0, 1, -80, 17, 0, 0, 0, 0, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
 	}
@@ -444,7 +444,7 @@ public class OSCMessageTest {
 					0, 99, 109, 105, 100, 100, 108, 101, 65, 114, 103, 0, 0, 0, 0, 0, 0, 1, 63,
 					-128, 0, 0, 63, -16, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0,
 					0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 104, 104, 101, 108, 108, 111, 32, 119, 111,
-					114, 108, 100, 33, 0, 0, 0, 0, -125, -86, -116, -112, 0, 0, 0, 0, 108, 97, 115,
+					114, 108, 100, 33, 0, 0, 0, 0, -125, -86, 126, -128, 0, 0, 0, 0, 108, 97, 115,
 					116, 65, 114, 103, 0 };
 		final byte[] result = convertMessageToByteArray(message);
 		checkResultEqualsAnswer(result, answer);
@@ -493,7 +493,7 @@ public class OSCMessageTest {
 					0, 0, 1, 0, 0, 0, 108, 0, 0, 0, 0, 0, 0, 0, 1, 63, -128, 0, 0, 63, -16, 0, 0, 0,
 					0, 0, 0, 0, 0, 0, 5, -99, -1, 0, 1, 99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
 					0, 104, 104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100, 33, 0, 0, 0, 0,
-					-125, -86, -116, -112, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 104, 64, 35, -52,
+					-125, -86, 126, -128, 0, 0, 0, 0, -1, -1, -1, -1, 0, 0, 0, 104, 64, 35, -52,
 					-52, -52, -52, -52, -51, 0, 0, 0, 101, 64, 33, -103, -103, -103, -103, -103,
 					-102, 64, 30, -52, -52, -52, -52, -52, -51, 108, 97, 115, 116, 65, 114, 103,
 					0 };
