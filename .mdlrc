@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2018 Robin Vobruba <hoijui.quaero@gmail.com>
+#
+# SPDX-License-Identifier: Unlicense
+
+style "#{File.dirname(__FILE__)}/.mdl_style.rb"
+git_recurse true
