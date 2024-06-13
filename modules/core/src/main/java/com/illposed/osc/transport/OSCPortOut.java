@@ -109,6 +109,19 @@ public class OSCPortOut extends OSCPort {
 	}
 
 	/**
+	 * Creates an OSC-Port that sends to a remote host from the specified given
+	 * {@code transport} that was previously created using appropriate local
+	 * and remote addresses, network protocol, and serializers.
+	 * @param transport the transport used for sending OSC packets
+	 * @throws IOException if we fail to bind a channel to the local address
+	 */
+	public OSCPortOut(
+		final Transport transport)
+	{
+		super(transport);
+	}
+
+	/**
 	 * Converts and sends an OSC packet (message or bundle) to the remote address.
 	 * @param packet the bundle or message to be converted and sent
 	 * @throws IOException if a socket I/O error occurs while sending
