@@ -34,7 +34,8 @@ public class UDPTransport implements Transport {
 	 * incoming datagram data size.
 	 */
 	public static final int BUFFER_SIZE = 65507;
-	private final ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
+	private final ByteBuffer recvBuffer = ByteBuffer.allocate(BUFFER_SIZE);
+	private final ByteBuffer sendBuffer = ByteBuffer.allocate(BUFFER_SIZE);
 
 	private final SocketAddress local;
 	private final SocketAddress remote;
@@ -131,12 +132,12 @@ public class UDPTransport implements Transport {
 
 	@Override
 	public void send(final OSCPacket packet) throws IOException, OSCSerializeException {
-		oscChannel.send(buffer, packet, remote);
+		oscChannel.send(sendBuffer, packet, remote);
 	}
 
 	@Override
 	public OSCPacket receive() throws IOException, OSCParseException {
-		return oscChannel.read(buffer);
+		return oscChannel.read(recvBuffer);
 	}
 
 	@Override

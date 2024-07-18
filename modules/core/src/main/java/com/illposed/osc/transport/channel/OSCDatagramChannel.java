@@ -52,34 +52,35 @@ public class OSCDatagramChannel extends SelectableChannel {
 		this.serializerBuilder = serializerAndParserBuilder;
 	}
 
-	public OSCPacket read(final ByteBuffer buffer) throws IOException, OSCParseException {
+	public OSCPacket read(final ByteBuffer recvBuffer) throws IOException, OSCParseException {
 
 		boolean completed = false;
 		OSCPacket oscPacket;
 		try {
 			begin();
 
-			buffer.clear();
+			recvBuffer.clear();
 			// NOTE From the doc of `read()` and `receive()`:
 			// "If there are fewer bytes remaining in the buffer
 			// than are required to hold the datagram
 			// then the remainder of the datagram is silently discarded."
 			if (underlyingChannel.isConnected()) {
-				underlyingChannel.read(buffer);
+				underlyingChannel.read(recvBuffer);
 			} else {
-				underlyingChannel.receive(buffer);
+				underlyingChannel.receive(recvBuffer);
 			}
 //			final int readBytes = buffer.position();
 //			if (readBytes == buffer.capacity()) {
 //				// TODO In this case it is very likely that the buffer was actually too small, and the remainder of the datagram/packet was silently discarded. We might want to give a warning, like throw an exception in this case, but whether this happens should probably be user configurable.
 //			}
-			buffer.flip();
-			if (buffer.limit() == 0) {
-				throw new OSCParseException("Received a packet without any data", buffer);
+			recvBuffer.flip();
+			if (recvBuffer.limit() == 0) {
+				throw new OSCParseException("Received a packet without any data", recvBuffer);
 			} else {
-				oscPacket = parser.convert(buffer);
+				oscPacket = parser.convert(recvBuffer);
 				completed = true;
 			}
+			recvBuffer.flip();
 		} finally {
 			end(completed);
 		}
@@ -87,23 +88,24 @@ public class OSCDatagramChannel extends SelectableChannel {
 		return oscPacket;
 	}
 
-	public void send(final ByteBuffer buffer, final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
+	public void send(final ByteBuffer sendBuffer, final OSCPacket packet, final SocketAddress remoteAddress) throws IOException, OSCSerializeException {
 
 		boolean completed = false;
 		try {
 			begin();
 
-			final OSCSerializer serializer = serializerBuilder.buildSerializer(new BufferBytesReceiver(buffer));
-			buffer.rewind();
+			final OSCSerializer serializer = serializerBuilder.buildSerializer(new BufferBytesReceiver(sendBuffer));
+			sendBuffer.rewind();
 			serializer.write(packet);
-			buffer.flip();
+			sendBuffer.flip();
 			if (underlyingChannel.isConnected()) {
-				underlyingChannel.write(buffer);
+				underlyingChannel.write(sendBuffer);
 			} else if (remoteAddress == null) {
 				throw new IllegalStateException("Not connected and no remote address is given");
 			} else {
-				underlyingChannel.send(buffer, remoteAddress);
+				underlyingChannel.send(sendBuffer, remoteAddress);
 			}
+			sendBuffer.flip();
 			completed = true;
 		} finally {
 			end(completed);
