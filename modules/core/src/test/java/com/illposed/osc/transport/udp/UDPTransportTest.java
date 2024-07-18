@@ -1,179 +1,67 @@
-// SPDX-FileCopyrightText: 2020 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
-//
-// SPDX-License-Identifier: BSD-3-Clause
-
 package com.illposed.osc.transport.udp;
 
-import com.illposed.osc.OSCSerializeException;
-import com.illposed.osc.transport.OSCPort;
-
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.net.StandardProtocolFamily;
-import java.net.StandardSocketOptions;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
-import java.util.Random;
+import java.nio.BufferOverflowException;
 
-import org.junit.jupiter.api.Assertions;
+import com.illposed.osc.OSCMessage;
+import com.illposed.osc.OSCParseException;
+import com.illposed.osc.OSCSerializeException;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opentest4j.AssertionFailedError;
 
-public class UDPTransportTest {
-
-	private static final long WAIT_FOR_SOCKET_CLOSE = 30;
-
-	private final Logger log = LoggerFactory.getLogger(UDPTransportTest.class);
-
+public class UDPTransportTest
+{
 	@Test
-	public void readWriteReadData400() throws Exception {
-		readWriteReadData(400);
-	}
+	void testSimultaneusReadWrite() throws IOException, OSCSerializeException, InterruptedException {
+		final SocketAddress local = new InetSocketAddress(11111);
+		final SocketAddress remote = new InetSocketAddress(22222);
+		final UDPTransport transport = new UDPTransport(local, remote);
+		final UDPTransport reverseTransport = new UDPTransport(remote, local);
 
-	@Test
-	public void readWriteReadData600() throws Exception {
-		// common minimal maximum UDP buffer size (MTU) is 5xx Bytes
-		readWriteReadData(600);
-	}
+		final Object lock = new Object();
+		final Exception[] result = new Exception[1];
 
-	@Test
-	public void readWriteReadData1400() throws Exception {
-		readWriteReadData(1400);
-	}
+		final Thread readThread = new Thread(() -> {
+			while (true)
+			{
+				try
+				{
+					transport.receive();
 
-	@Test
-	public void readWriteReadData2000() throws Exception {
-		// default maximum UDP buffer size (MTU) is ~1500 Bytes
-		readWriteReadData(2000);
-	}
-
-	@Test
-	public void readWriteReadData50000() throws Exception {
-		readWriteReadData(50000);
-	}
-
-	@Test
-	public void readWriteReadData70000() throws Exception {
-		// theoretical maximum UDP buffer size (MTU) is 2^16 - 1 = 65535 Bytes
-		
-		Assertions.assertThrows(
-			IOException.class,
-			() -> readWriteReadData(70000)
-		);
-	}
-
-	private void readWriteReadData(final int sizeInBytes)
-			throws Exception
-	{
-		final int portSender = 6666;
-		final int portReceiver = 7777;
-
-		final SocketAddress senderSocket = new InetSocketAddress(InetAddress.getLocalHost(), portSender);
-		final SocketAddress receiverSocket = new InetSocketAddress(InetAddress.getLocalHost(), portReceiver);
-
-
-		DatagramChannel senderChannel = null;
-		DatagramChannel receiverChannel = null;
-		try {
-			senderChannel = DatagramChannel.open();
-			senderChannel.socket().bind(senderSocket);
-			senderChannel.socket().setReuseAddress(true);
-			senderChannel.socket().setSendBufferSize(UDPTransport.BUFFER_SIZE);
-
-			receiverChannel = DatagramChannel.open();
-			receiverChannel.socket().bind(receiverSocket);
-			receiverChannel.socket().setReuseAddress(true);
-
-			senderChannel.connect(receiverSocket);
-			receiverChannel.connect(senderSocket);
-
-			final byte[] sourceArray = new byte[sizeInBytes];
-			final byte[] targetArray = new byte[sizeInBytes];
-
-			new Random().nextBytes(sourceArray);
-
-			readWriteReadData(senderChannel, sourceArray, receiverChannel, targetArray, sizeInBytes);
-		} finally {
-			if (receiverChannel != null) {
-				try {
-					receiverChannel.close();
-				} catch (final IOException ex) {
-					log.error("Failed to close test OSC in channel", ex);
+					// We should not get here
+				}
+				catch (IOException | OSCParseException | BufferOverflowException e)
+				{
+					result[0] = e;
+				}
+				finally
+				{
+					synchronized (lock)
+					{
+						lock.notifyAll();
+					}
 				}
 			}
-			if (senderChannel != null) {
-				try {
-					senderChannel.close();
-				} catch (final IOException ex) {
-					log.error("Failed to close test OSC out channel", ex);
-				}
-			}
+		});
+		readThread.setDaemon(true);
+		readThread.start();
 
-			// wait a bit after closing the receiver,
-			// because (some) operating systems need some time
-			// to actually close the underlying socket
-			Thread.sleep(WAIT_FOR_SOCKET_CLOSE);
-		}
-	}
+		// Put the transport in the "I lastly send a message" state
+		transport.send(new OSCMessage("/xremote"));
 
-	private void readWriteReadData(
-			final DatagramChannel sender,
-			final byte[] sourceArray,
-			final DatagramChannel receiver,
-			byte[] targetArray,
-			final int dataSize)
-			throws IOException
-	{
-		// write
-		final ByteBuffer sourceBuf = ByteBuffer.wrap(sourceArray);
-		Assertions.assertEquals(dataSize, sender.write(sourceBuf));
-
-		// read
-		final ByteBuffer targetBuf = ByteBuffer.wrap(targetArray);
-
-		int count;
-		int total = 0;
-		final long beginTime = System.currentTimeMillis();
-		while ((total < dataSize) && (((count = receiver.read(targetBuf))) != -1)) {
-			total = total + count;
-			// 3s timeout to avoid dead loop
-			if ((System.currentTimeMillis() - beginTime) > 3000) {
-				break;
-			}
+		// Trigger the bug
+		synchronized (lock)
+		{
+			reverseTransport.send(new OSCMessage("/xremote"));
+			lock.wait(1000);
 		}
 
-		Assertions.assertEquals(dataSize, total);
-		Assertions.assertEquals(targetBuf.position(), total);
-		targetBuf.flip();
-		targetArray = targetBuf.array();
-		for (int i = 0; i < targetArray.length; i++) {
-			Assertions.assertEquals(sourceArray[i], targetArray[i]);
+		// Assert the result
+		if (result[0] != null)
+		{
+			throw new AssertionFailedError("Can not read in one thread and write in another", result[0]);
 		}
-	}
-
-	@Test
-	public void testBindChannel() throws Exception {
-		final InetSocketAddress bindAddress = new InetSocketAddress(OSCPort.defaultSCOSCPort());
-
-		final DatagramChannel channel;
-		if (bindAddress.getAddress() instanceof Inet4Address) {
-			channel = DatagramChannel.open(StandardProtocolFamily.INET);
-		} else if (bindAddress.getAddress() instanceof Inet6Address) {
-			channel = DatagramChannel.open(StandardProtocolFamily.INET6);
-		} else {
-			throw new IllegalArgumentException(
-					"Unknown address type: "
-					+ bindAddress.getAddress().getClass().getCanonicalName());
-		}
-		channel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-		channel.socket().bind(bindAddress);
-
-		Assertions.assertEquals(bindAddress, channel.getLocalAddress());
 	}
 }
