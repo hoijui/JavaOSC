@@ -29,8 +29,6 @@ public class UDPTransportTest
 				try
 				{
 					transport.receive();
-
-					// We should not get here
 				}
 				catch (IOException | OSCParseException | BufferOverflowException e)
 				{
