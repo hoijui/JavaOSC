@@ -15,7 +15,7 @@ import java.io.Serializable;
  * Use like this:
  * <blockquote><pre>{@code
  * OSCMessage msg = new OSCMessage("/my/address");
- * msg.addArgument(OSCImpulse.INSTANCE);
+ * msg.arguments.add(OSCImpulse.INSTANCE);
  * }</pre></blockquote>
  */
 public final class OSCImpulse implements Serializable {
