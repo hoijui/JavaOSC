@@ -288,11 +288,10 @@ public final class LibraryInfo {
 	}
 
 	/**
-	 * Checks if java.awt.Color is available.
+	 * Retrieves the class java.awt.Color, if available.
 	 * It's not available on Android for example.
 	 * Some headless servers might also lack this class.
-	 * @return true when the runtime supports java.awt.Color
-	 * (e.g. Android)
+	 * @return that class, or null
 	 */
 	static Class<?> getAwtColor() {
 		try {
@@ -300,6 +299,16 @@ public final class LibraryInfo {
 		} catch (ClassNotFoundException ignore) {
 			return null;
 		}
+	}
+
+	/**
+	 * Indicates whether java.awt.Color is available on this system/JDK.
+	 * @return true when the runtime supports java.awt.Color,
+	 * false otherwise, which is e.g. the case on Android
+	 * and some headless servers
+	 */
+	public static boolean isAwtColorAvailable() {
+		return getAwtColor() != null;
 	}
 
 	public static void main(final String[] args) throws IOException {
