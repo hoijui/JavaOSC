@@ -8,7 +8,7 @@ SPDX-License-Identifier: Unlicense
 	<modelVersion>4.0.0</modelVersion>
 
 	<properties>
-		<project.packageName>com.illposed.osc</project.packageName>
+		<project.packageName>com.illposed.osc.argument.handler.javase</project.packageName>
 		<supported.osc.version>1.0</supported.osc.version>
 	</properties>
 
@@ -38,7 +38,7 @@ SPDX-License-Identifier: Unlicense
 				<configuration>
 					<instructions>
 						<Export-Package>
-							${project.packageName}.argument.handler,
+							${project.packageName},
 						</Export-Package>
 						<Supported-OSC-Version>${supported.osc.version}</Supported-OSC-Version>
 					</instructions>

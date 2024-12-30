@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: 2015 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-package com.illposed.osc.argument.handler;
+package com.illposed.osc.argument.handler.javase;
 
 import com.illposed.osc.BufferBytesReceiver;
 import com.illposed.osc.argument.ArgumentHandler;

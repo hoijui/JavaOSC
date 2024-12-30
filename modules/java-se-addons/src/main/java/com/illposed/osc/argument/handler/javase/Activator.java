@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-package com.illposed.osc.argument.handler;
+package com.illposed.osc.argument.handler.javase;
 
 import com.illposed.osc.argument.ArgumentHandler;
 import org.slf4j.Logger;

@@ -1,15 +1,16 @@
 // SPDX-FileCopyrightText: 2015-2017 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-package com.illposed.osc.argument.handler;
+package com.illposed.osc.argument.handler.javase;
 
 import com.illposed.osc.BytesReceiver;
 import com.illposed.osc.OSCParseException;
 import com.illposed.osc.OSCSerializeException;
 import com.illposed.osc.argument.ArgumentHandler;
 import com.illposed.osc.argument.OSCColor;
+import com.illposed.osc.argument.handler.ColorArgumentHandler;
 
 import java.awt.Color;
 import java.nio.ByteBuffer;

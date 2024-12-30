@@ -4,6 +4,8 @@
 
 /**
  * Provides {@link com.illposed.osc.argument.ArgumentHandler} implementations.
- * Most, if not all of them can be found in the OSC specification (1.0 and 1.1).
+ * The ones in this package are Java SE specific,
+ * meaning they work on Oracle JDK and OpenJDK,
+ * but specifically not on Android.
  */
-package com.illposed.osc.argument.handler;
+package com.illposed.osc.argument.handler.javase;
