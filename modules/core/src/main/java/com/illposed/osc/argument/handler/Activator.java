@@ -85,7 +85,7 @@ public final class Activator {
 		//      we extracted `AwtColorArgumentHandler` into a separate maven-artifact
 		//      under the same groupId, with artifactId `java-se-addons`.
 		//      We try to load it through reflection here,
-		//      which will only succeed, if that class is in the classpath.
+		//      which will only succeed, if that class is in the class-path.
 		try {
 			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandler";
 			final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
