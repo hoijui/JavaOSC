@@ -95,7 +95,7 @@ public final class Activator {
 				instance.setAccessible(true);
 				serializerTypes.add((ArgumentHandler) instance.get(null));
 			} catch (final ClassNotFoundException ex) {
-				LOG.debug("Not supporting AWT color serialization", ex);
+				LOG.debug("Not supporting AWT color serialization; You may want to add the com.illposed.osc:javaosc-java-se-addons artifact", ex);
 			} catch (final NoSuchFieldException | SecurityException | IllegalAccessException ex) {
 				LOG.error("Failed to add AWT Color serializer", ex);
 			}
