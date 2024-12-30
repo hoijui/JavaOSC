@@ -5,6 +5,7 @@
 
 package com.illposed.osc.argument.handler;
 
+import com.illposed.osc.LibraryInfo;
 import com.illposed.osc.argument.ArgumentHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,16 +87,18 @@ public final class Activator {
 		//      under the same groupId, with artifactId `java-se-addons`.
 		//      We try to load it through reflection here,
 		//      which will only succeed, if that class is in the class-path.
-		try {
-			final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".AwtColorArgumentHandler";
-			final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
-			final Field instance = awtColorArgumentHandler.getDeclaredField("INSTANCE");
-			instance.setAccessible(true);
-			serializerTypes.add((ArgumentHandler) instance.get(null));
-		} catch (final ClassNotFoundException ex) {
-			LOG.debug("Not supporting AWT color serialization", ex);
-		} catch (final NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-			LOG.error("Failed to add AWT Color serializer", ex);
+		if (LibraryInfo.isAwtColorAvailable()) {
+			try {
+				final String awtColorArgHClsName = ColorArgumentHandler.class.getPackage().getName() + ".javase.AwtColorArgumentHandler";
+				final Class<?> awtColorArgumentHandler = Activator.class.getClassLoader().loadClass(awtColorArgHClsName);
+				final Field instance = awtColorArgumentHandler.getDeclaredField("INSTANCE");
+				instance.setAccessible(true);
+				serializerTypes.add((ArgumentHandler) instance.get(null));
+			} catch (final ClassNotFoundException ex) {
+				LOG.debug("Not supporting AWT color serialization", ex);
+			} catch (final NoSuchFieldException | SecurityException | IllegalAccessException ex) {
+				LOG.error("Failed to add AWT Color serializer", ex);
+			}
 		}
 
 		// NOTE We add this for legacy support, though it is recommended
