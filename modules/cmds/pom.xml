@@ -1,0 +1,138 @@
+<!--
+SPDX-FileCopyrightText: 2024 Robin Vobruba <hoijui.quaero@gmail.com>
+
+SPDX-License-Identifier: Unlicense
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<project.packageName>com.illposed.osc.cmds</project.packageName>
+		<supported.osc.version>1.0</supported.osc.version>
+		<project.mainClass>${project.packageName}.ConsoleEchoServer</project.mainClass>
+	</properties>
+
+	<parent>
+		<groupId>com.illposed.osc</groupId>
+		<artifactId>javaosc-parent</artifactId>
+		<version>0.10-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
+	</parent>
+
+	<artifactId>javaosc-cmds</artifactId>
+	<version>0.10-SNAPSHOT</version>
+
+	<packaging>jar</packaging>
+
+	<name>JavaOSC-Commands</name>
+	<description>An Open Sound Control library implementation in Java - Commands</description>
+
+	<build>
+		<defaultGoal>package</defaultGoal>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>dependency</classpathPrefix>
+							<packageName>${project.packageName}</packageName>
+							<mainClass>${project.mainClass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!--
+				This generates an extra jar file that can be run standalone.
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>${project.mainClass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>${project.mainClass}</mainClass>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals> -->
+							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
+							<!-- <goal>check</goal> -->
+						<!-- </goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<exclude>com/illposed/osc/OSCSerializer.java</exclude>
+						<exclude>com/illposed/osc/argument/ArgumentHandler.java</exclude>
+						<exclude>com/illposed/osc/messageselector/OSCPatternAddressMessageSelector.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin> -->
+
+			<plugin>
+				<groupId>com.github.spotbugs</groupId>
+				<artifactId>spotbugs-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<!-- Execute during the maven "verify" phase (`mvn verify`) -->
+							<!-- <goal>check</goal> -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.illposed.osc</groupId>
+			<artifactId>javaosc-core</artifactId>
+			<version>0.10-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+	</dependencies>
+
+</project>
+

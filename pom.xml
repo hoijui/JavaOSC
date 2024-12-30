@@ -38,6 +38,7 @@ SPDX-License-Identifier: Unlicense
 		<!-- We also need the parent here, for its SNAPSHOTs to be deployed. -->
 		<module>modules/parent</module>
 		<module>modules/core</module>
+		<module>modules/cmds</module>
 		<module>modules/ui</module>
 		<module>modules/java-se-addons</module>
 	</modules>

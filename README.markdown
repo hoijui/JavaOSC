@@ -153,6 +153,25 @@ You should hear the sounds change.
 To see what messages the UI is sending, just look in the PD window or
 in the terminal.
 
+### Run the OSH Echo Server
+
+This tool simple listens on `0.0.0.0`,
+and returns every OSC message it gets, as-is.
+
+Before running -
+and every time the sources change -
+run this once:
+
+```bash
+mvn install
+```
+
+Then to run, simply execute:
+
+```bash
+mvn --projects modules/cmds exec:java
+```
+
 ### Use the library
 
 The classes that deal with sending OSC data

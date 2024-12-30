@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: 2017 C. Ramakrishnan / Illposed Software
-// SPDX-FileCopyrightText: 2021 Robin Vobruba <hoijui.quaero@gmail.com>
+// SPDX-FileCopyrightText: 2021-2024 Robin Vobruba <hoijui.quaero@gmail.com>
 //
 // SPDX-License-Identifier: BSD-3-Clause
 
-package com.illposed.osc;
+package com.illposed.osc.cmds;
 
+import com.illposed.osc.EchoOSCMessageListener;
+import com.illposed.osc.OSCBadDataEvent;
+import com.illposed.osc.OSCBadDataListener;
+import com.illposed.osc.OSCMessageListener;
 import com.illposed.osc.messageselector.JavaRegexAddressMessageSelector;
 import com.illposed.osc.transport.OSCPortIn;
 import org.slf4j.Logger;
@@ -29,8 +33,6 @@ public class ConsoleEchoServer extends OSCPortIn {
 	public static final int DEFAULT_PORT = 7770;
 	private static final int ARG_INDEX_ADDRESS = 0;
 	private static final int ARG_INDEX_PORT = 1;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ConsoleEchoServer.class);
 
 	private final Logger log;
 
@@ -80,7 +82,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 
 	// Public API
 	@SuppressWarnings("WeakerAccess")
-	public static SocketAddress parseServerAddress(final String[] args)
+	public static SocketAddress parseServerAddress(final Logger log, final String[] args)
 			throws UnknownHostException
 	{
 		final InetAddress host;
@@ -92,7 +94,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 				try {
 					port = Integer.parseInt(args[ARG_INDEX_PORT]);
 				} catch (final NumberFormatException ex) {
-					LOG.error("# ERROR: Invalid port: {}", args[ARG_INDEX_PORT]);
+					log.error("# ERROR: Invalid port: {}", args[ARG_INDEX_PORT]);
 					throw ex;
 				}
 			}
@@ -104,6 +106,7 @@ public class ConsoleEchoServer extends OSCPortIn {
 	}
 
 	public static void main(final String[] args) throws IOException {
-		new ConsoleEchoServer(parseServerAddress(args), LoggerFactory.getLogger(ConsoleEchoServer.class)).start();
+		final Logger log = LoggerFactory.getLogger(ConsoleEchoServer.class);
+		new ConsoleEchoServer(parseServerAddress(log, args), log).start();
 	}
 }
